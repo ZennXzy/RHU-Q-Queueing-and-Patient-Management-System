@@ -23,3 +23,17 @@ function handleEmploymentChange() {
         businessInput.value = '';
     }
 }
+
+const gender_checkboxes = document.querySelectorAll(".gender-checkbox");
+gender_checkboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", function() {
+        if (this.checked) {
+            checkboxes.forEach(other => {
+                if (other !== this) {
+                    other.checked = false;
+                }
+            });
+        }
+    });
+});
+

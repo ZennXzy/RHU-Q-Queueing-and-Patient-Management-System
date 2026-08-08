@@ -206,9 +206,9 @@
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555; margin-bottom: 2px;">Civil Status</span>
                         <div class="radio-row">
-                            <label class="radio-item"><input type="radio" checked> Single</label>
-                            <label class="radio-item"><input type="radio"> Married</label>
-                            <label class="radio-item"><input type="radio"> Widow</label>
+                            <label class="radio-item"><input type="radio" name="civil-radio" value="single"> Single</label>
+                            <label class="radio-item"><input type="radio" name="civil-radio" value="married"> Married</label>
+                            <label class="radio-item"><input type="radio" name="civil-radio" value="widow"> Widow</label>
                         </div>
                     </div>
                     <div class="form-group col-4">
@@ -334,18 +334,6 @@
     </div>
 </body>
 <script>
-    const checkboxes = document.querySelectorAll(".gender-checkbox");
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", function() {
-            if (this.checked) {
-                checkboxes.forEach(other => {
-                    if (other !== this) {
-                        other.checked = false;
-                    }
-                });
-            }
-        });
-    });
+    
 </script>
 </html>
