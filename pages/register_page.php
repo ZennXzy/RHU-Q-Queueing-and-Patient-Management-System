@@ -18,8 +18,8 @@
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/logout.js" defer></script>
+    <script src="../js/employment-selector.js" defer></script>
 </head>
-
 <body>
 
     <div class="top-navbar">
@@ -161,8 +161,8 @@
                     <div class="form-group col-3" style="padding-left: 10px;">
                         <span style="font-size: 13px; color: #555;">Sex</span>
                         <div class="checkbox-row">
-                            <label class="checkbox-item"><input type="checkbox" class="cr-input"> Male</label>
-                            <label class="checkbox-item" style="margin-left: 25px;"><input type="checkbox"> Female</label>
+                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="male"> Male</label>
+                            <label class="checkbox-item" style="margin-left: 25px;"><input type="checkbox" class="gender-checkbox" value="female"> Female</label>
                         </div>
                     </div>
 
@@ -174,29 +174,31 @@
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
                         <input type="text" placeholder="09-123-456-7890" style="margin-top:10px;">
                     </div>
-                    <div class="form-group col-4" style=" grid-row: span 2; justify-content: flex-start;">
+                    <div class="form-group col-4" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
 
-                        <!-- radioinput -->
+                        <!-- Radio Input Group -->
                         <div class="radio-row" style="margin-top: 8px;">
-                            <label class="radiobox-item ">
-                                <input type="radio" checked> Employed 
+                            <label class="radiobox-item">
+                                <input type="radio" name="employment_status" class="employment-status employed" value="employed" onclick="handleEmploymentChange()"> Employed 
                             </label>
-                            <label class="radiobox-item ">
-                                <input type="radio"> Self-Employed
+                            <label class="radiobox-item">
+                                <input type="radio" name="employment_status" class="employment-status self-employed" value="self-employed" onclick="handleEmploymentChange()"> Self-Employed
                             </label>
-                            <label class="radiobox-item ">
-                                <input type="radio"> Unemployed
+                            <label class="radiobox-item">
+                                <input type="radio" name="employment_status" class="employment-status unemployed" value="unemployed" onclick="handleEmploymentChange()"> Unemployed
                             </label>
                         </div>
-                        <!-- textinput -->
-                        <div class="fieldset-group col-5 occupation-item" style="margin-top: 20px">
+
+                        <!-- Text Inputs (Initially hidden inline) -->
+                        <div class="fieldset-group col-5 occupation-item" id="occupationDiv" style="margin-top: 20px; display: none;">
                             <legend>Occupation</legend>
-                            <input type="text" placeholder="e.g., Software Engineer">
+                            <input type="text" name="occupation" id="occupationInput" placeholder="e.g., Software Engineer">
                         </div>
-                        <div class="fieldset-group col-5 business-item" style="margin-top: 20px">
+
+                        <div class="fieldset-group col-5 business-item" id="businessDiv" style="margin-top: 20px; display: none;">
                             <legend>Business</legend>
-                            <input type="text" placeholder="e.g., Freelancers">
+                            <input type="text" name="business" id="businessInput" placeholder="e.g., Retail Store Owner">
                         </div>
                     </div>
 
@@ -331,4 +333,19 @@
         </form>
     </div>
 </body>
+<script>
+    const checkboxes = document.querySelectorAll(".gender-checkbox");
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("change", function() {
+            if (this.checked) {
+                checkboxes.forEach(other => {
+                    if (other !== this) {
+                        other.checked = false;
+                    }
+                });
+            }
+        });
+    });
+</script>
 </html>
