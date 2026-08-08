@@ -1,0 +1,228 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body,
+html {
+    height: 100%;
+    width: 100%;
+    background-image: url(../images/41950.jpg);
+    background-repeat: repeat;
+    background-size: contain;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Core Workspace Wrapper */
+.workspace {
+    display: flex;
+    flex: 1;
+    height: calc(100vh - 118px);
+    position: relative;
+}
+
+.content-area {
+    flex: 1;
+    padding: 40px;
+    height: 100%;
+}
+
+
+.page-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #1976d2;
+    margin-bottom: 20px;
+}
+
+/* Card Container */
+.content-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Top Bar inside Card (Stats + Action Buttons) */
+.card-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.stats-group {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    padding: 16px 24px;
+    border-radius: 10px;
+    min-width: 200px;
+}
+
+.stat-card.total {
+    background-color: #e3f2fd;
+}
+
+.stat-card.active {
+    background-color: #e8f5e9;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-right: 16px;
+}
+
+.stat-card.total .stat-icon {
+    color: #1976d2;
+}
+
+.stat-card.active .stat-icon {
+    color: #388e3c;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #555;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #222;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: #1976d2;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #1e88e5;
+    color: white;
+}
+
+.btn i {
+    margin-right: 8px;
+}
+
+/* Data Table Styling */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+th {
+    color: #666;
+    font-weight: 600;
+    padding: 12px 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+td {
+    padding: 14px 10px;
+    color: #333;
+}
+
+tr:not(:last-child) td {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Status Badge */
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+}
+
+.badge-active {
+    background-color: #2e7d32;
+}
+
+/* Action Icons in Table */
+.table-actions {
+    display: flex;
+    gap: 12px;
+    font-size: 0.95rem;
+}
+
+.action-icon {
+    cursor: pointer;
+    color: #1976d2;
+}
+
+.action-icon.delete {
+    color: #b0bec5;
+}
+
+.action-icon:hover {
+    opacity: 0.7;
+}
+
+/* Floating Logout Button */
+.btn-logout {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    background-color: #1976d2;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

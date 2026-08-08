@@ -1,0 +1,77 @@
+<?php
+require 'connection.php';
+session_start();
+
+if ($_SERVER["REQUEST_METHOD"] === 'POST'){
+  $username = $_POST['username'] ?? '';
+  $password = $_POST['password'] ?? '';
+
+  if (trim($username) === '' || trim($password) === ''){
+    header('Location: login_page.php?msg=' . urlencode('Username and password are required') . '&type=error');
+    exit;
+  }
+
+  if (strlen($password) <= 10) {
+    header('Location: login_page.php?msg=' . urlencode('Password must be more than 10 characters') . '&type=error');
+    exit;
+  }
+
+  $stmt = $conn->prepare('SELECT id, password_hash FROM admin_auth WHERE username = ?');
+  $stmt->bind_param('s', $username);
+  $stmt->execute();
+  $res = $stmt->get_result();
+
+  if ($res && $res->num_rows === 1){
+    $row = $res->fetch_assoc();
+    if (password_verify($password, $row['password_hash'])){
+      $_SESSION['user_id'] = $row['id'];
+      $_SESSION['username'] = $username;
+      header('Location: register_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
+      exit;
+    } else {
+      header('Location: login_page.php?msg=' . urlencode('Invalid credentials') . '&type=error');
+      exit;
+    }
+  }
+
+  
+  if ($res && $res->num_rows === 0){
+    $options = ["cost" => 12];
+    $encryptedpassword = password_hash($password, PASSWORD_BCRYPT, $options);
+
+    $insert = $conn->prepare('INSERT INTO admin_auth (username, password) VALUES (?,?)');
+    $insert->bind_param('ss', $username, $encryptedpassword);
+    if ($insert->execute()){
+      $newId = $insert->insert_id;
+      $_SESSION['user_id'] = $newId;
+      $_SESSION['username'] = $username;
+      header('Location: register_page.php?msg=' . urlencode('Account created and logged in') . '&type=success');
+      exit;
+    } else {
+      header('Location: login_page.php?msg=' . urlencode('Error creating account') . '&type=error');
+      exit;
+    }
+  }
+} else {
+  echo "Invalid request method.";
+}
+
+$conn->close();
+?>
+
+
+$options = [
+  "cost" => 12
+];
+$encryptedpassword = password_hash($password, PASSWORD_BCRYPT, $options);
+
+$insertstmt = $conn->prepare("INSERT INTO admin_auth (username, password_hash) VALUES (?,?)");
+$insertstmt->bind_param("ss",$username,$encryptedpassword);
+
+if($insertstmt->execute()){
+  header('Location: ../pages/register_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
+    exit();
+} else {
+  header('Location: ../pages/login_page.php?msg=' . urlencode('Invalid credentials') . '&type=error');
+    exit();
+}

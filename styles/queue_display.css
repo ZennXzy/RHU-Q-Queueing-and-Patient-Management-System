@@ -1,0 +1,256 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body, html {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+
+/* Top branding header */
+.top-brand {
+    display: flex;
+    flex: row;
+    align-items: center;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    margin-bottom: 15px;
+}
+
+
+.rhu_logo_topNav img{
+  height: 50px;
+  width:auto;
+  margin-right: 15px;
+}
+
+/* Background image container with subtle gradient overlay */
+.page-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(0deg, #ffffff00 45%, #0B695D 100%), 
+                      url(../images/rhu_image.jpg);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+}
+
+/* Queue Display Title */
+.page-title {
+    color: white;
+    font-size: 3.2rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+    margin-bottom: 20px;
+}
+
+/* Main White Card Overlay */
+.display-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    flex: 1;
+    padding: 30px;
+    display: grid;
+    column-gap: 30px;
+    row-gap: 0px;
+    position: relative;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    max-height: calc(100vh - 150px);
+    transition: all 0.3s ease;
+}
+
+.waiting-card {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.waiting-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 10px;
+    margin-left:10px;
+}
+
+.waiting-badges {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+/* Department Column Base */
+.dept-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.waiting-column{
+    display: flex;
+    flex-direction: column;
+}
+
+/* Colored Queue Card */
+.queue-card {
+    border-radius: 12px;
+    padding: 25px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 15px;
+}
+
+/* Department Theme Colors */
+.dept-medical {
+    background-color: #E3F2FD;
+}
+
+.dept-dental {
+    background-color: #E8F5E9;
+}
+
+.dept-vaccine {
+    background-color: #FFF3E0;
+}
+
+/* Department Header Label */
+.dept-title {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 20px;
+    font-weight:bold;
+    color: #222;
+    width: 100%;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+}
+
+.dept-title img{
+  height: 50px;
+  width:auto;
+  transform: rotate(-30deg);
+}
+
+
+.dept-title .icon {
+    font-size: 22px;
+}
+
+/* Active Ticket Box */
+.ticket-box {
+    background-color: white;
+    width: 85%;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #222;
+    border-radius: 12px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 15px;
+}
+
+/* Empty Queue Text */
+.no-queue {
+    margin: auto 0;
+    font-size: 22px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Average Waiting Time Stats at Bottom of Card */
+.time-stat {
+    margin-top: auto;
+    text-align: center;
+}
+
+.time-stat .label {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.time-stat .value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+}
+
+.badge {
+    background-color: #E0E0E0;
+    color: #222;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 4px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+}
+
+
+/* Empty Display Placeholder */
+.empty-display-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    color: #333;
+    text-align: center;
+}
+
+.empty-display-state h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.empty-display-state p {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+
+/* Fullscreen Icon in bottom right corner */
+.minimize-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    cursor: pointer;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+    padding: 5px;
+}
+
+.minimize-btn:hover{
+    transform: scale(1.1);
+}
+
+.minimize-btn .minimize-button img{
+  height:20px;
+  width: auto;
+}

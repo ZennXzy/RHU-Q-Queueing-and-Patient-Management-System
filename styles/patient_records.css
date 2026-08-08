@@ -1,0 +1,266 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+  background-image: url(../images/41950.jpg);
+  background-repeat: repeat;
+  background-size: contain;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
+
+/* Core Workspace Wrapper */
+.workspace {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 118px);
+  position: relative;
+}
+
+/* Main Content Workspace */
+.content-area {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  color: #0B695D;
+  font-size: 32px;
+  /* Reduced from 32px */
+  font-weight: 700;
+}
+
+.topbar{
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Search Input */
+.search-container {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  padding-left: 10px;
+  position: relative;
+  margin-bottom: 15px;
+  margin-left: 25px;
+  width:100%;
+  max-width: 420px;
+  border: 1px solid #0B695D;
+  border-radius: 50px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.search-container input {
+  width: 100%;
+  padding: 10px 15px 10px 10px;
+  font-size: 14px;
+  background-color: #ffffff00;
+  border: none;
+  outline: none;
+  color: #333;
+}
+
+.search-container .search-icon img {
+  height: 20px;
+  width: auto;
+}
+
+/* total-records */
+.total-records{
+  margin-right:25px;
+}
+
+/* table-card */
+.table-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  flex: 1;
+  overflow-y: auto;
+}
+
+.table-card::-webkit-scrollbar {
+  width: 5px;
+}
+.table-card::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
+
+/* patient-table */
+.patient-table table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.patient-table th, .patient-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+.patient-table th {
+  background-color: #f8f9fa;
+  color: #0B695D;
+  font-weight: 600;
+}
+
+.view-btn {
+  background-color: #0B695D;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  outline:none;
+}
+
+.view-btn:hover {
+  background-color: #084d44;
+}
+
+/* Modal Styling */
+.patient-modal {
+  margin: auto;
+  border: none;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 650px;
+  padding: 0;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.patient-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.modal-header {
+  background-color: #0B695D;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  outline: none;
+}
+
+.close-modal-btn:hover{
+  transform: scale(1.5);
+  color: red;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+.info-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.info-group label {
+  font-weight: bold;
+  color: #555;
+  display: block;
+  font-size: 13px;
+}
+
+.info-group span {
+  color: #222;
+  font-size: 15px;
+}
+
+.divider {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 15px 0;
+}
+
+.history-section h3 {
+  margin-bottom: 10px;
+  color: #0B695D;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th, .history-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-completed { background: #E8F5E9; color: #2E7D32; }
+.status-pending { background: #FFF3E0; color: #E65100; }
+
+/* Placeholder styling for main patient table */
+/* Placeholder styling for main patient table */
+.empty-table-placeholder {
+  text-align: center;
+  padding: 40px 20px !important;
+  background-color: #fafafa;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.empty-subtitle {
+  font-size: 14px;
+  color: #777;
+}
