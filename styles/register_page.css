@@ -187,10 +187,6 @@ body, html {
   cursor: pointer;
 }
 
-.hidden-field {
-    display: none !important;
-}
-
 .inline-input-line {
   border: none;
   border-bottom: 1px solid #777;

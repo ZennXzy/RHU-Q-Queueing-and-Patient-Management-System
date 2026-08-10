@@ -18,7 +18,7 @@
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/logout.js" defer></script>
-    <script src="../js/employment-selector.js" defer></script>
+    <script src="../js/register-selector.js" defer></script>
 </head>
 <body>
 
@@ -285,21 +285,24 @@
                             <div class="row-title" style="margin-bottom:10px; margin-left:15px; font-size:15px; font-weight: 600;">PhilHealth Information
                             </div>
                             <div class="fieldset-group col-5" style="display: flex; flex-direction:column; gap:8px; width: 100%;">
-                                
-                                <div class="checkbox-row" style="margin:0px;">
-                                    <legend style="margin-top:6px;">PhilHealth Status</legend>
-                                    <label class="checkbox-item"><input type="checkbox" checked> Member</label>
-                                    <label class="checkbox-item"><input type="checkbox"> Dependent</label>
-                                    <label class="checkbox-item"><input type="checkbox">Not Applicable</label>
+
+                                <div class="checkbox-row" style=" justify-content:space-evenly;">
+                                    <legend>PhilHealth Status</legend>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="member"> Member</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput"  onclick="handlePhilHChange()" value="dependent"> Dependent</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="not applicable">Not Applicable</label>
                                 </div>
-                                <div class="fieldset-group col-5 num-item" style="border:none;">
-                                    <legend>PhilHealth Number</legend>
-                                    <input type="text" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                <div class="fieldset-group col-5 num-item" id="philNumDiv" style="border:none; display: none;">
+                                    <div>
+                                        <legend>PhilHealth Number</legend>
+                                        <input type="text" id="philHNumInput" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                    </div>
                                 </div>
-                                <div class="fieldset-group col-5 princ-item" style="border:none;">
-                                    <legend>Principal Member</legend>
-                                    <input type="text" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;">
-                                    
+                                <div class="fieldset-group col-5 princ-item" id="prinMemDiv" style="border:none; display: none;">
+                                    <div>
+                                        <legend>Principal Member</legend>
+                                        <input type="text"  id="prinMemInput" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -312,12 +315,13 @@
                             <div class="fieldset-group col-3" style="display: flex; flex-direction:column; gap: 8px; width: 100%;">
                                 <div class="checkbox-row" style="padding-left:6px;">
                                     <legend>NHTS Member</legend>
-                                    <label class="checkbox-item"><input type="checkbox" checked> Yes</label>
-                                    <label class="checkbox-item"><input type="checkbox"> No</label>
+                                    <label class="checkbox-item"><input type="radio" name="nhtsInput"  onclick="handleNhtsChange()" value="yes">Yes</label>
+                                    <label class="checkbox-item"><input type="radio" name="nhtsInput"  onclick="handleNhtsChange()" value="no">No</label>
                                 </div>
-                                <div class="fieldset-group col-5 nhts-item" style="border:none;">
+                                <div class="fieldset-group col-5 nhts-item" id="nhtsNumInputDiv" style="border:none; display:none;">
                                     <Legend>NHTS Number</Legend>
-                                    <input type="text" class="inline-input-line" placeholder="e.g., 0401-02012-0001" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                    <input type="text" class="inline-input-line"
+                                    id="nhtsNumInput" placeholder="e.g., 0401-02012-0001" style="border: none; border-bottom: 1px solid #777; flex: 1;">
                                 </div>
                             </div>
                         </div>
@@ -334,6 +338,5 @@
     </div>
 </body>
 <script>
-    
 </script>
 </html>

@@ -8,12 +8,12 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
 
   if (trim($username) === '' || trim($password) === ''){
     header('Location: ../pages/login_page.php?msg=' . urlencode('Username and password are required') . '&type=error');
-    exit;
+    exit();
   }
 
   if (strlen($password) <= 10) {
     header('Location: ../pages/login_page.php?msg=' . urlencode('Password must be more than 10 characters') . '&type=error');
-    exit;
+    exit();
   }
 
   $stmt = $conn->prepare('SELECT id, username, password_hash FROM admin_auth WHERE username = ?');
@@ -38,8 +38,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
       header('Location: ../pages/login_page.php?msg=' . urlencode('Invalid credentials') . '&type=error');
       exit();
     }
+  } else {
+    header('Location: ../pages/login_page.php?msg=' . urlencode('User not found') . '&type=error');
+    exit();
   }
 }
-
 $conn->close();
 ?>
