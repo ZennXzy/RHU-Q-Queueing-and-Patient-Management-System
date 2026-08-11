@@ -19,6 +19,7 @@
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
+    <script src="../js/registration-form.js" defer></script>
 </head>
 <body>
 
@@ -137,7 +138,7 @@
         
 
         <!-- main container -->
-        <form action="" class="content-area">
+        <form action="../php/registration.php" method="post" class="content-area">
             <h2 class="page-title">Patient Registration</h2>
             <h3 class="section-title">Personal Information</h3>
             <div class="white-card">
@@ -167,9 +168,9 @@
                     <div class="form-group col-2" style="padding-left: 10px; padding-right: 10px;">
                         <span style="font-size: 13px; color: #555;">Sex</span>
                         <div class="checkbox-row" style="justify-content:space-evenly;">
-                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="male"> Male</label>
-                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="female"> Female</label>
-                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="others"> Others</label>
+                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="male"> Male</label>
+                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="female"> Female</label>
+                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="others"> Others</label>
                         </div>
                     </div>
 
@@ -304,13 +305,13 @@
                                 <div class="fieldset-group col-5 num-item" id="philNumDiv" style="border:none; display: none;">
                                     <div>
                                         <legend>PhilHealth Number</legend>
-                                        <input type="text" id="philHNumInput" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                        <input type="text" id="philHNumInput" name="philNumber" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;">
                                     </div>
                                 </div>
                                 <div class="fieldset-group col-5 princ-item" id="prinMemDiv" style="border:none; display: none;">
                                     <div>
                                         <legend>Principal Member</legend>
-                                        <input type="text"  id="prinMemInput" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                        <input type="text"  id="prinMemInput" name="prinMember" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;">
                                     </div>
                                 </div>
                             </div>
@@ -330,7 +331,7 @@
                                 <div class="fieldset-group col-5 nhts-item" id="nhtsNumInputDiv" style="border:none; display:none;">
                                     <Legend>NHTS Number</Legend>
                                     <input type="text" class="inline-input-line"
-                                    id="nhtsNumInput" placeholder="e.g., 0401-02012-0001" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                    id="nhtsNumInput" name="nhtsNumber" placeholder="e.g., 0401-02012-0001" style="border: none; border-bottom: 1px solid #777; flex: 1;">
                                 </div>
                             </div>
                         </div>
