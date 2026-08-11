@@ -15,6 +15,7 @@
 
 
     <script src="../js/login-form.js" defer></script>
+    <script src="../js/toast.js" defer></script>
 </head>
 <body>
 

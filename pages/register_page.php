@@ -19,6 +19,7 @@
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/register-selector.js" defer></script>
+    <script src="../js/toast.js" defer></script>
 </head>
 <body>
 

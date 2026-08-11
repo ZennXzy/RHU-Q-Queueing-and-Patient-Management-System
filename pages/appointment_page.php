@@ -16,6 +16,8 @@
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/add-appointment.js" defer></script>
+    <script src="../js/logout.js" defer></script>
+
   </head>
   <body>
     <div class="top-navbar">
@@ -135,12 +137,12 @@
               <span class="menu-text">Account</span>
             </div>
           </a>
-          <form action="../php/logout.php" class="menu-item logout-item" id="logoutForm" style="transform: rotate(180deg);">
+          <form action="../php/logout.php" method="post" class="menu-item logout-item" id="logoutForm" style="transform: rotate(180deg);">
               <div class="menu-content">
                   <div class="menu-icon">
                       <button type="submit" name="logout" style="border:none; background:none;">
-                                <img src="../svg/logout-icon.svg" alt="logout-icon">
-                            </button>
+                          <img src="../svg/logout-icon.svg" alt="logout-icon">
+                      </button>
                   </div>
               </div>
           </form>
