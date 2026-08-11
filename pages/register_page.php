@@ -144,36 +144,43 @@
             <div class="white-card">
                 <div class="form-grid">    
                     <div class="form-group col-4">
-                        <input type="text" placeholder="First Name">
+                        <input type="text" id="lname" placeholder="Last Name">
                     </div>
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="Last Name">
+                    <div class="form-group col-3">
+                        <input type="text" id="fname" placeholder="First Name">
                     </div>
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="Middle Name">
-                    </div>
-
-                    <div class="form-group col-7">
-                        <input type="text" placeholder="Complete Address">
+                    <div class="form-group col-3">
+                        <input type="text" id="mname" placeholder="Middle Name">
                     </div>
                     <div class="form-group col-2">
-                        <input type="text" placeholder="Age">
+                        <input type="text" id="sname" placeholder="Suffixes ">
                     </div>
-                    <div class="form-group col-3" style="padding-left: 10px;">
+
+                    <div class="form-group col-6">
+                        <input type="text" id="address" placeholder="Complete Address">
+                    </div>
+                    <div class="form-group col-1">
+                        <input type="text" id="age" placeholder="Age">
+                    </div>
+                    <div class="form-group col-2">
+                        <input type="text" id="religion" placeholder="Religion">
+                    </div>
+                    <div class="form-group col-2" style="padding-left: 10px; padding-right: 10px;">
                         <span style="font-size: 13px; color: #555;">Sex</span>
-                        <div class="checkbox-row">
+                        <div class="checkbox-row" style="justify-content:space-evenly;">
                             <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="male"> Male</label>
-                            <label class="checkbox-item" style="margin-left: 25px;"><input type="checkbox" class="gender-checkbox" value="female"> Female</label>
+                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="female"> Female</label>
+                            <label class="checkbox-item"><input type="checkbox" class="gender-checkbox" value="others"> Others</label>
                         </div>
                     </div>
 
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555;">Date of Birth</span>
-                        <input type="text" placeholder="dd/mm/yyyy" style="margin-top:10px;">
+                        <input type="text" id="birthDate" placeholder="dd/mm/yyyy" style="margin-top:10px;">
                     </div>
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
-                        <input type="text" placeholder="09-123-456-7890" style="margin-top:10px;">
+                        <input type="text" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;">
                     </div>
                     <div class="form-group col-4" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
@@ -207,15 +214,11 @@
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555; margin-bottom: 2px;">Civil Status</span>
                         <div class="radio-row">
-                            <label class="radio-item"><input type="radio" name="civil-radio" value="single"> Single</label>
-                            <label class="radio-item"><input type="radio" name="civil-radio" value="married"> Married</label>
-                            <label class="radio-item"><input type="radio" name="civil-radio" value="widow"> Widow</label>
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="single" onclick="handleCivilChange()">Single</label>
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="married" onclick="handleCivilChange()">Married</label>
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="widow" onclick="handleCivilChange()">Widow</label>
                         </div>
                     </div>
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="Religion">
-                    </div>
-
                 </div>
             </div>
 
@@ -231,13 +234,13 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" placeholder="First Name">
+                        <input type="text" id="mlname" placeholder="Last Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" placeholder="Last Name">
+                        <input type="text" id="mfname" placeholder="First Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" placeholder="Middle Name">
+                        <input type="text" id="mmname" placeholder="Middle Name">
                     </div>
                 </div>
                 
@@ -249,33 +252,35 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" placeholder="First Name">
+                        <input type="text" id="flname" placeholder="Last Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" placeholder="Last Name">
+                        <input type="text" id="ffname" placeholder="First Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" placeholder="Middle Name">
+                        <input type="text" id="fmname" placeholder="Middle Name">
                     </div>
                 </div>
 
                 <!-- Spouse Name -->
-                 <div class="row-section" style="margin-top: 20px">
-                    <div class="row-title" style="font-size: 15px">
-                        Spouse's Name
+                 <div id="spouseDiv" style="display:none;">
+                    <div class="row-section" style="margin-top: 20px">
+                        <div class="row-title" style="font-size: 15px">
+                            Spouse's Name
+                        </div>
                     </div>
-                </div>
-                <div class="form-grid">
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="First Name">
+                    <div class="form-grid">
+                        <div class="form-group col-4">
+                            <input type="text" id="slname" placeholder="Last Name">
+                        </div>
+                        <div class="form-group col-4">
+                            <input type="text" id="sfname" placeholder="First Name">
+                        </div>
+                        <div class="form-group col-4">
+                            <input type="text" id="smname" placeholder="Middle Name">
+                        </div>
                     </div>
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="Last Name">
-                    </div>
-                    <div class="form-group col-4">
-                        <input type="text" placeholder="Middle Name">
-                    </div>
-                </div>
+                 </div>
             </div>
 
 
@@ -331,7 +336,7 @@
             </div>
             <div class="form-grid">
                 <div class="button-group col-3 button">
-                    <button type="button" class="clear-btn">Clear</button> 
+                    <input type="reset" class="clear-btn" value="reset">
                     <button type="submit" class="submit-btn">Register</button>
                 </div>
             </div>

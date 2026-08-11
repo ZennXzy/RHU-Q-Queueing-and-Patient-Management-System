@@ -39,6 +39,29 @@ gender_checkboxes.forEach(checkbox => {
     });
 });
 
+// civil status selector
+function handleCivilChange() {
+    const spouseDiv = document.getElementById('spouseDiv');
+    const slname = document.getElementById('slname');
+    const sfname = document.getElementById('sfname');
+    const smname = document.getElementById('smname');
+
+    const civilRadio = document.querySelector('input[name="civilStatus"]:checked');
+
+    if(!civilRadio) return;
+
+    if (civilRadio.value === 'married') {
+        spouseDiv.style.display = 'block';
+    } else if (civilRadio.value === 'widow') {
+        spouseDiv.style.display = 'block';
+    } else { // single
+        spouseDiv.style.display = 'none';
+        slname.value = '';
+        sfname.value = '';
+        smname.value = '';
+    }
+}
+
 // philhealth selector
 function handlePhilHChange() {
     const philNumDiv = document.getElementById('philNumDiv');
@@ -57,7 +80,7 @@ function handlePhilHChange() {
     } else if (philRadio.value === 'dependent') {
         philNumDiv.style.display = 'block';
         prinMemberDiv.style.display = 'block';
-    } else { // unemployed
+    } else { // not applicable
         philNumDiv.style.display = 'none';
         prinMemberDiv.style.display = 'none';
         philHNumInput.value = ''; 
@@ -82,4 +105,8 @@ function handleNhtsChange() {
         nhtsNumInput.value = '';
     }
 }
+
+
+
+
 

@@ -229,9 +229,9 @@ body, html {
 }
 
 .clear-btn:hover{
-    background-color: #20A59E;
-    color: white;
-    border: 1px solid #0B695D;
+    background-color: white;
+    color: red;
+    border: 1px solid red;
     transform: scale(0.98);
 }
 
@@ -256,3 +256,4 @@ body, html {
 .col-6 { grid-column: span 6; }
 .col-7 { grid-column: span 7; }
 .col-2 { grid-column: span 2; }
+.col-1 { grid-column: span 1; }
