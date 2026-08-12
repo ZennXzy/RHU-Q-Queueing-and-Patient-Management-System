@@ -14,12 +14,11 @@
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
-
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
-    <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/registration-form.js" defer></script>
+    <script src="../js/logout.js" defer></script>
 </head>
 <body>
 
@@ -138,32 +137,32 @@
         
 
         <!-- main container -->
-        <form action="../php/registration.php" method="post" class="content-area">
+        <form id="patientRegistrationForm" action="../php/register.php" method="post" class="content-area">
             <h2 class="page-title">Patient Registration</h2>
             <h3 class="section-title">Personal Information</h3>
             <div class="white-card">
                 <div class="form-grid">    
                     <div class="form-group col-4">
-                        <input type="text" id="lname" placeholder="Last Name">
+                        <input type="text" name="lname" id="lname" placeholder="Last Name">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" id="fname" placeholder="First Name">
+                        <input type="text" name="fname" id="fname" placeholder="First Name">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" id="mname" placeholder="Middle Name">
+                        <input type="text" name="mname" id="mname" placeholder="Middle Name">
                     </div>
                     <div class="form-group col-2">
-                        <input type="text" id="sname" placeholder="Suffixes ">
+                        <input type="text" name="sname" id="sname" placeholder="Suffixes ">
                     </div>
 
-                    <div class="form-group col-6">
-                        <input type="text" id="address" placeholder="Complete Address">
-                    </div>
-                    <div class="form-group col-1">
-                        <input type="text" id="age" placeholder="Age">
+                    <div class="form-group col-5">
+                        <input type="text" name="address" id="address" placeholder="Complete Address">
                     </div>
                     <div class="form-group col-2">
-                        <input type="text" id="religion" placeholder="Religion">
+                        <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
+                    </div>
+                    <div class="form-group col-2">
+                        <input type="text" name="religion" id="religion" placeholder="Religion">
                     </div>
                     <div class="form-group col-2" style="padding-left: 10px; padding-right: 10px;">
                         <span style="font-size: 13px; color: #555;">Sex</span>
@@ -176,11 +175,11 @@
 
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555;">Date of Birth</span>
-                        <input type="text" id="birthDate" placeholder="dd/mm/yyyy" style="margin-top:10px;">
+                        <input style="margin-top: 10px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px; font-size: 14px; color: #333; outline: none; height:43px;" type="date" id="date_of_birth" name="birthDate">
                     </div>
                     <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
-                        <input type="text" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;">
+                        <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;">
                     </div>
                     <div class="form-group col-4" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
@@ -238,13 +237,13 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" id="mlname" placeholder="Last Name">
+                        <input type="text" name="mlname" id="mlname" placeholder="Last Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" id="mfname" placeholder="First Name">
+                        <input type="text" name="mfname" id="mfname" placeholder="First Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" id="mmname" placeholder="Middle Name">
+                        <input type="text" name="mmname" id="mmname" placeholder="Middle Name">
                     </div>
                 </div>
                 
@@ -256,13 +255,13 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" id="flname" placeholder="Last Name">
+                        <input type="text" name="flname" id="flname" placeholder="Last Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" id="ffname" placeholder="First Name">
+                        <input type="text" name="ffname" id="ffname" placeholder="First Name">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" id="fmname" placeholder="Middle Name">
+                        <input type="text" name="fmname" id="fmname" placeholder="Middle Name">
                     </div>
                 </div>
 
@@ -341,7 +340,7 @@
             <div class="form-grid">
                 <div class="button-group col-3 button">
                     <input type="reset" class="clear-btn" value="reset">
-                    <button type="submit" class="submit-btn">Register</button>
+                    <button type="submit" class="submit-btn" name="register">Register</button>
                 </div>
             </div>
         </form>
@@ -388,6 +387,25 @@
                 });
             }
         });
+    });
+
+    // autofill age
+    document.getElementById('date_of_birth').addEventListener('change', function() {
+        const dobValue = this.value;
+        if (!dobValue) return;
+
+        const dob = new Date(dobValue);
+        const today = new Date();
+
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDiff = today.getMonth() - dob.getMonth();
+
+        // Adjust age if birthday hasn't happened yet this year
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+
+        document.getElementById('age_display').value = age >= 0 ? "Age: " + age : "";
     });
 
 
@@ -462,7 +480,6 @@
             console.log("Single is selected");
         }
     }
-
 
 </script>
 </html>

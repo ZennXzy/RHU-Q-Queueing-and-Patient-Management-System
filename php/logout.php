@@ -2,6 +2,6 @@
 session_start();
 
 session_destroy();
-header('Location: ../pages/login_page.php');
+header('Location: ../pages/launch_page.php');
 exit();
 ?>

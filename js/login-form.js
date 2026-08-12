@@ -9,6 +9,7 @@
       showToast('Please provide both username and password', 'error');
       return false;
     }
+    console.log(user);
     return true;
   });
 })();
