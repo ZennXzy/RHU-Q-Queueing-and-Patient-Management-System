@@ -57,6 +57,14 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     } 
 
+    if ($sFullName === ''){
+      $sFullName = NULL;
+    }
+
+    if ($suffix === ''){
+      $suffix = NULL;
+    }
+
     if ($address === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide the address') . '&type=error');
         exit();
@@ -72,6 +80,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
+    if($emailContact === ''){
+      $emailContact = NULL;
+    }
+
     if ($employmentStatus === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select an Employment status') . '&type=error');
         exit();
@@ -81,6 +93,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     } else if ($employmentStatus === 'self-employed' && $business === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide business') . '&type=error');
         exit();
+    } else {
+      $occupation = NULL;
+      $business = NULL;
     }
 
     if ($civilStatus === '') {
@@ -107,6 +122,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     } else if ($philStatus === 'dependent' && ($philNum === '' || $prinMem === '')) {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide PhilHealth Number and Principal Member') . '&type=error');
         exit();
+    } else {
+      $philNum = NULL;
+      $prinMem = NULL;
     }
 
     if ($nhtsStatus === '') {
@@ -115,6 +133,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     } else if ($nhtsStatus === 'yes' && $nhtsNum === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide NHTS Number') . '&type=error');
         exit();
+    } else {
+      $nhtsNum = NULL;
     }
 
     // FIXED: Select 'patient_id' instead of 'id'
