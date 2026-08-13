@@ -159,9 +159,8 @@
             <input type="text" placeholder="Search by name">
           </div>
           <?php
-            $total = $_SESSION['total_record'];
             echo '<div class="total-records">';
-            echo  '<span>Total Registered Patients: <strong id="totalRecordsCount">'.htmlspecialchars($total).'</strong></span>';
+            echo  '<span>Total Registered Patients: <strong id="totalRecordsCount">'.htmlspecialchars($_SESSION['total_record']).'</strong></span>';
             echo '</div>';
           ?>
         </div>
@@ -169,7 +168,7 @@
           <div class="patient-table">
             <table>
               <thead>
-                <div class="staticField" >
+                <div>
                   <tr style="text-align:center;">
                     <th style="text-align:left;">Full Name</th>
                     <th>Age</th>
@@ -185,7 +184,6 @@
                 $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number, date_registered FROM patient_records ORDER BY firstname ASC");
                 
                 
-
                 echo '<div class="patientTableBody" style="overflow:auto;">';
                 echo  '<tbody id="patientTableBody" style="text-align:center;">';
                   if($res && $res->num_rows > 0){
@@ -210,8 +208,6 @@
                     echo'</tr>';
                     
                   }
-                  $total = $res->num_rows;
-                  $_SESSION['total_record'] = $total;
                 echo  '</tbody>';
                 echo '</div>';
               ?>

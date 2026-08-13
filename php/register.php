@@ -179,6 +179,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 
     if ($insertstmt->execute()) {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Successfully Registered') . '&type=success');
+        ++$_SESSION['total_record'];
         exit();
     } else {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Error registering patient: ' . $insertstmt->error) . '&type=error');
