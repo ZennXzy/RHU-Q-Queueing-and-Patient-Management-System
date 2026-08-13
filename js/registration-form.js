@@ -1,6 +1,4 @@
 const regForm = document.getElementById('patientRegistrationForm');
-if (!regForm) return;
-
 regForm.addEventListener('submit', function(e) {
 
   // Extract FormData values safely using regForm reference

@@ -218,7 +218,7 @@
                             <label class="radio-item"><input type="radio" name="civilStatus" value="widow" onclick="handleCivilChange()">Widow</label>
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4" style="display:none;">
                         <span style="font-size: 13px; color: #555;">Email</span>
                         <input type="text" id="emailContact" placeholder="e.g., johndoe21@gmail.com" style="margin-top:10px;">
                     </div>

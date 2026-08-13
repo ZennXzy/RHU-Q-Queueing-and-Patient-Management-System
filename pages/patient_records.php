@@ -1,4 +1,5 @@
 <?php
+  require '../php/connection.php';
   require '../php/check-private.php';
 ?>
 <!doctype html>
@@ -13,7 +14,6 @@
     <link rel="stylesheet" href="../styles/patient_records.css">
 
     <script src="../js/submenu.js" defer></script>
-    <script src="../js/patient-records.js" defer></script>
     <script src="../js/logout.js" defer></script>
 
   </head>
@@ -166,17 +166,20 @@
           <div class="patient-table">
             <table>
               <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Age</th>
-                  <th>Sex</th>
-                  <th>Contact Number</th>
-                  <th>Actions</th>
-                </tr>
+                <div class="staticField">
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Age</th>
+                    <th>Sex</th>
+                    <th>Contact Number</th>
+                    <th>Actions</th>
+                  </tr>
+                </div>
               </thead>
-              <tbody id="patientTableBody">
-                <!-- Dynamic Rows Rendered by JS -->
-              </tbody>
+              <div class="patientTableBody">
+                <tbody id="patientTableBody">
+                </tbody>
+              </div>
             </table>
           </div>
 

@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
       $_SESSION['logged_id'] = $user_id;
       $_SESSION['logged_name'] = $sysUsername;
 
-      header('Location: ../pages/register_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
+      header('Location: ../pages/launch_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
       exit();
     } 
     else {

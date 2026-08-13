@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../styles/launch.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
-    <script src="../js/toast.js"></script>
+    <script src="../js/toast.js" defer></script>
 </head>
 <body>
 
