@@ -90,14 +90,14 @@ html {
   flex: 1;
   overflow:hidden;
 }
-/* 
+
 .patientTableBody::-webkit-scrollbar {
   width: 5px;
 }
 .patientTableBody::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
-} */
+}
 
 /* patient-table */
 .patient-table table {
