@@ -169,9 +169,9 @@
           <div class="patient-table">
             <table>
               <thead>
-                <div class="staticField" style="position:sticky;">
-                  <tr>
-                    <th style="text-align:center;">Full Name</th>
+                <div class="staticField" >
+                  <tr style="text-align:center;">
+                    <th style="text-align:left;">Full Name</th>
                     <th>Age</th>
                     <th>Sex</th>
                     <th>Contact Number</th>
@@ -187,11 +187,11 @@
                 
 
                 echo '<div class="patientTableBody" style="overflow:auto;">';
-                echo  '<tbody id="patientTableBody">';
+                echo  '<tbody id="patientTableBody" style="text-align:center;">';
                   if($res && $res->num_rows > 0){
                     while ($row = $res->fetch_assoc()){
                       echo '<tr>';
-                      echo '<td>'.htmlspecialchars($row['firstname']).' '.htmlspecialchars($row['middlename']).' '.htmlspecialchars($row['lastname']).' '.htmlspecialchars($row['suffix']).'</td>';
+                      echo '<td style="text-align:left;">'.htmlspecialchars($row['firstname']).' '.htmlspecialchars($row['middlename']).' '.htmlspecialchars($row['lastname']).' '.htmlspecialchars($row['suffix']).'</td>';
                       echo '<td>'.htmlspecialchars($row['age']).'</td>';
                       echo '<td>'.htmlspecialchars($row['gender']).'</td>';
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
