@@ -15,6 +15,7 @@
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
+    <script src="../js/search.js" defer></script>
 
   </head>
   <body>
@@ -156,11 +157,13 @@
             <div class="search-icon">
               <img src="../svg/search-icon.svg" alt="search-icon">
             </div>
-            <input type="text" placeholder="Search by name">
+            <input type="text" id="patientSearchInput" placeholder="Search by name">
           </div>
           <?php
+            $res = $conn->query("SELECT patient_id FROM patient_records");
+            $total = $res ? $res->num_rows : 0;
             echo '<div class="total-records">';
-            echo  '<span>Total Registered Patients: <strong id="totalRecordsCount">'.htmlspecialchars($_SESSION['total_record']).'</strong></span>';
+            echo  '<span>Total Registered Patients: <strong id="totalRecordsCount">'.htmlspecialchars($total).'</strong></span>';
             echo '</div>';
           ?>
         </div>
@@ -168,23 +171,24 @@
           <div class="patient-table">
             <table>
               <thead>
-                <div>
-                  <tr style="text-align:center;">
-                    <th style="text-align:left;">Full Name</th>
-                    <th>Age</th>
-                    <th>Sex</th>
-                    <th>Contact Number</th>
-                    <th>Date Registered</th>
-                    <th>Actions</th>
-                  </tr>
-                </div>
+                <tr style="text-align:center;">
+                  <th style="text-align:left;" class="sortable" data-col="0" data-type="text">
+                    Full Name <span class="sort-icon">⇅</span>
+                  </th>
+                  <th class="sortable" data-col="1" data-type="number">
+                    Age <span class="sort-icon">⇅</span>
+                  </th>
+                  <th>Sex</th>
+                  <th>Contact Number</th>
+                  <th class="sortable" data-col="4" data-type="date">
+                    Date Registered <span class="sort-icon">⇅</span>
+                  </th>
+                  <th>Actions</th>
+                </tr>
               </thead>
               <?php
-
                 $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number, date_registered FROM patient_records ORDER BY firstname ASC");
-                
-                
-                echo '<div class="patientTableBody" style="overflow:auto;">';
+
                 echo  '<tbody id="patientTableBody" style="text-align:center;">';
                   if($res && $res->num_rows > 0){
                     while ($row = $res->fetch_assoc()){
@@ -209,8 +213,7 @@
                     
                   }
                 echo  '</tbody>';
-                echo '</div>';
-              ?>
+                ?>
             </table>
           </div>
 
@@ -307,4 +310,68 @@
       });
     }
   </script>
+  <!-- sort function -->
+   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tableBody = document.getElementById('patientTableBody');
+      const sortableHeaders = document.querySelectorAll('th.sortable');
+
+      // Track sort directions: 0 = Full Name, 1 = Age, 4 = Date Registered
+      const sortDirections = { 0: 'asc', 1: 'asc', 4: 'asc' };
+
+      sortableHeaders.forEach(header => {
+        header.style.cursor = 'pointer';
+
+        header.addEventListener('click', () => {
+          const colIndex = parseInt(header.dataset.col, 10);
+          const dataType = header.dataset.type;
+          const currentDir = sortDirections[colIndex];
+          const isAscending = currentDir === 'asc';
+
+          // Reset all sort icons
+          sortableHeaders.forEach(h => {
+            const icon = h.querySelector('.sort-icon');
+            if (icon) icon.textContent = '⇅';
+          });
+
+          // Update active icon arrow
+          const icon = header.querySelector('.sort-icon');
+          if (icon) icon.textContent = isAscending ? '▲' : '▼';
+
+          // Get table rows (excluding empty state placeholders)
+          const rows = Array.from(tableBody.querySelectorAll('tr')).filter(
+            row => !row.querySelector('.empty-table-placeholder') && !row.classList.contains('search-empty-row')
+          );
+
+          rows.sort((rowA, rowB) => {
+            const cellA = rowA.children[colIndex].textContent.trim();
+            const cellB = rowB.children[colIndex].textContent.trim();
+
+            let valA, valB;
+
+            if (dataType === 'number') {
+              valA = parseFloat(cellA) || 0;
+              valB = parseFloat(cellB) || 0;
+            } else if (dataType === 'date') {
+              valA = new Date(cellA).getTime() || 0;
+              valB = new Date(cellB).getTime() || 0;
+            } else {
+              valA = cellA.toLowerCase();
+              valB = cellB.toLowerCase();
+            }
+
+            if (valA < valB) return isAscending ? -1 : 1;
+            if (valA > valB) return isAscending ? 1 : -1;
+            return 0;
+          });
+
+          // Toggle direction state for next click
+          sortDirections[colIndex] = isAscending ? 'desc' : 'asc';
+
+          // Re-append rows in new order
+          rows.forEach(row => tableBody.appendChild(row));
+        });
+      });
+    });
+   </script>
 </html>

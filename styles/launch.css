@@ -18,6 +18,8 @@ body {
     transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
     opacity: 1;
     transform: scale(1);
+  cursor: default;
+
 }
 
 .rhu-logo img {

@@ -15,6 +15,7 @@ html {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  cursor: default;
 }
 /* Core Workspace Wrapper */
 .workspace {
@@ -30,6 +31,15 @@ html {
   padding: 40px;
   display: flex;
   flex-direction: column;
+}
+
+
+.content-area::-webkit-scrollbar {
+  width: 5px;
+}
+.content-area::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
 }
 
 .page-title {
@@ -88,22 +98,25 @@ html {
   padding: 20px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   flex: 1;
-  overflow:hidden;
 }
 
-.patientTableBody::-webkit-scrollbar {
+.patient-table::-webkit-scrollbar {
   width: 5px;
 }
-.patientTableBody::-webkit-scrollbar-thumb {
+.patient-table::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
 }
 
 /* patient-table */
+.patient-table {
+  max-height: 444px;
+  overflow-y: auto;
+  position: relative;
+}
 .patient-table table {
   width: 100%;
   border-collapse: collapse;
-  text-align: left;
 }
 
 .patient-table th, .patient-table td {
@@ -112,9 +125,27 @@ html {
 }
 
 .patient-table th {
+  position: sticky;
+  top: 0;
   background-color: #f8f9fa;
   color: #0B695D;
+  z-index: 2;
   font-weight: 600;
+}
+th.sortable {
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+th.sortable:hover {
+  background-color: #f0f4f8;
+}
+
+.sort-icon {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.8em;
+  color: #888;
 }
 
 .view-btn {
