@@ -11,11 +11,14 @@
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/patient_records.css">
+    <!-- <link rel="stylesheet" href="../styles/patient_records.css"> -->
+
+    <link rel="stylesheet" href="../styles/patient_records.css?v=<?php echo time(); ?>">
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/search.js" defer></script>
+    <script src="../js/patient-records.js" defer></script>
 
   </head>
   <body>
@@ -198,7 +201,7 @@
                       echo '<td>'.htmlspecialchars($row['gender']).'</td>';
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
                       echo '<td>'.htmlspecialchars($row['date_registered']).'</td>';
-                      echo '<td><button class="view-btn" data-id="'.$row['patient_id'].'">View Details</button></td>';
+                      echo '<td><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '">View Details</button></td>';
                       echo '</tr>';
                     }
                   } else {
@@ -219,49 +222,155 @@
 
           <dialog id="patientModal" class="patient-modal">
             <div class="modal-header">
-              <h2>Patient Details & History</h2>
-              <button id="closeModalBtn" class="close-modal-btn">&times;</button>
+              <div class="header-title">
+                <h2>Patient Profile Details</h2>
+                <span id="modalPatientIdBadge" class="patient-id-badge">ID: #0000</span>
+              </div>
+              <button type="button" id="closeModalBtn" class="close-modal-btn" aria-label="Close" onclick="document.getElementById('patientModal').close()">&times;</button>
             </div>
-            
+
             <div class="modal-body">
-              <!-- Patient Info Section -->
-              <div class="info-section">
-                <div class="info-group">
-                  <label>Full Name:</label>
-                  <span id="modalName">-</span>
+              <div class="patient-profile-grid">
+                
+                <!-- 1. Personal Details -->
+                <div class="info-card">
+                  <h4 class="card-title">Personal Information</h4>
+                  <div class="info-group">
+                    <label>Full Name</label>
+                    <span id="modalFullName" class="highlight-text">-</span>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-group">
+                      <label>Age / Gender</label>
+                      <span id="modalAgeGender">-</span>
+                    </div>
+                    <div class="info-group">
+                      <label>Birth Date</label>
+                      <span id="modalBirthDate">-</span>
+                    </div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-group">
+                      <label>Civil Status</label>
+                      <span id="modalCivilStatus">-</span>
+                    </div>
+                    <div class="info-group">
+                      <label>Religion</label>
+                      <span id="modalReligion">-</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="info-group">
-                  <label>Age Sex:</label>
-                  <span id="modalAgeSex">-</span>
+
+                <!-- 2. Contact & Address -->
+                <div class="info-card">
+                  <h4 class="card-title">Contact & Location</h4>
+                  <div class="info-group">
+                    <label>Contact Number</label>
+                    <span id="modalContact">-</span>
+                  </div>
+                  <div class="info-group">
+                    <label>Address</label>
+                    <span id="modalAddress">-</span>
+                  </div>
+                  <div class="info-group">
+                    <label>Date Registered</label>
+                    <span id="modalDateRegistered">-</span>
+                  </div>
                 </div>
-                <div class="info-group">
-                  <label>Contact Number:</label>
-                  <span id="modalContact">-</span>
+
+                <!-- 3. Family Background (Parents) -->
+                <div class="info-card">
+                  <h4 class="card-title">Mother's Details</h4>
+                  <div class="info-group">
+                    <label>Mother's Maiden Name</label>
+                    <span id="modalMotherName">-</span>
+                  </div>
                 </div>
-                <div class="info-group">
-                  <label>Address:</label>
-                  <span id="modalAddress">-</span>
+
+                <div class="info-card">
+                  <h4 class="card-title">Father's Details</h4>
+                  <div class="info-group">
+                    <label>Father's Name</label>
+                    <span id="modalFatherName">-</span>
+                  </div>
                 </div>
+
+                <!-- Conditional Spouse Field -->
+                <div class="info-card conditional-field" id="modalSpouseGroup" style="display: none;">
+                  <h4 class="card-title">Spouse's Details</h4>  
+                  <div class="info-group">
+                    <label>Spouse Name</label>
+                    <span id="modalSpouseName">-</span>
+                  </div>
+                </div>
+
+                <!-- 4. Employment Information -->
+                <div class="info-card">
+                  <h4 class="card-title">Employment Information</h4>
+                  <div class="info-group">
+                    <label>Employment Status</label>
+                    <span id="modalEmploymentStatus">-</span>
+                  </div>
+                  <div class="info-group conditional-field" id="modalOccupationGroup">
+                    <label>Occupation</label>
+                    <span id="modalOccupation">-</span>
+                  </div>
+                  <div class="info-group conditional-field" id="modalBusinessGroup">
+                    <label>Business</label>
+                    <span id="modalBusiness">-</span>
+                  </div>
+                </div>
+
+                <!-- 5. Government Program Health Cards -->
+                <div class="info-card">
+                  <h4 class="card-title">PhilHealth & NHTS</h4>
+                  <div class="info-group">
+                    <label>PhilHealth Status</label>
+                    <span id="modalPhilStatus">-</span>
+                  </div>
+                  <div class="info-group conditional-field" id="modalPhilNumberGroup">
+                    <label>PhilHealth Number</label>
+                    <span id="modalPhilNumber">-</span>
+                  </div>
+                  <div class="info-group conditional-field" id="modalPrinMemberGroup">
+                    <label>Principal Member</label>
+                    <span id="modalPrinMember">-</span>
+                  </div>
+                  
+                  <hr class="card-inner-divider">
+                  
+                  <div class="info-group">
+                    <label>NHTS Status</label>
+                    <span id="modalNhtsStatus">-</span>
+                  </div>
+                  <div class="info-group conditional-field" id="modalNhtsNumberGroup">
+                    <label>NHTS Number</label>
+                    <span id="modalNhtsNumber">-</span>
+                  </div>
+                </div>
+
               </div>
 
               <hr class="divider">
 
-              <!-- Service History Section -->
+              <!-- Service & Queue History -->
               <div class="history-section">
-                <h3>Service History</h3>
-                <table class="history-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Service</th>
-                      <th>Ticket #</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody id="modalHistoryBody">
-                    <!-- Dynamic History Rows -->
-                  </tbody>
-                </table>
+                <h4 class="card-title">Service & Queue History</h4>
+                <div class="history-table-container">
+                  <table class="history-table">
+                    <thead>
+                      <tr>
+                        <th>Date & Time</th>
+                        <th>Service Rendered</th>
+                        <th>Ticket #</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="modalHistoryBody">
+                      <!-- Dynamic History Rows -->
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </dialog>
@@ -269,47 +378,6 @@
       </div>
     </div>
   </body>
-  <script>
-    function attachViewEvents() {
-      document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const patientId = e.target.dataset.id;
-          const patient = PATIENTS_DATA.find(p => p.id === patientId);
-
-          if (patient) {
-            document.getElementById('modalName').textContent = patient.fullName;
-            document.getElementById('modalAgeSex').textContent = `${patient.age} / ${patient.sex}`;
-            document.getElementById('modalContact').textContent = patient.contact;
-            document.getElementById('modalAddress').textContent = patient.address;
-
-            const historyBody = document.getElementById('modalHistoryBody');
-
-            // Service History Empty State Placeholder
-            if (!patient.history || patient.history.length === 0) {
-              historyBody.innerHTML = `
-                <tr>
-                  <td colspan="4" style="text-align: center; padding: 20px; color: #777; font-style: italic;">
-                    No service history records available for this patient.
-                  </td>
-                </tr>
-              `;
-            } else {
-              historyBody.innerHTML = patient.history.map(item => `
-                <tr>
-                  <td>${item.date}</td>
-                  <td>${item.service}</td>
-                  <td>${item.ticket}</td>
-                  <td><span class="status-badge status-${item.status.toLowerCase()}">${item.status}</span></td>
-                </tr>
-              `).join('');
-            }
-
-            modal.showModal();
-          }
-        });
-      });
-    }
-  </script>
   <!-- sort function -->
    <script>
     document.addEventListener('DOMContentLoaded', () => {
