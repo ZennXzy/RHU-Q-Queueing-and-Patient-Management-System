@@ -201,7 +201,7 @@
                       echo '<td>'.htmlspecialchars($row['gender']).'</td>';
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
                       echo '<td>'.htmlspecialchars($row['date_registered']).'</td>';
-                      echo '<td><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '">View Details</button></td>';
+                      echo '<td><button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button></td>';
                       echo '</tr>';
                     }
                   } else {
@@ -348,28 +348,26 @@
                     <span id="modalNhtsNumber">-</span>
                   </div>
                 </div>
-
-              </div>
-
-              <hr class="divider">
+                <hr class="divider" style="margin-top:20px;">
 
               <!-- Service & Queue History -->
-              <div class="history-section">
-                <h4 class="card-title">Service & Queue History</h4>
-                <div class="history-table-container">
-                  <table class="history-table">
-                    <thead>
-                      <tr>
-                        <th>Date & Time</th>
-                        <th>Service Rendered</th>
-                        <th>Ticket #</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody id="modalHistoryBody">
-                      <!-- Dynamic History Rows -->
-                    </tbody>
-                  </table>
+                <div class="history-section">
+                  <h4 class="card-title">Service & Queue History</h4>
+                  <div class="history-table-container">
+                    <table class="history-table">
+                      <thead>
+                        <tr>
+                          <th>Date & Time</th>
+                          <th>Service Rendered</th>
+                          <th>Ticket #</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="modalHistoryBody">
+                        <!-- Dynamic History Rows -->
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

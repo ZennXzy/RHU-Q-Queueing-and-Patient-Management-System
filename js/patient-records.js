@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         // Birth Date & Dynamic Age Calculation
-        const rawBirthDate = getVal(p, ['birthDate', 'birthdate', 'dob', 'birth_date', 'bdate', 'date_of_birth', 'birthday'], '');
+        const rawBirthDate = getVal(p, ['date_of_birth'], '');
         let calculatedAge = getVal(p, ['age'], null);
 
         if ((!calculatedAge || calculatedAge === 0 || calculatedAge === '0') && rawBirthDate) {
@@ -184,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
 
-        const gender = getVal(p, ['gender', 'sex'], '-');
-        const civilStatus = getVal(p, ['civilStatus', 'civil_status', 'civilstatus'], '-');
+        const gender = getVal(p, ['gender'], '-');
+        const civilStatus = getVal(p, ['civil_status'], '-');
         const religion = getVal(p, ['religion'], '-');
 
         const elFullName = document.getElementById('modalFullName');
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (spouseGroup) {
           if (statusLower.includes('married') || statusLower.includes('widow')) {
             spouseGroup.style.display = 'block';
-            const spouseName = getVal(p, ['spouseName', 'spouse_name', 'spouse', 'spouse_fullname', 'spousename'], 'N/A');
+            const spouseName = getVal(p, ['spouses_name'], 'N/A');
             const elSpouse = document.getElementById('modalSpouseName');
             if (elSpouse) elSpouse.textContent = spouseName;
           } else {
@@ -215,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Contact & Address
-        const contactNum = getVal(p, ['contactnum', 'contact_number', 'contact', 'phone'], '-');
+        const contactNum = getVal(p, ['contact_number'], '-');
         const address = getVal(p, ['address'], '-');
         const dateRegistered = getVal(p, ['register', 'date_registered', 'created_at', 'date_created'], '-');
 
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (elSpouse) elSpouse.textContent = finalSpouse || 'N/A';
 
         // 4. Employment Information
-        const rawEmpStatus = getVal(p, ['employment_status', 'employmentStatus', 'employment'], '');
+        const rawEmpStatus = getVal(p, ['employment_status'], '');
         const empStatus = cleanStr(rawEmpStatus);
 
         const elEmpStatus = document.getElementById('modalEmploymentStatus');
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
           if (isSelfEmployed) {
             bizGroup.style.display = 'block';
             const elBiz = document.getElementById('modalBusiness');
-            if (elBiz) elBiz.textContent = getVal(p, ['business', 'business_name', 'business_nature', 'nature_of_business', 'occupation'], 'N/A');
+            if (elBiz) elBiz.textContent = getVal(p, ['business_name'], 'N/A');
           } else {
             bizGroup.style.display = 'none';
           }
@@ -300,11 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const elPhilNum = document.getElementById('modalPhilNumber');
         const elPrinMember = document.getElementById('modalPrinMember');
 
-        if (elPhilNum) elPhilNum.textContent = getVal(p, ['philNumber', 'phil_number', 'philhealth_no'], 'N/A');
-        if (elPrinMember) elPrinMember.textContent = getVal(p, ['prinMember', 'prin_member'], 'N/A');
+        if (elPhilNum) elPhilNum.textContent = getVal(p, ['phil_number'], 'N/A');
+        if (elPrinMember) elPrinMember.textContent = getVal(p, ['principal_member'], 'N/A');
 
         // 6. NHTS Information
-        const rawNhts = getVal(p, ['nhtsInput', 'nhts_status', 'nhts', 'is_nhts', 'nhts_member'], '-');
+        const rawNhts = getVal(p, ['nhts_number'], '-');
         const nhtsStatus = cleanStr(rawNhts);
 
         const elNhtsStatus = document.getElementById('modalNhtsStatus');
@@ -312,10 +312,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const nhtsNumGroup = document.getElementById('modalNhtsNumberGroup');
         if (nhtsNumGroup) {
-          const isNhtsMember = nhtsStatus.includes('yes') || nhtsStatus.includes('member') || nhtsStatus === '1' || nhtsStatus === 'true';
+          const isNhtsMember = nhtsStatus === 'yes';
           nhtsNumGroup.style.display = isNhtsMember ? 'block' : 'none';
           const elNhtsNum = document.getElementById('modalNhtsNumber');
-          if (elNhtsNum) elNhtsNum.textContent = getVal(p, ['nhtsNumber', 'nhts_number', 'nhts_id'], 'N/A');
+          if (elNhtsNum) elNhtsNum.textContent = getVal(p, ['nhts_number'], 'N/A');
         }
 
         // 7. Queue/Service History Table

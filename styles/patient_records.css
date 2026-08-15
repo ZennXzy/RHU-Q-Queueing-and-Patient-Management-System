@@ -149,7 +149,8 @@ th.sortable:hover {
 }
 
 .view-btn {
-  background-color: #0B695D;
+  background-color: #ffff;
+  align-items:center;
   color: white;
   border: none;
   padding: 6px 14px;
@@ -159,8 +160,37 @@ th.sortable:hover {
   outline:none;
 }
 
+.view-btn img{
+  height: 16px;
+  width:auto;
+}
+
 .view-btn:hover {
-  background-color: #084d44;
+  transform: scale(1.3);
+  transition: transform 0.2s, color 0.2s;
+}
+
+
+.edit-btn {
+  background-color: #ffff;
+  align-items:center;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  outline:none;
+}
+
+.edit-btn img{
+  height: 16px;
+  width:auto;
+}
+
+.edit-btn:hover {
+  transform: scale(1.3);
+  transition: transform 0.2s, color 0.2s;
 }
 
 /* ==========================================
@@ -185,6 +215,7 @@ th.sortable:hover {
   backdrop-filter: blur(4px);
 }
 
+
 /* ==========================================
    MODAL HEADER
 ========================================== */
@@ -194,16 +225,29 @@ th.sortable:hover {
   align-items: flex-start;
   padding-bottom: 16px;
   border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 20px;
 }
 
-.modal-header h3 {
+.modal-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #0B695D;
   margin: 0;
 }
 
+.patient-profile-grid{
+  padding-right: 10px;
+  max-height: 565px;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.patient-profile-grid::-webkit-scrollbar {
+  width: 7px;
+}
+.patient-profile-grid::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
 .patient-badge {
   font-size: 0.85rem;
   font-weight: 600;
@@ -218,7 +262,7 @@ th.sortable:hover {
 .close-modal-btn {
   background: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 25px;
   line-height: 1;
   color: #64748b;
   cursor: pointer;
@@ -228,8 +272,9 @@ th.sortable:hover {
 }
 
 .close-modal-btn:hover {
-  background-color: #f1f5f9;
-  color: #0f172a;
+  color:red;
+  transform: scale(1.5);
+  transition: transform 0.2s, color 0.2s;
 }
 
 /* ==========================================
@@ -256,7 +301,7 @@ th.sortable:hover {
 .card-title {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #0B695D;
   margin: 0 0 4px 0;
   padding-bottom: 6px;
   border-bottom: 1px solid #cbd5e1;
@@ -300,6 +345,7 @@ th.sortable:hover {
 }
 
 .history-section {
+  margin-top: 20px;
   grid-column: span 2;
 }
 
