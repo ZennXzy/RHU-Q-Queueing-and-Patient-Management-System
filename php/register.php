@@ -33,24 +33,25 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $mfname = trim($_POST['mfname'] ?? '');
     $mmname = trim($_POST['mmname'] ?? '');
     $mlname = trim($_POST['mlname'] ?? '');
-    $mFullName = trim("$mfname $mmname $mlname");
+    $mFullName = trim("$mlname $mfname $mmname");
 
     $ffname = trim($_POST['ffname'] ?? '');
     $fmname = trim($_POST['fmname'] ?? '');
     $flname = trim($_POST['flname'] ?? '');
-    $fFullName = trim("$ffname $fmname $flname");
+    $fsname = trim($_POST['fsname'] ?? '');
+    $fFullName = trim("$flname $ffname $fmname $fsname");
 
     $sfname = trim($_POST['sfname'] ?? '');
     $smname = trim($_POST['smname'] ?? '');
     $slname = trim($_POST['slname'] ?? '');
-    $sFullName = trim("$sfname $smname $slname");
+    $ssname = trim($_POST['ssname'] ?? '');
+    $sFullName = trim("$slname $sfname $smname $ssname");
 
     // 3. PhilHealth & NHTS
-    $philStatus = trim($_POST['philStatusInput'] ?? $_POST['philStatus'] ?? '');
-    $philNum    = trim($_POST['philNumber'] ?? $_POST['philNum'] ?? '');
-    $prinMem    = trim($_POST['prinMember'] ?? $_POST['prinMem'] ?? '');
-    $nhtsStatus = trim($_POST['nhtsInput'] ?? $_POST['nhtsStatus'] ?? '');
-    $nhtsNum    = trim($_POST['nhtsNumber'] ?? $_POST['nhtsNum'] ?? '');
+    $philStatus = trim($_POST['philStatusInput'] ?? '');
+    $philNum    = trim($_POST['philNum'] ?? '');
+    $prinMem    = trim($_POST['prinMem'] ?? '');
+    $yakapmem = trim($_POST['yakapmem'] ?? '');
 
     // Validation Checks
     if ($firstname === '' || $lastname === '') {
@@ -128,14 +129,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
       $prinMem = NULL;
     }
 
-    if ($nhtsStatus === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select NHTS Status') . '&type=error');
+    if ($yakapmem === '') {
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Yakap Member.') . '&type=error');
         exit();
-    } else if ($nhtsStatus === 'yes' && $nhtsNum === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide NHTS Number') . '&type=error');
-        exit();
-    } else {
-      $nhtsNum = NULL;
     }
 
     // FIXED: Select 'patient_id' instead of 'id'
@@ -159,8 +155,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         firstname, lastname, middlename, suffix, address, age, gender, 
         date_of_birth, contact_number, email, employment_status, occupation, 
         business_name, civil_status, religion, mothers_name, fathers_name, 
-        spouses_name, phil_status, phil_number, principal_member, nhts_member, nhts_number
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        spouses_name, phil_status, phil_number, principal_member, yakap_member
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     $insertstmt = $conn->prepare($sql);
 
@@ -169,13 +165,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     }
     
     // Type definition: 5 strings, 1 int ($age), 17 strings
-    $insertstmt->bind_param("sssssisssssssssssssssss", 
+    $insertstmt->bind_param("sssssissssssssssssssss", 
         $firstname, $lastname, $middlename, $suffix, $address, 
         $age, 
         $gender, $birthDate, $contactnum, $emailContact, 
         $employmentStatus, $occupation, $business, $civilStatus, 
         $religion, $mFullName, $fFullName, $sFullName, 
-        $philStatus, $philNum, $prinMem, $nhtsStatus, $nhtsNum
+        $philStatus, $philNum, $prinMem, $yakapmem
     );
 
     if ($insertstmt->execute()) {

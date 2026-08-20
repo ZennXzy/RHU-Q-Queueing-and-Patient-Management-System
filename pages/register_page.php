@@ -155,7 +155,7 @@
                         <input type="text" name="sname" id="sname" placeholder="Suffixes ">
                     </div>
 
-                    <div class="form-group col-5">
+                    <div class="form-group col-4">
                         <input type="text" name="address" id="address" placeholder="Complete Address">
                     </div>
                     <div class="form-group col-2">
@@ -164,12 +164,14 @@
                     <div class="form-group col-2">
                         <input type="text" name="religion" id="religion" placeholder="Religion">
                     </div>
-                    <div class="form-group col-2" style="padding-left: 10px; padding-right: 10px;">
-                        <span style="font-size: 13px; color: #555;">Sex</span>
-                        <div class="checkbox-row" style="justify-content:space-evenly;">
-                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="male"> Male</label>
-                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="female"> Female</label>
-                            <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="others"> Others</label>
+                    <div class="form-group col-4"> 
+                        <div class="input-container">
+                            <div class="checkbox-row" style="justify-content:space-evenly;">
+                                <span style="font-size: 13px; color: #555;">Sex</span>
+                                <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Male"> Male</label>
+                                <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Female"> Female</label>
+                                <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Others"> Others</label>
+                            </div>
                         </div>
                     </div>
 
@@ -177,23 +179,23 @@
                         <span style="font-size: 13px; color: #555;">Date of Birth</span>
                         <input style="margin-top: 10px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px; font-size: 14px; color: #333; outline: none; height:43px;" type="date" id="date_of_birth" name="birthDate">
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-3">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
                         <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;">
                     </div>
-                    <div class="form-group col-4" style="grid-row: span 2; justify-content: flex-start;">
+                    <div class="form-group col-5" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
 
                         <!-- Radio Input Group -->
-                        <div class="radio-row" style="margin-top: 8px;">
+                        <div class="radio-row input-container" style="justify-content:space-evenly;">
                             <label class="radiobox-item">
-                                <input type="radio" name="employment_status" class="employment-status employed" value="employed" onclick="handleEmploymentChange()"> Employed 
+                                <input type="radio" name="employment_status" class="employment-status employed" value="Employed" onclick="handleEmploymentChange()"> Employed 
                             </label>
                             <label class="radiobox-item">
-                                <input type="radio" name="employment_status" class="employment-status self-employed" value="self-employed" onclick="handleEmploymentChange()"> Self-Employed
+                                <input type="radio" name="employment_status" class="employment-status self-employed" value="Self-Employed" onclick="handleEmploymentChange()"> Self-Employed
                             </label>
                             <label class="radiobox-item">
-                                <input type="radio" name="employment_status" class="employment-status unemployed" value="unemployed" onclick="handleEmploymentChange()"> Unemployed
+                                <input type="radio" name="employment_status" class="employment-status unemployed" value="Unemployed" onclick="handleEmploymentChange()"> Unemployed
                             </label>
                         </div>
 
@@ -211,11 +213,11 @@
 
                     <!-- civil status -->
                     <div class="form-group col-4">
-                        <span style="font-size: 13px; color: #555; margin-bottom: 2px;">Civil Status</span>
-                        <div class="radio-row">
-                            <label class="radio-item"><input type="radio" name="civilStatus" value="single" onclick="handleCivilChange()">Single</label>
-                            <label class="radio-item"><input type="radio" name="civilStatus" value="married" onclick="handleCivilChange()">Married</label>
-                            <label class="radio-item"><input type="radio" name="civilStatus" value="widow" onclick="handleCivilChange()">Widow</label>
+                        <span style="font-size: 13px; color: #555;">Civil Status</span>
+                        <div class="radio-row input-container" style="justify-content:space-evenly;">
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="Single" onclick="handleCivilChange()">Single</label>
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="Married" onclick="handleCivilChange()">Married</label>
+                            <label class="radio-item"><input type="radio" name="civilStatus" value="Widow" onclick="handleCivilChange()">Widow</label>
                         </div>
                     </div>
                     <div class="form-group col-4" style="display:none;">
@@ -257,11 +259,14 @@
                     <div class="form-group col-4">
                         <input type="text" name="flname" id="flname" placeholder="Last Name">
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-3">
                         <input type="text" name="ffname" id="ffname" placeholder="First Name">
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-3">
                         <input type="text" name="fmname" id="fmname" placeholder="Middle Name">
+                    </div>
+                    <div class="form-group col-2">
+                        <input type="text" name="fsname" id="fsname" placeholder="Suffix">
                     </div>
                 </div>
 
@@ -274,13 +279,16 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group col-4">
-                            <input type="text" id="slname" placeholder="Last Name">
+                            <input type="text" name="slname"  id="slname" placeholder="Last Name">
                         </div>
-                        <div class="form-group col-4">
-                            <input type="text" id="sfname" placeholder="First Name">
+                        <div class="form-group col-3">
+                            <input type="text" name="sfname" id="sfname" placeholder="First Name">
                         </div>
-                        <div class="form-group col-4">
-                            <input type="text" id="smname" placeholder="Middle Name">
+                        <div class="form-group col-3">
+                            <input type="text" name="smname" id="smname" placeholder="Middle Name">
+                        </div>
+                        <div class="form-group col-2">
+                            <input type="text" name="ssname" id="ssname" placeholder="Suffix">
                         </div>
                     </div>
                  </div>
@@ -297,9 +305,9 @@
 
                                 <div class="checkbox-row" style=" justify-content:space-evenly;">
                                     <legend>PhilHealth Status</legend>
-                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="member"> Member</label>
-                                    <label class="checkbox-item"><input type="radio" name="philStatusInput"  onclick="handlePhilHChange()" value="dependent"> Dependent</label>
-                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="not applicable">Not Applicable</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="Member"> Member</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput"  onclick="handlePhilHChange()" value="Dependent"> Dependent</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="Not Applicable">Not Applicable</label>
                                 </div>
                                 <div class="fieldset-group col-5 num-item" id="philNumDiv" style="border:none; display: none;">
                                     <div>
@@ -319,18 +327,13 @@
                     <div class="form-group col-6">
                         <div class="row-section" style="flex-direction: column;">
                             <div class="row-title" style="margin-bottom:10px; margin-left:15px; font-size:15px; font-weight: 600;">
-                                National Household Targeting System Information
+                                Yakap PhilHealth
                             </div>
                             <div class="fieldset-group col-3" style="display: flex; flex-direction:column; gap: 8px; width: 100%;">
                                 <div class="checkbox-row" style="padding-left:6px;">
-                                    <legend>NHTS Member</legend>
-                                    <label class="checkbox-item"><input type="radio" name="nhtsInput"  onclick="handleNhtsChange()" value="yes">Yes</label>
-                                    <label class="checkbox-item"><input type="radio" name="nhtsInput"  onclick="handleNhtsChange()" value="no">No</label>
-                                </div>
-                                <div class="fieldset-group col-5 nhts-item" id="nhtsNumInputDiv" style="border:none; display:none;">
-                                    <Legend>NHTS Number</Legend>
-                                    <input type="text" class="inline-input-line"
-                                    id="nhtsNumInput" name="nhtsNumber" placeholder="e.g., 0401-02012-0001" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                    <legend>Yakap Member</legend>
+                                    <label class="checkbox-item"><input type="radio" name="yakapmem"  value="Yes">Yes</label>
+                                    <label class="checkbox-item"><input type="radio" name="yakapmem"  value="No">No</label>
                                 </div>
                             </div>
                         </div>
@@ -339,7 +342,7 @@
             </div>
             <div class="form-grid">
                 <div class="button-group col-3 button">
-                    <input type="reset" class="clear-btn" value="reset">
+                    <input type="reset" class="clear-btn" value="Reset">
                     <button type="submit" class="submit-btn" name="register">Register</button>
                 </div>
             </div>
@@ -432,24 +435,6 @@
             prinMemberDiv.style.display = 'none';
             philHNumInput.value = ''; 
             prinMemInput.value = ''; 
-        }
-    }
-
-    // nhts selector
-    function handleNhtsChange() {
-        const nhtsNumInputDiv = document.getElementById('nhtsNumInputDiv');
-        const nhtsNumInput = document.getElementById('nhtsNumInput');
-
-        const nhtsRadio = document.querySelector('input[name="nhtsInput"]:checked');
-
-        if(!nhtsRadio) return;
-
-        if (nhtsRadio.value === 'yes') {
-            nhtsNumInputDiv.style.display = 'block';
-        
-        } else { // no
-            nhtsNumInputDiv.style.display = 'none';
-            nhtsNumInput.value = '';
         }
     }
 

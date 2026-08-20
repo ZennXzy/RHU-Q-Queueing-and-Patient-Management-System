@@ -196,7 +196,8 @@
                   if($res && $res->num_rows > 0){
                     while ($row = $res->fetch_assoc()){
                       echo '<tr>';
-                      echo '<td style="text-align:left;">'.htmlspecialchars($row['firstname']).' '.htmlspecialchars($row['middlename']).' '.htmlspecialchars($row['lastname']).' '.htmlspecialchars($row['suffix']).'</td>';
+                      echo '<td style="text-align:left;">'.
+                      htmlspecialchars($row['lastname']).' '.htmlspecialchars($row['firstname']).' '.htmlspecialchars($row['middlename']).' '.htmlspecialchars($row['suffix']).'</td>';
                       echo '<td>'.htmlspecialchars($row['age']).'</td>';
                       echo '<td>'.htmlspecialchars($row['gender']).'</td>';
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
@@ -323,7 +324,7 @@
 
                 <!-- 5. Government Program Health Cards -->
                 <div class="info-card">
-                  <h4 class="card-title">PhilHealth & NHTS</h4>
+                  <h4 class="card-title">PhilHealth & Yakap</h4>
                   <div class="info-group">
                     <label>PhilHealth Status</label>
                     <span id="modalPhilStatus">-</span>
@@ -340,12 +341,8 @@
                   <hr class="card-inner-divider">
                   
                   <div class="info-group">
-                    <label>NHTS Status</label>
-                    <span id="modalNhtsStatus">-</span>
-                  </div>
-                  <div class="info-group conditional-field" id="modalNhtsNumberGroup">
-                    <label>NHTS Number</label>
-                    <span id="modalNhtsNumber">-</span>
+                    <label>Yakap Membership Status</label>
+                    <span id="modalYakapMember">-</span>
                   </div>
                 </div>
                 <hr class="divider" style="margin-top:20px;">

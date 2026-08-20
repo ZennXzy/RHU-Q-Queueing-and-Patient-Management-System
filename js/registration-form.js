@@ -22,14 +22,13 @@ regForm.addEventListener('submit', function(e) {
   const emailContact = formData.get('emailContact') || document.getElementById('emailContact')?.value || '';
   const gender = formData.get('gender') || '';
   const civilStatus = formData.get('civilStatus') || '';
-  const employmentStatus = formData.get('employment_status') || formData.get('employmentStatus') || '';
+  const employmentStatus = formData.get('employment_status') || '';
   const occupation = formData.get('occupation') || '';
   const business = formData.get('business') || '';
-  const philStatus = formData.get('philStatusInput') || formData.get('philStatus') || '';
-  const philNum = formData.get('philNumber') || formData.get('philNum') || '';
-  const prinMem = formData.get('prinMember') || formData.get('prinMem') || '';
-  const nhtsStatus = formData.get('nhtsInput') || formData.get('nhtsStatus') || '';
-  const nhtsNum = formData.get('nhtsNumber') || formData.get('nhtsNum') || '';
+  const philStatus = formData.get('philStatusInput') || '';
+  const philNum = formData.get('philNumber') || '';
+  const prinMem = formData.get('prinMember') || '';
+  const yakapmem = formData.get('yakapmem') || '';
 
   // 1. Personal Verification
   if (lname.trim() === '' || fname.trim() === '') {
@@ -75,7 +74,7 @@ regForm.addEventListener('submit', function(e) {
 
   const ffname = formData.get('ffname') || document.getElementById('ffname')?.value || '';
   const flname = formData.get('flname') || document.getElementById('flname')?.value || '';
-
+  const fsname = formData.get('fsname') || document.getElementById('fsname').value || '';
   if (ffname.trim() === '' || flname.trim() === '') {
     e.preventDefault();
     showToast("Please provide your father's first and last name", 'error');
@@ -91,6 +90,7 @@ regForm.addEventListener('submit', function(e) {
 
   const sfname = formData.get('sfname') || document.getElementById('sfname')?.value || '';
   const slname = formData.get('slname') || document.getElementById('slname')?.value || '';
+  const ssname = formData.get('ssname') || document.getElementById('ssname')?.value || '';
 
   if (civilStatus === 'married' || civilStatus === 'widow') {
     if (sfname.trim() === '' || slname.trim() === '') {
@@ -116,28 +116,24 @@ regForm.addEventListener('submit', function(e) {
   }
 
   // 5. PhilHealth Checks
-  if (philStatus.trim() === '') {
+  if (philStatusInput.trim() === '') {
     e.preventDefault();
     showToast('Please select PhilHealth status', 'error');
     return;
-  } else if (philStatus === 'member' && philNum.trim() === '') {
+  } else if (philStatusInput === 'member' && philNum.trim() === '') {
     e.preventDefault();
     showToast('Please provide your PhilHealth Number', 'error');
     return;
-  } else if (philStatus === 'dependent' && (philNum.trim() === '' || prinMem.trim() === '')) {
+  } else if (philStatusInput === 'dependent' && (philNum.trim() === '' || prinMem.trim() === '')) {
     e.preventDefault();
     showToast('Please complete the PhilHealth dependent fields', 'error');
     return;
   }
 
-  // 6. NHTS Checks
-  if (nhtsStatus.trim() === '') {
+  // 6. Yakap Checks
+  if (yakapmem.trim() === '') {
     e.preventDefault();
-    showToast('Please select NHTS status', 'error');
-    return;
-  } else if (nhtsStatus === 'yes' && nhtsNum.trim() === '') {
-    e.preventDefault();
-    showToast('Please complete the NHTS Information', 'error');
+    showToast('Please select Yakap Membership status', 'error');
     return;
   }
 

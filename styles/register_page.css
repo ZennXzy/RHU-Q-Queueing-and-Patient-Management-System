@@ -99,7 +99,7 @@ body, html {
 .fieldset-group {
   border: 1px solid #0B695D;
   border-radius: 6px;
-  padding: 6px 14px 10px 14px;
+  padding: 11px 14px;
   position: relative;
 }
 
@@ -116,6 +116,12 @@ body, html {
   outline: none;
   font-size: 14px;
   padding-top: 4px;
+}
+
+.input-container{
+  border: 1px solid #0B695D;
+  border-radius: 6px;
+  padding: 11px 14px;
 }
 
 /* Row Level Layout Modules (Services, Insurance panels) */
@@ -160,7 +166,6 @@ body, html {
   align-items: center;
   font-size: 14px;
   color: #333;
-  margin-top: 6px;
 }
 
 .checkbox-item {
@@ -178,7 +183,7 @@ body, html {
   align-items: center;
   font-size: 14px;
   color: #333;
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 
