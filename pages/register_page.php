@@ -200,12 +200,12 @@
                         </div>
 
                         <!-- Text Inputs (Initially hidden inline) -->
-                        <div class="fieldset-group col-5 occupation-item" id="occupationDiv" style="margin-top: 20px; display: none;">
+                        <div class="fieldset-group col-5 occupation-item" id="occupationDiv" style="margin-top:-1px; display: none;">
                             <legend>Occupation</legend>
                             <input type="text" name="occupation" id="occupationInput" placeholder="e.g., Software Engineer">
                         </div>
 
-                        <div class="fieldset-group col-5 business-item" id="businessDiv" style="margin-top: 20px; display: none;">
+                        <div class="fieldset-group col-5 business-item" id="businessDiv" style="margin-top:-1px; display: none;">
                             <legend>Business</legend>
                             <input type="text" name="business" id="businessInput" placeholder="e.g., Retail Store Owner">
                         </div>
@@ -362,11 +362,11 @@
 
         if (!employmentRadio) return;
 
-        if (employmentRadio.value === 'employed') {
+        if (employmentRadio.value === 'Employed') {
             occupationDiv.style.display = 'block';
             businessDiv.style.display = 'none';
             businessInput.value = ''; // Clear business input
-        } else if (employmentRadio.value === 'self-employed') {
+        } else if (employmentRadio.value === 'Self-Employed') {
             occupationDiv.style.display = 'none';
             businessDiv.style.display = 'block';
             occupationInput.value = ''; // Clear occupation input
@@ -423,11 +423,11 @@
 
         if(!philRadio) return;
 
-        if (philRadio.value === 'member') {
+        if (philRadio.value === 'Member') {
             philNumDiv.style.display = 'block';
             prinMemberDiv.style.display = 'none';
             prinMemberDiv.value = ''; // Clear business input
-        } else if (philRadio.value === 'dependent') {
+        } else if (philRadio.value === 'Dependent') {
             philNumDiv.style.display = 'block';
             prinMemberDiv.style.display = 'block';
         } else { // not applicable
@@ -450,10 +450,10 @@
 
         if(!civilRadio) return;
 
-        if (civilRadio.value === 'married') {
+        if (civilRadio.value === 'Married') {
             spouseDiv.style.display = 'block';
             console.log("Married is selected");
-        } else if (civilRadio.value === 'widow') {
+        } else if (civilRadio.value === 'Widow') {
             spouseDiv.style.display = 'block';
             console.log("Widow is selected");
 
