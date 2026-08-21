@@ -125,6 +125,11 @@ html {
   border-bottom: 1px solid #eee;
 }
 
+.patient-table td{
+  font-size: 13px;
+  padding: 12px 14px;
+}
+
 .patient-table th {
   position: sticky;
   top: 0;

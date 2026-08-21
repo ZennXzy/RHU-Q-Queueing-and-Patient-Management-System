@@ -183,6 +183,7 @@
                   </th>
                   <th>Sex</th>
                   <th>Contact Number</th>
+                  <th>PhilHealth Status</th>
                   <th class="sortable" data-col="4" data-type="date">
                     Date Registered <span class="sort-icon">⇅</span>
                   </th>
@@ -190,7 +191,7 @@
                 </tr>
               </thead>
               <?php
-                $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number, date_registered FROM patient_records ORDER BY firstname ASC");
+                $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number,phil_status, date_registered FROM patient_records ORDER BY firstname ASC");
 
                 echo  '<tbody id="patientTableBody" style="text-align:center;">';
                   if($res && $res->num_rows > 0){
@@ -201,6 +202,7 @@
                       echo '<td>'.htmlspecialchars($row['age']).'</td>';
                       echo '<td>'.htmlspecialchars($row['gender']).'</td>';
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
+                      echo '<td>'.htmlspecialchars($row['phil_status']).'</td>';
                       echo '<td>'.htmlspecialchars($row['date_registered']).'</td>';
                       echo '<td><button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button></td>';
                       echo '</tr>';

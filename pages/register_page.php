@@ -281,8 +281,16 @@
                     <div class="form-group col-3">
                         <input type="text" name="fmname" id="fmname" placeholder="Middle Name">
                     </div>
-                    <div class="form-group col-2">
-                        <input type="text" name="fsname" id="fsname" placeholder="Suffix">
+                    <div class="form-group col-2 input-select">
+                        <select name="fsname" id="fsname">
+                            <option value=" " default>Suffix</option>
+                            <option value="Jr.">Jr. (Junior)</option>
+                            <option value="Sr.">Sr. (Senior)</option>
+                            <option value="I">I</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                            <option value="IV">IV</option>
+                        </select>
                     </div>
                 </div>
 
@@ -303,8 +311,16 @@
                         <div class="form-group col-3">
                             <input type="text" name="smname" id="smname" placeholder="Middle Name">
                         </div>
-                        <div class="form-group col-2">
-                            <input type="text" name="ssname" id="ssname" placeholder="Suffix">
+                        <div class="form-group col-2 input-select">
+                            <select name="ssname" id="ssname">
+                                <option value=" " default>Suffix</option>
+                                <option value="Jr.">Jr. (Junior)</option>
+                                <option value="Sr.">Sr. (Senior)</option>
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
                         </div>
                     </div>
                  </div>
