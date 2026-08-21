@@ -199,9 +199,6 @@ th.sortable:hover {
   transition: transform 0.2s, color 0.2s;
 }
 
-/* ==========================================
-   PATIENT MODAL CONTAINER & BACKDROP
-========================================== */
 #patientModal {
   border: none;
   border-radius: 12px;
@@ -221,10 +218,6 @@ th.sortable:hover {
   backdrop-filter: blur(4px);
 }
 
-
-/* ==========================================
-   MODAL HEADER
-========================================== */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -284,9 +277,6 @@ th.sortable:hover {
   transition: transform 0.2s, color 0.2s;
 }
 
-/* ==========================================
-   GRID LAYOUT & INFO CARDS
-========================================== */
 .modal-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -377,6 +367,98 @@ th.sortable:hover {
   border-bottom: 1px solid #e2e8f0;
   color: #334155;
 }
+
+/* edit-modal */
+
+
+#edit-patient {
+  border: none;
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 720px;
+  max-height: 679px;
+  width: 90%;
+  height:100%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  left: 343px;
+  top: 40px;
+  outline:none;
+}
+
+#edit-patient::backdrop {
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+}
+
+
+/* Asterisk styling */
+.required-asterisk {
+  color: #ef4444;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* Grid layout for Split Names */
+.grid-3-col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+/* Form controls styling */
+.info-group input,
+.info-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-group input:focus,
+.info-group select:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+/* Modal Actions Footer */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.btn-primary {
+  background-color: #0d9488;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover { background-color: #0f766e; }
+.btn-secondary:hover { background-color: #cbd5e1; }
+
+
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {

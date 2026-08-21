@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("patientSearchInput");
   const tableBody = document.getElementById("patientTableBody");
   const sortableHeaders = document.querySelectorAll("th.sortable");
+  const editModal = document.getElementById('edit-patient');
+  const editForm = document.getElementById('editPatientForm');
 
   // Track sort directions: 0 = Full Name, 1 = Age, 4 = Date Registered
   const sortDirections = { 0: "asc", 1: "asc", 4: "asc" };
@@ -341,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const yakapStatus = getVal(p, ["yakap_member"], "N/A");
         const elyakapStatus = document.getElementById("modalYakapMember");
 
-        if (elyakapStatus) elyakapStatus.textContent = yakapStatus, "N/A";
+        if (elyakapStatus) elyakapStatus.textContent = yakapStatus || "N/A";
 
 
         // 7. Queue/Service History Table
@@ -383,6 +385,113 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ==========================================
+     1. OPEN EDIT MODAL & POPULATE FIELDS
+  ========================================== */
+  document.addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('.edit-btn');
+    if (!editBtn) return;
+
+    const patientId = editBtn.dataset.id;
+    if (!editModal || !editForm) return;
+
+    try {
+      const response = await fetch(`../php/get_patients.php?action=details&id=${patientId}`);
+      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        const p = result.patient;
+
+        // Populate ID Badge & Hidden Patient ID Field
+        const badgeEl = document.getElementById('modalPatientIdBadge');
+        if (badgeEl) badgeEl.textContent = `ID: #${String(patientId).padStart(4, '0')}`;
+        
+        const hiddenIdInput = document.getElementById('editPatientId');
+        if (hiddenIdInput) hiddenIdInput.value = patientId;
+
+        // Safe value assignment helper
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val !== undefined && val !== null ? val : '';
+        };
+
+        // Populate Form Inputs & Selects
+        setVal('editFirstName', p.fname || p.firstname || p.first_name);
+        setVal('editMiddleName', p.mname || p.middlename || p.middle_name);
+        setVal('editLastName', p.lname || p.lastname || p.last_name);
+        setVal('editGender', p.gender || p.sex);
+        setVal('editBirthDate', p.birthdate || p.birthDate || p.dob);
+        setVal('editCivilStatus', p.civil_status || p.civilStatus);
+        setVal('editReligion', p.religion);
+        setVal('editContact', p.contactnum || p.contact_number || p.contact);
+        setVal('editAddress', p.address);
+        setVal('editDateRegistered', p.date_registered || p.register || p.created_at);
+
+        setVal('editMotherName', p.mother_maiden_name || p.mother_name);
+        setVal('editFatherName', p.father_name);
+        setVal('editSpouseName', p.spouse_name || p.spouseName);
+
+        setVal('editEmploymentStatus', p.employment_status || p.employmentStatus);
+        setVal('editOccupation', p.occupation);
+        setVal('editBusiness', p.business || p.business_name);
+
+        setVal('editPhilStatus', p.phil_status || p.philStatusInput);
+        setVal('editPhilNumber', p.phil_number || p.philNumber);
+        setVal('editPrinMember', p.prin_member || p.prinMember);
+        setVal('editYakapMember', p.yakap_member);
+
+        // Dynamic visibility updates
+        const civilStatus = String(p.civil_status || p.civilStatus || '').toLowerCase();
+        const spouseGroup = document.getElementById('modalSpouseGroup');
+        if (spouseGroup) {
+          spouseGroup.style.display = (civilStatus.includes('Married') || civilStatus.includes('Widow')) ? 'block' : 'none';
+        }
+
+        const empStatus = String(p.employment_status || p.employmentStatus || '').toLowerCase();
+        const occGroup = document.getElementById('modalOccupationGroup');
+        const bizGroup = document.getElementById('modalBusinessGroup');
+        if (occGroup) occGroup.style.display = (empStatus.includes('employed') && !empStatus.includes('unemployed') && !empStatus.includes('self')) ? 'block' : 'none';
+        if (bizGroup) bizGroup.style.display = empStatus.includes('self') ? 'block' : 'none';
+
+        editModal.showModal();
+      }
+    } catch (error) {
+      console.error('Error opening edit modal:', error);
+    }
+  });
+
+  /* ==========================================
+     2. FORM SUBMIT HANDLER (UPDATE API)
+  ========================================== */
+  if (editForm) {
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(editForm);
+
+      try {
+        const response = await fetch('../php/update_patient.php', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          modal.close();
+          location.reload(); // Reload table to display modified record
+        } else {
+          alert('Update Failed: ' + (result.message || 'Unable to update patient record.'));
+        }
+      } catch (error) {
+        console.error('Error submitting patient update:', error);
+        alert('An error occurred while saving profile modifications.');
+      }
+    });
+  }
+
+  /* ==========================================
      4. BACKDROP CLICK TO CLOSE DIALOG
   ========================================== */
   if (modal) {
@@ -395,6 +504,19 @@ document.addEventListener("DOMContentLoaded", () => {
         e.clientX <= rect.left + rect.width;
       if (!isInModal) {
         modal.close();
+      }
+    });
+  }
+  if (editModal) {
+    editModal.addEventListener("click", (e) => {
+      const rect = editModal.getBoundingClientRect();
+      const isInEditModal =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInEditModal) {
+        editModal.close();
       }
     });
   }

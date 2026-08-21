@@ -209,10 +209,10 @@
                     }
                   } else {
                     echo '<tr>';
-                    echo  '<td colspan="5" class="empty-table-placeholder">';
+                    echo  '<td colspan="7" class="empty-table-placeholder">';
                     echo    '<div class="empty-state">';
                     echo      '<p class="empty-title">No Patient Records Found</p>';
-                    echo      '<p class="empty-subtitle">Try adjusting your search criteria or register a new patient.</p>';
+                    echo      '<p class="search-empty-row">Try adjusting your search criteria or register a new patient.</p>';
                     echo    '</div>';
                     echo  '</td>';
                     echo'</tr>';
@@ -370,6 +370,175 @@
                 </div>
               </div>
             </div>
+          </dialog>
+          <!-- edit-modal -->
+          <dialog class="edit-patient" id="edit-patient">
+            <form id="editPatientForm" method="dialog">
+              <div class="modal-header">
+                <div class="header-title">
+                  <h2>Edit Patient Profile</h2>
+                  <span id="modalPatientIdBadge" class="patient-id-badge">ID: #0000</span>
+                </div>
+                <button type="button" id="closeModalBtn" class="close-modal-btn" aria-label="Close" onclick="document.getElementById('edit-patient').close()">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <input type="hidden" id="editPatientId" name="patient_id">
+
+                <div class="patient-profile-grid">
+                  
+                  <!-- 1. Personal Details -->
+                  <div class="info-card">
+                    <h4 class="card-title">Personal Information</h4>
+                    
+                    <div class="info-row grid-3-col">
+                      <div class="info-group">
+                        <label for="editFirstName">First Name <span class="required-asterisk">*</span></label>
+                        <input type="text" id="editFirstName" name="fname" required placeholder="First Name">
+                      </div>
+                      <div class="info-group">
+                        <label for="editMiddleName">Middle Name</label>
+                        <input type="text" id="editMiddleName" name="mname" placeholder="Middle Name">
+                      </div>
+                      <div class="info-group">
+                        <label for="editLastName">Last Name <span class="required-asterisk">*</span></label>
+                        <input type="text" id="editLastName" name="lname" required placeholder="Last Name">
+                      </div>
+                    </div>
+
+                    <div class="info-row">
+                      <div class="info-group">
+                        <label for="editGender">Gender <span class="required-asterisk">*</span></label>
+                        <select id="editGender" name="gender" required>
+                          <option value="">Select Gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                        </select>
+                      </div>
+                      <div class="info-group">
+                        <label for="editBirthDate">Birth Date <span class="required-asterisk">*</span></label>
+                        <input type="date" id="editBirthDate" name="birthdate" required>
+                      </div>
+                    </div>
+
+                    <div class="info-row">
+                      <div class="info-group">
+                        <label for="editCivilStatus">Civil Status</label>
+                        <select id="editCivilStatus" name="civil_status">
+                          <option value="Single">Single</option>
+                          <option value="Married">Married</option>
+                          <option value="Widowed">Widowed</option>
+                          <option value="Separated">Separated</option>
+                        </select>
+                      </div>
+                      <div class="info-group">
+                        <label for="editReligion">Religion</label>
+                        <input type="text" id="editReligion" name="religion" placeholder="Religion">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 2. Contact & Address -->
+                  <div class="info-card">
+                    <h4 class="card-title">Contact & Location</h4>
+                    <div class="info-group">
+                      <label for="editContact">Contact Number</label>
+                      <input type="tel" id="editContact" name="contactnum" placeholder="e.g. 09123456789">
+                    </div>
+                    <div class="info-group">
+                      <label for="editAddress">Address</label>
+                      <input type="text" id="editAddress" name="address" placeholder="Full Address">
+                    </div>
+                    <div class="info-group">
+                      <label for="editDateRegistered">Date Registered</label>
+                      <input type="date" id="editDateRegistered" name="date_registered">
+                    </div>
+                  </div>
+
+                  <!-- 3. Family Background -->
+                  <div class="info-card">
+                    <h4 class="card-title">Mother's Details</h4>
+                    <div class="info-group">
+                      <label for="editMotherName">Mother's Maiden Name</label>
+                      <input type="text" id="editMotherName" name="mother_maiden_name" placeholder="Mother's Full Maiden Name">
+                    </div>
+                  </div>
+
+                  <div class="info-card">
+                    <h4 class="card-title">Father's Details</h4>
+                    <div class="info-group">
+                      <label for="editFatherName">Father's Name</label>
+                      <input type="text" id="editFatherName" name="father_name" placeholder="Father's Full Name">
+                    </div>
+                  </div>
+
+                  <!-- Conditional Spouse Field -->
+                  <div class="info-card conditional-field" id="modalSpouseGroup">
+                    <h4 class="card-title">Spouse's Details</h4>  
+                    <div class="info-group">
+                      <label for="editSpouseName">Spouse Name</label>
+                      <input type="text" id="editSpouseName" name="spouse_name" placeholder="Spouse Full Name">
+                    </div>
+                  </div>
+
+                  <!-- 4. Employment Information -->
+                  <div class="info-card">
+                    <h4 class="card-title">Employment Information</h4>
+                    <div class="info-group">
+                      <label for="editEmploymentStatus">Employment Status</label>
+                      <select id="editEmploymentStatus" name="employment_status">
+                        <option value="Unemployed">Unemployed</option>
+                        <option value="Employed">Employed</option>
+                        <option value="Self-Employed">Self-Employed</option>
+                        <option value="Student">Student</option>
+                      </select>
+                    </div>
+                    <div class="info-group conditional-field" id="modalOccupationGroup">
+                      <label for="editOccupation">Occupation</label>
+                      <input type="text" id="editOccupation" name="occupation" placeholder="Current Occupation">
+                    </div>
+                    <div class="info-group conditional-field" id="modalBusinessGroup">
+                      <label for="editBusiness">Business</label>
+                      <input type="text" id="editBusiness" name="business" placeholder="Business Name / Nature">
+                    </div>
+                  </div>
+
+                  <!-- 5. Government Program Health Cards -->
+                  <div class="info-card">
+                    <h4 class="card-title">PhilHealth & Yakap</h4>
+                    <div class="info-group">
+                      <label for="editPhilStatus">PhilHealth Status</label>
+                      <select id="editPhilStatus" name="phil_status">
+                        <option value="Non-Member">Non-Member</option>
+                        <option value="Member">Member</option>
+                        <option value="Dependent">Dependent</option>
+                      </select>
+                    </div>
+                    <div class="info-group conditional-field" id="modalPhilNumberGroup">
+                      <label for="editPhilNumber">PhilHealth Number</label>
+                      <input type="text" id="editPhilNumber" name="phil_number" placeholder="XX-XXXXXXXXX-X">
+                    </div>
+                    <div class="info-group conditional-field" id="modalPrinMemberGroup">
+                      <label for="editPrinMember">Principal Member</label>
+                      <input type="text" id="editPrinMember" name="prin_member" placeholder="Principal Member Name">
+                    </div>
+                    
+                    <hr class="card-inner-divider">
+                    
+                    <div class="info-group">
+                      <label for="editYakapMember">Yakap Membership Status</label>
+                      <select id="editYakapMember" name="yakap_member">
+                        <option value="Non-Member">Non-Member</option>
+                        <option value="Member">Member</option>
+                      </select>
+                    </div>
+                  </div>
+              <!-- Modal Actions Footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('edit-patient').close()">Cancel</button>
+                <button type="submit" class="btn-primary" id="savePatientBtn">Save Changes</button>
+              </div>
+            </form>
           </dialog>
         </div>
       </div>
