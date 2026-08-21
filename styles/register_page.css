@@ -124,6 +124,21 @@ body, html {
   padding: 11px 14px;
 }
 
+.input-select{
+  border: 1px solid #0B695D;
+  border-radius: 6px;
+  padding: 11px 14px;
+  color: #333;
+
+}
+
+.input-select select{
+  border: none;
+  outline:none;
+  color: #333;
+
+}
+
 /* Row Level Layout Modules (Services, Insurance panels) */
 .row-section {
   display: flex;

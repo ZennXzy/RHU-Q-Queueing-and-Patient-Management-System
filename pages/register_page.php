@@ -151,8 +151,16 @@
                     <div class="form-group col-3">
                         <input type="text" name="mname" id="mname" placeholder="Middle Name">
                     </div>
-                    <div class="form-group col-2">
-                        <input type="text" name="sname" id="sname" placeholder="Suffixes ">
+                    <div class="form-group col-2 input-select">
+                        <select name="sname" id="sname">
+                            <option value=" " default>Suffix</option>
+                            <option value="Jr.">Jr. (Junior)</option>
+                            <option value="Sr.">Sr. (Senior)</option>
+                            <option value="I">I</option>
+                            <option value="II">II</option>
+                            <option value="III">III</option>
+                            <option value="IV">IV</option>
+                        </select>
                     </div>
 
                     <div class="form-group col-4">
@@ -161,8 +169,16 @@
                     <div class="form-group col-2">
                         <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                     </div>
-                    <div class="form-group col-2">
-                        <input type="text" name="religion" id="religion" placeholder="Religion">
+                    <div class="form-group col-2 input-select">
+                        <select name="religion" id="religion">
+                            <option value=" " default>Religion</option>
+                            <option value="Roman Catholicism">Roman Catholicism</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
+                            <option value="Iglesia ni Cristo">Iglesia ni Cristo (INC)</option>
+                            <option value="Philippine Independent Church (Aglipayan)">Philippine Independent Church (Aglipayan)</option>
+                            <option value="Other Groups">Other Groups</option>
+                        </select>
                     </div>
                     <div class="form-group col-4"> 
                         <div class="input-container">
