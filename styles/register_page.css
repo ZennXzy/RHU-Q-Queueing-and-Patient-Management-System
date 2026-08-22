@@ -95,6 +95,13 @@ body, html {
 }
 
 
+.form-group input:focus{
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+
 /* Fieldset Floating Box Framework styling */
 .fieldset-group {
   border: 1px solid #0B695D;

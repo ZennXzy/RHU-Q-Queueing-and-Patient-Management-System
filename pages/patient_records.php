@@ -394,22 +394,22 @@
                     
                     <div class="info-group">
                       <label for="editFirstName">First Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editFirstName" name="fname" required placeholder="First Name">
+                      <input type="text" id="editFirstName" name="editFirstName" required placeholder="First Name">
                     </div>
                     <div class="info-group">
                       <label for="editMiddleName">Middle Name</label>
-                      <input type="text" id="editMiddleName" name="mname" placeholder="Middle Name">
+                      <input type="text" id="editMiddleName" name="editMiddleName" placeholder="Middle Name">
                     </div>
                     <div class="info-group">
                       <label for="editLastName">Last Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editLastName" name="lname" required placeholder="Last Name">
+                      <input type="text" id="editLastName" name="editLastName" required placeholder="Last Name">
                     </div>
                     
 
                     <div class="info-row grid-3-col">
-                      <div class="info-group">
+                      <div class="info-group" style="margin-top:4px;">
                         <label for="editSuffix">Suffix</label>
-                        <select name="suffix" id="editSuffix">
+                        <select name="editSuffix" id="editSuffix">
                             <option value="None">None</option>
                             <option value="Jr.">Jr. (Junior)</option>
                             <option value="Sr.">Sr. (Senior)</option>
@@ -421,7 +421,7 @@
                       </div>
                       <div class="info-group">
                         <label for="editGender">Gender <span class="required-asterisk">*</span></label>
-                        <select id="editGender" name="gender" required>
+                        <select id="editGender" name="editGender" required>
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
@@ -429,7 +429,7 @@
                       </div>
                       <div class="info-group">
                         <label for="editBirthDate">Birth Date <span class="required-asterisk">*</span></label>
-                        <input type="date" id="editBirthDate" name="birthdate" required>
+                        <input type="date" id="editBirthDate" name="editBirthDate" required>
                       </div>
                     </div>
                     
@@ -441,7 +441,7 @@
                     <div class="info-row">
                       <div class="info-group">
                         <label for="editCivilStatus">Civil Status <span class="required-asterisk">*</span></label>
-                        <select id="editCivilStatus" name="civil_status">
+                        <select id="editCivilStatus" name="editCivilStatus">
                           <option value="Single">Single</option>
                           <option value="Married">Married</option>
                           <option value="Widowed">Widowed</option>
@@ -449,7 +449,7 @@
                       </div>
                       <div class="info-group">
                         <label for="editReligion">Religion <span class="required-asterisk">*</span></label>
-                        <select name="religion" id="editReligion">
+                        <select name="editReligion" id="editReligion">
                             <option value="Roman Catholicism">Roman Catholicism</option>
                             <option value="Islam">Islam</option>
                             <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
@@ -466,11 +466,11 @@
                     <h4 class="card-title">Contact & Location</h4>
                     <div class="info-group">
                       <label for="editContact">Contact Number <span class="required-asterisk">*</span></label>
-                      <input type="tel" id="editContact" name="contactnum" placeholder="e.g. 09123456789">
+                      <input type="tel" id="editContact" name="editContact" placeholder="e.g. 09123456789">
                     </div>
                     <div class="info-group">
                       <label for="editAddress">Address <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editAddress" name="address" placeholder="Full Address">
+                      <input type="text" id="editAddress" name="editAddress" placeholder="Full Address">
                     </div>
                     
                   </div>
@@ -480,7 +480,7 @@
                     <h4 class="card-title">Mother's Details</h4>
                     <div class="info-group">
                       <label for="editMotherName">Mother's Maiden Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editMotherName" name="mother_maiden_name" placeholder="Mother's Full Maiden Name">
+                      <input type="text" id="editMotherName" name="editMotherName" placeholder="Mother's Full Maiden Name">
                     </div>
                   </div>
 
@@ -488,7 +488,7 @@
                     <h4 class="card-title">Father's Details</h4>
                     <div class="info-group">
                       <label for="editFatherName">Father's Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editFatherName" name="father_name" placeholder="Father's Full Name">
+                      <input type="text" id="editFatherName" name="editFatherName" placeholder="Father's Full Name">
                     </div>
                   </div>
 
@@ -497,7 +497,7 @@
                     <h4 class="card-title">Spouse's Details</h4>  
                     <div class="info-group">
                       <label for="editSpouseName">Spouse Name</label>
-                      <input type="text" id="editSpouseName" name="spouse_name" placeholder="Spouse Full Name">
+                      <input type="text" id="editSpouseName" name="editSpouseName" placeholder="Spouse Full Name">
                     </div>
                   </div>
 
@@ -506,7 +506,7 @@
                     <h4 class="card-title">Employment Information</h4>
                     <div class="info-group">
                       <label for="editEmploymentStatus">Employment Status <span class="required-asterisk">*</span></label>
-                      <select id="editEmploymentStatus" name="employment_status">
+                      <select id="editEmploymentStatus" name="editEmploymentStatus">
                         <option value="Unemployed">Unemployed</option>
                         <option value="Employed">Employed</option>
                         <option value="Self-Employed">Self-Employed</option>
@@ -514,11 +514,11 @@
                     </div>
                     <div class="info-group conditional-field" id="modalOccupationGroup">
                       <label for="editOccupation">Occupation</label>
-                      <input type="text" id="editOccupation" name="occupation" placeholder="Current Occupation">
+                      <input type="text" id="editOccupation" name="editOccupation" placeholder="Current Occupation">
                     </div>
                     <div class="info-group conditional-field" id="modalBusinessGroup">
                       <label for="editBusiness">Business</label>
-                      <input type="text" id="editBusiness" name="business" placeholder="Business Name / Nature">
+                      <input type="text" id="editBusiness" name="editBusiness" placeholder="Business Name / Nature">
                     </div>
                   </div>
 
@@ -527,7 +527,7 @@
                     <h4 class="card-title">PhilHealth & Yakap</h4>
                     <div class="info-group">
                       <label for="editPhilStatus">PhilHealth Status <span class="required-asterisk">*</span></label>
-                      <select id="editPhilStatus" name="phil_status">
+                      <select id="editPhilStatus" name="editPhilStatus">
                         <option value="Not Applicable">Not Applicable</option>
                         <option value="Member">Member</option>
                         <option value="Dependent">Dependent</option>
@@ -535,18 +535,18 @@
                     </div>
                     <div class="info-group conditional-field" id="modalPhilNumberGroup">
                       <label for="editPhilNumber">PhilHealth Number</label>
-                      <input type="text" id="editPhilNumber" name="phil_number" placeholder="XX-XXXXXXXXX-X">
+                      <input type="text" id="editPhilNumber" name="editPhilNumber" placeholder="XX-XXXXXXXXX-X">
                     </div>
                     <div class="info-group conditional-field" id="modalPrinMemberGroup">
                       <label for="editPrinMember">Principal Member</label>
-                      <input type="text" id="editPrinMember" name="prin_member" placeholder="Principal Member Name">
+                      <input type="text" id="editPrinMember" name="editPrinMember" placeholder="Principal Member Name">
                     </div>
                     
                     <hr class="card-inner-divider">
                     
                     <div class="info-group">
                       <label for="editYakapMember">Yakap Membership Status <span class="required-asterisk">*</span></label>
-                      <select id="editYakapMember" name="yakap_member">
+                      <select id="editYakapMember" name="editYakapMember">
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
                       </select>
