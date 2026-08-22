@@ -318,10 +318,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const prinGroup = document.getElementById("modalPrinMemberGroup");
 
         if (philNumGroup && prinGroup) {
-          if (philStatus.includes("member")) {
+          if (philStatus.includes("Member")) {
             philNumGroup.style.display = "block";
             prinGroup.style.display = "none";
-          } else if (philStatus.includes("dependent")) {
+          } else if (philStatus.includes("Dependent")) {
             philNumGroup.style.display = "block";
             prinGroup.style.display = "block";
           } else {
@@ -394,19 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
         e.clientX <= rect.left + rect.width;
       if (!isInModal) {
         modal.close();
-      }
-    });
-  }
-  if (editModal) {
-    editModal.addEventListener("click", (e) => {
-      const rect = editModal.getBoundingClientRect();
-      const isInEditModal =
-        rect.top <= e.clientY &&
-        e.clientY <= rect.top + rect.height &&
-        rect.left <= e.clientX &&
-        e.clientX <= rect.left + rect.width;
-      if (!isInEditModal) {
-        editModal.close();
       }
     });
   }

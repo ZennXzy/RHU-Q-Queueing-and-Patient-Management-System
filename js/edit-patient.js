@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setVal('editReligion', p.religion);
         setVal('editContact', p.contact_number);
         setVal('editAddress', p.address);
-
+        setVal('editDateRegistered', p.date_registered);
         setVal('editMotherName', p.mothers_name);
         setVal('editFatherName', p.fathers_name);
         setVal('editSpouseName', p.spouses_name);
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          modal.close();
+          editModal.close();
           location.reload(); // Reload table to display modified record
         } else {
           alert('Update Failed: ' + (result.message || 'Unable to update patient record.'));

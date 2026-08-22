@@ -11,15 +11,16 @@
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <!-- <link rel="stylesheet" href="../styles/patient_records.css"> -->
+    <link rel="stylesheet" href="../styles/patient_records.css">
 
-    <link rel="stylesheet" href="../styles/patient_records.css?v=<?php echo time(); ?>">
+    
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/search.js" defer></script>
     <script src="../js/patient-records.js" defer></script>
     <script src="../js/edit-patient.js" defer></script>
+    <script src="../js/delete-patient.js" defer></script>
 
   </head>
   <body>
@@ -205,7 +206,7 @@
                       echo '<td>'.htmlspecialchars($row['contact_number']).'</td>';
                       echo '<td>'.htmlspecialchars($row['phil_status']).'</td>';
                       echo '<td>'.htmlspecialchars($row['date_registered']).'</td>';
-                      echo '<td><button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button></td>';
+                      echo '<td><button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button><button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button><button class="delete-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button></td>';
                       echo '</tr>';
                     }
                   } else {
@@ -472,7 +473,10 @@
                       <label for="editAddress">Address <span class="required-asterisk">*</span></label>
                       <input type="text" id="editAddress" name="editAddress" placeholder="Full Address">
                     </div>
-                    
+                    <div class="info-group">
+                      <label for="editDateRegistered">Date Registered</label>
+                      <input type="date" id="editDateRegistered" name="editDateRegistered">
+                    </div>
                   </div>
 
                   <!-- 3. Family Background -->
@@ -556,6 +560,31 @@
               <div class="modal-footer">
                 <button type="button" class="btn-secondary" onclick="document.getElementById('edit-patient').close()">Cancel</button>
                 <button type="submit" class="btn-primary" id="savePatientBtn">Save Changes</button>
+              </div>
+            </form>
+          </dialog>
+          <!-- Delete Confirmation Modal -->
+          <dialog id="deleteConfirmModal" class="delete-modal">
+            <form id="deletePatientForm" method="dialog">
+              <div class="modal-header">
+                <h3>Confirm Deletion</h3>
+                <button type="button" class="close-modal-btn" onclick="document.getElementById('deleteConfirmModal').close()">&times;</button>
+              </div>
+
+              <div class="modal-body">
+                <p>Are you sure you want to delete this patient record? This action cannot be undone.</p>
+                <input type="hidden" id="deletePatientId" name="patient_id">
+                
+                <div class="info-group">
+                  <label for="deleteAdminPassword">Enter Password to Confirm <span class="required-asterisk">*</span></label>
+                  <input type="password" id="deleteAdminPassword" name="admin_password" required placeholder="Enter your password">
+                </div>
+                <div id="deleteErrorMsg" class="error-message" style="color: #ef4444; margin-top: 8px; display: none;"></div>
+              </div>
+
+              <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="document.getElementById('deleteConfirmModal').close()">Cancel</button>
+                <button type="submit" class="btn-danger" id="confirmDeleteBtn">Delete Record</button>
               </div>
             </form>
           </dialog>
