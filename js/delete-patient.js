@@ -42,18 +42,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (result.status === 'success') {
           deleteModal.close();
-          location.reload(); // Refresh table to display updated dataset
+          showToast('Record Deleted Successfully.','success');
+          location.reload();
         } else {
           if (errorMsg) {
-            errorMsg.textContent = result.message || 'Incorrect password or deletion failed.';
-            errorMsg.style.display = 'block';
+            deleteModal.close();
+            showToast('Incorrect password or deletion failed.','error');
           }
         }
       } catch (error) {
         console.error('Error executing delete action:', error);
         if (errorMsg) {
-          errorMsg.textContent = 'Server connection error.';
-          errorMsg.style.display = 'block';
+          showToast('Server connection error.','error');
         }
       }
     });

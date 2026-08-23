@@ -1,14 +1,8 @@
 <?php
-// php/update_patient.php
-
-// Set response header to JSON
 header('Content-Type: application/json');
 
-// Include your database connection script
-// Adjust path if your database file is located elsewhere (e.g., require_once 'db_connect.php';)
 require_once '../php/connection.php'; 
 
-// Check if request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([
         'status' => 'error',
@@ -66,11 +60,8 @@ $yakap_member       = get_post_val('editYakapMember');
 
 // Mandatory fields validation
 if (!$fname || !$lname || !$gender || !$birthdate) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Please fill in all required fields (First Name, Last Name, Gender, Birth Date).'
-    ]);
-    exit;
+    header('Location: ../pages/patient_records.php?msg=' . urlencode('Invalid credentials') . '&type=error');
+    exit();
 }
 
 try {

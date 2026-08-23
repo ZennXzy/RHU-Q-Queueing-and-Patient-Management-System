@@ -126,11 +126,11 @@ document.addEventListener("DOMContentLoaded", () => {
           editModal.close();
           location.reload(); // Reload table to display modified record
         } else {
-          alert('Update Failed: ' + (result.message || 'Unable to update patient record.'));
+          showToast('Update Failed: ' + (result.message || 'Unable to update patient record.','error'));
         }
       } catch (error) {
         console.error('Error submitting patient update:', error);
-        alert('An error occurred while saving profile modifications.');
+        showToast('An error occurred while saving profile modifications.','error');
       }
     });
   }

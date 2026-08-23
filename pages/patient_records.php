@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/patient_records.css">
+    <link rel="stylesheet" href="../styles/toast.css">
 
     
 
@@ -21,6 +22,7 @@
     <script src="../js/patient-records.js" defer></script>
     <script src="../js/edit-patient.js" defer></script>
     <script src="../js/delete-patient.js" defer></script>
+    <script src="../js/toast.js" defer></script>
 
   </head>
   <body>
@@ -30,6 +32,7 @@
     </div>
 
     <div class="workspace">
+      <div class="toast-container" id="toastContainer"></div>
       <div class="sidebar">
         <div class="nav-group">
           <a href="../pages/register_page.php" class="menu-item">
@@ -375,6 +378,7 @@
           </dialog>
           <!-- edit-modal -->
           <dialog class="edit-patient" id="edit-patient">
+            <div class="toast-container" id="toastContainer"></div>
             <form id="editPatientForm" method="dialog">
               <div class="modal-header">
                 <div class="header-title">
@@ -433,12 +437,6 @@
                         <input type="date" id="editBirthDate" name="editBirthDate" required>
                       </div>
                     </div>
-                    
-
-                    <div class="info-row">
-                      
-                    </div>
-
                     <div class="info-row">
                       <div class="info-group">
                         <label for="editCivilStatus">Civil Status <span class="required-asterisk">*</span></label>
@@ -556,6 +554,9 @@
                       </select>
                     </div>
                   </div>
+                </div>
+              </div>  
+
               <!-- Modal Actions Footer -->
               <div class="modal-footer">
                 <button type="button" class="btn-secondary" onclick="document.getElementById('edit-patient').close()">Cancel</button>
@@ -563,8 +564,10 @@
               </div>
             </form>
           </dialog>
+
           <!-- Delete Confirmation Modal -->
           <dialog id="deleteConfirmModal" class="delete-modal">
+            <div class="toast-container" id="toastContainer"></div>
             <form id="deletePatientForm" method="dialog">
               <div class="modal-header">
                 <h3>Confirm Deletion</h3>
