@@ -25,6 +25,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function reloadPatientTable() {
+    fetch('../php/patient_table.php')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('patientTableBody').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading table:', error);
+        });   
+  }
+  function reloadTotalRecord(){
+    fetch('../php/total_records.php')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('total-records').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading total records:', error);
+        }); 
+  }
+
   // 2. SUBMIT DELETE REQUEST
   if (deleteForm) {
     deleteForm.addEventListener('submit', async (e) => {
@@ -43,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.status === 'success') {
           deleteModal.close();
           showToast('Record Deleted Successfully.','success');
-          location.reload();
+          reloadPatientTable();
+          reloadTotalRecord();
         } else {
           if (errorMsg) {
             deleteModal.close();
