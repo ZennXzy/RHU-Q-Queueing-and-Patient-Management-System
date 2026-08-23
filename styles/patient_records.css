@@ -177,6 +177,7 @@ th.sortable:hover {
 }
 
 .delete-btn {
+  background-color: #ffff;
   align-items:center;
   border: none;
   padding: 6px 14px;

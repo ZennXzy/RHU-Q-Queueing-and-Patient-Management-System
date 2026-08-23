@@ -64,12 +64,17 @@ if (!$fname || !$lname || !$gender || !$birthdate) {
     exit();
 }
 
+if(get_post_val('editSuffix') === 'None'){
+    $sname = NULL;
+}
+
 try {
     // SQL Query (Update column names to match your MySQL database schema)
     $sql = "UPDATE patient_records SET 
                 firstname = ?, 
                 middlename = ?, 
                 lastname = ?, 
+                suffix = ?,
                 gender = ?, 
                 date_of_birth = ?, 
                 civil_status = ?, 
@@ -97,10 +102,11 @@ try {
 
     // Bind values (20 strings/null values + 1 integer ID = 21 parameters)
     $stmt->bind_param(
-        "ssssssssssssssssssssi",
+        "sssssssssssssssssssssi",
         $fname,
         $mname,
         $lname,
+        $sname,  
         $gender,
         $birthdate,
         $civil_status,

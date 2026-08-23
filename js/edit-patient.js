@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const p = result.patient;
 
         // Populate ID Badge & Hidden Patient ID Field
-        const badgeEl = document.getElementById('modalPatientIdBadge');
-        if (badgeEl) badgeEl.textContent = `ID: #${String(patientId).padStart(4, '0')}`;
+        const badgeElement = document.getElementById('modalPatientIdBadge');
+        if (badgeElement) badgeElement.textContent = `ID: #${String(patientId).padStart(4, '0')}`;
         
         const hiddenIdInput = document.getElementById('editPatientId');
         if (hiddenIdInput) hiddenIdInput.value = patientId;

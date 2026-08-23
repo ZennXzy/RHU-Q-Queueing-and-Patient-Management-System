@@ -1,5 +1,4 @@
 <?php
-// php/delete_patient.php
 session_start();
 require '../php/connection.php';
 header('Content-Type: application/json');
