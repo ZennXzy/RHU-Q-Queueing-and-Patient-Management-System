@@ -105,6 +105,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  function reloadPatientTable() {
+    fetch('../php/patient_table.php')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('patientTableBody').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error loading table:', error);
+        });
+  }
+
   /* ==========================================
      2. FORM SUBMIT HANDLER (UPDATE API)
   ========================================== */
@@ -124,7 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (result.status === 'success') {
           editModal.close();
-          location.reload(); // Reload table to display modified record
+          reloadPatientTable();
+          showToast('Update Successfully.','success');
         } else {
           showToast('Update Failed: ' + (result.message || 'Unable to update patient record.','error'));
         }
