@@ -330,7 +330,11 @@
                                         hue-rotate(75deg) brightness(91%) contrast(88%);">
                                         <span class="stat-label">Completed Today</span>
                                     </div>
-                                    <span class="stat-number">10</span>
+                                    <span class="stat-number"><?php
+                                        $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed' AND DATE(created_at) = CURDATE()");
+                                        $row = $res->fetch_assoc();
+                                        echo $row['completed_today_count'];
+                                    ?></span>
                                 </div>
                                 <button type="button" class="add-queue-button" id="open-form-btn">
                                     <div class="add-button-items">
