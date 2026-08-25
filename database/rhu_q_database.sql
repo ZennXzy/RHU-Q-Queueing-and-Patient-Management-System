@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 20, 2026 at 08:13 PM
+-- Generation Time: Aug 24, 2026 at 06:58 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -43,7 +43,8 @@ CREATE TABLE `admin_auth` (
 --
 
 INSERT INTO `admin_auth` (`id`, `username`, `password_hash`, `fullname`, `email`, `status`, `created_at`, `last_active`) VALUES
-(4, 'paul', '$2y$12$cyX4s6IqAzDcbVhL7VTO5OEhjfvWZBaFSp14jvWvMHxg73jmpcetC', NULL, NULL, 'Active', '2026-08-09 00:14:45', '2026-08-09 00:14:45');
+(4, 'paul', '$2y$12$cyX4s6IqAzDcbVhL7VTO5OEhjfvWZBaFSp14jvWvMHxg73jmpcetC', NULL, NULL, 'Active', '2026-08-09 00:14:45', '2026-08-09 00:14:45'),
+(6, 'Zenergy', '$2y$12$KJYIU4sCjyflLgZPbcrooOeDBzrXbJFs0sZrHhlTYoyuH1b20YdKu', NULL, NULL, 'Active', '2026-08-23 18:08:58', '2026-08-23 18:08:58');
 
 -- --------------------------------------------------------
 
@@ -115,14 +116,11 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (115, 'Juan', 'Dela Cruz', 'Santos', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1994-05-12', '09171234567', 'juan.delacruz@example.com', 'Employed', 'Teacher', 'DepEd', 'Single', 'Roman Catholic', 'Maria Santos', 'Jose Dela Cruz', NULL, 'Member', '12-050192837-1', NULL, 'No', '2026-08-13'),
 (116, 'Maria Clara', 'Santos', 'Reyes', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '1999-08-23', '09189876543', 'maria.santos@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Elena Reyes', 'Tomas Santos', NULL, 'Dependent', '12-050192837-1', 'Tomas Santos', 'Yes', '2026-08-13'),
 (117, 'Jose', 'Rizal', 'Protasio', 'Jr.', 'Zone 2, Polangui, Albay', 0, 'Male', '1985-06-19', '09191112222', 'jose.rizal@example.com', 'Self-Employed', 'Doctor', 'Rizal Clinic', 'Married', 'Roman Catholic', 'Teodora Alonso', 'Francisco Mercado', 'Josephine Bracken', 'Member', '12-098765432-3', NULL, 'No', '2026-08-13'),
-(118, 'Andres', 'Bonifacio', 'Castro', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1990-11-30', '09203334444', 'andres.b@example.com', 'Employed', 'Store Clerk', 'Fressmart', 'Married', 'Roman Catholic', 'Catalina de Castro', 'Santiago Bonifacio', 'Gregoria de Jesus', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (119, 'Melchora', 'Aquino', 'Ramos', NULL, 'Zone 1, Polangui, Albay', 0, 'Female', '1952-01-06', '09215556666', 'melchora.a@example.com', 'Unemployed', NULL, NULL, 'Widowed', 'Roman Catholic', 'Valentina de Aquino', 'Juan Ramos', 'Fulgence Ramos', 'Member', '12-112233445-5', NULL, 'Yes', '2026-08-13'),
-(120, 'Apolinario', 'Mabini', 'Maranan', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1978-07-23', '09227778888', 'apolinario.m@example.com', 'Self-Employed', 'Legal Consultant', 'Mabini Law', 'Single', 'Aglipayan', 'Inocencia Maranan', 'Inigo Mabini', NULL, 'Member', '12-998877665-4', NULL, 'No', '2026-08-13'),
 (121, 'Gabriela', 'Silang', 'Caniño', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '1988-03-19', '09239990000', 'gabriela.s@example.com', 'Employed', 'Nurse', 'RHU Clinic', 'Widowed', 'Roman Catholic', 'Monika Caniño', 'Anselmo Caniño', 'Diego Silang', 'Member', '12-334455667-8', NULL, 'No', '2026-08-13'),
 (122, 'Emilio', 'Aguinaldo', 'Famy', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1969-03-22', '09241239876', 'emilio.a@example.com', 'Employed', 'Barangay Official', 'LGU Polangui', 'Married', 'Roman Catholic', 'Trinidad Famy', 'Carlos Aguinaldo', 'Hilaria del Rosario', 'Member', '12-445566778-9', NULL, 'No', '2026-08-13'),
 (123, 'Marcelo', 'Del Pilar', 'Hilario', 'Sr.', 'Zone 1, Polangui, Albay', 0, 'Male', '1975-08-30', '09252348765', 'marcelo.dp@example.com', 'Self-Employed', 'Writer', 'Bicol Press', 'Married', 'Roman Catholic', 'Blasa Hilario', 'Julian del Pilar', 'Marciana Valenzuela', 'Member', '12-556677889-0', NULL, 'No', '2026-08-13'),
 (124, 'Juan Luna', 'Novicio', 'San Pedro', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1982-10-23', '09263457654', 'juan.luna@example.com', 'Self-Employed', 'Painter', 'Luna Arts Studio', 'Married', 'Roman Catholic', 'Laureana Novicio', 'Joaquin Luna', 'Paz Pardo de Tavera', 'Member', '12-667788990-1', NULL, 'No', '2026-08-13'),
-(125, 'Antonio', 'Luna', 'Novicio', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1984-10-29', '09274566543', 'antonio.luna@example.com', 'Employed', 'Pharmacist', 'Polangui Pharmacy', 'Single', 'Roman Catholic', 'Laureana Novicio', 'Joaquin Luna', NULL, 'Member', '12-778899001-2', NULL, 'No', '2026-08-13'),
 (126, 'Gregorio', 'Del Pilar', 'Semprucci', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1997-11-14', '09285675432', 'gregorio.dp@example.com', 'Employed', 'Security Officer', 'Security Corp', 'Single', 'Roman Catholic', 'Felipa Semprucci', 'Fernando del Pilar', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
 (127, 'Emilio', 'Jacinto', 'Dizon', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1996-12-15', '09296784321', 'emilio.j@example.com', 'Employed', 'Accountant', 'Polangui Rural Bank', 'Single', 'Roman Catholic', 'Josefa Dizon', 'Mariano Jacinto', NULL, 'Member', '12-889900112-3', NULL, 'No', '2026-08-13'),
 (128, 'Lapu', 'Lapu', 'Dimagiba', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1970-01-01', '09307893210', 'lapulapu@example.com', 'Self-Employed', 'Fisherman', 'Self', 'Married', 'Other', 'Kagatan Dimagiba', 'Cali Pulako', 'Bulakna Dimagiba', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
@@ -134,15 +132,12 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (134, 'Teresa', 'Magbanua', 'Ferraris', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1981-10-13', '09363453210', 'teresa.m@example.com', 'Employed', 'School Principal', 'Polangui National High', 'Married', 'Roman Catholic', 'Alejandra Ferraris', 'Juan Magbanua', 'Alejandro Balderas', 'Member', '12-304958671-8', NULL, 'No', '2026-08-13'),
 (135, 'Mariano', 'Ponce', 'Collantes', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1974-03-23', '09374564321', 'mariano.p@example.com', 'Employed', 'Researcher', 'DOST Bicol', 'Married', 'Roman Catholic', 'Maria Collantes', 'Mariano Ponce Sr.', 'Maria Del Rosario', 'Member', '12-405968712-9', NULL, 'No', '2026-08-13'),
 (136, 'Pedro', 'Paterno', 'De Vera', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1967-02-27', '09385675432', 'pedro.paterno@example.com', 'Self-Employed', 'Lawyer', 'Paterno Legal', 'Married', 'Roman Catholic', 'Carmen De Vera', 'Maximo Paterno', 'Luisa Piñeiro', 'Member', '12-506978823-0', NULL, 'No', '2026-08-13'),
-(137, 'Artemio', 'Ricarte', 'Garcia', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1966-10-20', '09396786543', 'artemio.r@example.com', 'Unemployed', NULL, NULL, 'Married', 'Roman Catholic', 'Francia Garcia', 'Esteban Ricarte', 'Agueda Esteban', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (138, 'Vicente', 'Lukban', 'Rilles', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1971-02-11', '09407897654', 'vicente.l@example.com', 'Employed', 'Civil Engineer', 'DPWH', 'Married', 'Roman Catholic', 'Luz Rilles', 'Agustin Lukban', 'Sofia Surtida', 'Member', '12-607988934-1', NULL, 'No', '2026-08-13'),
 (139, 'Marina', 'Dizon', 'Santiago', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1986-07-18', '09418908765', 'marina.dizon@example.com', 'Employed', 'Social Worker', 'DSWD', 'Married', 'Roman Catholic', 'Roberta Santiago', 'Jose Dizon', 'Jose Turiano', 'Member', '12-708999045-2', NULL, 'No', '2026-08-13'),
-(140, 'Agueda', 'Kahabagan', 'Inocencio', NULL, 'Zone 1, Polangui, Albay', 0, 'Female', '1980-05-26', '09429019876', 'agueda.k@example.com', 'Self-Employed', 'Vendor', 'Polangui Public Market', 'Single', 'Roman Catholic', 'Victoria Inocencio', 'Quintin Kahabagan', NULL, 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (141, 'Trinidad', 'Tecson', 'Perez', NULL, 'Zone 2, Polangui, Albay', 0, 'Female', '1978-11-18', '09430120987', 'trinidad.t@example.com', 'Employed', 'Red Cross Staff', 'Philippine Red Cross', 'Separated', 'Roman Catholic', 'Monica Perez', 'Rafael Tecson', NULL, 'Member', '12-809010156-3', NULL, 'No', '2026-08-13'),
 (142, 'Gliceria', 'Marella', 'Villavicencio', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '1962-05-13', '09441231098', 'gliceria.v@example.com', 'Self-Employed', 'Real Estate Agent', 'Self', 'Widowed', 'Roman Catholic', 'Mariana Villavicencio', 'Vicente Marella', 'Eulalio Villavicencio', 'Member', '12-910121267-4', NULL, 'No', '2026-08-13'),
 (143, 'Clemencia', 'Lopez', 'Nolasco', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1987-01-16', '09452342109', 'clemencia.l@example.com', 'Employed', 'Bank Teller', 'BDO Polangui', 'Single', 'Roman Catholic', 'Gaudencia Nolasco', 'Natalio Lopez', NULL, 'Member', '12-011232378-5', NULL, 'No', '2026-08-13'),
 (144, 'Esperanza', 'Limjap', 'Escolar', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1992-09-08', '09463453210', 'esperanza.l@example.com', 'Employed', 'HR Officer', 'Polangui Mall', 'Married', 'Roman Catholic', 'Francisca Escolar', 'Mariano Limjap', 'Sergio Osmeña', 'Dependent', '12-122343489-6', 'Sergio Osmeña', 'No', '2026-08-13'),
-(145, 'Carlos', 'P. Garcia', 'Polestico', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1968-11-04', '09474564321', 'carlos.garcia@example.com', 'Employed', 'Municipal Staff', 'LGU Polangui', 'Married', 'Roman Catholic', 'Protasia Polestico', 'Policarpio Garcia', 'Leonila Dimataga', 'Member', '12-233454590-7', NULL, 'No', '2026-08-13'),
 (146, 'Diosdado', 'Macapagal', 'Pangan', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1970-09-28', '09485675432', 'diosdado.m@example.com', 'Employed', 'Economist', 'LGU Planning', 'Married', 'Roman Catholic', 'Romana Pangan', 'Urbano Macapagal', 'Evangelina Macaraeg', 'Member', '12-344565601-8', NULL, 'No', '2026-08-13'),
 (147, 'Ramon', 'Magsaysay', 'Del Fierro', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1967-08-31', '09496786543', 'ramon.m@example.com', 'Self-Employed', 'Mechanic', 'Magsaysay Auto Repair', 'Married', 'Roman Catholic', 'Perfecta Del Fierro', 'Ezequiel Magsaysay', 'Luz Banzon', 'Member', '12-455676712-9', NULL, 'No', '2026-08-13'),
 (148, 'Manuel', 'Roxas', 'Acuña', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1965-01-01', '09507897654', 'manuel.roxas@example.com', 'Employed', 'Auditor', 'COA Bicol', 'Married', 'Roman Catholic', 'Rosario Acuña', 'Gerardo Roxas', 'Trinidad de Leon', 'Member', '12-566787823-0', NULL, 'No', '2026-08-13'),
@@ -153,16 +148,13 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (153, 'Corazon', 'Aquino', 'Cojuangco', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1973-01-25', '09552342109', 'cory.aquino@example.com', 'Unemployed', NULL, NULL, 'Widowed', 'Roman Catholic', 'Demetria Sumulong', 'Jose Cojuangco', 'Benigno Aquino Jr.', 'Member', '12-900121267-4', NULL, 'No', '2026-08-13'),
 (154, 'Fidel', 'Ramos', 'Valdez', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1968-03-18', '09563453210', 'fidel.ramos@example.com', 'Employed', 'Retired Military', 'AFP', 'Married', 'Protestant', 'Angela Valdez', 'Narciso Ramos', 'Amelita Martinez', 'Member', '12-011232378-5', NULL, 'No', '2026-08-13'),
 (155, 'Gloria', 'Arroyo', 'Macapagal', NULL, 'Zone 1, Polangui, Albay', 0, 'Female', '1987-04-05', '09574564321', 'gloria.arroyo@example.com', 'Employed', 'Professor', 'BU Polangui', 'Married', 'Roman Catholic', 'Evangelina Macaraeg', 'Diosdado Macapagal', 'Jose Miguel Arroyo', 'Member', '12-122343489-0', NULL, 'No', '2026-08-13'),
-(156, 'Benigno', 'Aquino', 'Cojuangco', 'III', 'Zone 2, Polangui, Albay', 0, 'Male', '1980-02-08', '09585675432', 'noynoy.aquino@example.com', 'Employed', 'Executive', 'Private Firm', 'Single', 'Roman Catholic', 'Corazon Cojuangco', 'Benigno Aquino Jr.', NULL, 'Member', '12-233454590-1', NULL, 'No', '2026-08-13'),
 (157, 'Rodrigo', 'Duterte', 'Roa', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1965-03-28', '09596786543', 'rodrigo.duterte@example.com', 'Self-Employed', 'Consultant', 'Roa Services', 'Separated', 'Roman Catholic', 'Soledad Roa', 'Vicente Duterte', NULL, 'Member', '12-344565601-2', NULL, 'No', '2026-08-13'),
 (158, 'Ferdinand', 'Marcos', 'Edralin', 'Jr.', 'Zone 4, Polangui, Albay', 0, 'Male', '1977-09-13', '09607897654', 'bongbong.marcos@example.com', 'Employed', 'Civil Servant', 'Provincial Office', 'Married', 'Roman Catholic', 'Imelda Romualdez', 'Ferdinand Marcos Sr.', 'Louise Araneta', 'Member', '12-455676712-3', NULL, 'No', '2026-08-13'),
 (159, 'Leni', 'Robredo', 'Gerona', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1985-04-23', '09618908765', 'leni.robredo@example.com', 'Self-Employed', 'Human Rights Lawyer', 'Free Legal Assistance', 'Widowed', 'Roman Catholic', 'Salvacion Santo Tomas', 'Antonio Gerona', 'Jesse Robredo', 'Member', '12-566787823-4', NULL, 'No', '2026-08-13'),
 (160, 'Manny', 'Pacquiao', 'Dapidran', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1988-12-17', '09629019876', 'manny.pacquiao@example.com', 'Self-Employed', 'Athlete/Coach', 'Pacquiao Gym', 'Married', 'Evangelical', 'Dionisia Dapidran', 'Rosalio Pacquiao', 'Jinkee Jamora', 'Member', '12-677898934-5', NULL, 'No', '2026-08-13'),
 (161, 'Pia', 'Wurtzbach', 'Alonzo', NULL, 'Zone 2, Polangui, Albay', 0, 'Female', '1999-09-24', '09630120987', 'pia.wurtzbach@example.com', 'Self-Employed', 'Model/Host', 'Self', 'Married', 'Roman Catholic', 'Cheryl Alonzo', 'Uwe Wurtzbach', 'Jeremy Jauncey', 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
-(162, 'Catriona', 'Gray', 'Magnayon', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '2001-01-06', '09641231098', 'catriona.gray@example.com', 'Employed', 'Brand Ambassador', 'Gray Media', 'Single', 'Protestant', 'Normita Magnayon', 'Ian Gray', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
 (163, 'Lea', 'Salonga', 'Imutan', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1991-02-22', '09652342109', 'lea.salonga@example.com', 'Self-Employed', 'Performer', 'Salonga Productions', 'Married', 'Roman Catholic', 'Ligaya Imutan', 'Feliciano Salonga', 'Robert Chien', 'Member', '12-788909045-6', NULL, 'No', '2026-08-13'),
 (164, 'Efren', 'Reyes', 'Manalang', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1974-08-26', '09663453210', 'efren.reyes@example.com', 'Self-Employed', 'Sports Instructor', 'Bata Sports Center', 'Married', 'Roman Catholic', 'Romana Manalang', 'Pedro Reyes', 'Susan Reyes', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
-(165, 'Carlos', 'Yulo', 'Edriel', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '2000-02-16', '09674564321', 'carlos.yulo@example.com', 'Employed', 'Gymnast Coach', 'Polangui Sports Complex', 'Single', 'Roman Catholic', 'Angelica Yulo', 'Mark Andrew Yulo', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
 (166, 'Hidilyn', 'Diaz', 'Francisco', NULL, 'Zone 2, Polangui, Albay', 0, 'Female', '1991-02-20', '09685675432', 'hidilyn.diaz@example.com', 'Employed', 'Fitness Instructor', 'Weightlifting Center', 'Married', 'Roman Catholic', 'Emelita Francisco', 'Eduardo Diaz', 'Julius Naranjo', 'Member', '12-899010156-7', NULL, 'No', '2026-08-13'),
 (167, 'Miriam', 'Defensor', 'Palma', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '1975-06-15', '09696786543', 'miriam.santiago@example.com', 'Employed', 'Professor', 'Polangui Law School', 'Married', 'Roman Catholic', 'Digna Palma', 'Benjamin Defensor', 'Narciso Santiago', 'Member', '12-900121267-8', NULL, 'No', '2026-08-13'),
 (168, 'Juan', 'Flavier', 'Martin', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1970-03-03', '09707897654', 'juan.flavier@example.com', 'Employed', 'Doctor', 'DOH Regional', 'Married', 'Roman Catholic', 'Dominadora Martin', 'Victorino Flavier', 'Susan Flavier', 'Member', '12-011232378-9', NULL, 'No', '2026-08-13'),
@@ -188,8 +180,7 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (188, 'Ogie', 'Alcasid', 'Herminio', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1987-08-27', '09907897654', 'ogie.alcasid@example.com', 'Self-Employed', 'Songwriter', 'A-Team', 'Married', 'Roman Catholic', 'Herminia Alcasid', 'Herminio Alcasid Sr.', 'Regine Velasquez', 'Dependent', '12-455676712-5', 'Regine Velasquez', 'No', '2026-08-13'),
 (189, 'Sharon', 'Cuneta', 'Pangilinan', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1986-01-06', '09918908765', 'sharon.cuneta@example.com', 'Self-Employed', 'Actress', 'Mega Productions', 'Married', 'Roman Catholic', 'Elaine Gamboa', 'Pablo Cuneta', 'Kiko Pangilinan', 'Member', '12-566787823-6', NULL, 'No', '2026-08-13'),
 (190, 'Kiko', 'Pangilinan', 'Castelo', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1983-08-24', '09929019876', 'kiko.pangilinan@example.com', 'Self-Employed', 'Organic Farmer', 'Kiko Farms', 'Married', 'Roman Catholic', 'Emma Castelo', 'Donato Pangilinan', 'Sharon Cuneta', 'Dependent', '12-566787823-6', 'Sharon Cuneta', 'No', '2026-08-13'),
-(191, 'Bam', 'Aquino', 'Aguirre', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1997-05-07', '09930120987', 'bam.aquino@example.com', 'Employed', 'Social Entrepreneur', 'MicroVentures', 'Married', 'Roman Catholic', 'Melanie Aguirre', 'Paul Aquino', 'Timi Gomez', 'Member', '12-677898934-7', NULL, 'No', '2026-08-13'),
-(192, 'Chel', 'Diokno', 'Jose', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1981-02-23', '09941231098', 'chel.diokno@example.com', 'Self-Employed', 'Lawyer', 'FLAG Polangui', 'Married', 'Roman Catholic', 'Carmen Jose', 'Jose W. Diokno', 'Divina Diokno', 'Member', '12-788909045-8', NULL, 'No', '2026-08-13'),
+(192, 'Chel', 'Diokno', 'Jose', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1981-02-23', '09941231098', 'chel.diokno@example.com', 'Self-Employed', 'Lawyer', 'FLAG Polangui', 'Married', 'Roman Catholicism', 'Carmen Jose', 'Jose W. Diokno', 'Divina Diokno', 'Member', '12-788909045-8', NULL, 'No', '2026-08-13'),
 (193, 'Risa', 'Hontiveros', 'Baraquel', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1986-02-24', '09952342109', 'risa.hontiveros@example.com', 'Employed', 'Public Servant', 'LGU Health Desk', 'Widowed', 'Roman Catholic', 'Helen Baraquel', 'Ramon Hontiveros', 'Frank Baraquel', 'Member', '12-899010156-9', NULL, 'No', '2026-08-13'),
 (194, 'Vico', 'Sotto', 'Nubla', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1999-06-17', '09963453210', 'vico.sotto@example.com', 'Employed', 'Government Official', 'LGU Polangui', 'Single', 'Roman Catholic', 'Coney Reyes', 'Vic Sotto', NULL, 'Member', '12-900121267-0', NULL, 'No', '2026-08-13'),
 (195, 'Sandro', 'Marcos', 'Araneta', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1994-03-07', '09974564321', 'sandro.marcos@example.com', 'Employed', 'Legislative Staff', 'House Office', 'Single', 'Roman Catholic', 'Louise Araneta', 'Ferdinand Marcos Jr.', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
@@ -204,17 +195,14 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (204, 'Nico', 'Bolzico', 'Petrak', NULL, 'Zone 2, Polangui, Albay', 0, 'Male', '1983-10-03', '09117893210', 'nico.bolzico@example.com', 'Self-Employed', 'Agribusiness Owner', 'LM10 Agri', 'Married', 'Roman Catholic', 'Susana Petrak', 'Ruben Bolzico', 'Solenn Heussaff', 'Member', '12-566787823-7', NULL, 'No', '2026-08-13'),
 (205, 'Solenn', 'Heussaff', 'Bolzico', NULL, 'Zone 2, Polangui, Albay', 0, 'Female', '1985-07-20', '09128902109', 'solenn.h@example.com', 'Self-Employed', 'Artist/Model', 'Solenn Art', 'Married', 'Roman Catholic', 'Cynthia Adea', 'Louis Heussaff', 'Nico Bolzico', 'Dependent', '12-566787823-7', 'Nico Bolzico', 'No', '2026-08-13'),
 (206, 'Erwan', 'Heussaff', 'Adea', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1987-01-10', '09139011098', 'erwan.h@example.com', 'Self-Employed', 'Chef/Vlogger', 'FEATR Media', 'Married', 'Roman Catholic', 'Cynthia Adea', 'Louis Heussaff', 'Anne Curtis', 'Member', '12-677898934-8', NULL, 'No', '2026-08-13'),
-(207, 'Anne', 'Curtis', 'Smith', NULL, 'Zone 3, Polangui, Albay', 0, 'Female', '1985-02-17', '09140120187', 'anne.curtis@example.com', 'Self-Employed', 'Actress/Host', 'Viva Entertainment', 'Married', 'Roman Catholic', 'Carmen Ojales', 'James Smith', 'Erwan Heussaff', 'Dependent', '12-677898934-8', 'Erwan Heussaff', 'No', '2026-08-13'),
 (208, 'Juswa', 'Reyes', 'Perez', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1995-06-11', '09151231098', 'juswa.reyes@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Elena Perez', 'Mario Reyes', NULL, 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (209, 'Marites', 'Cruz', 'Mendoza', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1988-09-19', '09162342109', 'marites.cruz@example.com', 'Self-Employed', 'Barangay Store Owner', 'Marites Store', 'Married', 'Roman Catholic', 'Juana Mendoza', 'Pedro Cruz', 'Berto Cruz', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
-(210, 'Berto', 'Cruz', 'Bautista', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1985-03-30', '09173453210', 'berto.cruz@example.com', 'Self-Employed', 'Tricycle Driver', 'Polangui TODA', 'Married', 'Roman Catholic', 'Maria Bautista', 'Lito Cruz', 'Marites Cruz', 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (211, 'Dodong', 'Alcantara', 'Serrano', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '2002-11-08', '09184564321', 'dodong.a@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Rosa Serrano', 'Felix Alcantara', NULL, 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (212, 'Inday', 'Serrano', 'Alcantara', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '2004-04-14', '09195675432', 'inday.s@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Rosa Serrano', 'Felix Alcantara', NULL, 'Dependent', '12-788909045-9', 'Rosa Serrano', 'Yes', '2026-08-13'),
-(213, 'Cardo', 'Dalisay', 'Probo', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1989-10-10', '09206786543', 'cardo.dalisay@example.com', 'Employed', 'Police Officer', 'PNP Polangui', 'Married', 'Roman Catholic', 'Flora Borja', 'Pablo Dalisay', 'Alyana Arevalo', 'Member', '12-788909045-9', NULL, 'No', '2026-08-13'),
-(214, 'Alyana', 'Arevalo', 'Dalisay', NULL, 'Zone 1, Polangui, Albay', 0, 'Female', '1992-01-15', '09217897654', 'alyana.dalisay@example.com', 'Employed', 'Journalist', 'Polangui News', 'Married', 'Roman Catholic', 'Virgie Arevalo', 'Teddy Arevalo', 'Cardo Dalisay', 'Dependent', '12-788909045-9', 'Cardo Dalisay', 'No', '2026-08-13'),
 (217, 'Lucky', 'Casimero', 'Gado', NULL, 'Amatong Odiongan Romblon', 37, 'male', '1989-06-12', '09352673823', NULL, 'unemployed', NULL, NULL, 'single', 'Others', 'Susan Fadriquela Gado', 'Tony Fetalver Fontamillas', NULL, 'not applicable', NULL, NULL, 'no', '2026-08-13'),
 (218, 'Daryl', 'Lota', 'Gado', NULL, 'Amatong Odiongan Romblon', 21, 'male', '2005-03-13', '09876543219', NULL, 'unemployed', NULL, NULL, 'single', 'Others', 'Darlyn Fadriquela Lota', 'Darwin Fetalver Lota', NULL, 'not applicable', NULL, NULL, 'no', '2026-08-21'),
-(219, 'Paul Anthony', 'Fontamillas', 'Gado', NULL, 'Dapawan Odiongan Romblon', 24, 'Male', '2001-09-18', '09352673843', NULL, 'unemployed', NULL, NULL, 'Single', 'Others', 'Susan Fadriquela Gado', 'Tony Fetalver Fontamillas', NULL, 'not applicable', NULL, NULL, 'yes', '2026-08-21');
+(219, 'Paul Anthony', 'Fontamillas', 'Gado', NULL, 'Dapawan Odiongan Romblon', 24, 'Male', '2001-09-18', '09352673843', NULL, 'unemployed', NULL, NULL, 'Single', 'Others', 'Susan Fadriquela Gado', 'Tony Fetalver Fontamillas', NULL, 'not applicable', NULL, NULL, 'yes', '2026-08-21'),
+(220, 'Daryl', 'qweqwe', 'Gado', NULL, 'Dapawan Odiongan Romblon', 25, 'Male', '2001-05-23', '09876543219', NULL, 'Unemployed', NULL, NULL, 'Single', 'Islam', 'Lota Susan Fadriquela', 'Fontamillas Tony Fetalver', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-21');
 
 -- --------------------------------------------------------
 
@@ -234,17 +222,42 @@ CREATE TABLE `pending_appointments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `queue_dashboard`
+--
+
+CREATE TABLE `queue_dashboard` (
+  `dashboard_id` int(11) NOT NULL,
+  `waiting` int(100) NOT NULL,
+  `in_progress` int(100) NOT NULL,
+  `completed` int(100) NOT NULL,
+  `operation_date` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `queue_information`
 --
 
 CREATE TABLE `queue_information` (
-  `id` int(11) NOT NULL,
+  `queue_info_id` int(11) NOT NULL,
   `queue_code` varchar(20) NOT NULL,
   `patient_id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL,
-  `status` enum('Waiting','In-Progress','Completed','Cancelled') DEFAULT 'Waiting',
+  `service_name` varchar(200) NOT NULL,
+  `status` varchar(100) NOT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `queue_information`
+--
+
+INSERT INTO `queue_information` (`queue_info_id`, `queue_code`, `patient_id`, `service_name`, `status`, `created_at`) VALUES
+(5, 'A0001', 192, 'Medical', 'In Progress', '2026-08-24 23:22:52'),
+(7, 'A0002', 200, 'Medical', 'In Progress', '2026-08-24 23:54:59'),
+(8, 'B0001', 153, 'Dental', 'In Progress', '2026-08-24 23:56:01'),
+(9, 'B0002', 127, 'Dental', 'In Progress', '2026-08-25 00:06:23'),
+(10, 'C0001', 174, 'Vaccine', 'in Progress', '2026-08-25 00:32:24');
 
 -- --------------------------------------------------------
 
@@ -280,30 +293,6 @@ CREATE TABLE `transactions` (
   `service_id` int(11) NOT NULL,
   `transaction_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Stand-in structure for view `vw_queue_dashboard`
--- (See below for the actual view)
---
-CREATE TABLE `vw_queue_dashboard` (
-`service_id` int(11)
-,`service_name` varchar(100)
-,`waiting_count` bigint(21)
-,`in_progress_count` bigint(21)
-,`completed_count` bigint(21)
-,`cancelled_count` bigint(21)
-);
-
--- --------------------------------------------------------
-
---
--- Structure for view `vw_queue_dashboard`
---
-DROP TABLE IF EXISTS `vw_queue_dashboard`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_queue_dashboard`  AS SELECT `s`.`id` AS `service_id`, `s`.`service_name` AS `service_name`, count(case when `q`.`status` = 'Waiting' then 1 end) AS `waiting_count`, count(case when `q`.`status` = 'In-Progress' then 1 end) AS `in_progress_count`, count(case when `q`.`status` = 'Completed' then 1 end) AS `completed_count`, count(case when `q`.`status` = 'Cancelled' then 1 end) AS `cancelled_count` FROM (`services` `s` left join `queue_information` `q` on(`s`.`id` = `q`.`service_id` and cast(`q`.`created_at` as date) = curdate())) GROUP BY `s`.`id`, `s`.`service_name` ;
 
 --
 -- Indexes for dumped tables
@@ -349,12 +338,17 @@ ALTER TABLE `pending_appointments`
   ADD KEY `patient_id` (`patient_id`);
 
 --
+-- Indexes for table `queue_dashboard`
+--
+ALTER TABLE `queue_dashboard`
+  ADD PRIMARY KEY (`dashboard_id`);
+
+--
 -- Indexes for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `patient_id` (`patient_id`),
-  ADD KEY `service_id` (`service_id`);
+  ADD PRIMARY KEY (`queue_info_id`),
+  ADD KEY `patient_id` (`patient_id`);
 
 --
 -- Indexes for table `services`
@@ -380,7 +374,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `admin_auth`
 --
 ALTER TABLE `admin_auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `appointment_messages`
@@ -398,7 +392,7 @@ ALTER TABLE `approved_appointments`
 -- AUTO_INCREMENT for table `patient_records`
 --
 ALTER TABLE `patient_records`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
 -- AUTO_INCREMENT for table `pending_appointments`
@@ -407,10 +401,16 @@ ALTER TABLE `pending_appointments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `queue_dashboard`
+--
+ALTER TABLE `queue_dashboard`
+  MODIFY `dashboard_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -452,15 +452,14 @@ ALTER TABLE `pending_appointments`
 -- Constraints for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  ADD CONSTRAINT `queue_information_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `queue_information_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `queue_information_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`);
 
 --
 -- Constraints for table `transactions`
 --
 ALTER TABLE `transactions`
   ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`queue_id`) REFERENCES `queue_information` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`queue_id`) REFERENCES `queue_information` (`queue_info_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `transactions_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE;
 COMMIT;
 

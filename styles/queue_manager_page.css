@@ -113,13 +113,6 @@ body, html {
   font-weight: 700;
 }
 
-/* Scrollable Cards & Section Titles */
-.section-card {
-  background: white;
-  border-radius: 8px;
-  padding: 12px 15px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
 
 .scrollable-card::-webkit-scrollbar {
   width: 5px;
@@ -140,14 +133,11 @@ body, html {
   padding-bottom: 4px;
 }
 
-.scrollable-card {
-  max-height: 280px;
-  overflow-y: auto;
-}
 
 /* Patient Row Styling (Compact) */
 .patient-row {
   display: flex;
+  flex: 1;
   margin-right: 5px;
   align-items: center;
   padding: 8px 12px; /* Reduced padding */
@@ -159,6 +149,40 @@ body, html {
 
 .patient-row:last-child {
   margin-bottom: 0;
+}
+
+.in-progress-card{
+  background: white;
+  border-radius: 8px;
+  padding: 12px 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.in-progress-scroll{
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.in-progress-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.in-progress-scroll::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
+
+.section-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+
+.scrollable-card {
+  max-height: 280px;
+  overflow-y: auto;
 }
 
 .current-patient-row {
