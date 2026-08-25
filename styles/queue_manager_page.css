@@ -42,6 +42,7 @@ body, html {
   flex: 1;
   padding: 40px;
   height: 100%;
+  overflow-y:auto;
 }
 
 /* Top Header Area */
@@ -172,7 +173,7 @@ body, html {
   border-radius: 4px;
 }
 
-.section-card {
+.waiting-card {
   background: white;
   border-radius: 8px;
   padding: 12px 15px;
@@ -180,7 +181,7 @@ body, html {
 }
 
 
-.scrollable-card {
+.waiting-card-scroll {
   max-height: 280px;
   overflow-y: auto;
 }

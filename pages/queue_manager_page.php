@@ -214,78 +214,55 @@
                     <div class="split-grid">
                         
                         <!-- Waiting Queue Card -->
-                        <div class="section-card">
+                        <div class="waiting-card">
                             <h2 class="section-title">Waiting Queue</h2>
-                            <div class="scrollable-card">
+                            <!-- <div class="scrollable-card">
                                 <div class="patient-row waiting-patient-row">
                                     <span class="queue-id">A0014</span>
                                     <span class="patient-name">Castro, Jose N</span>
                                     <span class="service-type"></span>
                                     <button class="btn-accept">Accept</button>
                                 </div>
+                            </div> -->
+                            <?php
+                                $sql = "SELECT 
+                                            q.queue_info_id, 
+                                            q.queue_code, 
+                                            q.patient_id, 
+                                            q.service_name, 
+                                            q.created_at,
+                                            p.firstname, 
+                                            p.lastname,
+                                            p.suffix
+                                        FROM queue_information q
+                                        INNER JOIN patient_records p ON q.patient_id = p.patient_id
+                                        WHERE q.status = 'Waiting' 
+                                        ORDER BY q.created_at ASC";
 
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0015</span>
-                                    <span class="patient-name">Cruz, Carlos I</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
+                                $res = $conn->query($sql);
 
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0016</span>
-                                    <span class="patient-name">Ramos, Teresa C</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
+                                echo '<div class="waiting-card-scroll">';
 
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">C0017</span>
-                                    <span class="patient-name">Gonzales, Beatriz L</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">C0018</span>
-                                    <span class="patient-name">Torres, Fernando O</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0014</span>
-                                    <span class="patient-name">Castro, Jose N</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0015</span>
-                                    <span class="patient-name">Cruz, Carlos I</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0016</span>
-                                    <span class="patient-name">Ramos, Teresa C</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">C0017</span>
-                                    <span class="patient-name">Gonzales, Beatriz L</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">C0018</span>
-                                    <span class="patient-name">Torres, Fernando O</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-                            </div>
+                                if($res && $res->num_rows > 0){
+                                    while ($row = $res->fetch_assoc()){
+                                        $fullName = ucfirst($row['lastname']) . ', ' . ucfirst($row['firstname']).' '.ucfirst($row['suffix']);
+                                        echo '<div class="patient-row waiting-patient-row">';
+                                        echo '<span class="queue-id">'.htmlspecialchars($row['queue_code']).'</span>';
+                                        echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
+                                        echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
+                                        echo '<div class="action-container">';
+                                        echo        '<span class="more-options">⋮</span>';
+                                        echo        '<button class="btn-accept">Accept</button>';
+                                        echo        '</div>';
+                                        echo    '</div>';
+                                    }
+                                } else {
+                                    echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
+                                    echo '  <p style="margin: 0;">No Waiting patient in records found.</p>';
+                                    echo '</div>';
+                                }
+                                echo '</div>';
+                            ?> 
                         </div>
 
                         <!-- Dashboard Counters Column -->
