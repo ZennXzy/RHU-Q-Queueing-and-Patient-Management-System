@@ -1,4 +1,5 @@
 <?php
+  require '../php/connection.php';
   require '../php/check-private.php';
 ?>
 <!DOCTYPE html>
@@ -166,68 +167,47 @@
 
                 <!-- Current Patient Card -->
                 <div class="form-grid">
-                    <div class="section-card" style="margin-bottom:15px;">
+                    <div class="in-progress-card" style="margin-bottom:15px;">
                         <h2 class="section-title">Current Patient</h2>
-                        <div class="scrollable-card" style="max-height:138px;">
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">A0011</span>
-                                <span class="patient-name">Lopez, Gloria J</span>
-                                <span class="service-type">Medical Consultation</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
+                        <?php
+                            $sql = "SELECT 
+                                        q.queue_info_id, 
+                                        q.queue_code, 
+                                        q.patient_id, 
+                                        q.service_name, 
+                                        q.created_at,
+                                        p.firstname, 
+                                        p.lastname,
+                                        p.suffix
+                                    FROM queue_information q
+                                    INNER JOIN patient_records p ON q.patient_id = p.patient_id
+                                    WHERE q.status = 'In Progress' 
+                                    ORDER BY q.created_at ASC";
 
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">C0012</span>
-                                <span class="patient-name">Gonzales, Jose P</span>
-                                <span class="service-type">Availment of Anti-Rabies</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
+                            $res = $conn->query($sql);
 
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">A0013</span>
-                                <span class="patient-name">Rodriguez, Manuel K</span>
-                                <span class="service-type">Medical Consultation</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">A0011</span>
-                                <span class="patient-name">Lopez, Gloria J</span>
-                                <span class="service-type">Medical Consultation</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
+                            echo '<div class="in-progress-scroll" style="max-height:138px;">';
 
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">C0012</span>
-                                <span class="patient-name">Gonzales, Jose P</span>
-                                <span class="service-type">Availment of Anti-Rabies</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
-
-                            <div class="patient-row current-patient-row">
-                                <span class="queue-id">A0013</span>
-                                <span class="patient-name">Rodriguez, Manuel K</span>
-                                <span class="service-type">Medical Consultation</span>
-                                <div class="action-container">
-                                    <span class="more-options">⋮</span>
-                                    <button class="btn-complete">✔ Complete</button>
-                                </div>
-                            </div>
-                        </div>
+                            if($res && $res->num_rows > 0){
+                                while ($row = $res->fetch_assoc()){
+                                    $fullName = ucfirst($row['lastname']) . ', ' . ucfirst($row['firstname']).' '.ucfirst($row['suffix']);
+                                    echo '<div class="patient-row current-patient-row">';
+                                    echo '<span class="queue-id">'.htmlspecialchars($row['queue_code']).'</span>';
+                                    echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
+                                    echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
+                                    echo '<div class="action-container">';
+                                    echo        '<span class="more-options">⋮</span>';
+                                    echo        '<button class="btn-complete">✔ Complete</button>';
+                                    echo        '</div>';
+                                    echo    '</div>';
+                                }
+                            } else {
+                                echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
+                                echo '  <p style="margin: 0;">No in-progress records found.</p>';
+                                echo '</div>';
+                            }
+                            echo '</div>';
+                        ?> 
                     </div>
 
                     <!-- Split Section: Waiting Queue & Dashboard Stats -->
@@ -320,7 +300,11 @@
                                         saturate(1536%) hue-rotate(7deg) brightness(98%) contrast(101%);">
                                         <span class="stat-label">Waiting</span>
                                     </div>
-                                    <span class="stat-number">5</span>
+                                    <span class="stat-number"><?php
+                                        $res = $conn->query("SELECT COUNT(*) AS waiting_count FROM queue_information WHERE status = 'Waiting'");
+                                        $row = $res->fetch_assoc();
+                                        echo $row['waiting_count'];
+                                    ?></span>
                                 </div>
 
                                 <!-- In Progress Stat -->
@@ -331,7 +315,11 @@
                                         hue-rotate(186deg) brightness(91%) contrast(93%);">
                                         <span class="stat-label">In Progress</span>
                                     </div>
-                                    <span class="stat-number">3</span>
+                                    <span class="stat-number"><?php
+                                        $res = $conn->query("SELECT COUNT(*) AS in_progress_count FROM queue_information WHERE status = 'In Progress'");
+                                        $row = $res->fetch_assoc();
+                                        echo $row['in_progress_count'];
+                                    ?></span>
                                 </div>
 
                                 <!-- Completed Today Stat -->
