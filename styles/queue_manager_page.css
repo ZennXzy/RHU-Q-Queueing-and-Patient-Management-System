@@ -42,6 +42,7 @@ body, html {
   flex: 1;
   padding: 40px;
   height: 100%;
+  overflow-y:auto;
 }
 
 /* Top Header Area */
@@ -172,7 +173,11 @@ body, html {
   border-radius: 4px;
 }
 
+<<<<<<< HEAD
 .section-card {
+=======
+.waiting-card {
+>>>>>>> 8325bba45f545eb5b7867c97e5138eb139b0be96
   background: white;
   border-radius: 8px;
   padding: 12px 15px;
@@ -180,7 +185,11 @@ body, html {
 }
 
 
+<<<<<<< HEAD
 .scrollable-card {
+=======
+.waiting-card-scroll {
+>>>>>>> 8325bba45f545eb5b7867c97e5138eb139b0be96
   max-height: 280px;
   overflow-y: auto;
 }
