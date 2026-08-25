@@ -216,14 +216,6 @@
                         <!-- Waiting Queue Card -->
                         <div class="waiting-card">
                             <h2 class="section-title">Waiting Queue</h2>
-                            <!-- <div class="scrollable-card">
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0014</span>
-                                    <span class="patient-name">Castro, Jose N</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-                            </div> -->
                             <?php
                                 $sql = "SELECT 
                                             q.queue_info_id, 
@@ -251,14 +243,14 @@
                                         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
                                         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
                                         echo '<div class="action-container">';
-                                        echo        '<span class="more-options">⋮</span>';
-                                        echo        '<button class="btn-accept">Accept</button>';
-                                        echo        '</div>';
-                                        echo    '</div>';
+                                        echo '<span class="more-options">⋮</span>';
+                                        echo '<button class="btn-accept">Accept</button>';
+                                        echo '</div>';
+                                        echo '</div>';
                                     }
                                 } else {
                                     echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
-                                    echo '  <p style="margin: 0;">No Waiting patient in records found.</p>';
+                                    echo '<p style="margin: 0;">No Waiting patient in records found.</p>';
                                     echo '</div>';
                                 }
                                 echo '</div>';
@@ -308,7 +300,7 @@
                                         <span class="stat-label">Completed Today</span>
                                     </div>
                                     <span class="stat-number"><?php
-                                        $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed' AND DATE(created_at) = CURDATE()");
+                                        $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed'");
                                         $row = $res->fetch_assoc();
                                         echo $row['completed_today_count'];
                                     ?></span>
