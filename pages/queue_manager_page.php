@@ -21,6 +21,7 @@
     <script scr="../js/filterSelect.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
+    <script src="../js/queue-list-loader.js" defer></script>
 
 </head>
 <body>
@@ -186,7 +187,7 @@
 
                             $res = $conn->query($sql);
 
-                            echo '<div class="in-progress-scroll" style="max-height:138px;">';
+                            echo '<div class="in-progress-scroll" id="in-progress-scroll" style="max-height:138px;">';
 
                             if($res && $res->num_rows > 0){
                                 while ($row = $res->fetch_assoc()){
@@ -210,20 +211,11 @@
                         ?> 
                     </div>
 
-                    <!-- Split Section: Waiting Queue & Dashboard Stats -->
                     <div class="split-grid">
                         
                         <!-- Waiting Queue Card -->
                         <div class="waiting-card">
                             <h2 class="section-title">Waiting Queue</h2>
-                            <!-- <div class="scrollable-card">
-                                <div class="patient-row waiting-patient-row">
-                                    <span class="queue-id">A0014</span>
-                                    <span class="patient-name">Castro, Jose N</span>
-                                    <span class="service-type"></span>
-                                    <button class="btn-accept">Accept</button>
-                                </div>
-                            </div> -->
                             <?php
                                 $sql = "SELECT 
                                             q.queue_info_id, 
@@ -241,7 +233,7 @@
 
                                 $res = $conn->query($sql);
 
-                                echo '<div class="waiting-card-scroll">';
+                                echo '<div class="waiting-card-scroll" id="waiting-card-scroll">';
 
                                 if($res && $res->num_rows > 0){
                                     while ($row = $res->fetch_assoc()){
@@ -277,11 +269,14 @@
                                         saturate(1536%) hue-rotate(7deg) brightness(98%) contrast(101%);">
                                         <span class="stat-label">Waiting</span>
                                     </div>
-                                    <span class="stat-number"><?php
+                                    <?php
                                         $res = $conn->query("SELECT COUNT(*) AS waiting_count FROM queue_information WHERE status = 'Waiting'");
                                         $row = $res->fetch_assoc();
+
+                                        echo '<span class="stat-number" id="stat-number-waiting">';
                                         echo $row['waiting_count'];
-                                    ?></span>
+                                        echo'</span>';
+                                    ?>
                                 </div>
 
                                 <!-- In Progress Stat -->
@@ -292,11 +287,12 @@
                                         hue-rotate(186deg) brightness(91%) contrast(93%);">
                                         <span class="stat-label">In Progress</span>
                                     </div>
-                                    <span class="stat-number"><?php
+                                    <?php
                                         $res = $conn->query("SELECT COUNT(*) AS in_progress_count FROM queue_information WHERE status = 'In Progress'");
                                         $row = $res->fetch_assoc();
-                                        echo $row['in_progress_count'];
-                                    ?></span>
+
+                                        echo '<span class="stat-number" id="stat-number-in-progress">'.$row['in_progress_count'].'</span>';
+                                    ?>
                                 </div>
 
                                 <!-- Completed Today Stat -->
@@ -307,11 +303,12 @@
                                         hue-rotate(75deg) brightness(91%) contrast(88%);">
                                         <span class="stat-label">Completed Today</span>
                                     </div>
-                                    <span class="stat-number"><?php
+                                    <?php
                                         $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed' AND DATE(created_at) = CURDATE()");
                                         $row = $res->fetch_assoc();
-                                        echo $row['completed_today_count'];
-                                    ?></span>
+
+                                        echo '<span class="stat-number" id="stat-number-completed">'.$row['completed_today_count'].'</span>';
+                                    ?>
                                 </div>
                                 <button type="button" class="add-queue-button" id="open-form-btn">
                                     <div class="add-button-items">
@@ -324,65 +321,48 @@
                     </div>
                 </div>    
             </div>
-            <div id="settings-display" class="settings-display">
-                <div class="settings-content">
-
-                </div>
-            </div>
         </div>
 
-        <!-- popupform -->
-    
-        <div id="queue-form" class="queue-form">
-            <div class="modal-card">
+        <dialog id="queue-form" class="queue-form">
+            <div class="modal-card" id="modal-card">
+                <div class="toast-container" id="toastContainer"></div>
                 <h2>Add Patient to Queue</h2>
-                <form id="add-queue-form">
+                <form id="add-queue-form" method="dialog">
                     <div class="formcontainer">
-                        <div class="gridrow">
-                            <div class="gridcolumn">
-                                <div class="mainform">
-                                    <div class="search-container">
-                                        <div class="search-icon">
-                                            <img src="../svg/search-icon.svg" alt="search-icon">
-                                        </div>
-                                        <input type="text" placeholder="Search by name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="patient-name">Patient Name</label>
-                                        <input type="text" id="patient-name" placeholder="Enter full name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="service-type">Service Type</label>
-                                        <input type="text" id="service-type" placeholder="e.g. Medical Consultation" required>
-                                    </div>
-                                </div>
-                            </div><div class="gridcolumn">
-                                <div class="subform">
-                                    <div class="search-container">
-                                        <div class="search-icon">
-                                            <img src="../svg/search-icon.svg" alt="search-icon">
-                                        </div>
-                                        <input type="text" placeholder="Search by name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="patient-name">Patient Name</label>
-                                        <input type="text" id="patient-name" placeholder="Enter full name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="service-type">Service Type</label>
-                                        <input type="text" id="service-type" placeholder="e.g. Medical Consultation" required>
-                                    </div>
-                                </div>
+                        <div class="mainform">
+                            
+                            <!-- Patient Search Group -->
+                            <div class="form-group" style="position: relative;">
+                                <label for="patient-search">Patient Name</label>
+                                <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" required>
+                                <!-- Hidden input to store selected patient ID -->
+                                <input type="hidden" id="patient-id" name="patient_id" required>
+                                <!-- Dropdown list for search results -->
+                                <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
                             </div>
+
+                            <!-- Service Type Select Group -->
+                            <div class="form-group">
+                                <label for="service-type">Service Type</label>
+                                <select id="service-type" name="service_name" required>
+                                    <option value="" disabled selected>Select a service</option>
+                                    <option value="Medical Consultation">Medical Consultation</option>
+                                    <option value="Prenatal Checkup">Prenatal Checkup</option>
+                                    <option value="Immunization / Vaccination">Immunization / Vaccination</option>
+                                    <option value="Dental Checkup">Dental Checkup</option>
+                                    <option value="Laboratory Request">Laboratory Request</option>
+                                </select>
+                            </div>
+
                         </div>
                         <div class="form-actions">
-                            <button type="button" id="closeBtn" class="btn-cancel">Cancel</button>
+                            <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('queue-form').close()">Cancel</button>
                             <button type="submit" class="btn-submit">Add</button>
                         </div>
                     </div>
                 </form>
             </div>
-        </div>
+        </dialog>
     </div>
     
 </body>

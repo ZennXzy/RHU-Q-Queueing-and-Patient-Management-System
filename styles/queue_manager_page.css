@@ -114,7 +114,6 @@ body, html {
   font-weight: 700;
 }
 
-
 .scrollable-card::-webkit-scrollbar {
   width: 5px;
 }
@@ -141,10 +140,10 @@ body, html {
   flex: 1;
   margin-right: 5px;
   align-items: center;
-  padding: 8px 12px; /* Reduced padding */
+  padding: 8px 12px; 
   border-radius: 5px;
-  margin-bottom: 6px; /* Reduced margin */
-  font-size: 13px; /* Reduced font size */
+  margin-bottom: 6px; 
+  font-size: 13px; 
   font-weight: 600;
 }
 
