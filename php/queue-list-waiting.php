@@ -29,7 +29,10 @@ if($res && $res->num_rows > 0){
         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
         echo '<div class="action-container">';
         echo        '<span class="more-options">⋮</span>';
-        echo        '<button class="btn-accept">Accept</button>';
+        echo '<button type="button" class="btn-accept" ' .
+        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+        'data-name="' .htmlspecialchars($fullName). '">Accept</button>';
         echo        '</div>';
         echo    '</div>';
     }
