@@ -160,10 +160,12 @@
     <h3 style="margin-bottom: 12px; color: #0B695D;">Add Department Card</h3>
     <label for="deptSelect">Select Department:</label>
     <select id="deptSelect" class="deptSelect" >
-      <option value="medical">Medical</option>
-      <option value="dental">Dental</option>
-      <option value="vaccine">Vaccine</option>
-      <option value="laboratory">Laboratory</option>
+      <option value="Medical Consultation">Medical Consultation</option>
+      <option value="Prenatal Checkup">Prenatal Checkup</option>
+      <option value="Immunization / Vaccination">Immunization / Vaccination</option>
+      <option value="Dental Checkup">Dental Checkup</option>
+      <option value="Laboratory Request">Laboratory Request</option>
+
     </select>
     <div class="actionButton">
       <button type="button" id="closeModalBtn" class="closeModalBtn">Cancel</button>

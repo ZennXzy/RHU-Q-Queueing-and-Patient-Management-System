@@ -63,41 +63,42 @@ body, html {
     border: 2px solid rgba(255, 255, 255, 0.5);
     border-radius: 16px;
     flex: 1;
-    padding: 30px;
+    padding: 20px;
     display: grid;
-    column-gap: 30px;
-    row-gap: 0px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
     position: relative;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    max-height: calc(100vh - 150px);
-    transition: all 0.3s ease;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
 }
 
 .waiting-card {
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    margin-top: 0;
+    padding-top: 5px;
 }
 
 .waiting-title {
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     color: #222;
-    margin-bottom: 10px;
-    margin-left:10px;
+    margin-bottom: 6px;
+    margin-left: 5px;
 }
 
 .waiting-badges {
     display: flex;
-    flex-direction: row;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
 }
-
 /* Department Column Base */
 .dept-column {
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0; 
 }
 .waiting-column{
     display: flex;
@@ -107,15 +108,15 @@ body, html {
 /* Colored Queue Card */
 .queue-card {
     border-radius: 12px;
-    padding: 25px 20px;
+    padding: 15px;
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    overflow-y: auto; /* Scroll internally if active tickets exceed card height */
 }
-
 /* Department Theme Colors */
 .dept-medical {
     background-color: #E3F2FD;
@@ -133,21 +134,22 @@ body, html {
 .dept-title {
     display: flex;
     align-items: center;
-    gap: 25px;
-    font-size: 20px;
-    font-weight:bold;
+    gap: 12px;
+    font-size: 15px;
+    font-weight: bold;
+    height: 100%;
+    max-height: 35px;
     color: #222;
     width: 100%;
-    margin-bottom: 25px;
+    margin-bottom: 12px;
     text-transform: uppercase;
 }
 
-.dept-title img{
-  height: 50px;
-  width:auto;
-  transform: rotate(-30deg);
+.dept-title img {
+    height: 32px;
+    width: auto;
+    transform: rotate(-30deg);
 }
-
 
 .dept-title .icon {
     font-size: 22px;
@@ -156,17 +158,16 @@ body, html {
 /* Active Ticket Box */
 .ticket-box {
     background-color: white;
-    width: 85%;
-    padding: 12px 0;
+    width: 90%;
+    padding: 8px 0;
     text-align: center;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     color: #222;
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-bottom: 15px;
+    margin-bottom: 8px;
 }
-
 /* Empty Queue Text */
 .no-queue {
     margin: auto 0;
@@ -179,30 +180,31 @@ body, html {
 .time-stat {
     margin-top: auto;
     text-align: center;
+    padding-top: 8px;
 }
 
 .time-stat .label {
-    font-size: 18px;
+    font-size: 13px;
     color: #333;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     font-weight: 500;
 }
 
 .time-stat .value {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     color: #222;
 }
+
 
 .badge {
     background-color: #E0E0E0;
     color: #222;
     font-size: 11px;
     font-weight: 700;
-    padding: 6px 16px;
+    padding: 4px 10px;
     border-radius: 4px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 
