@@ -1,5 +1,6 @@
 <?php
   require '../php/check-private.php';
+  require '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -193,30 +194,32 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>admin</td>
-                <td>Administrator</td>
-                <td>admin@rhu.gov.ph</td>
-                <td><span class="badge badge-active">Active</span></td>
-                <td>5/11/2026</td>
-                <td>5/11/2026</td>
-                <td>
-                  <div class="table-actions">
-                    <i class="fa-solid fa-pen action-icon"></i>
-                    <i class="fa-solid fa-trash action-icon delete"></i>
-                  </div>
-                </td>
-              </tr>
+            <tbody class="account-list" id="account-list">
+              <?php
+                $res = $conn->query("SELECT id, username, fullname, email, status, created_at, last_active FROM admin_auth");
+
+                if($res && $res->num_rows > 0){
+                    while ($row = $res->fetch_assoc()){
+                    echo    '<tr>';
+                    echo    '<td>'.htmlspecialchars($row['id']).'</td>';
+                    echo    '<td>'.htmlspecialchars($row['username']).'</td>';
+                    echo    '<td>'.htmlspecialchars($row['fullname']).'</td>';
+                    echo    '<td>'.htmlspecialchars($row['email']).'</td>';
+                    echo    '<td><span class="badge badge-active">'.htmlspecialchars($row['status']).'</span></td>';
+                    echo    '<td>'.htmlspecialchars($row['created_at']).'</td>';
+                    echo    '<td>'.htmlspecialchars($row['last_active']).'</td>';
+                    echo    '<td>';
+                    echo    '<div class="table-actions">';
+                    echo    'P Sample';
+                    echo    '</div>';
+                    echo    '</td>';
+                    echo    '</tr>';
+                    }
+                  }
+              ?>
             </tbody>
           </table>
         </div>
-
-        <!-- Floating Bottom-Right Logout Button -->
-        <button class="btn btn-logout">
-          <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </button>
       </div>
     </div>
   </div>
