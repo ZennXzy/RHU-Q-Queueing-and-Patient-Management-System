@@ -61,6 +61,10 @@ $defaultServices = [
 
         <!-- Class grid-dynamic enables automatic 2-row stacking when cards exceed 4-5 items -->
         <div class="display-card grid-dynamic">
+            <div id="no-services-msg" class="no-services-message" style="display: none;">
+                <h3>No Selected Services</h3>
+                <p>Please select at least one service card from the display settings.</p>
+            </div>
             
             <?php foreach ($defaultServices as $serviceName): 
                 $config = $DEPARTMENT_CONFIG[$serviceName] ?? [
@@ -133,6 +137,9 @@ $defaultServices = [
                     
                     $avgFormatted = sprintf('%02d:%02d:%02d', $h, $m, $s);
                 }
+                $stmtActive->close();
+                $stmtWaiting->close();
+                $stmt->close();
             ?>
 
                 <div class="dept-column" data-service="<?php echo htmlspecialchars($serviceName); ?>">
@@ -184,18 +191,30 @@ $defaultServices = [
         </div>
     </div>
 
-    <!-- Filter cards based on settings in localStorage -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const stored = localStorage.getItem('activeDepartments');
+            const noServicesMsg = document.getElementById('no-services-msg');
+            
             if (stored) {
                 const activeDepts = JSON.parse(stored).map(d => d.id || d.name);
-                document.querySelectorAll('.dept-column').forEach(col => {
+                const columns = document.querySelectorAll('.dept-column');
+                let visibleCount = 0;
+
+                columns.forEach(col => {
                     const service = col.getAttribute('data-service');
                     if (!activeDepts.includes(service)) {
                         col.style.display = 'none';
+                    } else {
+                        col.style.display = ''; // Ensure visible
+                        visibleCount++;
                     }
                 });
+
+                // Toggle message when zero service cards are selected
+                if (visibleCount === 0 && noServicesMsg) {
+                    noServicesMsg.style.display = '';
+                }
             }
         });
     </script>
