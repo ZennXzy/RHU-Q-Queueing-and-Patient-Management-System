@@ -92,23 +92,46 @@ $defaultServices = [
                 $resWaiting = $stmtWaiting->get_result();
 
                 // 3. FETCH AVERAGE WAITING TIME
-                $sqlAvg = "SELECT AVG(service_duration) as avg_sec 
-                           FROM transactions 
-                           WHERE service = ? AND DATE(transaction_date) = CURDATE()";
-                $stmtAvg = $conn->prepare($sqlAvg);
-                $stmtAvg->bind_param("s", $serviceName);
-                $stmtAvg->execute();
-                $resAvg = $stmtAvg->get_result();
-                
-                $avgFormatted = '00:00:00';
-                if ($rowAvg = $resAvg->fetch_assoc()) {
-                    if (!empty($rowAvg['avg_sec'])) {
-                        $secs = (int)round($rowAvg['avg_sec']);
-                        $h = floor($secs / 3600);
-                        $m = floor(($secs % 3600) / 60);
-                        $s = $secs % 60;
-                        $avgFormatted = sprintf('%02d:%02d:%02d', $h, $m, $s);
+                $sql = "SELECT service_duration 
+                        FROM transactions 
+                        WHERE service = ? 
+                        AND DATE(transaction_date) = CURDATE() 
+                        AND service_duration IS NOT NULL";
+
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("s", $serviceName);
+                $stmt->execute();
+                $result = $stmt->get_result();
+
+                $totalSeconds = 0;
+                $count = 0;
+
+                while ($row = $result->fetch_assoc()) {
+                    $str = $row['service_duration']; // e.g. "0 days, 0 hours, 2 minutes"
+                    
+                    // Extract all numbers from the string
+                    preg_match_all('/\d+/', $str, $matches);
+                    
+                    if (!empty($matches[0]) && count($matches[0]) >= 3) {
+                        $days    = (int)$matches[0][0];
+                        $hours   = (int)$matches[0][1];
+                        $minutes = (int)$matches[0][2];
+                        
+                        $totalSeconds += ($days * 86400) + ($hours * 3600) + ($minutes * 60);
+                        $count++;
                     }
+                }
+
+                $avgFormatted = "00:00:00";
+
+                if ($count > 0) {
+                    $avgSeconds = (int) round($totalSeconds / $count);
+                    
+                    $h = floor($avgSeconds / 3600);
+                    $m = floor(($avgSeconds % 3600) / 60);
+                    $s = $avgSeconds % 60;
+                    
+                    $avgFormatted = sprintf('%02d:%02d:%02d', $h, $m, $s);
                 }
             ?>
 

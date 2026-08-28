@@ -8,9 +8,7 @@ document.addEventListener('click', async (e) => {
   const patientName   = completeBtn.getAttribute('data-patient-name');
   const queueCode   = completeBtn.getAttribute('data-queue-code');
   const service     = completeBtn.getAttribute('data-service');
-  const acceptedAt  = completeBtn.getAttribute('data-accepted-at');
 
-  console.log(patientName);
 
   if (!queueInfoId || !patientName) {
     showToast('Missing record details.', 'error');
@@ -25,7 +23,6 @@ document.addEventListener('click', async (e) => {
     formData.append('patient_name', patientName);
     formData.append('queue_code', queueCode);
     formData.append('service', service);
-    formData.append('accepted_at', acceptedAt);
 
 
     const response = await fetch('../php/complete-queue.php', {

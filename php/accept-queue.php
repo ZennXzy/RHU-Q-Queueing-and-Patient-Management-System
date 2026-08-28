@@ -15,7 +15,7 @@ if ($queue_info_id <= 0) {
 }
 
 try {
-    $stmt = $conn->prepare("UPDATE queue_information SET status = 'In Progress' WHERE queue_info_id = ?");
+    $stmt = $conn->prepare("UPDATE queue_information SET status = 'In Progress', accepted_at = NOW() WHERE queue_info_id = ?");
     $stmt->bind_param("i", $queue_info_id);
 
     if ($stmt->execute()) {
