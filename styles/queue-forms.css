@@ -108,6 +108,19 @@
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
+.form-group .service-type{
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #0B695D;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-group .service-type select:focus{
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
 
 .form-actions {
     display: flex;

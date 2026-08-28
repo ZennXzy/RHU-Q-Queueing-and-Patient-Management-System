@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2026 at 06:58 PM
+-- Generation Time: Aug 28, 2026 at 04:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -180,7 +180,7 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (188, 'Ogie', 'Alcasid', 'Herminio', NULL, 'Zone 4, Polangui, Albay', 0, 'Male', '1987-08-27', '09907897654', 'ogie.alcasid@example.com', 'Self-Employed', 'Songwriter', 'A-Team', 'Married', 'Roman Catholic', 'Herminia Alcasid', 'Herminio Alcasid Sr.', 'Regine Velasquez', 'Dependent', '12-455676712-5', 'Regine Velasquez', 'No', '2026-08-13'),
 (189, 'Sharon', 'Cuneta', 'Pangilinan', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '1986-01-06', '09918908765', 'sharon.cuneta@example.com', 'Self-Employed', 'Actress', 'Mega Productions', 'Married', 'Roman Catholic', 'Elaine Gamboa', 'Pablo Cuneta', 'Kiko Pangilinan', 'Member', '12-566787823-6', NULL, 'No', '2026-08-13'),
 (190, 'Kiko', 'Pangilinan', 'Castelo', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1983-08-24', '09929019876', 'kiko.pangilinan@example.com', 'Self-Employed', 'Organic Farmer', 'Kiko Farms', 'Married', 'Roman Catholic', 'Emma Castelo', 'Donato Pangilinan', 'Sharon Cuneta', 'Dependent', '12-566787823-6', 'Sharon Cuneta', 'No', '2026-08-13'),
-(192, 'Chel', 'Diokno', 'Jose', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1981-02-23', '09941231098', 'chel.diokno@example.com', 'Self-Employed', 'Lawyer', 'FLAG Polangui', 'Married', 'Roman Catholicism', 'Carmen Jose', 'Jose W. Diokno', 'Divina Diokno', 'Member', '12-788909045-8', NULL, 'No', '2026-08-13'),
+(192, 'Chel', 'Diokno', 'Jose', NULL, 'Zone 3, Polangui, Albay', 0, 'Male', '1981-02-23', '09941231098', 'chel.diokno@example.com', 'Self-Employed', 'Lawyer', 'FLAG Polangui', 'Married', 'Roman Catholicism', 'Carmen Jose', 'Jose W. Diokno', 'Divina Diokno', 'Member', '12-788909045-8', NULL, 'Yes', '2026-08-13'),
 (193, 'Risa', 'Hontiveros', 'Baraquel', NULL, 'Zone 4, Polangui, Albay', 0, 'Female', '1986-02-24', '09952342109', 'risa.hontiveros@example.com', 'Employed', 'Public Servant', 'LGU Health Desk', 'Widowed', 'Roman Catholic', 'Helen Baraquel', 'Ramon Hontiveros', 'Frank Baraquel', 'Member', '12-899010156-9', NULL, 'No', '2026-08-13'),
 (194, 'Vico', 'Sotto', 'Nubla', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '1999-06-17', '09963453210', 'vico.sotto@example.com', 'Employed', 'Government Official', 'LGU Polangui', 'Single', 'Roman Catholic', 'Coney Reyes', 'Vic Sotto', NULL, 'Member', '12-900121267-0', NULL, 'No', '2026-08-13'),
 (195, 'Sandro', 'Marcos', 'Araneta', NULL, 'Zone 1, Polangui, Albay', 0, 'Male', '1994-03-07', '09974564321', 'sandro.marcos@example.com', 'Employed', 'Legislative Staff', 'House Office', 'Single', 'Roman Catholic', 'Louise Araneta', 'Ferdinand Marcos Jr.', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-13'),
@@ -200,7 +200,6 @@ INSERT INTO `patient_records` (`patient_id`, `firstname`, `lastname`, `middlenam
 (211, 'Dodong', 'Alcantara', 'Serrano', NULL, 'Zone 5, Polangui, Albay', 0, 'Male', '2002-11-08', '09184564321', 'dodong.a@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Rosa Serrano', 'Felix Alcantara', NULL, 'Not Applicable', NULL, NULL, 'Yes', '2026-08-13'),
 (212, 'Inday', 'Serrano', 'Alcantara', NULL, 'Zone 5, Polangui, Albay', 0, 'Female', '2004-04-14', '09195675432', 'inday.s@example.com', 'Unemployed', NULL, NULL, 'Single', 'Roman Catholic', 'Rosa Serrano', 'Felix Alcantara', NULL, 'Dependent', '12-788909045-9', 'Rosa Serrano', 'Yes', '2026-08-13'),
 (217, 'Lucky', 'Casimero', 'Gado', NULL, 'Amatong Odiongan Romblon', 37, 'male', '1989-06-12', '09352673823', NULL, 'unemployed', NULL, NULL, 'single', 'Others', 'Susan Fadriquela Gado', 'Tony Fetalver Fontamillas', NULL, 'not applicable', NULL, NULL, 'no', '2026-08-13'),
-(218, 'Daryl', 'Lota', 'Gado', NULL, 'Amatong Odiongan Romblon', 21, 'male', '2005-03-13', '09876543219', NULL, 'unemployed', NULL, NULL, 'single', 'Others', 'Darlyn Fadriquela Lota', 'Darwin Fetalver Lota', NULL, 'not applicable', NULL, NULL, 'no', '2026-08-21'),
 (219, 'Paul Anthony', 'Fontamillas', 'Gado', NULL, 'Dapawan Odiongan Romblon', 24, 'Male', '2001-09-18', '09352673843', NULL, 'unemployed', NULL, NULL, 'Single', 'Others', 'Susan Fadriquela Gado', 'Tony Fetalver Fontamillas', NULL, 'not applicable', NULL, NULL, 'yes', '2026-08-21'),
 (220, 'Daryl', 'qweqwe', 'Gado', NULL, 'Dapawan Odiongan Romblon', 25, 'Male', '2001-05-23', '09876543219', NULL, 'Unemployed', NULL, NULL, 'Single', 'Islam', 'Lota Susan Fadriquela', 'Fontamillas Tony Fetalver', NULL, 'Not Applicable', NULL, NULL, 'No', '2026-08-21');
 
@@ -222,20 +221,6 @@ CREATE TABLE `pending_appointments` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `queue_dashboard`
---
-
-CREATE TABLE `queue_dashboard` (
-  `dashboard_id` int(11) NOT NULL,
-  `waiting` int(100) NOT NULL,
-  `in_progress` int(100) NOT NULL,
-  `completed` int(100) NOT NULL,
-  `operation_date` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `queue_information`
 --
 
@@ -245,6 +230,8 @@ CREATE TABLE `queue_information` (
   `patient_id` int(11) NOT NULL,
   `service_name` varchar(200) NOT NULL,
   `status` varchar(100) NOT NULL,
+  `accepted_at` timestamp NULL DEFAULT NULL,
+  `service_duration` timestamp NULL DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -252,33 +239,10 @@ CREATE TABLE `queue_information` (
 -- Dumping data for table `queue_information`
 --
 
-INSERT INTO `queue_information` (`queue_info_id`, `queue_code`, `patient_id`, `service_name`, `status`, `created_at`) VALUES
-(5, 'A0001', 192, 'Medical', 'In Progress', '2026-08-24 23:22:52'),
-(7, 'A0002', 200, 'Medical', 'In Progress', '2026-08-24 23:54:59'),
-(8, 'B0001', 153, 'Dental', 'In Progress', '2026-08-24 23:56:01'),
-(9, 'B0002', 127, 'Dental', 'In Progress', '2026-08-25 00:06:23'),
-(10, 'C0001', 174, 'Vaccine', 'in Progress', '2026-08-25 00:32:24');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `services`
---
-
-CREATE TABLE `services` (
-  `id` int(11) NOT NULL,
-  `service_name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `services`
---
-
-INSERT INTO `services` (`id`, `service_name`) VALUES
-(2, 'Dental'),
-(4, 'Laboratory'),
-(1, 'Medical'),
-(3, 'Vaccine');
+INSERT INTO `queue_information` (`queue_info_id`, `queue_code`, `patient_id`, `service_name`, `status`, `accepted_at`, `service_duration`, `created_at`) VALUES
+(80, 'A0001', 153, 'Medical Consultation', 'Completed', '2026-08-28 13:26:26', '2026-08-28 13:27:31', '2026-08-28 21:26:24'),
+(81, 'A0002', 206, 'Medical Consultation', 'Completed', '2026-08-28 13:32:35', '2026-08-28 13:34:59', '2026-08-28 21:32:25'),
+(82, 'A0003', 122, 'Medical Consultation', 'Completed', '2026-08-28 13:32:59', '2026-08-28 13:35:50', '2026-08-28 21:32:31');
 
 -- --------------------------------------------------------
 
@@ -287,12 +251,22 @@ INSERT INTO `services` (`id`, `service_name`) VALUES
 --
 
 CREATE TABLE `transactions` (
-  `id` int(11) NOT NULL,
-  `patient_id` int(11) NOT NULL,
-  `queue_id` int(11) NOT NULL,
-  `service_id` int(11) NOT NULL,
+  `transaction_id` int(11) NOT NULL,
+  `patient_name` varchar(100) NOT NULL,
+  `queue_code` varchar(100) NOT NULL,
+  `service` varchar(100) NOT NULL,
+  `service_duration` varchar(100) NOT NULL,
   `transaction_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`transaction_id`, `patient_name`, `queue_code`, `service`, `service_duration`, `transaction_date`) VALUES
+(36, 'Aquino, Corazon', 'A0001', 'Medical Consultation', '0 days, 0 hours, 1 minutes', '2026-08-28 21:27:31'),
+(37, 'Heussaff, Erwan', 'A0002', 'Medical Consultation', '0 days, 0 hours, 2 minutes', '2026-08-28 21:34:59'),
+(38, 'Aguinaldo, Emilio', 'A0003', 'Medical Consultation', '0 days, 0 hours, 2 minutes', '2026-08-28 21:35:50');
 
 --
 -- Indexes for dumped tables
@@ -338,12 +312,6 @@ ALTER TABLE `pending_appointments`
   ADD KEY `patient_id` (`patient_id`);
 
 --
--- Indexes for table `queue_dashboard`
---
-ALTER TABLE `queue_dashboard`
-  ADD PRIMARY KEY (`dashboard_id`);
-
---
 -- Indexes for table `queue_information`
 --
 ALTER TABLE `queue_information`
@@ -351,20 +319,13 @@ ALTER TABLE `queue_information`
   ADD KEY `patient_id` (`patient_id`);
 
 --
--- Indexes for table `services`
---
-ALTER TABLE `services`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `service_name` (`service_name`);
-
---
 -- Indexes for table `transactions`
 --
 ALTER TABLE `transactions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `patient_id` (`patient_id`),
-  ADD KEY `queue_id` (`queue_id`),
-  ADD KEY `service_id` (`service_id`);
+  ADD PRIMARY KEY (`transaction_id`),
+  ADD KEY `patient_id` (`patient_name`),
+  ADD KEY `queue_id` (`queue_code`),
+  ADD KEY `transactions_ibfk_3` (`service`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -401,28 +362,16 @@ ALTER TABLE `pending_appointments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `queue_dashboard`
---
-ALTER TABLE `queue_dashboard`
-  MODIFY `dashboard_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `services`
---
-ALTER TABLE `services`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- Constraints for dumped tables
@@ -453,14 +402,6 @@ ALTER TABLE `pending_appointments`
 --
 ALTER TABLE `queue_information`
   ADD CONSTRAINT `queue_information_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`);
-
---
--- Constraints for table `transactions`
---
-ALTER TABLE `transactions`
-  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `transactions_ibfk_2` FOREIGN KEY (`queue_id`) REFERENCES `queue_information` (`queue_info_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `transactions_ibfk_3` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

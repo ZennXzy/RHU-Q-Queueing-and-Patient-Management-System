@@ -357,7 +357,7 @@
                             <!-- Service Type Select Group -->
                             <div class="form-group">
                                 <label for="service-type">Service Type</label>
-                                <select id="service-type" name="service_name" required>
+                                <select class="service-type" id="service-type" name="service_name" required>
                                     <option value="" disabled selected>Select a service</option>
                                     <option value="Medical Consultation">Medical Consultation</option>
                                     <option value="Prenatal Checkup">Prenatal Checkup</option>
