@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2026 at 04:44 PM
+-- Generation Time: Sep 02, 2026 at 10:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -33,7 +33,8 @@ CREATE TABLE `admin_auth` (
   `password_hash` varchar(255) NOT NULL,
   `fullname` varchar(100) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `status` enum('Active','Inactive','Suspended') DEFAULT 'Active',
+  `status` varchar(100) DEFAULT NULL,
+  `role` varchar(100) NOT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `last_active` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -42,9 +43,9 @@ CREATE TABLE `admin_auth` (
 -- Dumping data for table `admin_auth`
 --
 
-INSERT INTO `admin_auth` (`id`, `username`, `password_hash`, `fullname`, `email`, `status`, `created_at`, `last_active`) VALUES
-(4, 'paul', '$2y$12$cyX4s6IqAzDcbVhL7VTO5OEhjfvWZBaFSp14jvWvMHxg73jmpcetC', NULL, NULL, 'Active', '2026-08-09 00:14:45', '2026-08-09 00:14:45'),
-(6, 'Zenergy', '$2y$12$KJYIU4sCjyflLgZPbcrooOeDBzrXbJFs0sZrHhlTYoyuH1b20YdKu', NULL, NULL, 'Active', '2026-08-23 18:08:58', '2026-08-23 18:08:58');
+INSERT INTO `admin_auth` (`id`, `username`, `password_hash`, `fullname`, `email`, `status`, `role`, `created_at`, `last_active`) VALUES
+(4, 'paul', '$2y$12$cyX4s6IqAzDcbVhL7VTO5OEhjfvWZBaFSp14jvWvMHxg73jmpcetC', 'Paul Anthony Fontamillas', NULL, 'Online', 'admin', '2026-08-09 00:14:45', '2026-09-01 14:28:58'),
+(7, 'zennXzy', '$2y$12$dIQSNsFNL60s4C9LqALgwO04AJhzV9AmnCjyvH3qazIedjX.vQkbS', NULL, NULL, 'Online', '', '2026-08-31 16:12:13', '2026-08-31 16:12:59');
 
 -- --------------------------------------------------------
 
@@ -73,6 +74,18 @@ CREATE TABLE `approved_appointments` (
   `admin_id` int(11) NOT NULL,
   `scheduled_date` datetime NOT NULL,
   `approved_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `logs`
+--
+
+CREATE TABLE `logs` (
+  `log_id` int(11) NOT NULL,
+  `log_message` varchar(200) NOT NULL,
+  `log_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -235,15 +248,6 @@ CREATE TABLE `queue_information` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `queue_information`
---
-
-INSERT INTO `queue_information` (`queue_info_id`, `queue_code`, `patient_id`, `service_name`, `status`, `accepted_at`, `service_duration`, `created_at`) VALUES
-(80, 'A0001', 153, 'Medical Consultation', 'Completed', '2026-08-28 13:26:26', '2026-08-28 13:27:31', '2026-08-28 21:26:24'),
-(81, 'A0002', 206, 'Medical Consultation', 'Completed', '2026-08-28 13:32:35', '2026-08-28 13:34:59', '2026-08-28 21:32:25'),
-(82, 'A0003', 122, 'Medical Consultation', 'Completed', '2026-08-28 13:32:59', '2026-08-28 13:35:50', '2026-08-28 21:32:31');
-
 -- --------------------------------------------------------
 
 --
@@ -258,15 +262,6 @@ CREATE TABLE `transactions` (
   `service_duration` varchar(100) NOT NULL,
   `transaction_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `transactions`
---
-
-INSERT INTO `transactions` (`transaction_id`, `patient_name`, `queue_code`, `service`, `service_duration`, `transaction_date`) VALUES
-(36, 'Aquino, Corazon', 'A0001', 'Medical Consultation', '0 days, 0 hours, 1 minutes', '2026-08-28 21:27:31'),
-(37, 'Heussaff, Erwan', 'A0002', 'Medical Consultation', '0 days, 0 hours, 2 minutes', '2026-08-28 21:34:59'),
-(38, 'Aguinaldo, Emilio', 'A0003', 'Medical Consultation', '0 days, 0 hours, 2 minutes', '2026-08-28 21:35:50');
 
 --
 -- Indexes for dumped tables
@@ -295,6 +290,12 @@ ALTER TABLE `approved_appointments`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `pending_appointment_id` (`pending_appointment_id`),
   ADD KEY `admin_id` (`admin_id`);
+
+--
+-- Indexes for table `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`log_id`);
 
 --
 -- Indexes for table `patient_records`
@@ -335,7 +336,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `admin_auth`
 --
 ALTER TABLE `admin_auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `appointment_messages`
@@ -348,6 +349,12 @@ ALTER TABLE `appointment_messages`
 --
 ALTER TABLE `approved_appointments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `patient_records`
@@ -365,13 +372,13 @@ ALTER TABLE `pending_appointments`
 -- AUTO_INCREMENT for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Constraints for dumped tables

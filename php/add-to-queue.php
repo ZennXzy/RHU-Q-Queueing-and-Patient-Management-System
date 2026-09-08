@@ -1,6 +1,5 @@
 <?php
 header('Content-Type: application/json');
-
 require_once '../php/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -8,7 +7,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Retrieve submitted form values
 $patient_id   = isset($_POST['patient_id']) ? intval($_POST['patient_id']) : 0;
 $service_name = isset($_POST['service_name']) ? trim($_POST['service_name']) : '';
 
@@ -17,8 +15,7 @@ if ($patient_id <= 0 || empty($service_name)) {
     exit;
 }
 
-// 1. DETERMINE PREFIX ACCORDING TO SERVICE TYPE
-$prefix = 'A'; // Default fallback
+$prefix = 'A'; 
 switch (strtolower($service_name)) {
     case 'medical consultation':
         $prefix = 'A';

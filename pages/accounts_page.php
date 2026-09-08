@@ -12,11 +12,16 @@
     <link rel="stylesheet" href="../styles/accounts_page.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/add-account-form.css">
+    <link rel="stylesheet" href="../styles/toast.css">
 
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/logout.js" defer></script>
+    <script src="../js/add-account.js" defer></script>
+    <script src="../js/toast.js" defer></script>
+    <script src="../js/account-list-loader.js" defer></script>
 
 </head>
 <body>
@@ -30,9 +35,8 @@
             <h3>Hello 
                 <?php
                     $username = $_SESSION['logged_name'];
-                    echo ucfirst($username);
-                ?>
-                !
+                    echo ucfirst($username).'!';
+                ?>    
             </h3>
         </div>
     </div>
@@ -169,9 +173,10 @@
             </div>
           </div>
 
-          <div class="action-buttons">
-            <button class="btn btn-primary">
-              <i class="fa-solid fa-plus"></i> Add Account
+          <div class="top-action-button">
+            <button class="btn add-account-button" id="open-form-button">
+                <img src="../svg/add-account-icon.svg" alt="add-acccount-icon">
+            Add Account
             </button>
             <button class="btn btn-secondary">
               <i class="fa-solid fa-database"></i> Backup and Restore
@@ -184,30 +189,33 @@
           <table>
             <thead>
               <tr>
-                <th>#</th>
+                <th style="text-align: center;">#</th>
                 <th>Username</th>
                 <th>Full Name</th>
                 <th>Email</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Last Login</th>
-                <th>Actions</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Role</th>
+                <th style="text-align: center;">Created</th>
+                <th style="text-align: center;">Last Login</th>
+                <th style="text-align: center;">Actions</th>
               </tr>
             </thead>
-            <tbody class="account-list" id="account-list">
-              <?php
-                $res = $conn->query("SELECT id, username, fullname, email, status, created_at, last_active FROM admin_auth");
+            <?php
+                echo '<tbody class="account-list" id="account-list">';
+              
+                $res = $conn->query("SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth");
 
                 if($res && $res->num_rows > 0){
                     while ($row = $res->fetch_assoc()){
                     echo    '<tr>';
-                    echo    '<td>'.htmlspecialchars($row['id']).'</td>';
+                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['id']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['username']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['fullname']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['email']).'</td>';
-                    echo    '<td><span class="badge badge-active">'.htmlspecialchars($row['status']).'</span></td>';
-                    echo    '<td>'.htmlspecialchars($row['created_at']).'</td>';
-                    echo    '<td>'.htmlspecialchars($row['last_active']).'</td>';
+                    echo    '<td style="text-align: center;"><span class="badge badge-active">'.htmlspecialchars($row['status']).'</span></td>';
+                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['role']).'</td>';
+                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['created_at']).'</td>';
+                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['last_active']).'</td>';
                     echo    '<td>';
                     echo    '<div class="table-actions">';
                     echo    'P Sample';
@@ -220,6 +228,78 @@
             </tbody>
           </table>
         </div>
+        <dialog id="add-account" class="add-account">
+            <div class="toast-container" id="toastContainer"></div>
+            <div class="modal-card" id="modal-card">
+                <h2>Add Account</h2>
+                <form id="add-account-form" method="dialog">
+                    <div class="formcontainer">
+                        <div class="mainform">
+                            
+                            <div class="form-group" style="position: relative;">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" placeholder="Type suggested username..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" name="fullname" placeholder="Type your full name..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="email">Email</label>
+                                <input type="text" id="email" name="email" placeholder="Type your Email..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" placeholder="Type your suggested password..." autocomplete="off">
+                            </div>
+
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('add-account').close()">Cancel</button>
+                            <button type="submit" class="btn-submit">Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </dialog>
+        <dialog id="edit-account" class="edit-account">
+            <div class="modal-card" id="modal-card">
+                <h2>Edit Account</h2>
+                <form id="edit-account-form" method="dialog">
+                    <div class="formcontainer">
+                        <div class="mainform">
+                            <div class="form-group" style="position: relative;">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" name="username" placeholder="Type suggested username..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="fullname">Full Name</label>
+                                <input type="text" id="fullname" name="fullname" placeholder="Type your full name..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="email">Email</label>
+                                <input type="text" id="email" name="email" placeholder="Type your Email..." autocomplete="off">
+                            </div>
+
+                            <div class="form-group" style="position: relative;">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" placeholder="Type your suggested password..." autocomplete="off">
+                            </div>
+
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('edit-account').close()">Cancel</button>
+                            <button type="submit" class="btn-submit">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </dialog>
       </div>
     </div>
   </div>

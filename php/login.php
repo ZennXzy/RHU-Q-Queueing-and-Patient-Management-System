@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'connection.php';
+require_once 'connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   $username = $_POST['username'] ?? '';
@@ -26,6 +26,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
       $_SESSION['logged_id'] = $user_id;
       $_SESSION['logged_name'] = $sysUsername;
 
+      $update_stmt = $conn->prepare("UPDATE admin_auth SET status = 'Online' WHERE username = ?");
+      $update_stmt->bind_param("s", $username);
+      $update_stmt->execute();
+      
       header('Location: ../pages/launch_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
       exit();
     } 

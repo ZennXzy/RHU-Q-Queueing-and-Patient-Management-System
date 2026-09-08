@@ -116,9 +116,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
   }
 
-  /* ==========================================
-     2. FORM SUBMIT HANDLER (UPDATE API)
-  ========================================== */
+  if (editModal) {
+    editModal.addEventListener("click", (e) => {
+      const rect = editModal.getBoundingClientRect();
+      const isInModal =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInModal) {
+        editModal.close();
+      }
+    });
+  }
+
   if (editForm) {
     editForm.addEventListener('submit', async (e) => {
       e.preventDefault();

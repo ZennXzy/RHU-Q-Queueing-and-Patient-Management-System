@@ -21,7 +21,9 @@
 }
 
 .rightNav{
-  background-color: #1976D2;
+  padding: 10px;
+  border: 1px solid #0B695D;
+  border-radius: 10px;
   max-width:200px;
   max-height:auto;
 }

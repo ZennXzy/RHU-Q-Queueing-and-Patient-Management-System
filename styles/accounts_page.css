@@ -115,7 +115,7 @@ html {
 }
 
 /* Action Buttons */
-.action-buttons {
+.top-action-button {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -139,8 +139,8 @@ html {
     opacity: 0.9;
 }
 
-.btn-primary {
-    background-color: #1976d2;
+.add-account-button {
+    background-color: #2e7d32;
     color: white;
 }
 
@@ -194,6 +194,13 @@ tr:not(:last-child) td {
 
 .badge-active {
     background-color: #2e7d32;
+}
+
+.btn img{
+width: 24px;
+  height: 24px;
+  margin-right: 15px;
+  filter: brightness(0) invert(1);
 }
 
 /* Action Icons in Table */

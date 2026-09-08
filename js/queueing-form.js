@@ -68,13 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 250);
   });
 
-  // Close dropdown if user clicks outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.form-group')) {
-      results_container.style.display = 'none';
-    }
-  });
-  // 3. SUBMIT QUEUE FORM1
+  if (queue_form_modal) {
+    queue_form_modal.addEventListener("click", (e) => {
+      const rect = queue_form_modal.getBoundingClientRect();
+      const isInModal =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInModal) {
+        queue_form_modal.close();
+      }
+    });
+  }
+
   if (queue_form) {
     queue_form.addEventListener('submit', async (e) => {
       e.preventDefault();

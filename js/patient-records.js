@@ -5,13 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const sortableHeaders = document.querySelectorAll("th.sortable");
   
 
-  // Track sort directions: 0 = Full Name, 1 = Age, 4 = Date Registered
   const sortDirections = { 0: "asc", 1: "asc", 4: "asc" };
-
-  /* ==========================================
-     HELPER UTILITIES
-  ========================================== */
-  // Safely retrieve the first non-empty value from an array of possible keys
   const getVal = (obj, keys, defaultVal = "") => {
     for (const key of keys) {
       if (
@@ -26,13 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return defaultVal;
   };
 
-  // Safe string conversion for case matching
   const cleanStr = (val) =>
     String(val || "")
       .toLowerCase()
       .trim();
 
-  // Combine multiple name parts into a single string
   const buildFullName = (obj, fKeys, mKeys, lKeys, sKeys = []) => {
     const f = getVal(obj, fKeys);
     const m = getVal(obj, mKeys);
@@ -41,9 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return [ l, f, m, s].filter(Boolean).join(" ").trim();
   };
 
-  /* ==========================================
-     1. REAL-TIME SEARCH FILTER
-  ========================================== */
   function debounce(func, delay = 300) {
     let timeout;
     return (...args) => {
@@ -96,9 +85,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  /* ==========================================
-     2. COLUMN SORTING LOGIC
-  ========================================== */
   sortableHeaders.forEach((header) => {
     header.style.cursor = "pointer";
 
@@ -153,9 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ==========================================
-     3. VIEW DETAILS CLICK & DATA MAPPING
-  ========================================== */
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".view-btn");
     if (!btn) return;
@@ -175,12 +158,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const p = result.patient;
         console.log("Fetched Patient Data Object:", p);
 
-        // ID Badge
         const badgeEl = document.getElementById("modalPatientIdBadge");
         if (badgeEl)
           badgeEl.textContent = `ID: #${String(patientId).padStart(4, "0")}`;
 
-        // 1. Personal Details
         const fullName = buildFullName(
           p,
           ["firstname"],
@@ -189,7 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
           ["suffix"],
         );
 
-        // Birth Date & Dynamic Age Calculation
         const rawBirthDate = getVal(p, ["date_of_birth"], "");
         let calculatedAge = getVal(p, ["age"], null);
 
@@ -225,7 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (elCivilStatus) elCivilStatus.textContent = civilStatus;
         if (elReligion) elReligion.textContent = religion;
 
-        // Conditional Spouse Field
         const spouseGroup = document.getElementById("modalSpouseGroup");
         const statusLower = cleanStr(civilStatus);
         if (spouseGroup) {
@@ -242,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        // 2. Contact & Address
         const contactNum = getVal(p, ["contact_number"], "-");
         const address = getVal(p, ["address"], "-");
         const dateRegistered = getVal(
@@ -259,7 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (elAddress) elAddress.textContent = address;
         if (elDateReg) elDateReg.textContent = dateRegistered;
 
-        // 3. Parents Information
         const finalMother = getVal(p, ["mothers_name"], "");
         const finalFather = getVal(p, ["fathers_name"], "");
         const finalSpouse = getVal(p, ["spouses_name"], "");
@@ -272,7 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (elFather) elFather.textContent = finalFather || "N/A";
         if (elSpouse) elSpouse.textContent = finalSpouse || "N/A";
 
-        // 4. Employment Information
         const rawEmpStatus = getVal(p, ["employment_status"], "");
         const empStatus = cleanStr(rawEmpStatus);
 
@@ -308,7 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        // 5. PhilHealth Information
         const philStatus = getVal(p, ["phil_status"], "");
 
         const elPhilStatus = document.getElementById("modalPhilStatus");
@@ -338,14 +313,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (elPrinMember)
           elPrinMember.textContent = getVal(p, ["principal_member"], "N/A");
 
-        // 6. Yakap Information
         const yakapStatus = getVal(p, ["yakap_member"], "N/A");
         const elyakapStatus = document.getElementById("modalYakapMember");
 
         if (elyakapStatus) elyakapStatus.textContent = yakapStatus || "N/A";
 
 
-        // 7. Queue/Service History Table
         const historyBody = document.getElementById("modalHistoryBody");
         const visits = p.history || [];
 
@@ -381,9 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error fetching patient profile:", error);    }
   });
-  /* ==========================================
-     4. BACKDROP CLICK TO CLOSE DIALOG
-  ========================================== */
+
   if (modal) {
     modal.addEventListener("click", (e) => {
       const rect = modal.getBoundingClientRect();

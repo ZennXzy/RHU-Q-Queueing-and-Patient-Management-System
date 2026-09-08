@@ -11,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Retrieve and sanitize hidden Patient ID
 $patient_id = isset($_POST['patient_id']) ? intval($_POST['patient_id']) : 0;
 
 if ($patient_id <= 0) {
@@ -22,7 +21,6 @@ if ($patient_id <= 0) {
     exit;
 }
 
-// Helper function to safely get and sanitize POST parameters
 function get_post_val($key, $default = null) {
     if (isset($_POST[$key]) && trim($_POST[$key]) !== '') {
         return trim($_POST[$key]);
@@ -30,7 +28,6 @@ function get_post_val($key, $default = null) {
     return $default;
 }
 
-// Capture and sanitize form inputs matching form field 'name' attributes
 $fname              = get_post_val('editFirstName');
 $mname              = get_post_val('editMiddleName');
 $lname              = get_post_val('editLastName');
@@ -58,7 +55,6 @@ $phil_number        = get_post_val('editPhilNumber');
 $prin_member        = get_post_val('editPrinMember');
 $yakap_member       = get_post_val('editYakapMember');
 
-// Mandatory fields validation
 if (!$fname || !$lname || !$gender || !$birthdate) {
     header('Location: ../pages/patient_records.php?msg=' . urlencode('Invalid credentials') . '&type=error');
     exit();
@@ -69,7 +65,6 @@ if(get_post_val('editSuffix') === 'None'){
 }
 
 try {
-    // SQL Query (Update column names to match your MySQL database schema)
     $sql = "UPDATE patient_records SET 
                 firstname = ?, 
                 middlename = ?, 
@@ -100,7 +95,6 @@ try {
         throw new Exception("Prepare statement failed: " . $conn->error);
     }
 
-    // Bind values (20 strings/null values + 1 integer ID = 21 parameters)
     $stmt->bind_param(
         "sssssssssssssssssssssi",
         $fname,
@@ -127,7 +121,6 @@ try {
         $patient_id
     );
 
-    // Execute statement
     if ($stmt->execute()) {
         echo json_encode([
             'status' => 'success',
