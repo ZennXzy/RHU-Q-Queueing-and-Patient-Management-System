@@ -35,12 +35,11 @@
             <h3>RHU-Q: Queuing and Patient Management System</h3>
         </div>
         <div class="rightNav">
-            <h3>Hello 
+            <h3>
                 <?php
                     $username = $_SESSION['logged_name'];
-                    echo ucfirst($username);
-                ?>
-                !
+                    echo ucfirst($username).'!';
+                ?>    
             </h3>
         </div>
     </div>

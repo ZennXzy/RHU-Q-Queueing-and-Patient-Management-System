@@ -26,6 +26,5 @@ if($res && $res->num_rows > 0){
   echo    '</div>';
   echo  '</td>';
   echo'</tr>';
-  
 }
 ?>

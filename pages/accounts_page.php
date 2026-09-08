@@ -32,7 +32,7 @@
             <h3>RHU-Q: Queuing and Patient Management System</h3>
         </div>
         <div class="rightNav">
-            <h3>Hello 
+            <h3>
                 <?php
                     $username = $_SESSION['logged_name'];
                     echo ucfirst($username).'!';
@@ -158,9 +158,14 @@
           <div class="stats-group">
             <div class="stat-card total">
               <i class="fa-solid fa-users stat-icon"></i>
-              <div class="stat-info">
+              <div class="stat-info" >
                 <span class="stat-label">Total Accounts</span>
-                <span class="stat-value">1</span>
+                <?php
+                $res = $conn->query("SELECT id FROM admin_auth");
+                $total = $res ? $res->num_rows : 0;
+
+                echo '<span class="stat-value" id="stat-card-total">'.$total.'</span>';
+                ?>
               </div>
             </div>
 
@@ -168,7 +173,12 @@
               <i class="fa-solid fa-user-check stat-icon"></i>
               <div class="stat-info">
                 <span class="stat-label">Active Accounts</span>
-                <span class="stat-value">1</span>
+                <?php
+                $res = $conn->query("SELECT COUNT(*) AS Online FROM admin_auth WHERE status = 'Online'");
+                $row = $res->fetch_assoc();
+
+                echo '<span class="stat-value" id="stat-card-active">'.$row['Online'].'</span>';
+                ?>
               </div>
             </div>
           </div>
@@ -181,6 +191,9 @@
             <button class="btn btn-secondary">
               <i class="fa-solid fa-database"></i> Backup and Restore
             </button>
+            <button class="btn btn-secondary">
+              Logs
+            </button>
           </div>
         </div>
 
@@ -189,7 +202,7 @@
           <table>
             <thead>
               <tr>
-                <th style="text-align: center;">#</th>
+                <th style="text-align: center; border-top-left-radius:6px;">#</th>
                 <th>Username</th>
                 <th>Full Name</th>
                 <th>Email</th>
@@ -197,7 +210,7 @@
                 <th style="text-align: center;">Role</th>
                 <th style="text-align: center;">Created</th>
                 <th style="text-align: center;">Last Login</th>
-                <th style="text-align: center;">Actions</th>
+                <th style="text-align: center; border-top-right-radius:6px;">Actions</th>
               </tr>
             </thead>
             <?php
@@ -207,12 +220,15 @@
 
                 if($res && $res->num_rows > 0){
                     while ($row = $res->fetch_assoc()){
+                    $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
                     echo    '<tr>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['id']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['username']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['fullname']).'</td>';
                     echo    '<td>'.htmlspecialchars($row['email']).'</td>';
-                    echo    '<td style="text-align: center;"><span class="badge badge-active">'.htmlspecialchars($row['status']).'</span></td>';
+                    echo '<td style="text-align: center;">';
+                    echo '<span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span>';
+                    echo '</td>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['role']).'</td>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['created_at']).'</td>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['last_active']).'</td>';

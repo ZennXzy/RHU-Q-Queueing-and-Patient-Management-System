@@ -8,6 +8,13 @@ $res = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE username =
 $res->bind_param("s", $username);
 if ($res->execute()) {
     if ($res->affected_rows > 0) {
+        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
+        if ($insertlog) {
+            $message = "Account " . $username . " just logged out.";
+            $insertlog->bind_param('s', $message);
+            $insertlog->execute();
+            $insertlog->close();
+        }
         echo json_encode([
             'status' => 'success',
             'message' => 'User Logged Out.'

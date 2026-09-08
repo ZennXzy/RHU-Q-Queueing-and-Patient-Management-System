@@ -159,6 +159,8 @@ html {
     overflow-x: auto;
 }
 
+
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -167,7 +169,8 @@ table {
 }
 
 th {
-    color: #666;
+    background-color: #065f46;
+    color: white;
     font-weight: 600;
     padding: 12px 10px;
     border-bottom: 1px solid #e0e0e0;
@@ -182,20 +185,28 @@ tr:not(:last-child) td {
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* Status Badge */
 .badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
 }
 
-.badge-active {
-    background-color: #2e7d32;
+/* Green badge for Online */
+.badge-online {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
+/* Red badge for Offline */
+.badge-offline {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
 .btn img{
 width: 24px;
   height: 24px;
