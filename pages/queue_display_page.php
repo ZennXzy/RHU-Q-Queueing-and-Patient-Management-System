@@ -1,7 +1,7 @@
 <?php
 require '../php/check-private.php';
+authorizeRoles(['Doctor/Staff', 'Display']);
 require '../php/connection.php';
-
 $DEPARTMENT_CONFIG = [
     'Medical Consultation' => [
         'title'      => 'MEDICAL CONSULTATION',

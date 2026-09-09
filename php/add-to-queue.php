@@ -15,7 +15,7 @@ if ($patient_id <= 0 || empty($service_name)) {
     exit;
 }
 
-$prefix = 'A'; 
+// Map service to prefix letter
 switch (strtolower($service_name)) {
     case 'medical consultation':
         $prefix = 'A';
@@ -38,34 +38,33 @@ switch (strtolower($service_name)) {
 }
 
 try {
-    $today = date('Y-m-d');
-    $code_sql = "SELECT queue_code 
+    // Select the TRUE numerical MAXIMUM for this prefix created today (CURDATE())
+    $code_sql = "SELECT MAX(CAST(SUBSTRING(queue_code, 2) AS UNSIGNED)) AS max_num 
                  FROM queue_information 
                  WHERE queue_code LIKE CONCAT(?, '%') 
-                   AND DATE(`created_at`) = ? 
-                 ORDER BY queue_info_id DESC 
-                 LIMIT 1";
+                   AND DATE(`created_at`) = CURDATE()";
 
     $stmt_code = $conn->prepare($code_sql);
-    $stmt_code->bind_param("ss", $prefix, $today);
+    $stmt_code->bind_param("s", $prefix);
     $stmt_code->execute();
     $code_result = $stmt_code->get_result();
 
     $next_number = 1;
 
     if ($row = $code_result->fetch_assoc()) {
-        $last_code = $row['queue_code'];
-        $numeric_part = intval(substr($last_code, 1));
-        $next_number = $numeric_part + 1;
+        if (!is_null($row['max_num'])) {
+            $next_number = intval($row['max_num']) + 1;
+        }
     }
     $stmt_code->close();
 
+    // Format new code (e.g. A0001, A0002)
     $queue_code = sprintf("%s%04d", $prefix, $next_number);
-
     $initial_status = 'Waiting';
 
+    // Insert record with MySQL's NOW()
     $insert_sql = "INSERT INTO queue_information (queue_code, patient_id, service_name, status, `created_at`) 
-                  VALUES (?, ?, ?, ?, NOW())";
+                   VALUES (?, ?, ?, ?, NOW())";
 
     $stmt_insert = $conn->prepare($insert_sql);
     $stmt_insert->bind_param("siss", $queue_code, $patient_id, $service_name, $initial_status);

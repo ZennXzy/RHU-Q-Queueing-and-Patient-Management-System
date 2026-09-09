@@ -5,7 +5,6 @@ require_once 'connection.php';
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   $username = $_POST['username'] ?? '';
   $password = $_POST['password'] ?? '';
-  $status = "Offline";
 
   if (trim($username) === '' || trim($password) === ''){
     header('Location: ../pages/login_page.php?msg=' . urlencode('Username and password are required') . '&type=error');
@@ -17,70 +16,44 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   $stmt->execute();
   $res = $stmt->get_result();
 
-  if ($res->num_rows > 0){
-    $row = $res->fetch_assoc();
-    $user_id = $row['id'];
-    $sysUsername = $row['username'];
-    $role = $row['role'];
-    $sysPassword = $row['password_hash'];
-    
-    if (password_verify($password, $sysPassword)){
-      if($row['status'] === $status){
+  if ($res && $res->num_rows > 0) {
+        $row = $res->fetch_assoc();
         
-        $_SESSION['logged_id'] = $user_id;
-        $_SESSION['logged_name'] = $sysUsername;
-        $_SESSION['logged_role'] = $role;
+        if (password_verify($password, $row['password_hash'])) {
 
-        $update_stmt = $conn->prepare("UPDATE admin_auth SET status = 'Online' WHERE username = ?");
-        $update_stmt->bind_param("s", $username);
-        $update_stmt->execute();
+            if (strtolower($row['status']) === 'online') {
+                header('Location: ../pages/login_page.php?msg=' . urlencode('User is already online in another session.') . '&type=error');
+                exit();
+            }
 
-        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-        if ($insertlog) {
-            $message = "Account " . $username . " logged in successfully.";
-            $insertlog->bind_param('s', $message);
-            $insertlog->execute();
-            $insertlog->close();
+            $_SESSION['logged_id']   = $row['id'];
+            $_SESSION['logged_name'] = $row['username'];
+            $_SESSION['logged_role'] = $row['role'];
+
+            $update_stmt = $conn->prepare("UPDATE admin_auth SET status = 'Online', last_active = NOW() WHERE id = ?");
+            $update_stmt->bind_param("i", $row['id']);
+            $update_stmt->execute();
+            $update_stmt->close();
+
+            $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
+            if ($insertlog) {
+                $message = "Account " . $row['username'] . " logged in successfully.";
+                $insertlog->bind_param('s', $message);
+                $insertlog->execute();
+                $insertlog->close();
+                header('Location: ../pages/launch_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
+            }
+            exit();
+
+        } else {
+            header('Location: ../pages/login_page.php?msg=' . urlencode('Invalid credentials') . '&type=error');
+            exit();
         }
-
-        echo json_encode([
-            'status' => 'success',
-            'message' => 'Account '.$sysUsername.' logged in successfully.'
-        ]);
-        header('Location: ../pages/launch_page.php?msg=' . urlencode('Logged in successfully') . '&type=success');
+    } else {
+        header('Location: ../pages/login_page.php?msg=' . urlencode('User not found') . '&type=error');
         exit();
-      } else {
-        header('Location: ../pages/login_page.php?msg=' . urlencode('User is Online.') . '&type=error');
-        exit();
-      }
     }
-    else {
-      header('Location: ../pages/login_page.php?msg=' . urlencode('Invalid credentials') . '&type=error');
-      exit();
-    }
-  } 
-  else {
-    header('Location: ../pages/login_page.php?msg=' . urlencode('User not found') . '&type=error');
-    exit();
-  }
 
-  // if ($res && $res->num_rows === 0){
-  //   $options = ["cost" => 12];
-  //   $encryptedpassword = password_hash($password, PASSWORD_BCRYPT, $options);
-
-  //   $insert = $conn->prepare('INSERT INTO admin_auth (username, password_hash) VALUES (?,?)');
-  //   $insert->bind_param('ss', $username, $encryptedpassword);
-  //   if ($insert->execute()){
-  //     $newId = $insert->insert_id;
-  //     $_SESSION['logged_id'] = $newId;
-  //     $_SESSION['logged_name'] = $username;
-  //     header('Location: ../pages/launch_page.php?msg=' . urlencode('Account created and logged in') . '&type=success');
-  //     exit();
-  //   } else {
-  //     header('Location: ../pages/login_page.php?msg=' . urlencode('Error creating account') . '&type=error');
-  //     exit();
-  //   }
-  // }
 }
 $conn->close();
 ?>

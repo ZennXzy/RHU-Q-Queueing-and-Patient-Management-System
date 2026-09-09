@@ -1,7 +1,14 @@
 <?php
 header('Content-Type: application/json');
-
 require_once '../php/connection.php'; 
+require_once '../php/check-private.php';
+if (!canManageRecords()) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'Unauthorized action. Admin privileges required.'
+    ]);
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode([

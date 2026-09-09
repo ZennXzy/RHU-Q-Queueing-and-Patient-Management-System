@@ -1,6 +1,16 @@
 <?php
     require '../php/check-private.php';
     require '../php/connection.php';
+
+    $userRole = $_SESSION['logged_role'] ?? '';
+    
+    if ($userRole === 'Display') {
+        $targetPage = '../pages/queue_display_page.php';
+    } else if ($userRole === 'Doctor/Staff') {
+        $targetPage = '../pages/queue_manager_page.php';
+    } else {
+        $targetPage = '../pages/register_page.php';
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,57 +25,51 @@
     <script src="../js/toast.js" defer></script>
 </head>
 <body>
-
+    <div class="toast-container" id="toastContainer"></div>
     <div id="loading-screen">
-        <div class="toast-container" id="toastContainer"></div>
-
-      <div class="rhu-logo">
-          <img src="../images/rhu_logo_with_name.png" alt="rhu_logo">
-      </div>
-      <div class="loading-text" style="text-align: center;">
+        <div class="rhu-logo">
+            <img src="../images/rhu_logo_with_name.png" alt="rhu_logo">
+        </div>
+        <div class="loading-text" style="text-align: center;">
         <p>RHU-Q: Queueing & Patient Management System</p>
-      </div>
-      <div class="spinner"></div>
+        </div>
+        <div class="spinner"></div>
     </div>
 </body>
 <script>
     window.addEventListener('DOMContentLoaded', () => {
-        // Array of key asset paths to preload and verify
+        const destination = <?php echo json_encode($targetPage); ?>;
+
         const assetsToLoad = [
-        '../images/rhu_logo_with_name.png',
-        '../images/rhu_logo_topNav.png'
+            '../images/rhu_logo_with_name.png',
+            '../images/rhu_logo_topNav.png'
         ];
 
-        const MINIMUM_SPLASH_TIME = 2500; // Minimum screen display time (2.5 seconds)
+        const MINIMUM_SPLASH_TIME = 3500;
         const startTime = Date.now();
 
-        // Promisified image loader
         const preloadImage = (src) => {
-        return new Promise((resolve) => {
-            const img = new Image();
-            img.src = src;
-            img.onload = resolve;
-            img.onerror = resolve; // Continue even if an asset fails to load
-        });
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = resolve;
+                img.onerror = resolve; 
+            });
         };
 
-        // Track all image asset loads concurrently
         const assetPromises = assetsToLoad.map(preloadImage);
 
-        // Wait for both asset verification AND minimum splash screen duration
         Promise.all(assetPromises).then(() => {
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, MINIMUM_SPLASH_TIME - elapsedTime);
+            const elapsedTime = Date.now() - startTime;
+            const remainingTime = Math.max(0, MINIMUM_SPLASH_TIME - elapsedTime);
 
-        setTimeout(() => {
-            // Trigger exit animation
-            document.body.classList.add('page-exit');
-
-            // Redirect to login page after exit animation completes
             setTimeout(() => {
-            window.location.href = "../pages/register_page.php";
-            }, 700); // 700ms matches standard CSS fade-out transition duration
-        }, remainingTime);
+                document.body.classList.add('page-exit');
+
+                setTimeout(() => {
+                    window.location.href = destination;
+                }, 700); 
+            }, remainingTime);
         });
     });
 </script>

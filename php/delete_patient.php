@@ -1,9 +1,15 @@
 <?php
 session_start();
-require '../php/connection.php';
 header('Content-Type: application/json');
-
-require_once '../php/connection.php'; // Include database connection
+require_once '../php/connection.php'; 
+require_once '../php/check-private.php';
+if (!canManageRecords()) {
+    echo json_encode([
+        'status'  => 'error',
+        'message' => 'Unauthorized action. Admin privileges required.'
+    ]);
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
@@ -18,7 +24,6 @@ if ($patient_id <= 0 || empty($entered_password)) {
     exit;
 }
 
-// 1. VERIFY LOGGED-IN USER SESSION
 if (!isset($_SESSION['logged_id'])) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized session. Please log in again.']);
     exit;
@@ -27,14 +32,12 @@ if (!isset($_SESSION['logged_id'])) {
 $user_name = $_SESSION['logged_name'];
 
 try {
-    // 2. FETCH STORED PASSWORD HASH FOR CURRENT USER
     $stmt = $conn->prepare("SELECT password_hash FROM admin_auth WHERE username = ?");
     $stmt->bind_param("s", $user_name);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Verify provided password against hashed password in DB
         if (!password_verify($entered_password, $row['password_hash'])) {
             echo json_encode(['status' => 'error', 'message' => 'Incorrect authorization password.']);
             exit;
@@ -45,7 +48,6 @@ try {
     }
     $stmt->close();
 
-    // 3. EXECUTE PATIENT RECORD DELETION
     $deleteStmt = $conn->prepare("DELETE FROM patient_records WHERE patient_id = ?");
     $deleteStmt->bind_param("i", $patient_id);
 

@@ -1,6 +1,7 @@
 <?php
-  require '../php/check-private.php';
-  require '../php/connection.php';
+require '../php/check-private.php';
+authorizeRoles(['Admin']);
+require '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -189,8 +190,7 @@
                 <img src="../svg/add-account-icon.svg" alt="add-acccount-icon">
             Add Account
             </button>
-            <button class="btn btn-secondary">
-              <i class="fa-solid fa-database"></i> Backup and Restore
+            <button class="btn btn-secondary"> Backup and Restore
             </button>
             <button class="btn btn-secondary">
               Logs

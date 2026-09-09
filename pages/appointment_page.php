@@ -1,5 +1,7 @@
 <?php
-  require '../php/check-private.php';
+require '../php/check-private.php';
+authorizeRoles(['Doctor/Staff']);
+require '../php/connection.php';
 ?>
 <!doctype html>
 <html lang="en">

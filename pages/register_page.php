@@ -1,6 +1,7 @@
 <?php
-  require '../php/connection.php';
-  require '../php/check-private.php';
+require '../php/check-private.php';
+authorizeRoles(['Admin']);
+require '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

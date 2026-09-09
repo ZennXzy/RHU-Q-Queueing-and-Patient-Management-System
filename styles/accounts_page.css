@@ -39,11 +39,10 @@ html {
     color: #065f46;
     margin-bottom: 20px;
 }
-
 .content-card {
     background: white;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     padding: 24px;
     flex: 1;
     display: flex;
@@ -74,10 +73,12 @@ html {
 
 .stat-card.total {
     background-color: #e3f2fd;
+    border-left: 5px solid #1976d2;
 }
 
 .stat-card.active {
     background-color: #e8f5e9;
+    border-left: 5px solid #2e7d32;
 }
 
 .stat-icon {
@@ -140,6 +141,17 @@ html {
     gap: 10px;
 }
 
+
+.top-action-button button {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+
+.top-action-button button:hover {
+    transform: scale(1.01);
+}
+
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -168,11 +180,6 @@ html {
     color: white;
 }
 
-.btn i {
-    margin-right: 8px;
-}
-
-/* Data Table Styling */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -185,6 +192,7 @@ table {
     border-collapse: collapse;
     font-size: 0.8rem;
     text-align: left;
+
 }
 
 th {

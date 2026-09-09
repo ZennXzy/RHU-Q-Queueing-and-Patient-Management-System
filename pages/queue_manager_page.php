@@ -1,6 +1,7 @@
 <?php
-  require '../php/connection.php';
-  require '../php/check-private.php';
+require '../php/check-private.php';
+authorizeRoles(['Doctor/Staff']);
+require '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -380,6 +381,20 @@
 </body>
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        const type = urlParams.get('type') || 'info';
+
+        if (msg) {
+            showToast(msg, type);
+
+            // Clean query parameters from the address bar
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+
     const dropdown = document.getElementById('filterSelect');
     const filterBtn = document.getElementById('filterSelector');
 
