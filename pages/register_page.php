@@ -153,13 +153,13 @@
             <div class="white-card">
                 <div class="form-grid">    
                     <div class="form-group col-4">
-                        <input type="text" name="lname" id="lname" placeholder="Last Name">
+                        <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="fname" id="fname" placeholder="First Name">
+                        <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="mname" id="mname" placeholder="Middle Name">
+                        <input type="text" name="mname" id="mname" placeholder="Middle Name" autocomplete="off">
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="sname" id="sname">
@@ -207,7 +207,7 @@
                     </div>
                     <div class="form-group col-3">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
-                        <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;">
+                        <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;" autocomplete="off">
                     </div>
                     <div class="form-group col-5" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
@@ -265,13 +265,13 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" name="mlname" id="mlname" placeholder="Last Name">
+                        <input type="text" name="mlname" id="mlname" placeholder="Last Name" autocomplete="off">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" name="mfname" id="mfname" placeholder="First Name">
+                        <input type="text" name="mfname" id="mfname" placeholder="First Name" autocomplete="off">
                     </div>
                     <div class="form-group col-4">
-                        <input type="text" name="mmname" id="mmname" placeholder="Middle Name">
+                        <input type="text" name="mmname" id="mmname" placeholder="Middle Name" autocomplete="off">
                     </div>
                 </div>
                 
@@ -283,13 +283,13 @@
                 </div>
                 <div class="form-grid">
                     <div class="form-group col-4">
-                        <input type="text" name="flname" id="flname" placeholder="Last Name">
+                        <input type="text" name="flname" id="flname" placeholder="Last Name" autocomplete="off">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="ffname" id="ffname" placeholder="First Name">
+                        <input type="text" name="ffname" id="ffname" placeholder="First Name" autocomplete="off">
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="fmname" id="fmname" placeholder="Middle Name">
+                        <input type="text" name="fmname" id="fmname" placeholder="Middle Name" autocomplete="off">
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="fsname" id="fsname">
@@ -313,13 +313,13 @@
                     </div>
                     <div class="form-grid">
                         <div class="form-group col-4">
-                            <input type="text" name="slname"  id="slname" placeholder="Last Name">
+                            <input type="text" name="slname"  id="slname" placeholder="Last Name" autocomplete="off">
                         </div>
                         <div class="form-group col-3">
-                            <input type="text" name="sfname" id="sfname" placeholder="First Name">
+                            <input type="text" name="sfname" id="sfname" placeholder="First Name" autocomplete="off">
                         </div>
                         <div class="form-group col-3">
-                            <input type="text" name="smname" id="smname" placeholder="Middle Name">
+                            <input type="text" name="smname" id="smname" placeholder="Middle Name" autocomplete="off">
                         </div>
                         <div class="form-group col-2 input-select">
                             <select name="ssname" id="ssname">
@@ -354,13 +354,13 @@
                                 <div class="fieldset-group col-5 num-item" id="philNumDiv" style="border:none; display: none;">
                                     <div>
                                         <legend>PhilHealth Number</legend>
-                                        <input type="text" id="philHNumInput" name="philNumber" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                        <input type="text" id="philHNumInput" name="philNumber" class="inline-input-line" placeholder="e.g., 09-050021346-8" style="border: none; border-bottom: 1px solid #777; flex: 1;" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="fieldset-group col-5 princ-item" id="prinMemDiv" style="border:none; display: none;">
                                     <div>
                                         <legend>Principal Member</legend>
-                                        <input type="text"  id="prinMemInput" name="prinMember" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;">
+                                        <input type="text"  id="prinMemInput" name="prinMember" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -391,7 +391,6 @@
         </form>
     </div>
 </body>
-<!-- selectors script -->
 <script>
     // employment-selector
     function handleEmploymentChange() {
@@ -445,7 +444,6 @@
         let age = today.getFullYear() - dob.getFullYear();
         const monthDiff = today.getMonth() - dob.getMonth();
 
-        // Adjust age if birthday hasn't happened yet this year
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
             age--;
         }
@@ -468,7 +466,7 @@
         if (philRadio.value === 'Member') {
             philNumDiv.style.display = 'block';
             prinMemberDiv.style.display = 'none';
-            prinMemberDiv.value = ''; // Clear business input
+            prinMemberDiv.value = '';
         } else if (philRadio.value === 'Dependent') {
             philNumDiv.style.display = 'block';
             prinMemberDiv.style.display = 'block';

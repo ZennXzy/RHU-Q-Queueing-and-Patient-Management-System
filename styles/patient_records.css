@@ -9,9 +9,8 @@ body,
 html {
   height: 100%;
   width: 100%;
-  background-image: url(../images/41950.jpg);
+background-color:#F9FAFB;
   background-repeat: repeat;
-  background-size: contain;
   background-attachment: fixed;
   overflow: hidden;
   display: flex;

@@ -157,7 +157,6 @@
         <div class="card-top-bar">
           <div class="stats-group">
             <div class="stat-card total">
-              <i class="fa-solid fa-users stat-icon"></i>
               <div class="stat-info" >
                 <span class="stat-label">Total Accounts</span>
                 <?php
@@ -170,9 +169,11 @@
             </div>
 
             <div class="stat-card active">
-              <i class="fa-solid fa-user-check stat-icon"></i>
               <div class="stat-info">
-                <span class="stat-label">Active Accounts</span>
+                <div class="stat-label-container">
+                    <span class="stat-label">Active Accounts</span>
+                    <span class="pulse-dot" title="Online Status"></span>
+                </div>
                 <?php
                 $res = $conn->query("SELECT COUNT(*) AS Online FROM admin_auth WHERE status = 'Online'");
                 $row = $res->fetch_assoc();
