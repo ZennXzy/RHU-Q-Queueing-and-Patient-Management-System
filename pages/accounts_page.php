@@ -33,12 +33,18 @@ require '../php/connection.php';
             <h3>RHU-Q: Queuing and Patient Management System</h3>
         </div>
         <div class="rightNav">
-            <h3>
+            <h3 style="font-size:20px;">
                 <?php
                     $username = $_SESSION['logged_name'];
-                    echo ucfirst($username).'!';
-                ?>    
+                    echo '● '.ucfirst($username);
+                ?>
             </h3>
+            <span style="font-size:10px; text-align: right;">
+                <?php
+                    $userrole = $_SESSION['logged_role'];
+                    echo ucfirst($userrole);
+                ?>   
+            </span>
         </div>
     </div>
 
@@ -233,9 +239,11 @@ require '../php/connection.php';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['role']).'</td>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['created_at']).'</td>';
                     echo    '<td style="text-align: center;">'.htmlspecialchars($row['last_active']).'</td>';
-                    echo    '<td>';
+                    echo    '<td style="width:100%; max-width:50px;">';
                     echo    '<div class="table-actions">';
-                    echo    'P Sample';
+                    echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+                    echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+                    echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
                     echo    '</div>';
                     echo    '</td>';
                     echo    '</tr>';

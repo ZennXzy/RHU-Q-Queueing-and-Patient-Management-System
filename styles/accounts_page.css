@@ -244,8 +244,74 @@ width: 24px;
 /* Action Icons in Table */
 .table-actions {
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
     font-size: 0.95rem;
+}
+
+.table-actions img{
+    height: 16px;
+    width:auto;
+}
+
+
+.table-actions button{
+    border:none;
+    background-color:#ffff;
+}
+
+.delete-btn {
+    align-items: center;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    outline: none;
+}
+
+.delete-btn img {
+    filter: brightness(0) saturate(100%) invert(26%) sepia(84%) saturate(2181%) hue-rotate(342deg) brightness(87%) contrast(91%);
+}
+
+.delete-btn:hover{
+    transform: scale(1.3);
+    transition: transform 0.2s, color 0.2s;
+}
+
+.logout-btn{
+    align-items: center;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    outline: none;
+}
+
+.logout-btn img {
+    filter: brightness(0) saturate(100%) invert(26%) sepia(84%) saturate(2181%) hue-rotate(342deg) brightness(87%) contrast(91%);
+    transform:rotate(180deg);
+}
+
+
+.logout-btn:hover{
+    transform: scale(1.3);
+    transition: transform 0.2s, color 0.2s;
+}
+
+.edit-btn{
+    align-items: center;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    outline: none;
+}
+
+.edit-btn:hover {
+    transform: scale(1.3);
+    transition: transform 0.2s, color 0.2s;
 }
 
 .action-icon {

@@ -33,12 +33,18 @@ require '../php/connection.php';
             <h3>RHU-Q: Queuing and Patient Management System</h3>
         </div>
         <div class="rightNav">
-            <h3>
+            <h3 style="font-size:20px;">
                 <?php
                     $username = $_SESSION['logged_name'];
-                    echo ucfirst($username).'!';
-                ?>    
+                    echo '● '.ucfirst($username);
+                ?>
             </h3>
+            <span style="font-size:10px; text-align: right;">
+                <?php
+                    $userrole = $_SESSION['logged_role'];
+                    echo ucfirst($userrole);
+                ?>   
+            </span>
         </div>
     </div>
 

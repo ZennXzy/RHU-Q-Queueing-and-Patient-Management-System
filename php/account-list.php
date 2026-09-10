@@ -21,7 +21,9 @@ if($res && $res->num_rows > 0){
     echo    '<td style="text-align: center;">'.htmlspecialchars($row['last_active']).'</td>';
     echo    '<td>';
     echo    '<div class="table-actions">';
-    echo    'P Sample';
+    echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+    echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+    echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
     echo    '</div>';
     echo    '</td>';
     echo    '</tr>';
