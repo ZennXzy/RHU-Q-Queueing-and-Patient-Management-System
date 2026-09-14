@@ -38,4 +38,4 @@ setInterval(() => {
   reloadtable();
   reloadActive();
   reloadTotal();
-}, 1000);
+}, 2000);

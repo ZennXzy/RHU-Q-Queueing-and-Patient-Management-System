@@ -1,5 +1,4 @@
 <?php
-// php/get_patients.php
 header('Content-Type: application/json');
 require_once '../php/connection.php';
 

@@ -9,7 +9,7 @@ if($res && $res->num_rows > 0){
     while ($row = $res->fetch_assoc()){
   $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
     echo    '<tr>';
-    echo    '<td style="text-align: center;">'.htmlspecialchars($row['id']).'</td>';
+    echo    '<td style="text-align: center;">#</td>';
     echo    '<td>'.htmlspecialchars($row['username']).'</td>';
     echo    '<td>'.htmlspecialchars($row['fullname']).'</td>';
     echo    '<td>'.htmlspecialchars($row['email']).'</td>';

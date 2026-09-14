@@ -12,7 +12,7 @@ $fullname = isset($_POST['fullname']) ? trim($_POST['fullname']) : '';
 $email    = isset($_POST['email']) ? trim($_POST['email']) : '';
 $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 $status   = "Offline";
-$role     = "doctor/staff";
+$role     = "Doctor/staff";
 
 // 1. Validation checks
 if (empty($username) || empty($fullname) || empty($email) || empty($password)) {
