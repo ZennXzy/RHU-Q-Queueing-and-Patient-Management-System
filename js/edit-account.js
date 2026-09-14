@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const editModal = document.getElementById('edit-account'); 
-  const editForm = document.getElementById('edit-account-form'); 
+  const editModal = document.getElementById('edit-account');
+  const editForm = document.getElementById('edit-account-form');
 
   document.addEventListener('click', async (e) => {
     const editBtn = e.target.closest('.edit-btn');
@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (result.status === 'success') {
         const account = result.account;
+        const hasAdmin = result.has_admin;
 
         const badgeElement = document.getElementById('modalAccountIdBadge');
         if (badgeElement) badgeElement.textContent = `ID: #${String(accountId).padStart(4, '0')}`;
@@ -31,11 +32,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
-        setVal('editRole', account.role);
         setVal('editEmail', account.email);
+        setVal('editRole', account.role);
         setVal('editPassword', '');
 
-        
+        const adminOption = document.querySelector('#editRole option[value="Admin"]');
+        if (adminOption) {
+          if (hasAdmin && account.role !== 'Admin') {
+            adminOption.disabled = true;
+            adminOption.textContent = 'Admin (Already Exists)';
+          } else {
+            adminOption.disabled = false;
+            adminOption.textContent = 'Admin';
+          }
+        }
 
         editModal.showModal();
       } else {
@@ -46,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast('An error occurred while loading account details.', 'error');
     }
   });
-
 
   if (editModal) {
     editModal.addEventListener("click", (e) => {
@@ -67,23 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const formData = new FormData(editForm);
-
-      const username = formData.get('username')?.toString().trim();
-      const fullname = formData.get('fullname')?.toString().trim();
-      const email    = formData.get('email')?.toString().trim();
-      const role    = formData.get('role')?.toString().trim();
-
-
-      if (!username || !fullname || !email || !role) {
-        showToast('Please fill in all required fields.', 'error');
-        return; 
-      }
-
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        showToast('Please enter a valid email address.', 'error');
-        return;
-      }
 
       try {
         const response = await fetch('../php/update_account.php', {
