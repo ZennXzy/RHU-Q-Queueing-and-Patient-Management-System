@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
     exit();
   }
 
-  $stmt = $conn->prepare('SELECT id, username, password_hash, status, role FROM admin_auth WHERE username = ?');
+  $stmt = $conn->prepare('SELECT id, username, fullname, password_hash, status, role FROM admin_auth WHERE username = ?');
   $stmt->bind_param('s', $username);
   $stmt->execute();
   $res = $stmt->get_result();
@@ -25,11 +25,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
                 header('Location: ../pages/login_page.php?msg=' . urlencode('User is already online in another session.') . '&type=error');
                 exit();
             }
-
-            $_SESSION['logged_id']   = $row['id'];
-            $_SESSION['logged_name'] = $row['username'];
-            $_SESSION['logged_role'] = $row['role'];
-
             $update_stmt = $conn->prepare("UPDATE admin_auth SET status = 'Online', last_active = NOW() WHERE id = ?");
             $update_stmt->bind_param("i", $row['id']);
             $update_stmt->execute();
@@ -37,6 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
 
             $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
             if ($insertlog) {
+                $_SESSION['logged_id']   = $row['id'];
+                $_SESSION['logged_name'] = $row['username'];
+                $_SESSION['logged_role'] = $row['role'];
+                $_SESSION['logged_account'] = $row['fullname'];
+
                 $message = "Account " . $row['username'] . " logged in successfully.";
                 $insertlog->bind_param('s', $message);
                 $insertlog->execute();

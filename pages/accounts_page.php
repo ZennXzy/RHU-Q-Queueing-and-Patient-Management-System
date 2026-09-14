@@ -162,7 +162,21 @@ require '../php/connection.php';
       <h1 class="page-title">Accounts</h1>
 
       <div class="content-card">
-        <!-- Top Stats & Buttons -->
+        <div class="account-action">
+            <h2>
+                <?php
+                    $account_name = $_SESSION['logged_account'];
+                    echo $account_name;
+                ?>
+            </h2>
+            <div class="edit-account-action">
+                <?php
+                    echo '<button class="edit-btn" data-id="' . htmlspecialchars($_SESSION['logged_id']) . '" >';
+                    echo '<img src="../svg/account-edit-icon.svg" alt="edit-icon" style="filter: brightness(0) saturate(100%) invert(98%) sepia(2%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(20%);">';
+                    echo '</button>';
+                ?>
+            </div>
+        </div>
         <div class="card-top-bar">
           <div class="stats-group">
             <div class="stat-card total">
@@ -205,8 +219,6 @@ require '../php/connection.php';
             </button>
           </div>
         </div>
-
-        <!-- Data Table -->
         <div class="table-responsive">
           <table>
             <thead>
@@ -224,34 +236,39 @@ require '../php/connection.php';
             </thead>
             <?php
                 echo '<tbody class="account-list" id="account-list">';
-              
-                $res = $conn->query("SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth");
 
-                if($res && $res->num_rows > 0){
-                    while ($row = $res->fetch_assoc()){
-                    $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
-                    echo    '<tr>';
-                    echo    '<td style="text-align: center;">#</td>';
-                    echo    '<td>'.htmlspecialchars($row['username']).'</td>';
-                    echo    '<td>'.htmlspecialchars($row['fullname']).'</td>';
-                    echo    '<td>'.htmlspecialchars($row['email']).'</td>';
-                    echo '<td style="text-align: center;">';
-                    echo '<span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span>';
-                    echo '</td>';
-                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['role']).'</td>';
-                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['created_at']).'</td>';
-                    echo    '<td style="text-align: center;">'.htmlspecialchars($row['last_active']).'</td>';
-                    echo    '<td>';
-                    echo    '<div class="table-actions">';
-                    echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-                    echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
-                    echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
-                    echo    '</div>';
-                    echo    '</td>';
-                    echo    '</tr>';
+                $excluded = $_SESSION['logged_id'];
+                $stmt = $conn->prepare("SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth WHERE id != ?");
+                $stmt->bind_param("i", $excluded);
+                $stmt->execute();
+                $res = $stmt->get_result();
+
+                if ($res && $res->num_rows > 0) {
+                    while ($row = $res->fetch_assoc()) {
+                        $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
+                        echo '<tr>';
+                        echo '<td style="text-align: center;">#</td>';
+                        echo '<td>' . htmlspecialchars($row['username']) . '</td>';
+                        echo '<td>' . htmlspecialchars($row['fullname']) . '</td>';
+                        echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+                        echo '<td style="text-align: center;">';
+                        echo '<span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span>';
+                        echo '</td>';
+                        echo '<td style="text-align: center;">' . htmlspecialchars($row['role']) . '</td>';
+                        echo '<td style="text-align: center;">' . htmlspecialchars($row['created_at']) . '</td>';
+                        echo '<td style="text-align: center;">' . htmlspecialchars($row['last_active']) . '</td>';
+                        echo '<td>';
+                        echo '<div class="table-actions">';
+                        echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+                        echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+                        echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
+                        echo '</div>';
+                        echo '</td>';
+                        echo '</tr>';
                     }
-                  }
-              ?>
+                }
+                $stmt->close();
+            ?>
             </tbody>
           </table>
         </div>
