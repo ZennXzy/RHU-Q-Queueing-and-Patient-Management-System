@@ -13,7 +13,6 @@ require '../php/connection.php';
     <link rel="stylesheet" href="../styles/accounts_page.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/add-account-form.css">
     <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/edit-account-form.css">
 
@@ -23,8 +22,8 @@ require '../php/connection.php';
     <script src="../js/logout.js" defer></script>
     <script src="../js/add-account.js" defer></script>
     <script src="../js/toast.js" defer></script>
-    <script src="../js/account-list-loader.js" defer></script>
     <script src="../js/edit-account.js" defer></script>
+    <script src="../js/session-check.js" defer></script>
 
 </head>
 <body>
@@ -52,166 +51,16 @@ require '../php/connection.php';
 
   <div class="workspace">
     <div class="toast-container" id="toastContainer"></div>
-    <div class="sidebar">
-        <div class="nav-group">
-            <a href="../pages/register_page.php" class="menu-item">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <img src="../svg/registration-paper.svg" alt="registration_icon">
-                    </div>
-                    <span class="menu-text">Registration</span>
-                </div>
-            </a>
-            <div class="dropdown-group">
-                <a href="javascript:void(0)" class="menu-item dropdown-toggle" onclick="toggleDropdown(this)">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/queue-line.svg" alt="queue_icon">
-                        </div>
-                        <span class="menu-text">Queue</span>
-                    </div>
-                    <div class="dropdown-arrow">
-                        <svg viewBox="0 0 24 24" width="14" height="14">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </div>
-                </a> 
-                <div class="submenu-container">
-                    <a href="../pages/queue_display_page.php" class="sub-nav-link">
-                        <div class="menu-icon">         
-                            <img src="../svg/queue-signal.svg" alt="queue_display_icon">
-                        </div>
-                        <span class="menu-text">Queue Display</span>
-                    </a> 
-                    
-                    <a href="../pages/queue_manager_page.php" class="sub-nav-link">
-                        <div class="menu-icon">
-                            <img src="../svg/queue-manager.svg" alt="queue-manager-icon">
-                        </div>
-                        <span class="menu-text">Queue Manager</span> 
-                    </a>
-                    <a href="../pages/display_settings.php" class="sub-nav-link">
-                        <div class="menu-icon">
-                            <img src="../svg/display-settings-icon.svg" alt="queue-manager-icon">
-                        </div>
-                        <span class="menu-text">Edit Display Cards</span> 
-                    </a>
-                </div>
-            </div>
-
-            <a href="../pages/appointment_page.php" class="menu-item">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <img src="../svg/reminder-appointment.svg" alt="appointment-icon">
-                    </div>
-                    <span class="menu-text">Appointment</span>
-                    <div class="indicator active">
-                        <span class="dot-notification"></span>
-                    </div>
-                </div>
-            </a>
-            
-            <a href="#" class="menu-item">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <img src="../svg/dashboard-monitor.svg" alt="dashboard_icon">
-                    </div>
-                    <span class="menu-text">Dashboard</span>
-                </div>
-            </a>
-            <a href="#" class="menu-item">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <img src="../svg/reports.svg" alt="reports-icon">
-                    </div>
-                    <span class="menu-text">Reports</span>
-                </div>
-            </a>
-
-            <a href="../pages/patient_records.php" class="menu-item">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <img src="../svg/records.svg" alt="records-icon">
-                    </div>
-                    <span class="menu-text">Patient Records</span>
-                </div>
-            </a>
-        </div>
-        <div class="lowercontrol">
-            <a href="../pages/accounts_page.php" class="menu-item account-item active" style="width:200px; padding-left: 0px;">
-                <div class="menu-content" style="justify-content: center;">
-                    <div class="menu-icon">
-                        <img src="../svg/account.svg" alt="account-icon">
-                    </div>
-                    <span class="menu-text">Account</span>
-                </div>
-            </a>
-            <form action="../php/logout.php" method="post" class="menu-item logout-item" id="logoutForm" style="transform: rotate(180deg);">
-                <div class="menu-content">
-                    <div class="menu-icon">
-                        <button type="submit" name="logout" style="border:none; background:none;">
-                            <img src="../svg/logout-icon.svg" alt="logout-icon">
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+    <?php
+        include '../pages/sidebar.php';
+    ?>
 
     <div class="content-area">
-      <h1 class="page-title">Accounts</h1>
+      <h1 class="page-title">Settings</h1>
 
       <div class="content-card">
-        <div class="account-action">
-            <h2>
-                <?php
-                    $account_name = $_SESSION['logged_account'];
-                    echo $account_name;
-                ?>
-            </h2>
-            <div class="edit-account-action">
-                <?php
-                    echo '<button class="edit-btn" data-id="' . htmlspecialchars($_SESSION['logged_id']) . '" >';
-                    echo '<img src="../svg/account-edit-icon.svg" alt="edit-icon" style="filter: brightness(0) saturate(100%) invert(98%) sepia(2%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(20%);">';
-                    echo '</button>';
-                ?>
-            </div>
-        </div>
         <div class="card-top-bar">
-          <div class="stats-group">
-            <div class="stat-card total">
-              <div class="stat-info" >
-                <span class="stat-label">Total Accounts</span>
-                <?php
-                $res = $conn->query("SELECT id FROM admin_auth");
-                $total = $res ? $res->num_rows : 0;
-
-                echo '<span class="stat-value" id="stat-card-total">'.$total.'</span>';
-                ?>
-              </div>
-            </div>
-
-            <div class="stat-card active">
-              <div class="stat-info">
-                <div class="stat-label-container">
-                    <span class="stat-label">Active Accounts</span>
-                    <span class="pulse-dot" title="Online Status"></span>
-                </div>
-                <?php
-                $res = $conn->query("SELECT COUNT(*) AS Online FROM admin_auth WHERE status = 'Online'");
-                $row = $res->fetch_assoc();
-
-                echo '<span class="stat-value" id="stat-card-active">'.$row['Online'].'</span>';
-                ?>
-              </div>
-            </div>
-          </div>
-
           <div class="top-action-button">
-            <button class="btn add-account-button" id="open-form-button">
-                <img src="../svg/add-account-icon.svg" alt="add-acccount-icon">
-            Add Account
-            </button>
             <button class="btn btn-secondary"> Backup and Restore
             </button>
             <button class="btn btn-secondary">
@@ -219,59 +68,7 @@ require '../php/connection.php';
             </button>
           </div>
         </div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th style="text-align: center; border-top-left-radius:6px;">#</th>
-                <th>Username</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th style="text-align: center;">Status</th>
-                <th style="text-align: center;">Role</th>
-                <th style="text-align: center;">Created</th>
-                <th style="text-align: center;">Last Login</th>
-                <th style="text-align: center; border-top-right-radius:6px;">Actions</th>
-              </tr>
-            </thead>
-            <?php
-                echo '<tbody class="account-list" id="account-list">';
-
-                $excluded = $_SESSION['logged_id'];
-                $stmt = $conn->prepare("SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth WHERE id != ?");
-                $stmt->bind_param("i", $excluded);
-                $stmt->execute();
-                $res = $stmt->get_result();
-
-                if ($res && $res->num_rows > 0) {
-                    while ($row = $res->fetch_assoc()) {
-                        $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
-                        echo '<tr>';
-                        echo '<td style="text-align: center;">#</td>';
-                        echo '<td>' . htmlspecialchars($row['username']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['fullname']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['email']) . '</td>';
-                        echo '<td style="text-align: center;">';
-                        echo '<span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span>';
-                        echo '</td>';
-                        echo '<td style="text-align: center;">' . htmlspecialchars($row['role']) . '</td>';
-                        echo '<td style="text-align: center;">' . htmlspecialchars($row['created_at']) . '</td>';
-                        echo '<td style="text-align: center;">' . htmlspecialchars($row['last_active']) . '</td>';
-                        echo '<td>';
-                        echo '<div class="table-actions">';
-                        echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-                        echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
-                        echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
-                        echo '</div>';
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                }
-                $stmt->close();
-            ?>
-            </tbody>
-          </table>
-        </div>
+        
         <dialog id="add-account" class="add-account">
             <div class="toast-container" id="toastContainer"></div>
             <div class="modal-card" id="modal-card">

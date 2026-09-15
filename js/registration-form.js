@@ -1,10 +1,8 @@
 const regForm = document.getElementById('patientRegistrationForm');
 regForm.addEventListener('submit', function(e) {
 
-  // Extract FormData values safely using regForm reference
   const formData = new FormData(regForm);
   
-  // 1. Personal Details
   const fname = formData.get('fname') || document.getElementById('fname')?.value || '';
   const lname = formData.get('lname') || document.getElementById('lname')?.value || '';
   const mname = formData.get('mname') || document.getElementById('mname')?.value || '';
@@ -12,10 +10,8 @@ regForm.addEventListener('submit', function(e) {
 
   const ageInput = document.getElementById('age_display');
   if (ageInput) {
-    // Overwrite the input's actual value with digits only (e.g. "24")
     ageInput.value = ageInput.value.replace(/\D/g, ''); 
   }
-
   const religion = formData.get('religion') || document.getElementById('religion')?.value || '';
   const birthDate = formData.get('birthDate') || document.getElementById('date_of_birth')?.value || '';
   const contactnum = formData.get('contactnum') || document.getElementById('contactnum')?.value || '';
@@ -30,7 +26,6 @@ regForm.addEventListener('submit', function(e) {
   const prinMem = formData.get('prinMember') || '';
   const yakapmem = formData.get('yakapmem') || '';
 
-  // 1. Personal Verification
   if (lname.trim() === '' || fname.trim() === '') {
     e.preventDefault();
     showToast('Please provide your first and last name', 'error');
@@ -61,8 +56,6 @@ regForm.addEventListener('submit', function(e) {
     showToast('Please select/provide your religion', 'error');
     return;
   }
-
-  // 2. Family Info Verification (Extracted via FormData to ensure POST alignment)
   const mfname = formData.get('mfname') || document.getElementById('mfname')?.value || '';
   const mlname = formData.get('mlname') || document.getElementById('mlname')?.value || '';
 

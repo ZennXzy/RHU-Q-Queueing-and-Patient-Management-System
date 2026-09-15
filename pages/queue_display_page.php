@@ -30,7 +30,6 @@ $DEPARTMENT_CONFIG = [
     ]
 ];
 
-// Fallback list of services
 $defaultServices = [
     'Medical Consultation',
     'Prenatal Checkup',
@@ -58,8 +57,6 @@ $defaultServices = [
         </div>
 
         <h1 class="page-title">Queue Display</h1>
-
-        <!-- Class grid-dynamic enables automatic 2-row stacking when cards exceed 4-5 items -->
         <div class="display-card grid-dynamic">
             <div id="no-services-msg" class="no-services-message" style="display: none;">
                 <h3>No Selected Services</h3>
@@ -72,12 +69,6 @@ $defaultServices = [
                     'themeClass' => 'dept-medical',
                     'icon'       => '../svg/medical-icon.svg',
                 ];
-
-                // $sqlActive = "SELECT queue_code FROM queue_information 
-                //                 WHERE service_name = ? AND status = 'In Progress' 
-                //                 ORDER BY created_at ASC LIMIT 1";
-
-                // 1. FETCH IN-PROGRESS TICKETS
                 $sqlActive = "SELECT queue_code FROM queue_information 
                               WHERE service_name = ? AND status = 'In Progress' 
                               ORDER BY created_at ASC";
@@ -86,7 +77,6 @@ $defaultServices = [
                 $stmtActive->execute();
                 $resActive = $stmtActive->get_result();
 
-                // 2. FETCH WAITING TICKETS
                 $sqlWaiting = "SELECT queue_code FROM queue_information 
                                WHERE service_name = ? AND status = 'Waiting' 
                                ORDER BY created_at ASC";
@@ -95,7 +85,6 @@ $defaultServices = [
                 $stmtWaiting->execute();
                 $resWaiting = $stmtWaiting->get_result();
 
-                // 3. FETCH AVERAGE WAITING TIME
                 $sql = "SELECT service_duration 
                         FROM transactions 
                         WHERE service = ? 
@@ -111,9 +100,7 @@ $defaultServices = [
                 $count = 0;
 
                 while ($row = $result->fetch_assoc()) {
-                    $str = $row['service_duration']; // e.g. "0 days, 0 hours, 2 minutes"
-                    
-                    // Extract all numbers from the string
+                    $str = $row['service_duration']; 
                     preg_match_all('/\d+/', $str, $matches);
                     
                     if (!empty($matches[0]) && count($matches[0]) >= 3) {

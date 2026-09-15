@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/toast.js" defer></script>
+    <script src="../js/session-check.js" defer></script>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
