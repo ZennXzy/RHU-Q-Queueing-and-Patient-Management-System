@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once '../php/connection.php'; 
 require_once '../php/check-private.php';
+
 if (!canManageRecords()) {
     echo json_encode([
         'status'  => 'error',
@@ -15,17 +16,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
+if (!isset($_SESSION['logged_id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized session. Please log in again.']);
+    exit;
+}
+
 
 $patient_id = isset($_POST['patient_id']) ? intval($_POST['patient_id']) : 0;
 $entered_password = isset($_POST['admin_password']) ? trim($_POST['admin_password']) : '';
 
 if ($patient_id <= 0 || empty($entered_password)) {
     echo json_encode(['status' => 'error', 'message' => 'Missing patient ID or password.']);
-    exit;
-}
-
-if (!isset($_SESSION['logged_id'])) {
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized session. Please log in again.']);
     exit;
 }
 

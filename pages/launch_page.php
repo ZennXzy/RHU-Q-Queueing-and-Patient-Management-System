@@ -25,8 +25,8 @@
     <script src="../js/toast.js" defer></script>
     <script src="../js/session-check.js" defer></script>
 </head>
+<div class="toast-container" id="toastContainer"></div>
 <body>
-    <div class="toast-container" id="toastContainer"></div>
     <div id="loading-screen">
         <div class="rhu-logo">
             <img src="../images/rhu_logo_with_name.png" alt="rhu_logo">

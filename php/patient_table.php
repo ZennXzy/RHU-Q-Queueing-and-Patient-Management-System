@@ -1,5 +1,7 @@
 <?php
 session_start();
+require '../php/check-private.php';
+authorizeRoles(['Doctor/Staff']);
 require '../php/connection.php';
 
 $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number,phil_status, date_registered FROM patient_records ORDER BY firstname ASC");
@@ -14,7 +16,6 @@ if ($res && $res->num_rows > 0) {
       echo '<td>' . htmlspecialchars($row['phil_status']) . '</td>';
       echo '<td>' . htmlspecialchars($row['date_registered']) . '</td>';
 
-      // Action column
       echo '<td>';
       if (canManageRecords()) {
           echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';

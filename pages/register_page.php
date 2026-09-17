@@ -49,7 +49,7 @@ require '../php/connection.php';
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="sname" id="sname">
-                            <option value=" " default>Suffix</option>
+                            <option value=" " disabled selected>Suffix</option>
                             <option value="Jr.">Jr. (Junior)</option>
                             <option value="Sr.">Sr. (Senior)</option>
                             <option value="I">I</option>
@@ -67,7 +67,7 @@ require '../php/connection.php';
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="religion" id="religion">
-                            <option value=" " default>Religion</option>
+                            <option value=" " disabled selected>Religion</option>
                             <option value="Roman Catholicism">Roman Catholicism</option>
                             <option value="Islam">Islam</option>
                             <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
@@ -118,7 +118,7 @@ require '../php/connection.php';
                         </div>
 
                         <div class="fieldset-group col-5 business-item" id="businessDiv" style="margin-top:-1px; display: none;">
-                            <legend>Business</legend>
+                            <legend>Business <span>Type n/a if not applicable</span></legend>
                             <input type="text" name="business" id="businessInput" placeholder="e.g., Retail Store Owner">
                         </div>
                     </div>
@@ -179,7 +179,7 @@ require '../php/connection.php';
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="fsname" id="fsname">
-                            <option value=" " default>Suffix</option>
+                            <option value=" " disabled selected>Suffix</option>
                             <option value="Jr.">Jr. (Junior)</option>
                             <option value="Sr.">Sr. (Senior)</option>
                             <option value="I">I</option>
@@ -209,7 +209,7 @@ require '../php/connection.php';
                         </div>
                         <div class="form-group col-2 input-select">
                             <select name="ssname" id="ssname">
-                                <option value=" " default>Suffix</option>
+                                <option value=" " disabled selected>Suffix</option>
                                 <option value="Jr.">Jr. (Junior)</option>
                                 <option value="Sr.">Sr. (Senior)</option>
                                 <option value="I">I</option>

@@ -66,8 +66,28 @@ html {
 }
 
 .table-selector{
+    display:flex;
+    flex-direction:row;
     margin-left: 20px;
     margin-bottom:-3px;
+}
+
+.table-selector .tab-btn {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #cbd5e1;
+    border-bottom: none;
+    width: 75.41px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.table-selector .tab-btn.active {
+  background-color: #0B695D;
+  color: #ffffff;
+  border-color: #0B695D;
+  font-weight: 600;
 }
 
 .table-selector button{

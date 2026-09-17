@@ -5,14 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('deleteAdminPassword');
   const errorMsg = document.getElementById('deleteErrorMsg');
 
-  // 1. OPEN DELETE MODAL ON BUTTON CLICK
   document.addEventListener('click', (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
 
     const patientId = deleteBtn.dataset.id;
     
-    // Reset form fields
     deleteIdInput.value = patientId;
     passwordInput.value = '';
     if (errorMsg) {
@@ -46,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }); 
   }
 
-  // 2. SUBMIT DELETE REQUEST
   if (deleteForm) {
     deleteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -67,10 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
           reloadPatientTable();
           reloadTotalRecord();
         } else {
-          if (errorMsg) {
-            deleteModal.close();
-            showToast('Incorrect password or deletion failed.','error');
-          }
+          deleteModal.close();
+          showToast('Incorrect password or deletion failed.','error');
         }
       } catch (error) {
         console.error('Error executing delete action:', error);

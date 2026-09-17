@@ -1,15 +1,10 @@
 <?php
 session_start();
-// echo "<pre>";
-// print_r($_POST);
-// echo "</pre>";
-// exit();
 require 'connection.php';
 
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 
-    // 1. Personal Info
     $firstname = trim($_POST['fname'] ?? '');
     $lastname  = trim($_POST['lname'] ?? '');
     $middlename = trim($_POST['mname'] ?? '');

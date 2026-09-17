@@ -53,7 +53,7 @@ require '../php/connection.php';
         <div class="appointments-grid">
           <!-- Appointment Form Section -->
           <div class="pending-card">
-            <h2 class="form-title">Pending Appointments</h2>
+            <h2 class="form-title">Pending Appointments Applications</h2>
 
             <form onsubmit="event.preventDefault()">
               <!-- <div class="form-group">
@@ -84,7 +84,7 @@ require '../php/connection.php';
           <div class="list-card">
             <div class="list-header">
               <img src="../svg/reminder-appointment.svg" alt="appointment-icon">
-              Appointments
+              Approved Appointments
             </div>
             <div class="appointment-box">
               <span class="options-menu">⋮</span>

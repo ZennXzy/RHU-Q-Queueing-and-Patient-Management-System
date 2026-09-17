@@ -69,7 +69,7 @@ require '../php/connection.php';
                   <th class="sortable" data-col="1" data-type="number">
                     Age <span class="sort-icon">⇅</span>
                   </th>
-                  <th>Sex</th>
+                  <th>Sex at Birth</th>
                   <th>Contact Number</th>
                   <th>PhilHealth Status</th>
                   <th class="sortable" data-col="4" data-type="date">
