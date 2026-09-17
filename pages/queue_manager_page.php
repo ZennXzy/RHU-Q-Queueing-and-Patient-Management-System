@@ -22,7 +22,7 @@ require '../php/connection.php';
     <script scr="../js/filterSelect.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
-    <script src="../js/queue-list-loader.js" defer></script>
+    <!-- <script src="../js/queue-list-loader.js" defer></script> -->
     <script src="../js/accept-queue.js" defer></script>
     <script src="../js/complete-queue.js" defer></script>
     <script src="../js/session-check.js" defer></script>
