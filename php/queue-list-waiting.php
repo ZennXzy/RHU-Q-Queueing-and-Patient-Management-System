@@ -32,7 +32,7 @@ if($res && $res->num_rows > 0){
         echo '<button type="button" class="btn-accept" ' .
         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
-        'data-name="' .htmlspecialchars($fullName). '">Accept</button>';
+        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/check-icon.svg" alt="check-icon"></button>';
         echo        '</div>';
         echo    '</div>';
     }

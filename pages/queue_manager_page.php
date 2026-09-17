@@ -113,7 +113,6 @@ require '../php/connection.php';
 
                     <div class="split-grid">
                         
-                        <!-- Waiting Queue Card -->
                         <div class="waiting-card">
                             <h2 class="section-title">Waiting Queue</h2>
                             <?php
@@ -147,7 +146,7 @@ require '../php/connection.php';
                                         echo '<button type="button" class="btn-accept" ' .
                                         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
                                         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
-                                        'data-name="' .htmlspecialchars($fullName). '">Accept</button>';
+                                        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/check-icon.svg" alt="check-icon"></button>';
                                         echo        '</div>';
                                         echo    '</div>';
                                     }
