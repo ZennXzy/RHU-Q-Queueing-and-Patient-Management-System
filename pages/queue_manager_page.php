@@ -18,11 +18,12 @@ require '../php/connection.php';
     
     <script src="../js/submenu.js" defer></script>
     <script src="../js/queueing-form.js" defer></script>
+    <script src="../js/delete-queue.js" defer></script>
     <script scr="../js/display-settings-button.js" defer></script>
     <script scr="../js/filterSelect.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
-    <!-- <script src="../js/queue-list-loader.js" defer></script> -->
+    <script src="../js/queue-list-loader.js" defer></script>
     <script src="../js/accept-queue.js" defer></script>
     <script src="../js/complete-queue.js" defer></script>
     <script src="../js/session-check.js" defer></script>
@@ -142,7 +143,10 @@ require '../php/connection.php';
                                         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
                                         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
                                         echo '<div class="action-container">';
-                                        echo        '<span class="more-options">⋮</span>';
+                                        echo '<button type="button" class="btn-delete" ' .
+                                        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+                                        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+                                        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/delete-icon.svg" alt="check-icon"></button>';
                                         echo '<button type="button" class="btn-accept" ' .
                                         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
                                         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
@@ -158,8 +162,6 @@ require '../php/connection.php';
                                 echo '</div>';
                             ?> 
                         </div>
-
-                        <!-- Dashboard Counters Column -->
                         <div>
                             <h2 class="section-title" style="margin-bottom: 15px; padding-bottom: 0px; padding-top: 15px;">Dashboard</h2>
                             
@@ -224,51 +226,64 @@ require '../php/connection.php';
                 </div>    
             </div>
         </div>
-
-        <dialog id="queue-form" class="queue-form">
-            <div class="modal-card" id="modal-card">
-                <div class="toast-container" id="toastContainer"></div>
-                <h2>Add Patient to Queue</h2>
-                <form id="add-queue-form" method="dialog">
-                    <div class="formcontainer">
-                        <div class="mainform">
-                            
-                            <!-- Patient Search Group -->
-                            <div class="form-group" style="position: relative;">
-                                <label for="patient-search">Patient Name</label>
-                                <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" required>
-                                <!-- Hidden input to store selected patient ID -->
-                                <input type="hidden" id="patient-id" name="patient_id" required>
-                                <!-- Dropdown list for search results -->
-                                <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
-                            </div>
-
-                            <!-- Service Type Select Group -->
-                            <div class="form-group">
-                                <label for="service-type">Service Type</label>
-                                <select class="service-type" id="service-type" name="service_name" required>
-                                    <option value="" disabled selected>Select a service</option>
-                                    <option value="Medical Consultation">Medical Consultation</option>
-                                    <option value="Prenatal Checkup">Prenatal Checkup</option>
-                                    <option value="Immunization / Vaccination">Immunization / Vaccination</option>
-                                    <option value="Dental Checkup">Dental Checkup</option>
-                                    <option value="Laboratory Request">Laboratory Request</option>
-                                </select>
-                            </div>
-
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('queue-form').close()">Cancel</button>
-                            <button type="submit" class="btn-submit">Add</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </dialog>
     </div>
     
 </body>
+<dialog id="queue-form" class="queue-form">
+    <div class="modal-card" id="modal-card">
+        <div class="toast-container" id="toastContainer"></div>
+        <h2>Add Patient to Queue</h2>
+        <form id="add-queue-form" method="dialog">
+            <div class="formcontainer">
+                <div class="mainform">
+                    
+                    <!-- Patient Search Group -->
+                    <div class="form-group" style="position: relative;">
+                        <label for="patient-search">Patient Name</label>
+                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" required>
+                        <!-- Hidden input to store selected patient ID -->
+                        <input type="hidden" id="patient-id" name="patient_id" required>
+                        <!-- Dropdown list for search results -->
+                        <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
+                    </div>
 
+                    <!-- Service Type Select Group -->
+                    <div class="form-group">
+                        <label for="service-type">Service Type</label>
+                        <select class="service-type" id="service-type" name="service_name" required>
+                            <option value="" disabled selected>Select a service</option>
+                            <option value="Medical Consultation">Medical Consultation</option>
+                            <option value="Prenatal Checkup">Prenatal Checkup</option>
+                            <option value="Immunization / Vaccination">Immunization / Vaccination</option>
+                            <option value="Dental Checkup">Dental Checkup</option>
+                            <option value="Laboratory Request">Laboratory Request</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('queue-form').close()">Cancel</button>
+                    <button type="submit" class="btn-submit">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</dialog>
+<dialog id="delete-queue-modal" class="delete-modal">
+    <div class="modal-card-delete">
+        <div class="modal-header-delete">
+            <h2>Confirm Deletion</h2>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to remove <strong id="deletePatientName"></strong> (<span id="deleteQueueCode"></span>) from the queue?</p>
+            <small class="warning-text">This action cannot be undone.</small>
+        </div>
+        <div class="modal-actions">
+            <button type="button" id="cancelDeleteBtn" class="btn-cancel">Cancel</button>
+            <button type="button" id="confirmDeleteBtn" class="btn-danger">Delete</button>
+        </div>
+    </div>
+</dialog>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);

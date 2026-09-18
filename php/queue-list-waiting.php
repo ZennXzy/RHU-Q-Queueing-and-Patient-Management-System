@@ -28,7 +28,10 @@ if($res && $res->num_rows > 0){
         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
         echo '<div class="action-container">';
-        echo        '<span class="more-options">⋮</span>';
+        echo '<button type="button" class="btn-delete" ' .
+        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/delete-icon.svg" alt="check-icon"></button>';
         echo '<button type="button" class="btn-accept" ' .
         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
