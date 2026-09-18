@@ -96,6 +96,7 @@ require '../php/connection.php';
                                     echo '    <span class="more-options">⋮</span>';
                                     echo '    <button type="button" class="btn-complete" ';
                                     echo '      data-queue-id="' . htmlspecialchars($row['queue_info_id']) . '" ';
+                                    echo '      data-patient-id="' . htmlspecialchars($row['patient_id']) . '" ';
                                     echo '      data-patient-name="' . htmlspecialchars($fullName) . '" ';
                                     echo '      data-queue-code="' . htmlspecialchars($row['queue_code']) . '" ';
                                     echo '      data-service="' . htmlspecialchars($row['service_name']) . '" ';
