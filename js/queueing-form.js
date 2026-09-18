@@ -38,7 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     debounceTimer = setTimeout(async () => {
       try {
         const response = await fetch(`../php/queue-form-search-patients.php?query=${encodeURIComponent(query)}`);
+        
         const patients = await response.json();
+
 
         results_container.innerHTML = '';
 
@@ -92,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const formData = new FormData(queue_form);
+
 
       try {
         const response = await fetch('../php/add-to-queue.php', {

@@ -240,7 +240,7 @@ require '../php/connection.php';
                     <!-- Patient Search Group -->
                     <div class="form-group" style="position: relative;">
                         <label for="patient-search">Patient Name</label>
-                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" required>
+                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" >
                         <!-- Hidden input to store selected patient ID -->
                         <input type="hidden" id="patient-id" name="patient_id" required>
                         <!-- Dropdown list for search results -->
@@ -250,7 +250,7 @@ require '../php/connection.php';
                     <!-- Service Type Select Group -->
                     <div class="form-group">
                         <label for="service-type">Service Type</label>
-                        <select class="service-type" id="service-type" name="service_name" required>
+                        <select class="service-type" id="service-type" name="service_name">
                             <option value="" disabled selected>Select a service</option>
                             <option value="Medical Consultation">Medical Consultation</option>
                             <option value="Prenatal Checkup">Prenatal Checkup</option>
