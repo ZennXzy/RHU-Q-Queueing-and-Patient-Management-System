@@ -14,6 +14,7 @@ require '../php/connection.php';
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/queue-forms.css">
+    <link rel="stylesheet" href="../styles/complete-queue-modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
     
     <script src="../js/submenu.js" defer></script>
@@ -282,6 +283,54 @@ require '../php/connection.php';
             <button type="button" id="cancelDeleteBtn" class="btn-cancel">Cancel</button>
             <button type="button" id="confirmDeleteBtn" class="btn-danger">Delete</button>
         </div>
+    </div>
+</dialog>
+<!-- html/complete-queue-modal.html -->
+<dialog id="complete-queue-modal" class="complete-modal">
+    <div class="modal-card">
+        <div class="modal-header-complete">
+            <h2>Complete Queue</h2>
+            <span id="completeQueueCodeBadge" class="queue-badge">QUEUE: #0000</span>
+        </div>
+
+        <form id="completeQueueForm" method="dialog">
+            <input type="hidden" id="completeQueueId" name="queue_info_id">
+            <input type="hidden" id="completePatientNameInput" name="patient_name">
+            <input type="hidden" id="completeQueueCodeInput" name="queue_code">
+            <input type="hidden" id="completeServiceInput" name="service">
+
+            <div class="formcontainer">
+                <div class="mainform">
+                    <p class="patient-info-label">Patient: <strong id="completePatientName">--</strong></p>
+                    <p class="service-info-label">Service: <strong id="serviceName">--</strong></p>
+
+                    <div class="form-group">
+                        <label for="completeRemarks">Remarks / Notes</label>
+                        <textarea id="completeRemarks" name="remarks" rows="3" placeholder="Enter consultation or queue remarks..." required></textarea>
+                    </div>
+
+                    <div class="form-group switch-group">
+                        <label for="toggleAppointment" class="switch-label">
+                            <span>Add Follow-up Appointment</span>
+                            <input type="checkbox" id="toggleAppointment" name="add_appointment" value="1">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="appointmentContainer" class="appointment-container hidden">
+                        <div class="form-group">
+                            <label for="appointmentDate">Select Appointment Date</label>
+                            <input type="date" id="appointmentDate" name="appointment_date" min="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancelCompleteBtn" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Complete</button>
+                </div>
+            </div>
+        </form>
     </div>
 </dialog>
 <script>

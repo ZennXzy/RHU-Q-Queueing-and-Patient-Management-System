@@ -1,0 +1,153 @@
+/* css/complete-modal.css */
+.complete-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0 0 20px 0;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    overflow: hidden;
+    outline: none;
+}
+
+.complete-modal::backdrop {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+.complete-modal .modal-header-complete {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right:30px;
+    background-color: #0B695D;
+    margin-bottom: 16px;
+}
+
+.complete-modal .modal-header-complete h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.queue-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    margin-top: 17px;
+    border-radius: 20px;
+}
+
+.complete-modal .mainform {
+    padding: 0 24px;
+}
+
+.patient-info-label,
+ .service-info-label{
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 16px;
+}
+
+
+.complete-modal .form-group {
+    margin-bottom: 16px;
+}
+
+.complete-modal label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #334155;
+}
+
+.complete-modal textarea,
+.complete-modal input[type="date"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    color: #0f172a;
+    transition: all 0.2s ease;
+}
+
+.complete-modal textarea:focus,
+.complete-modal input[type="date"]:focus {
+    outline: none;
+    border-color: #0B695D;
+    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.15);
+}
+
+/* Switch Toggle Styling */
+.switch-group {
+    margin-top: 10px;
+}
+
+.switch-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.switch-label input {
+    display: none;
+}
+
+.slider {
+    position: relative;
+    width: 44px;
+    height: 22px;
+    background-color: #cbd5e1;
+    border-radius: 20px;
+    transition: background-color 0.2s ease;
+}
+
+.slider::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.switch-label input:checked + .slider {
+    background-color: #0B695D;
+}
+
+.switch-label input:checked + .slider::before {
+    transform: translateX(22px);
+}
+
+.appointment-container {
+    transition: all 0.3s ease;
+}
+
+.appointment-container.hidden {
+    display: none;
+}
+
+.complete-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 0 24px;
+    border-top: 1px solid #f1f5f9;
+}

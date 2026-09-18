@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
                 $_SESSION['logged_role'] = $row['role'];
                 $_SESSION['logged_account'] = $row['fullname'];
 
-                $message = "Account " . $row['username'] . " logged in successfully.";
+                $message = $row['username'] . " logged in successfully.";
                 $insertlog->bind_param('s', $message);
                 $insertlog->execute();
                 $insertlog->close();

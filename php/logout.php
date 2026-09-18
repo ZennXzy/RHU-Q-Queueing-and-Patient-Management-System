@@ -10,7 +10,7 @@ if ($res->execute()) {
     if ($res->affected_rows > 0) {
         $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
         if ($insertlog) {
-            $message = "Account " . $username . " just logged out.";
+            $message = $username . " just logged out.";
             $insertlog->bind_param('s', $message);
             $insertlog->execute();
             $insertlog->close();

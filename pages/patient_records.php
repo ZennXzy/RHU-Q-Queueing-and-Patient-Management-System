@@ -50,13 +50,6 @@ require '../php/connection.php';
             </div>
             <input type="text" id="patientSearchInput" placeholder="Search by name">
           </div>
-          <?php
-            $res = $conn->query("SELECT patient_id FROM patient_records");
-            $total = $res ? $res->num_rows : 0;
-            echo '<div class="total-records" id="total-records">';
-            echo  '<span>Total Registered Patients: <strong id="totalRecordsCount">'.htmlspecialchars($total).'</strong></span>';
-            echo '</div>';
-          ?>
         </div>
         <div class="table-card">
           <div class="patient-table">
