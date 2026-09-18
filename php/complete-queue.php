@@ -27,6 +27,7 @@ $conn->begin_transaction();
 
 try {
     $patient_id = NULL;
+    $patient_contact = NULL;
 
     $get_id = $conn->prepare("SELECT patient_id FROM queue_information WHERE queue_info_id = ? ");
     $get_id->bind_param("i", $queue_info_id);
@@ -37,6 +38,17 @@ try {
         $patient_id = intval($row['patient_id']);
     }
     $get_id->close();
+
+    $get_contact = $conn->prepare("SELECT contact_number FROM patient_records WHERE patient_id = ? ");
+    $get_contact->bind_param("i", $patient_id);
+    $get_contact->execute();
+    
+    $result_get_contact = $get_contact->get_result();
+    if ($row = $result_get_contact->fetch_assoc()) {
+        $patient_contact = $row['contact_number'];
+    }
+    $get_contact->close();
+
 
     $service_time  = NULL;
     $accepted_time = NULL;
@@ -93,15 +105,15 @@ try {
     if ($appointment === 1 && !empty($appointment_date)) {
         $appointment_status = 'Approved';
 
-        $appointment_sql = "INSERT INTO appointments (patient_id, service, remarks, server_name, status, appointment_date, created_at) 
-                            VALUES (?, ?, ?, ?, ?, ?, NOW())";
+        $appointment_sql = "INSERT INTO appointments (patient_id, contact_number, service, remarks, server_name, status, appointment_date, created_at) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
 
         $stmt_app = $conn->prepare($appointment_sql);
         if (!$stmt_app) {
             throw new Exception("Prepare appointment failed: " . $conn->error);
         }
 
-        $stmt_app->bind_param("ississ", $patient_id, $service, $remarks, $server_name, $appointment_status, $appointment_date);
+        $stmt_app->bind_param("isssiss", $patient_id, $patient_contact, $service, $remarks, $server_name, $appointment_status, $appointment_date);
 
         if (!$stmt_app->execute()) {
             throw new Exception("Insert appointment failed: " . $stmt_app->error);
