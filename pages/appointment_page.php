@@ -19,6 +19,8 @@ require '../php/connection.php';
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/add-appointment.js" defer></script>
     <script src="../js/logout.js" defer></script>
+    <script src="../js/pending-appointment-list.js" defer></script>
+    <script src="../js/approved-appointment-list.js" defer></script>
     <script src="../js/session-check.js" defer></script>
 
 
@@ -51,95 +53,21 @@ require '../php/connection.php';
         </div>
         <!-- Content Grid -->
         <div class="appointments-grid">
-          <!-- Appointment Form Section -->
           <div class="pending-card">
-            <h2 class="form-title">Pending Appointments Applications</h2>
-
-            <form onsubmit="event.preventDefault()">
-              <!-- <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Full Name">
-                        </div>
-
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Contact Number">
-                        </div>
-
-                        <div class="field-group">
-                            <label>Appointment Date</label>
-                            <input type="text" value="dd/mm/yyyy">
-                        </div>
-
-                        <div class="field-group">
-                            <label>Description</label>
-                            <textarea placeholder="Type Here..."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-submit">
-                            Submit
-                        </button> -->
-            </form>
-          </div>
-
-          <!-- Appointments List Section -->
-          <div class="list-card">
-            <div class="list-header">
-              <img src="../svg/reminder-appointment.svg" alt="appointment-icon">
-              Approved Appointments
+            <div class="card-header">
+                <h2 class="form-title">Pending Appointment Applications</h2>
+                <span class="badge-count" id="pendingCount">0
+                </span>
             </div>
-            <div class="appointment-box">
-              <span class="options-menu">⋮</span>
-
-              <div class="patient-info-title">Antonio J Ramos</div>
-              <div class="info-row">
-                <strong>Contact Number:</strong> 09610586086
-              </div>
-              <div class="info-row"><strong>Description:</strong></div>
-              <div class="desc-text">Follow-up</div>
-
-              <div class="card-footer">
-                <div class="appointment-date">Date: 4/16/2026</div>
-                <button class="btn-complete">✔ Complete</button>
-              </div>
+            <div class="appointments-list" id="pendingAppointmentsList">
             </div>
           </div>
-        </div>
-
-        <div id="form-card" class="form-card">
-          <div class="formModal">
-            <div class="topbar">
-              <h2 class="form-title">Appointment Information</h2>
-              <span id="closeBtn" class="closeButton">✕</span>
+          <div class="approved-card">
+            <div class="card-header">
+              <h2 class="form-title">Approved Appointments</h2>
+                <span class="badge-count" id="approvedCount">0</span>
             </div>
-
-            <form onsubmit="event.preventDefault()">
-              <div class="form-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Full Name"
-              >
-              </div>
-
-              <div class="form-group">
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Contact Number"
-              >
-              </div>
-
-              <div class="field-group">
-                <label>Appointment Date</label>
-                <input type="text" value="dd/mm/yyyy">
-              </div>
-
-              <div class="field-group">
-                <label>Description</label>
-                <textarea placeholder="Type Here..."></textarea>
-              </div>
-
-              <button type="submit" class="btn-submit">Submit</button>
-            </form>
+            <div class="appointments-list" id="approvedAppointmentsList"></div>
           </div>
         </div>
       </div>

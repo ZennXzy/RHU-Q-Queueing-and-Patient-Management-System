@@ -69,11 +69,6 @@ if ($res && $res->num_rows > 0) {
 }
 $html = ob_get_clean();
 
-// if (isset($stmt)) {
-//     $stmt->close();
-// }
-// $stmt->close();
-// $conn->close();
 
 echo json_encode([
     'status' => 'success',
