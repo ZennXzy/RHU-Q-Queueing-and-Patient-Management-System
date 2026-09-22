@@ -162,6 +162,10 @@ require '../php/connection.php';
                     <span id="modalContact">-</span>
                   </div>
                   <div class="info-group">
+                    <label>Email Address</label>
+                    <span id="modalEmail">-</span>
+                  </div>
+                  <div class="info-group">
                     <label>Address</label>
                     <span id="modalAddress">-</span>
                   </div>

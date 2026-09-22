@@ -190,6 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const gender = getVal(p, ["gender"], "-");
         const civilStatus = getVal(p, ["civil_status"], "-");
+        const emailAddress = getVal(p, ["email"], "-");
         const religion = getVal(p, ["religion"], "-");
 
         const elFullName = document.getElementById("modalFullName");
@@ -230,10 +231,12 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         const elContact = document.getElementById("modalContact");
+        const elEmail = document.getElementById("modalEmail");
         const elAddress = document.getElementById("modalAddress");
         const elDateReg = document.getElementById("modalDateRegistered");
 
         if (elContact) elContact.textContent = contactNum;
+        if (elEmail) elEmail.textContent = emailAddress;
         if (elAddress) elAddress.textContent = address;
         if (elDateReg) elDateReg.textContent = dateRegistered;
 
