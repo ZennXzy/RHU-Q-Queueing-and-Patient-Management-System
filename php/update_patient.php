@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once '../php/connection.php'; 
-require_once '../php/check-private.php';
+require_once '../api/check-private.php';
 if (!canManageRecords()) {
     echo json_encode([
         'status'  => 'error',

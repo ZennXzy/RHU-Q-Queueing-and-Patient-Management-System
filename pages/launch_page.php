@@ -1,5 +1,5 @@
 <?php
-    require '../php/check-private.php';
+    require '../api/check-private.php';
     require '../php/connection.php';
 
     $userRole = $_SESSION['logged_role'] ?? '';

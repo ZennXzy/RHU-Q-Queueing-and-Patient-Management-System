@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!editModal || !editForm) return;
 
     try {
-      const response = await fetch(`../php/get_accounts.php?action=details&id=${accountId}`);
+      const response = await fetch(`../api/get_accounts.php?action=details&id=${accountId}`);
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
       const result = await response.json();

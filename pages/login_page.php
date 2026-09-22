@@ -1,5 +1,5 @@
 <?php
-    require '../php/check-public.php';
+    require '../api/check-public.php';
     require '../php/connection.php';
 ?>
 <!DOCTYPE html>

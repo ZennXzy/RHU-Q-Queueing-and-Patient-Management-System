@@ -1,5 +1,5 @@
 <?php
-require '../php/check-private.php';
+require '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
 require '../php/connection.php';
 ?>
@@ -19,6 +19,7 @@ require '../php/connection.php';
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
+    <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/search.js" defer></script>
     <script src="../js/patient-records.js" defer></script>
     <script src="../js/edit-patient.js" defer></script>

@@ -1,5 +1,5 @@
 <?php
-require '../php/check-private.php';
+require '../api/check-private.php';
 authorizeRoles(['Doctor/Staff', 'Display']);
 require '../php/connection.php';
 $DEPARTMENT_CONFIG = [

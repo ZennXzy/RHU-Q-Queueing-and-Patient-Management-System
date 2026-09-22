@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const checkSessionStatus = async () => {
     try {
-      const response = await fetch('../php/check-private.php?ajax_check=1');
+      const response = await fetch('../api/check-private.php?ajax_check=1');
       if (!response.ok) return;
 
       const data = await response.json();

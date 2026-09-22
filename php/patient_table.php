@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../php/check-private.php';
+require '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
 require '../php/connection.php';
 

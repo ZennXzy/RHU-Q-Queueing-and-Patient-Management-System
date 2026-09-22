@@ -1,5 +1,5 @@
 <?php
-require '../php/check-private.php';
+require '../api/check-private.php';
 authorizeRoles(['Admin']);
 require '../php/connection.php';
 ?>

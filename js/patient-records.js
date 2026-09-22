@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const response = await fetch(
-        `../php/get_patients.php?action=details&id=${patientId}`,
+        `../api/get_patients.php?action=details&id=${patientId}`,
       );
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 

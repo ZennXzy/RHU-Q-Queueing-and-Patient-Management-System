@@ -44,30 +44,49 @@
 
 }
 
+
+/* Sidebar Menu Content Wrapper */
+.menu-item .menu-content {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+/* Indicator Container */
 .indicator {
-    position: relative;
-    width: 12px;
-    height: 12px;
-    padding-left: 20px;
+  display: none; /* Hidden by default */
+  margin-left: auto;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Shown when active */
+.indicator.active {
+  display: flex;
+}
 
+/* Dot Styling with pulse animation */
 .dot-notification {
-    display: none;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444; /* Red notification color */
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+  animation: pulse-dot 2s infinite;
 }
 
-.sidebar .indicator.active .dot-notification {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background: #DC3545;
-    border-radius: 50%;
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
 }
-
-
 
 .sidebar .menu-item.active,
 .sidebar .menu-item:hover {
