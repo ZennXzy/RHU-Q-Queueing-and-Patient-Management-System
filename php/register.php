@@ -1,12 +1,14 @@
 <?php
 session_start();
-require 'connection.php';
+header('Content-Type: application/json');
+require_once '../php/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 
     // Save submitted data to session so fields persist if an error occurs
     $_SESSION['form_data'] = $_POST;
 
+    // 1. Personal Info Sanitization
     $firstname = trim($_POST['fname'] ?? '');
     $lastname  = trim($_POST['lname'] ?? '');
     $middlename = trim($_POST['mname'] ?? '');
@@ -44,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $ssname = trim($_POST['ssname'] ?? '');
     $sFullName = trim("$slname $sfname $smname $ssname");
 
-    // 3. PhilHealth & NHTS
+    // 3. PhilHealth & Yakap (Corrected POST Keys)
     $philStatus = trim($_POST['philStatusInput'] ?? '');
-    $philNum    = trim($_POST['philNum'] ?? '');
-    $prinMem    = trim($_POST['prinMem'] ?? '');
+    $philNum    = trim($_POST['philNumber'] ?? '');
+    $prinMem    = trim($_POST['prinMember'] ?? '');
     $yakapmem   = trim($_POST['yakapmem'] ?? '');
 
     // Validation Checks
@@ -55,14 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide First and Last Name') . '&type=error');
         exit();
     } 
-
-    if ($sFullName === ''){
-      $sFullName = NULL;
-    }
-
-    if ($suffix === ''){
-      $suffix = NULL;
-    }
 
     if ($address === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide the address') . '&type=error');
@@ -75,7 +69,12 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     }
 
     if ($gender === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select the gender') . '&type=error');
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select gender') . '&type=error');
+        exit();
+    }
+
+    if ($birthDate === '') {
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Date of Birth') . '&type=error');
         exit();
     }
 
@@ -84,15 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
-    if($emailContact === ''){
-      $emailContact = NULL;
-    } else if (strlen($emailContact) > 0 && !str_contains($emailContact,"@gmail.com")){
+    if ($emailContact !== '' && !filter_var($emailContact, FILTER_VALIDATE_EMAIL)) {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid email address.') . '&type=error');
         exit();
     }
 
     if ($employmentStatus === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select an Employment status') . '&type=error');
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Employment status') . '&type=error');
         exit();
     } else if (strtolower($employmentStatus) === 'employed' && $occupation === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide occupation') . '&type=error');
@@ -100,9 +97,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     } else if (strtolower($employmentStatus) === 'self-employed' && $business === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide business') . '&type=error');
         exit();
-    } else {
-      $occupation = NULL;
-      $business = NULL;
     }
 
     if ($civilStatus === '') {
@@ -110,13 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
-    // family info validation
-    if ($mfname === '' || $mlname === '' || $ffname === '' || $flname === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide parent names') . '&type=error');
-        exit();
-    }
-
-    // philhealth validation
     if ($philStatus === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select PhilHealth Status') . '&type=error');
         exit();
@@ -126,29 +113,49 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     } else if (strtolower($philStatus) === 'dependent' && ($philNum === '' || $prinMem === '')) {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide PhilHealth Number and Principal Member') . '&type=error');
         exit();
-    } else {
-      $philNum = NULL;
-      $prinMem = NULL;
     }
 
-    // yakap validation
     if ($yakapmem === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Yakap Member.') . '&type=error');
         exit();
     }
 
-    // Duplicate Check
-    $check = $conn->prepare('SELECT patient_id FROM patient_records WHERE firstname = ? AND lastname = ? AND middlename = ? AND suffix = ?');
+    // Convert Empty Strings to NULL for DB Insertion
+    $suffix       = ($suffix === '') ? NULL : $suffix;
+    $middlename   = ($middlename === '') ? NULL : $middlename;
+    $emailContact = ($emailContact === '') ? NULL : $emailContact;
+    $occupation   = (strtolower($employmentStatus) === 'employed') ? $occupation : NULL;
+    $business     = (strtolower($employmentStatus) === 'self-employed') ? $business : NULL;
+    $sFullName    = (in_array(strtolower($civilStatus), ['married', 'widow']) && $sFullName !== '') ? $sFullName : NULL;
+    $philNum      = (strtolower($philStatus) !== 'not applicable') ? $philNum : NULL;
+    $prinMem      = (strtolower($philStatus) === 'dependent') ? $prinMem : NULL;
+
+
+    // Robust Duplicate Record Verifier
+    // Checks standard unique patient identifyers: First Name, Last Name, Birth Date, and Mother's Name
+    $check = $conn->prepare("
+        SELECT patient_id 
+        FROM patient_records 
+        WHERE LOWER(firstname) = LOWER(?) 
+          AND LOWER(lastname) = LOWER(?) 
+          AND date_of_birth = ?
+          AND (
+              LOWER(COALESCE(middlename, '')) = LOWER(?) 
+              OR LOWER(COALESCE(mothers_name, '')) = LOWER(?)
+          )
+        LIMIT 1
+    ");
+
     if (!$check) {
-        die("Duplicate Check Error: " . $conn->error);
+        die("Duplicate Check SQL Error: " . $conn->error);
     }
     
-    $check->bind_param('ssss', $firstname, $lastname, $middlename, $suffix);
+    $check->bind_param('sssss', $firstname, $lastname, $birthDate, $middlename, $mFullName);
     $check->execute();
     $res = $check->get_result();
 
     if ($res && $res->num_rows > 0) {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Patient Already Existing') . '&type=error');
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Patient Record Already Exists!') . '&type=error');
         exit();
     }
     $check->close();
@@ -177,7 +184,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     );
 
     if ($insertstmt->execute()) {
-        // Clear saved form draft on successful insertion
         unset($_SESSION['form_data']);
         header('Location: ../pages/register_page.php?msg=' . urlencode('Successfully Registered') . '&type=success');
         exit();

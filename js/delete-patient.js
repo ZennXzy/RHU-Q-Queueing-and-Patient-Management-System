@@ -33,16 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading table:', error);
         });   
   }
-  function reloadTotalRecord(){
-    fetch('../php/total_records.php')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('total-records').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading total records:', error);
-        }); 
-  }
 
   if (deleteForm) {
     deleteForm.addEventListener('submit', async (e) => {
@@ -62,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
           deleteModal.close();
           showToast('Record Deleted Successfully.','success');
           reloadPatientTable();
-          reloadTotalRecord();
         } else {
           deleteModal.close();
           showToast('Incorrect password or deletion failed.','error');
