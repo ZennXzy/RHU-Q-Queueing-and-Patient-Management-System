@@ -110,3 +110,40 @@
       </form>
   </div>
 </aside>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.substring(currentPath.lastIndexOf("/") + 1);
+
+        // 1. Highlight standard menu items
+        const menuLinks = document.querySelectorAll(".sidebar .menu-item:not(.dropdown-toggle)");
+        
+        menuLinks.forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href && href !== "#" && href.includes(currentPage)) {
+            link.classList.add("active");
+            }
+        });
+
+        // 2. Highlight sub-nav links and expand parent dropdown if inside a submenu
+        const subNavLinks = document.querySelectorAll(".sidebar .sub-nav-link");
+
+        subNavLinks.forEach((subLink) => {
+            const href = subLink.getAttribute("href");
+            if (href && href !== "#" && href.includes(currentPage)) {
+            subLink.classList.add("active");
+
+            // Expand parent dropdown group
+            const parentDropdown = subLink.closest(".dropdown-group");
+            if (parentDropdown) {
+                const toggleBtn = parentDropdown.querySelector(".dropdown-toggle");
+                const submenuContainer = parentDropdown.querySelector(".submenu-container");
+
+                if (toggleBtn) toggleBtn.classList.add("active");
+                if (submenuContainer) submenuContainer.style.display = "block";
+            }
+            }
+        });
+    });
+</script>
