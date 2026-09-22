@@ -22,7 +22,6 @@ function announcePatient(queueCode, patientName) {
   utterance2.pitch = 1.0;
   utterance2.lang = 'en-US';
 
-  // Play second callout sequentially after the first completes
   utterance1.onend = () => {
     window.speechSynthesis.speak(utterance2);
   };
@@ -36,7 +35,6 @@ document.addEventListener('click', async (e) => {
 
   e.preventDefault();
   
-  // Use getAttribute for direct DOM reading fallback
   const queueInfoId = acceptBtn.getAttribute('data-id') || acceptBtn.dataset.id; 
   const queueCode   = acceptBtn.getAttribute('data-code') || acceptBtn.dataset.code;  
   const patientName = acceptBtn.getAttribute('data-name') || acceptBtn.dataset.name; 

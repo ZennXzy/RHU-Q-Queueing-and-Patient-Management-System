@@ -17,7 +17,6 @@ require '../php/connection.php';
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
-    <script src="../js/add-appointment.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/pending-appointment-list.js" defer></script>
     <script src="../js/approved-appointment-list.js" defer></script>

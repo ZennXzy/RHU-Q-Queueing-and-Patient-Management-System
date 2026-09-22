@@ -117,6 +117,14 @@ try {
 
         if (!$stmt_app->execute()) {
             throw new Exception("Insert appointment failed: " . $stmt_app->error);
+        } else {
+            $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
+            if ($insertlog) {
+                $message = $_SESSION['logged_name'] . " added an Appointment.";
+                $insertlog->bind_param('s', $message);
+                $insertlog->execute();
+                $insertlog->close();
+            }
         }
         $stmt_app->close();
     }

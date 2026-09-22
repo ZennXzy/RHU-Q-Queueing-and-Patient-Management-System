@@ -39,10 +39,10 @@ require '../php/connection.php';
             <div class="white-card">
                 <div class="form-grid">    
                     <div class="form-group col-4">
-                        <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off">
+                        <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" required>
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off">
+                        <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off" required>
                     </div>
                     <div class="form-group col-3">
                         <input type="text" name="mname" id="mname" placeholder="Middle Name" autocomplete="off">
@@ -60,14 +60,14 @@ require '../php/connection.php';
                     </div>
 
                     <div class="form-group col-4">
-                        <input type="text" name="address" id="address" placeholder="Complete Address">
+                        <input type="text" name="address" id="address" placeholder="Complete Address" required>
                     </div>
                     <div class="form-group col-2">
                         <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                     </div>
                     <div class="form-group col-2 input-select">
                         <select name="religion" id="religion">
-                            <option value=" " disabled selected>Religion</option>
+                            <option disabled selected>Religion</option>
                             <option value="Roman Catholicism">Roman Catholicism</option>
                             <option value="Islam">Islam</option>
                             <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
@@ -94,6 +94,10 @@ require '../php/connection.php';
                     <div class="form-group col-3">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
                         <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;" autocomplete="off">
+                    </div>
+                    <div class="form-group col-4">
+                        <span style="font-size: 13px; color: #555;">Email</span>
+                        <input type="text" name="emailContact" id="emailContact" placeholder="e.g., johndoe21@gmail.com" style="margin-top:10px;">
                     </div>
                     <div class="form-group col-5" style="grid-row: span 2; justify-content: flex-start;">
                         <span style="font-size: 13px; color: #555;">Employment Status</span>
@@ -131,10 +135,6 @@ require '../php/connection.php';
                             <label class="radio-item"><input type="radio" name="civilStatus" value="Married" onclick="handleCivilChange()">Married</label>
                             <label class="radio-item"><input type="radio" name="civilStatus" value="Widow" onclick="handleCivilChange()">Widow</label>
                         </div>
-                    </div>
-                    <div class="form-group col-4" style="display:none;">
-                        <span style="font-size: 13px; color: #555;">Email</span>
-                        <input type="text" id="emailContact" placeholder="e.g., johndoe21@gmail.com" style="margin-top:10px;">
                     </div>
                 </div>
             </div>

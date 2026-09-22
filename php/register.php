@@ -2,8 +2,10 @@
 session_start();
 require 'connection.php';
 
-
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
+
+    // Save submitted data to session so fields persist if an error occurs
+    $_SESSION['form_data'] = $_POST;
 
     $firstname = trim($_POST['fname'] ?? '');
     $lastname  = trim($_POST['lname'] ?? '');
@@ -18,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $birthDate        = trim($_POST['birthDate'] ?? '');
     $contactnum       = trim($_POST['contactnum'] ?? '');
     $emailContact     = trim($_POST['emailContact'] ?? '');
-    $employmentStatus = trim($_POST['employment_status'] ?? $_POST['employmentStatus'] ?? '');
+    $employmentStatus = trim($_POST['employment_status'] ?? '');
     $occupation       = trim($_POST['occupation'] ?? '');
     $business         = trim($_POST['business'] ?? '');
     $civilStatus      = trim($_POST['civilStatus'] ?? '');
@@ -46,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $philStatus = trim($_POST['philStatusInput'] ?? '');
     $philNum    = trim($_POST['philNum'] ?? '');
     $prinMem    = trim($_POST['prinMem'] ?? '');
-    $yakapmem = trim($_POST['yakapmem'] ?? '');
+    $yakapmem   = trim($_POST['yakapmem'] ?? '');
 
     // Validation Checks
     if ($firstname === '' || $lastname === '') {
@@ -66,6 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide the address') . '&type=error');
         exit();
     }
+    
+    if ($religion === '') {
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Religion') . '&type=error');
+        exit();
+    }
 
     if ($gender === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select the gender') . '&type=error');
@@ -79,15 +86,18 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 
     if($emailContact === ''){
       $emailContact = NULL;
+    } else if (strlen($emailContact) > 0 && !str_contains($emailContact,"@gmail.com")){
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid email address.') . '&type=error');
+        exit();
     }
 
     if ($employmentStatus === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select an Employment status') . '&type=error');
         exit();
-    } else if ($employmentStatus === 'employed' && $occupation === '') {
+    } else if (strtolower($employmentStatus) === 'employed' && $occupation === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide occupation') . '&type=error');
         exit();
-    } else if ($employmentStatus === 'self-employed' && $business === '') {
+    } else if (strtolower($employmentStatus) === 'self-employed' && $business === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide business') . '&type=error');
         exit();
     } else {
@@ -100,23 +110,20 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
-    if ($religion === '') {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Religion') . '&type=error');
-        exit();
-    }
-
+    // family info validation
     if ($mfname === '' || $mlname === '' || $ffname === '' || $flname === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide parent names') . '&type=error');
         exit();
     }
 
+    // philhealth validation
     if ($philStatus === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select PhilHealth Status') . '&type=error');
         exit();
-    } else if ($philStatus === 'member' && $philNum === '') {
+    } else if (strtolower($philStatus) === 'member' && $philNum === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide PhilHealth Number') . '&type=error');
         exit();
-    } else if ($philStatus === 'dependent' && ($philNum === '' || $prinMem === '')) {
+    } else if (strtolower($philStatus) === 'dependent' && ($philNum === '' || $prinMem === '')) {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide PhilHealth Number and Principal Member') . '&type=error');
         exit();
     } else {
@@ -124,12 +131,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
       $prinMem = NULL;
     }
 
+    // yakap validation
     if ($yakapmem === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Yakap Member.') . '&type=error');
         exit();
     }
 
-    // FIXED: Select 'patient_id' instead of 'id'
+    // Duplicate Check
     $check = $conn->prepare('SELECT patient_id FROM patient_records WHERE firstname = ? AND lastname = ? AND middlename = ? AND suffix = ?');
     if (!$check) {
         die("Duplicate Check Error: " . $conn->error);
@@ -159,7 +167,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         die("Database Prepare Failed: " . $conn->error);
     }
     
-    // Type definition: 5 strings, 1 int ($age), 17 strings
     $insertstmt->bind_param("sssssissssssssssssssss", 
         $firstname, $lastname, $middlename, $suffix, $address, 
         $age, 
@@ -170,6 +177,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     );
 
     if ($insertstmt->execute()) {
+        // Clear saved form draft on successful insertion
+        unset($_SESSION['form_data']);
         header('Location: ../pages/register_page.php?msg=' . urlencode('Successfully Registered') . '&type=success');
         exit();
     } else {
