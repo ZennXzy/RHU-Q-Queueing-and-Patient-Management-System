@@ -1,3 +1,7 @@
+<?php
+require '../php/connection.php';
+$role = $_SESSION['logged_role'];
+?>
 <aside class="sidebar">
   <div class="nav-group">
     <a href="#" class="menu-item">
@@ -8,6 +12,7 @@
               <span class="menu-text">Dashboard</span>
           </div>
       </a>
+      <?php if($role === 'Admin'){?>
       <a href="../pages/register_page.php" class="menu-item">
           <div class="menu-content">
               <div class="menu-icon">
@@ -15,7 +20,8 @@
               </div>
               <span class="menu-text">Registration</span>
           </div>
-      </a>
+      </a><?php }?>
+        <?php if($role === "Admin" || $role === "Doctor/Staff"){ ?>   
       <div class="dropdown-group">
           <a href="javascript:void(0)" class="menu-item dropdown-toggle" onclick="toggleDropdown(this)">
               <div class="menu-content">
@@ -51,7 +57,13 @@
                   <span class="menu-text">Edit Display Cards</span> 
               </a>
           </div>
-      </div>
+      </div> <?php } else if ($role === "Patient"){ ?>
+      <a href="../pages/queue_display_page.php" class="sub-nav-link">
+            <div class="menu-icon">         
+                <img src="../svg/queue-signal.svg" alt="queue_display_icon">
+            </div>
+            <span class="menu-text">Queue Display</span>
+        </a>  <?php }?>
 
       <a href="../pages/appointment_page.php" class="menu-item">
           <div class="menu-content">
@@ -64,6 +76,7 @@
               </div>
           </div>
       </a>
+      <?php if($role === 'Admin'){?>
       <a href="#" class="menu-item">
           <div class="menu-content">
               <div class="menu-icon">
@@ -71,7 +84,7 @@
               </div>
               <span class="menu-text">Reports</span>
           </div>
-      </a>
+      </a><?php }?>
 
       <a href="../pages/patient_records.php" class="menu-item">
           <div class="menu-content">
@@ -81,6 +94,7 @@
               <span class="menu-text">Patient Records</span>
           </div>
       </a>
+      <?php if($role === 'Admin'){?>
       <a href="../pages/user_accounts_page.php" class="menu-item">
           <div class="menu-content">
               <div class="menu-icon">
@@ -88,10 +102,10 @@
               </div>
               <span class="menu-text">User Accounts</span>
           </div>
-      </a>
+      </a><?php }?>
   </div>
   <div class="lowercontrol">
-      <a href="../pages/accounts_page.php" class="menu-item account-item" style="width:200px; padding-left: 0px;">
+      <a href="../pages/account_settings_page.php" class="menu-item account-item" style="width:200px; padding-left: 0px;">
           <div class="menu-content" style="justify-content: center;">
               <div class="menu-icon">
                   <img src="../svg/account-settings-icon.svg" alt="account-settings-icon">

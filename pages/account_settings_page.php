@@ -1,6 +1,6 @@
 <?php
 require '../api/check-private.php';
-authorizeRoles(['Admin']);
+authorizeRoles(['Doctor/Staff']);
 require '../php/connection.php';
 ?>
 <!DOCTYPE html>

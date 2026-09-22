@@ -2,6 +2,7 @@
 require '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
 require '../php/connection.php';
+$role = $_SESSION['logged_role'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -217,12 +218,14 @@ require '../php/connection.php';
                                         echo '<span class="stat-number" id="stat-number-completed">'.$row['completed_today_count'].'</span>';
                                     ?>
                                 </div>
+                                <?php if($role === 'Admin'){ ?>
                                 <button type="button" class="add-queue-button" id="open-form-btn">
                                     <div class="add-button-items">
                                         <img src="../svg/add-queue.svg" alt="add-queue-icon" style="filter: brightness(0) invert(1)">
                                         Add Queue
                                     </div>
-                                </button> 
+                                </button>
+                                <?php }?>
                             </div>
                         </div>
                     </div>
