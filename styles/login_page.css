@@ -154,6 +154,54 @@ body, html {
     line-height: 1.3;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
+/* Divider text between Login & Create Account */
+.register-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0 15px 0;
+    color: #666;
+    font-size: 13px;
+}
+
+.register-divider::before,
+.register-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.register-divider span {
+    padding: 0 10px;
+}
+
+/* Secondary "Create Account" Action Button */
+.register-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background-color: transparent;
+    color: #0B695D;
+    border: 1.5px solid #0B695D;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.register-btn:hover {
+    background-color: #0B695D;
+    color: #ffffff;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+}
+
+.register-btn:active {
+    transform: scale(0.98);
+}
+
 
 /* Responsive scale down for smaller screens */
 @media (max-width: 480px) {

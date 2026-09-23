@@ -8,9 +8,7 @@
 body, html {
   height: 100%;
   width: 100%;
-  background-image: url(../images/41950.jpg);
-  background-repeat:repeat;
-  background-size: contain;
+background-color:#F9FAFB;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -29,7 +27,6 @@ body, html {
 }
 
 
-/* Core Workspace Wrapper */
 .workspace {
   display: flex;
   flex: 1;
@@ -37,7 +34,6 @@ body, html {
   position: relative;
 }
 
-/* Right Content Workspace Area */
 .content-area {
   flex: 1;
   padding: 40px;
@@ -110,10 +106,9 @@ body, html {
 
 .page-title {
   color:#0B695D;
-  font-size: 32px; /* Reduced from 32px */
+  font-size: 32px;
   font-weight: 700;
 }
-
 
 .scrollable-card::-webkit-scrollbar {
   width: 5px;
@@ -124,9 +119,9 @@ body, html {
 }
 
 .section-title {
-  font-size: 16px; /* Reduced from 22px */
+  font-size: 16px;
   font-weight: 700;
-  color: #111;
+  color: #475569;
   margin-bottom: 10px;
   margin-left: 14px;
   top: 0;
@@ -141,10 +136,10 @@ body, html {
   flex: 1;
   margin-right: 5px;
   align-items: center;
-  padding: 8px 12px; /* Reduced padding */
+  padding: 8px 12px; 
   border-radius: 5px;
-  margin-bottom: 6px; /* Reduced margin */
-  font-size: 13px; /* Reduced font size */
+  margin-bottom: 6px; 
+  font-size: 13px; 
   font-weight: 600;
 }
 
@@ -173,13 +168,21 @@ body, html {
   border-radius: 4px;
 }
 
+.waiting-card-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.waiting-card-scroll::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
+
 .waiting-card {
   background: white;
   border-radius: 8px;
   padding: 12px 15px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-
 
 .waiting-card-scroll {
   max-height: 280px;
@@ -197,13 +200,13 @@ body, html {
 }
 
 .queue-id {
-  width: 60px; /* Reduced width */
+  width: 60px; 
   font-weight: 700;
   flex-shrink: 0;
 }
 
 .patient-name {
-  width: 180px; /* Reduced width */
+  width: 230px;
   font-weight: 600;
   flex-shrink: 0;
 }
@@ -226,12 +229,12 @@ body, html {
   padding: 0 3px;
 }
 
-/* Action Buttons (Compact) */
+
 .btn-complete {
   background-color: #2E7D32;
   color: white;
   border: none;
-  padding: 5px 12px; /* Reduced padding */
+  padding: 5px 12px;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 700;
@@ -242,23 +245,99 @@ body, html {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.btn-accept {
-  /* background-color: #1976D2; */
-  background-color: #0B695D;
-  color: white;
+/* delete-button config */
+.btn-delete {
+  position: relative;
+  background-color:#ffffff00;
+  overflow: hidden;
   border: none;
-  padding: 5px 16px; /* Reduced padding */
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 700;
+  height: 100%;
+  padding: 10px 20px;
+  margin-right:-12px;
+  margin-top:-8px;
+  margin-bottom:-8px;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.btn-delete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #d53433;
+  transition: right 0.3s ease-in-out;
+  z-index: -1;
+}
+
+.btn-delete img {
+  height:15px;
+  width:100%;
+  transition: transform 0.2s ease-in-out;
+  transition: filter 0.2s ease-in-out;
+  filter: brightness(0) saturate(100%) invert(29%) sepia(84%) saturate(1800%) hue-rotate(335deg) brightness(87%) contrast(92%);
+}
+
+.btn-delete:hover::before {
+  right: 0%;
+}
+
+.btn-delete:hover img {
+  transform: scale(1.2);
+  filter: brightness(0) invert(1);
+}
+
+/* accept-button config */
+.btn-accept {
+  position: relative;
+  background-color:#ffffff00;
+  overflow: hidden;
+  border: none;
+  height: 100%;
+  padding: 10px 20px;
+  margin-right:-12px;
+  margin-top:-8px;
+  margin-bottom:-8px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.btn-accept::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #0B695D;
+  transition: right 0.3s ease-in-out;
+  z-index: -1;
+}
+
+.btn-accept img {
+  height:15px;
+  width:100%;
+  transition: transform 0.2s ease-in-out;
+  transition: filter 0.2s ease-in-out;
+}
+
+.btn-accept:hover::before {
+  right: 0%;
+}
+
+.btn-accept:hover img {
+  transform: scale(1.2);
+  filter: brightness(0) invert(1);
 }
 
 .btn-complete:hover { background-color: #256628; }
-.btn-accept:hover { background-color: #20A59E; }
 
-/* Split Grid Layout */
 .split-grid {
   display: grid;
   grid-template-columns: 2.2fr 1fr;
@@ -283,17 +362,28 @@ body, html {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.stat-card.waiting { background-color: #FFF3E0; }
+.stat-card.waiting {
+  background-color: #FFF3E0;
+  border-left: 5px solid #e88c00;
+}
+
 .stat-card.waiting img{
     width: 24px;
     height: 24px;
 }
-.stat-card.in-progress { background-color: #E3F2FD; }
+.stat-card.in-progress {
+  background-color: #E3F2FD; 
+  border-left: 5px solid #1762ad;
+}
 .stat-card.in-progress img{
     width: 24px;
     height: 24px;
 }
-.stat-card.completed { background-color: #E8F5E9; }
+
+.stat-card.completed {
+  background-color: #E8F5E9;
+  border-left: 5px solid #21842a;
+}
 .stat-card.completed img{
     width: 24px;
     height: 24px;
@@ -305,7 +395,7 @@ body, html {
 }
 
 .stat-label { font-size: 13px; color: #555; font-weight: 600; }
-.stat-number { font-size: 24px; font-weight: 700; color: #111; } /* Reduced from 36px */
+.stat-number { font-size: 24px; font-weight: 700; color: #111; }
 
 .add-button-items{
   display: flex;
@@ -325,7 +415,6 @@ body, html {
 }
 
 .add-queue-button{
-    /* background-color: #1976D2; */
     background-color: #0B695D;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     color: white;
@@ -342,7 +431,93 @@ body, html {
     transition: background-color 0.2s, transform 0.1s;
 }
 
-/* Responsive Media Queries */
+/* delete-modal */
+.delete-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: none;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    overflow: hidden;
+    outline: none;
+}
+
+.delete-modal::backdrop {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+.delete-modal .modal-header-delete {
+    background-color: #dc2626;
+    padding: 16px 24px;
+}
+
+.delete-modal .modal-header-delete h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.delete-modal .modal-body {
+    padding: 20px 24px;
+    color: #334155;
+    font-size: 0.95rem;
+}
+
+.delete-modal .warning-text {
+    display: block;
+    margin-top: 8px;
+    color: #ef4444;
+    font-size: 0.8rem;
+}
+
+.delete-modal .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 12px 24px 20px 24px;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    color: #ffffff;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.btn-cancel {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
 @media screen and (max-width: 1024px) {
   .split-grid {
     grid-template-columns: 1fr;

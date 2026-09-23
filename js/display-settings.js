@@ -1,16 +1,19 @@
 // Default active departments list
 const DEFAULT_DEPTS = [
-  { id: 'medical', name: 'Medical' },
-  { id: 'dental', name: 'Dental' },
-  { id: 'vaccine', name: 'Vaccine' }
+  { id: 'Medical Consultation', name: 'Medical Consultation' },
+  { id: 'Prenatal Checkup', name: 'Prenatal Checkup' },
+  { id: 'Immunization / Vaccination', name: 'Immunization / Vaccination' },
+  { id: 'Dental Checkup', name: 'Dental Checkup' },
+  { id: 'Laboratory Request', name: 'Laboratory Request' }
 ];
 
 // Available departments dictionary
 const ALL_DEPTS = {
-  medical: { id: 'medical', name: 'Medical' },
-  dental: { id: 'dental', name: 'Dental' },
-  vaccine: { id: 'vaccine', name: 'Vaccine' },
-  laboratory: { id: 'laboratory', name: 'Laboratory' }
+  'Medical Consultation': { id: 'Medical Consultation', name: 'Medical Consultation' },
+  'Prenatal Checkup': { id: 'Prenatal Checkup', name: 'Prenatal Checkup' },
+  'Immunization / Vaccination': { id: 'Immunization / Vaccination', name: 'Immunization / Vaccination' },
+  'Dental Checkup': { id: 'Dental Checkup', name: 'Dental Checkup' },
+  'Laboratory Request': { id: 'Laboratory Request', name: 'Laboratory Request' }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeModalBtn = document.getElementById('closeModalBtn');
   const addCardForm = document.getElementById('addCardForm');
 
-  // 1. Get active departments from localStorage or initialize
+  // Get active departments from localStorage
   function getActiveDepartments() {
     const stored = localStorage.getItem('activeDepartments');
     return stored ? JSON.parse(stored) : DEFAULT_DEPTS;
@@ -29,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('activeDepartments', JSON.stringify(depts));
   }
 
-  // 2. Render Cards in Settings Grid
+  // Render Cards in Settings Grid
   function renderSettingsCards() {
     const depts = getActiveDepartments();
     cardsContainer.innerHTML = '';
@@ -45,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cardsContainer.appendChild(cardEl);
     });
 
-    // Append Add Card Button at the end
+    // Append Add Card Button
     const addCardEl = document.createElement('div');
     addCardEl.className = 'add-card';
     addCardEl.innerHTML = `<img src="../svg/add-queue-card-icon.svg" alt="add-queue-card-icon">`;
@@ -55,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     attachCloseEvents();
   }
 
-  // 3. Attach Close Event Handler
   function attachCloseEvents() {
     const closeBtns = document.querySelectorAll('.close-btn');
     closeBtns.forEach(btn => {
@@ -69,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Modal actions
   closeModalBtn.addEventListener('click', () => addModal.close());
 
   addCardForm.addEventListener('submit', (e) => {
@@ -77,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedId = document.getElementById('deptSelect').value;
     let depts = getActiveDepartments();
 
-    // Prevent duplicate additions
     if (!depts.some(d => d.id === selectedId) && ALL_DEPTS[selectedId]) {
       depts.push(ALL_DEPTS[selectedId]);
       saveActiveDepartments(depts);
@@ -86,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addModal.close();
   });
 
-  // Initial load
   if (!localStorage.getItem('activeDepartments')) {
     saveActiveDepartments(DEFAULT_DEPTS);
   }

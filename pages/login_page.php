@@ -1,5 +1,5 @@
 <?php
-    require '../php/check-public.php';
+    require '../api/check-public.php';
     require '../php/connection.php';
 ?>
 <!DOCTYPE html>
@@ -12,7 +12,6 @@
     
     <link rel="stylesheet" href="../styles/login_page.css">
     <link rel="stylesheet" href="../styles/toast.css">
-
 
     <script src="../js/login-form.js" defer></script>
     <script src="../js/toast.js" defer></script>
@@ -36,16 +35,22 @@
             <form action="../php/login.php" method="post">
                 <div class="input-group">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username"  autocomplete="off">
+                    <input type="text" id="username" name="username" autocomplete="off">
                 </div>
                 
                 <div class="input-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" >
+                    <input type="password" id="password" name="password">
                 </div>
                 
                 <button type="submit" id="loginBtn" class="login-btn" name="login">Login</button>
             </form>
+
+            <div class="register-divider">
+                <span>Don't have an account?</span>
+            </div>
+
+            <a href="patient_registration.php" class="register-btn">Create Account</a>
         </div>
     </div>
 </body>

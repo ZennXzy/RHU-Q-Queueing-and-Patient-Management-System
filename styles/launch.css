@@ -6,9 +6,8 @@
 }
 
 body {
-    background-image: url(../images/41950.jpg);
-    background-size: contain;
-    height: 100vh;
+  background-color:#F9FAFB;
+      height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;

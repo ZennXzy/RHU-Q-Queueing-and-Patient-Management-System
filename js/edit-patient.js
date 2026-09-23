@@ -2,9 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const editModal = document.getElementById('edit-patient');
   const editForm = document.getElementById('editPatientForm');
 
-  /* ==========================================
-     1. OPEN EDIT MODAL & POPULATE FIELDS
-  ========================================== */
   document.addEventListener('click', async (e) => {
     const editBtn = e.target.closest('.edit-btn');
     if (!editBtn) return;
@@ -13,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!editModal || !editForm) return;
 
     try {
-      const response = await fetch(`../php/get_patients.php?action=details&id=${patientId}`);
+      const response = await fetch(`../api/get_patients.php?action=details&id=${patientId}`);
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
       const result = await response.json();
@@ -21,20 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (result.status === 'success') {
         const p = result.patient;
 
-        // Populate ID Badge & Hidden Patient ID Field
         const badgeElement = document.getElementById('modalPatientIdBadge');
         if (badgeElement) badgeElement.textContent = `ID: #${String(patientId).padStart(4, '0')}`;
         
         const hiddenIdInput = document.getElementById('editPatientId');
         if (hiddenIdInput) hiddenIdInput.value = patientId;
 
-        // Safe value assignment helper
         const setVal = (id, val) => {
           const el = document.getElementById(id);
           if (el) el.value = val !== undefined && val !== null ? val : '';
         };
 
-        // Populate Form Inputs & Selects
         setVal('editFirstName', p.firstname);
         setVal('editMiddleName', p.middlename);
         setVal('editLastName', p.lastname);
@@ -59,19 +53,16 @@ document.addEventListener("DOMContentLoaded", () => {
         setVal('editPrinMember', p.principal_member);
         setVal('editYakapMember', p.yakap_member);
 
-        // suffix reset null
         if(p.suffix === '' || p.suffix === null){
           setVal('editSuffix', 'None');
         }
 
-        // civil status condition
         const civilStatus = String(p.civil_status || p.civilStatus || '');
         const spouseGroup = document.getElementById('modalSpouseGroup');
         if (spouseGroup) {
           spouseGroup.style.display = (civilStatus.includes('Married') || civilStatus.includes('Widow')) ? 'block' : 'none';
         }
 
-        // employment status condition
         const empStatus = String(p.employment_status || '');
         const occGroup = document.getElementById('modalOccupationGroup');
         const bizGroup = document.getElementById('modalBusinessGroup');
@@ -79,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (occGroup) occGroup.style.display = (empStatus.includes('Employed') && !empStatus.includes('Unemployed') && !empStatus.includes('self')) ? 'block' : 'none';
         if (bizGroup) bizGroup.style.display = empStatus.includes('Self') ? 'block' : 'none';
 
-        // philHealth Status condition
         const philStatus = p.phil_status;
         const philNumGroup = document.getElementById('modalPhilNumberGroup');
         const prinMemGroup = document.getElementById('modalPrinMemberGroup');
@@ -116,9 +106,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
   }
 
-  /* ==========================================
-     2. FORM SUBMIT HANDLER (UPDATE API)
-  ========================================== */
+  if (editModal) {
+    editModal.addEventListener("click", (e) => {
+      const rect = editModal.getBoundingClientRect();
+      const isInModal =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInModal) {
+        editModal.close();
+      }
+    });
+  }
+
   if (editForm) {
     editForm.addEventListener('submit', async (e) => {
       e.preventDefault();

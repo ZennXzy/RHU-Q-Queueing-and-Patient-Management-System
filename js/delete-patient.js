@@ -5,14 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('deleteAdminPassword');
   const errorMsg = document.getElementById('deleteErrorMsg');
 
-  // 1. OPEN DELETE MODAL ON BUTTON CLICK
   document.addEventListener('click', (e) => {
     const deleteBtn = e.target.closest('.delete-btn');
     if (!deleteBtn) return;
 
     const patientId = deleteBtn.dataset.id;
     
-    // Reset form fields
     deleteIdInput.value = patientId;
     passwordInput.value = '';
     if (errorMsg) {
@@ -35,18 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error loading table:', error);
         });   
   }
-  function reloadTotalRecord(){
-    fetch('../php/total_records.php')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('total-records').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading total records:', error);
-        }); 
-  }
 
-  // 2. SUBMIT DELETE REQUEST
   if (deleteForm) {
     deleteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -65,12 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
           deleteModal.close();
           showToast('Record Deleted Successfully.','success');
           reloadPatientTable();
-          reloadTotalRecord();
         } else {
-          if (errorMsg) {
-            deleteModal.close();
-            showToast('Incorrect password or deletion failed.','error');
-          }
+          deleteModal.close();
+          showToast('Incorrect password or deletion failed.','error');
         }
       } catch (error) {
         console.error('Error executing delete action:', error);

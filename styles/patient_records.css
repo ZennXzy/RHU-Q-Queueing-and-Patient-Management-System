@@ -9,15 +9,15 @@ body,
 html {
   height: 100%;
   width: 100%;
-  background-image: url(../images/41950.jpg);
+  background-color: #F9FAFB;
   background-repeat: repeat;
-  background-size: contain;
   background-attachment: fixed;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   cursor: default;
 }
+
 /* Core Workspace Wrapper */
 .workspace {
   display: flex;
@@ -38,6 +38,7 @@ html {
 .content-area::-webkit-scrollbar {
   width: 5px;
 }
+
 .content-area::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
@@ -50,8 +51,8 @@ html {
   font-weight: 700;
 }
 
-.topbar{
-  display:flex;
+.topbar {
+  display: flex;
   justify-content: space-between;
   align-items: center;
 }
@@ -65,9 +66,10 @@ html {
   position: relative;
   margin-bottom: 15px;
   margin-left: 25px;
-  width:100%;
+  width: 100%;
   max-width: 420px;
   border: 1px solid #0B695D;
+  background-color: #ffffff;
   border-radius: 50px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
@@ -87,11 +89,6 @@ html {
   width: auto;
 }
 
-/* total-records */
-.total-records{
-  margin-right:25px;
-}
-
 /* table-card */
 .table-card {
   background: white;
@@ -104,6 +101,7 @@ html {
 .patient-table::-webkit-scrollbar {
   width: 5px;
 }
+
 .patient-table::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
@@ -115,17 +113,19 @@ html {
   overflow-y: auto;
   position: relative;
 }
+
 .patient-table table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.patient-table th, .patient-table td {
+.patient-table th,
+.patient-table td {
   padding: 14px 16px;
   border-bottom: 1px solid #eee;
 }
 
-.patient-table td{
+.patient-table td {
   font-size: 13px;
   padding: 12px 14px;
 }
@@ -138,6 +138,7 @@ html {
   z-index: 2;
   font-weight: 600;
 }
+
 th.sortable {
   user-select: none;
   transition: background-color 0.2s ease;
@@ -156,19 +157,19 @@ th.sortable:hover {
 
 .view-btn {
   background-color: #ffff;
-  align-items:center;
+  align-items: center;
   color: white;
   border: none;
   padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
-  outline:none;
+  outline: none;
 }
 
-.view-btn img{
+.view-btn img {
   height: 16px;
-  width:auto;
+  width: auto;
 }
 
 .view-btn:hover {
@@ -178,19 +179,19 @@ th.sortable:hover {
 
 .delete-btn {
   background-color: #ffff;
-  align-items:center;
+  align-items: center;
   border: none;
   padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
-  outline:none;
+  outline: none;
 }
 
-.delete-btn img{
+.delete-btn img {
   filter: brightness(0) saturate(100%) invert(26%) sepia(84%) saturate(2181%) hue-rotate(342deg) brightness(87%) contrast(91%);
   height: 16px;
-  width:auto;
+  width: auto;
 }
 
 .delete-btn:hover {
@@ -201,19 +202,19 @@ th.sortable:hover {
 
 .edit-btn {
   background-color: #ffff;
-  align-items:center;
+  align-items: center;
   color: white;
   border: none;
   padding: 6px 14px;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s;
-  outline:none;
+  outline: none;
 }
 
-.edit-btn img{
+.edit-btn img {
   height: 16px;
-  width:auto;
+  width: auto;
 }
 
 .edit-btn:hover {
@@ -228,7 +229,7 @@ th.sortable:hover {
   max-width: 720px;
   max-height: 679px;
   width: 90%;
-  height:100%;
+  height: 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   left: 343px;
@@ -255,7 +256,7 @@ th.sortable:hover {
   margin: 0;
 }
 
-.patient-profile-grid{
+.patient-profile-grid {
   padding-right: 10px;
   max-height: 511px;
   height: 100%;
@@ -265,10 +266,12 @@ th.sortable:hover {
 .patient-profile-grid::-webkit-scrollbar {
   width: 7px;
 }
+
 .patient-profile-grid::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
 }
+
 .patient-badge {
   font-size: 0.85rem;
   font-weight: 600;
@@ -290,11 +293,11 @@ th.sortable:hover {
   padding: 4px 8px;
   border-radius: 6px;
   transition: all 0.2s ease;
-  outline:none;
+  outline: none;
 }
 
 .close-modal-btn:hover {
-  color:red;
+  color: red;
   transform: scale(1.5);
   transition: transform 0.2s, color 0.2s;
 }
@@ -391,20 +394,20 @@ th.sortable:hover {
 }
 
 /* delete-modal */
-#deleteConfirmModal{
+#deleteConfirmModal {
   border: none;
   border-radius: 12px;
   padding: 24px;
   max-width: 720px;
   max-height: 249px;
   width: 90%;
-  height:100%;
+  height: 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   left: 343px;
   top: 210px;
-  outline:none;
-  overflow:hidden;
+  outline: none;
+  overflow: hidden;
 }
 
 #deleteConfirmModal::backdrop {
@@ -427,8 +430,6 @@ th.sortable:hover {
 }
 
 /* edit-modal */
-
-
 #edit-patient {
   border: none;
   border-radius: 12px;
@@ -436,13 +437,13 @@ th.sortable:hover {
   max-width: 720px;
   max-height: 679px;
   width: 90%;
-  height:100%;
+  height: 100%;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   background-color: #ffffff;
   left: 343px;
   top: 40px;
-  overflow:clip;
-  outline:none;
+  overflow: clip;
+  outline: none;
 }
 
 #edit-patient::backdrop {
@@ -491,7 +492,6 @@ th.sortable:hover {
   gap: 12px;
   padding: 16px 24px;
   border-top: 1px solid #e2e8f0;
-  background-color: #f8fafc;
 }
 
 .btn-primary {
@@ -514,8 +514,13 @@ th.sortable:hover {
   cursor: pointer;
 }
 
-.btn-primary:hover { background-color: #0f766e; }
-.btn-secondary:hover { background-color: #cbd5e1; }
+.btn-primary:hover {
+  background-color: #0f766e;
+}
+
+.btn-secondary:hover {
+  background-color: #cbd5e1;
+}
 
 
 
@@ -524,6 +529,7 @@ th.sortable:hover {
   .modal-grid {
     grid-template-columns: 1fr;
   }
+
   .history-section {
     grid-column: span 1;
   }

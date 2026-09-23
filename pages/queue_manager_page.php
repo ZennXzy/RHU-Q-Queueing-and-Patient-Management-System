@@ -1,6 +1,8 @@
 <?php
-  require '../php/connection.php';
-  require '../php/check-private.php';
+require '../api/check-private.php';
+authorizeRoles(['Doctor/Staff']);
+require '../php/connection.php';
+$role = $_SESSION['logged_role'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,139 +15,34 @@
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/queue-forms.css">
+    <link rel="stylesheet" href="../styles/complete-queue-modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
     
     <script src="../js/submenu.js" defer></script>
     <script src="../js/queueing-form.js" defer></script>
+    <script src="../js/delete-queue.js" defer></script>
     <script scr="../js/display-settings-button.js" defer></script>
+    <script src="../js/dot-indicator.js" defer></script>
     <script scr="../js/filterSelect.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
+    <script src="../js/queue-list-loader.js" defer></script>
+    <script src="../js/accept-queue.js" defer></script>
+    <script src="../js/complete-queue.js" defer></script>
+    <script src="../js/session-check.js" defer></script>
+
 
 </head>
 <body>
-
-    <!-- Top Navigation Header -->
-    <div class="top-navbar">
-        <div style="display:flex; flex-direction:row; align-items: center;">
-            <img src="../images/rhu_logo_topNav.png" alt="rhu_logo2">
-            <h3>RHU-Q: Queuing and Patient Management System</h3>
-        </div>
-        <div class="rightNav">
-            <h3>Hello 
-                <?php
-                    $username = $_SESSION['logged_name'];
-                    echo ucfirst($username);
-                ?>
-                !
-            </h3>
-        </div>
-    </div>
+    <?php
+        include '../pages/top-navbar.php';
+    ?>
 
     <div class="workspace">
         <div class="toast-container" id="toastContainer"></div>
-        <div class="sidebar">
-            <div class="nav-group">
-                <a href="../pages/register_page.php" class="menu-item">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/registration-paper.svg" alt="registration_icon">
-                        </div>
-                        <span class="menu-text">Registration</span>
-                    </div>
-                </a>
-                <div class="dropdown-group open">
-                    <a href="javascript:void(0)" class="menu-item dropdown-toggle" onclick="toggleDropdown(this)">
-                        <div class="menu-content">
-                            <div class="menu-icon">
-                                <img src="../svg/queue-line.svg" alt="queue_icon">
-                            </div>
-                            <span class="menu-text">Queue</span>
-                        </div>
-                        <div class="dropdown-arrow">
-                            <svg viewBox="0 0 24 24" width="14" height="14">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </div>
-                    </a> 
-                    <div class="submenu-container">
-                        <a href="../pages/queue_display_page.php" class="sub-nav-link">
-                            <div class="menu-icon">         
-                                <img src="../svg/queue-signal.svg" alt="queue_display_icon">
-                            </div>
-                            <span class="menu-text">Queue Display</span>
-                        </a> 
-                        
-                        <a href="../pages/queue_manager_page.php" class="sub-nav-link active">
-                            <div class="menu-icon">
-                                <img src="../svg/queue-manager.svg" alt="queue-manager-icon">
-                            </div>
-                            <span class="menu-text">Queue Manager</span> 
-                        </a>
-                        <a href="../pages/display_settings.php" class="sub-nav-link">
-                            <div class="menu-icon">
-                                <img src="../svg/display-settings-icon.svg" alt="queue-manager-icon">
-                            </div>
-                            <span class="menu-text">Edit Display Cards</span> 
-                        </a>
-                    </div>
-                </div>
-
-                <a href="../pages/appointment_page.php" class="menu-item">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/reminder-appointment.svg" alt="appointment-icon">
-                        </div>
-                        <span class="menu-text">Appointment</span>
-                    </div>
-                </a>
-                <a href="#" class="menu-item">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/dashboard-monitor.svg" alt="dashboard_icon">
-                        </div>
-                        <span class="menu-text">Dashboard</span>
-                    </div>
-                </a>
-                <a href="#" class="menu-item">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/reports.svg" alt="reports-icon">
-                        </div>
-                        <span class="menu-text">Reports</span>
-                    </div>
-                </a>
-
-                <a href="../pages/patient_records.php" class="menu-item">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <img src="../svg/records.svg" alt="records-icon">
-                        </div>
-                        <span class="menu-text">Patient Records</span>
-                    </div>
-                </a>
-            </div>
-
-            <div class="lowercontrol">
-                <a href="../pages/accounts_page.php" class="menu-item account-item" style="width:200px; padding-left: 0px;">
-                    <div class="menu-content" style="justify-content: center;">
-                        <div class="menu-icon">
-                            <img src="../svg/account.svg" alt="account-icon">
-                        </div>
-                        <span class="menu-text">Account</span>
-                    </div>
-                </a>
-                <form action="../php/logout.php" method="post" class="menu-item logout-item" id="logoutForm" style="transform: rotate(180deg);">
-                    <div class="menu-content">
-                        <div class="menu-icon">
-                            <button type="submit" name="logout" style="border:none; background:none;">
-                                <img src="../svg/logout-icon.svg" alt="logout-icon">
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        <?php
+            include '../pages/sidebar.php';
+        ?>
 
         <!-- Main Content Area -->
         <div class="content-area">
@@ -186,34 +83,41 @@
 
                             $res = $conn->query($sql);
 
-                            echo '<div class="in-progress-scroll" style="max-height:138px;">';
+                            echo '<div class="in-progress-scroll" id="in-progress-scroll" style="max-height:138px;">';
 
-                            if($res && $res->num_rows > 0){
-                                while ($row = $res->fetch_assoc()){
-                                    $fullName = ucfirst($row['lastname']) . ', ' . ucfirst($row['firstname']).' '.ucfirst($row['suffix']);
+                            if ($res && $res->num_rows > 0) {
+                                while ($row = $res->fetch_assoc()) {
+                                    $suffix   = !empty($row['suffix']) ? ' ' . ucfirst($row['suffix']) : '';
+                                    $fullName = ucfirst($row['lastname']) . ', ' . ucfirst($row['firstname']) . $suffix;
+
                                     echo '<div class="patient-row current-patient-row">';
-                                    echo '<span class="queue-id">'.htmlspecialchars($row['queue_code']).'</span>';
-                                    echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
-                                    echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
-                                    echo '<div class="action-container">';
-                                    echo        '<span class="more-options">⋮</span>';
-                                    echo        '<button class="btn-complete">✔ Complete</button>';
-                                    echo        '</div>';
-                                    echo    '</div>';
+                                    echo '  <span class="queue-id">' . htmlspecialchars($row['queue_code']) . '</span>';
+                                    echo '  <span class="patient-name">' . htmlspecialchars($fullName) . '</span>';
+                                    echo '  <span class="service-type">' . htmlspecialchars($row['service_name']) . '</span>';
+                                    echo '  <div class="action-container">';
+                                    echo '    <span class="more-options">⋮</span>';
+                                    echo '    <button type="button" class="btn-complete" ';
+                                    echo '      data-queue-id="' . htmlspecialchars($row['queue_info_id']) . '" ';
+                                    echo '      data-patient-id="' . htmlspecialchars($row['patient_id']) . '" ';
+                                    echo '      data-patient-name="' . htmlspecialchars($fullName) . '" ';
+                                    echo '      data-queue-code="' . htmlspecialchars($row['queue_code']) . '" ';
+                                    echo '      data-service="' . htmlspecialchars($row['service_name']) . '" ';
+                                    echo '      data-accepted-at="' . htmlspecialchars($row['created_at']) . '">✔ Complete</button>';
+                                    echo '  </div>';
+                                    echo '</div>';
                                 }
                             } else {
                                 echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
                                 echo '  <p style="margin: 0;">No in-progress records found.</p>';
                                 echo '</div>';
                             }
+
                             echo '</div>';
                         ?> 
                     </div>
 
-                    <!-- Split Section: Waiting Queue & Dashboard Stats -->
                     <div class="split-grid">
                         
-                        <!-- Waiting Queue Card -->
                         <div class="waiting-card">
                             <h2 class="section-title">Waiting Queue</h2>
                             <?php
@@ -232,8 +136,8 @@
                                         ORDER BY q.created_at ASC";
 
                                 $res = $conn->query($sql);
-
-                                echo '<div class="waiting-card-scroll">';
+                                
+                                echo '<div class="waiting-card-scroll" id="waiting-card-scroll">';
 
                                 if($res && $res->num_rows > 0){
                                     while ($row = $res->fetch_assoc()){
@@ -243,10 +147,23 @@
                                         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
                                         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
                                         echo '<div class="action-container">';
+<<<<<<< HEAD
                                         echo '<span class="more-options">⋮</span>';
                                         echo '<button class="btn-accept">Accept</button>';
                                         echo '</div>';
                                         echo '</div>';
+=======
+                                        echo '<button type="button" class="btn-delete" ' .
+                                        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+                                        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+                                        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/delete-icon.svg" alt="check-icon"></button>';
+                                        echo '<button type="button" class="btn-accept" ' .
+                                        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+                                        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+                                        'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/check-icon.svg" alt="check-icon"></button>';
+                                        echo        '</div>';
+                                        echo    '</div>';
+>>>>>>> 8027a0785758c8ea14f415de220098e61d9a1011
                                     }
                                 } else {
                                     echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
@@ -256,8 +173,6 @@
                                 echo '</div>';
                             ?> 
                         </div>
-
-                        <!-- Dashboard Counters Column -->
                         <div>
                             <h2 class="section-title" style="margin-bottom: 15px; padding-bottom: 0px; padding-top: 15px;">Dashboard</h2>
                             
@@ -269,11 +184,14 @@
                                         saturate(1536%) hue-rotate(7deg) brightness(98%) contrast(101%);">
                                         <span class="stat-label">Waiting</span>
                                     </div>
-                                    <span class="stat-number"><?php
+                                    <?php
                                         $res = $conn->query("SELECT COUNT(*) AS waiting_count FROM queue_information WHERE status = 'Waiting'");
                                         $row = $res->fetch_assoc();
+
+                                        echo '<span class="stat-number" id="stat-number-waiting">';
                                         echo $row['waiting_count'];
-                                    ?></span>
+                                        echo'</span>';
+                                    ?>
                                 </div>
 
                                 <!-- In Progress Stat -->
@@ -284,11 +202,12 @@
                                         hue-rotate(186deg) brightness(91%) contrast(93%);">
                                         <span class="stat-label">In Progress</span>
                                     </div>
-                                    <span class="stat-number"><?php
+                                    <?php
                                         $res = $conn->query("SELECT COUNT(*) AS in_progress_count FROM queue_information WHERE status = 'In Progress'");
                                         $row = $res->fetch_assoc();
-                                        echo $row['in_progress_count'];
-                                    ?></span>
+
+                                        echo '<span class="stat-number" id="stat-number-in-progress">'.$row['in_progress_count'].'</span>';
+                                    ?>
                                 </div>
 
                                 <!-- Completed Today Stat -->
@@ -299,87 +218,153 @@
                                         hue-rotate(75deg) brightness(91%) contrast(88%);">
                                         <span class="stat-label">Completed Today</span>
                                     </div>
+<<<<<<< HEAD
                                     <span class="stat-number"><?php
                                         $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed'");
+=======
+                                    <?php
+                                        $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed' AND DATE(created_at) = CURDATE()");
+>>>>>>> 8027a0785758c8ea14f415de220098e61d9a1011
                                         $row = $res->fetch_assoc();
-                                        echo $row['completed_today_count'];
-                                    ?></span>
+
+                                        echo '<span class="stat-number" id="stat-number-completed">'.$row['completed_today_count'].'</span>';
+                                    ?>
                                 </div>
+                                <?php if($role === 'Admin'){ ?>
                                 <button type="button" class="add-queue-button" id="open-form-btn">
                                     <div class="add-button-items">
                                         <img src="../svg/add-queue.svg" alt="add-queue-icon" style="filter: brightness(0) invert(1)">
                                         Add Queue
                                     </div>
-                                </button> 
+                                </button>
+                                <?php }?>
                             </div>
                         </div>
                     </div>
                 </div>    
             </div>
-            <div id="settings-display" class="settings-display">
-                <div class="settings-content">
-
-                </div>
-            </div>
-        </div>
-
-        <!-- popupform -->
-    
-        <div id="queue-form" class="queue-form">
-            <div class="modal-card">
-                <h2>Add Patient to Queue</h2>
-                <form id="add-queue-form">
-                    <div class="formcontainer">
-                        <div class="gridrow">
-                            <div class="gridcolumn">
-                                <div class="mainform">
-                                    <div class="search-container">
-                                        <div class="search-icon">
-                                            <img src="../svg/search-icon.svg" alt="search-icon">
-                                        </div>
-                                        <input type="text" placeholder="Search by name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="patient-name">Patient Name</label>
-                                        <input type="text" id="patient-name" placeholder="Enter full name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="service-type">Service Type</label>
-                                        <input type="text" id="service-type" placeholder="e.g. Medical Consultation" required>
-                                    </div>
-                                </div>
-                            </div><div class="gridcolumn">
-                                <div class="subform">
-                                    <div class="search-container">
-                                        <div class="search-icon">
-                                            <img src="../svg/search-icon.svg" alt="search-icon">
-                                        </div>
-                                        <input type="text" placeholder="Search by name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="patient-name">Patient Name</label>
-                                        <input type="text" id="patient-name" placeholder="Enter full name" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="service-type">Service Type</label>
-                                        <input type="text" id="service-type" placeholder="e.g. Medical Consultation" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-actions">
-                            <button type="button" id="closeBtn" class="btn-cancel">Cancel</button>
-                            <button type="submit" class="btn-submit">Add</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
     
 </body>
+<dialog id="queue-form" class="queue-form">
+    <div class="modal-card" id="modal-card">
+        <div class="toast-container" id="toastContainer"></div>
+        <h2>Add Patient to Queue</h2>
+        <form id="add-queue-form" method="dialog">
+            <div class="formcontainer">
+                <div class="mainform">
+                    
+                    <!-- Patient Search Group -->
+                    <div class="form-group" style="position: relative;">
+                        <label for="patient-search">Patient Name</label>
+                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" >
+                        <!-- Hidden input to store selected patient ID -->
+                        <input type="hidden" id="patient-id" name="patient_id" required>
+                        <!-- Dropdown list for search results -->
+                        <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
+                    </div>
 
+                    <!-- Service Type Select Group -->
+                    <div class="form-group">
+                        <label for="service-type">Service Type</label>
+                        <select class="service-type" id="service-type" name="service_name">
+                            <option value="" disabled selected>Select a service</option>
+                            <option value="Medical Consultation">Medical Consultation</option>
+                            <option value="Prenatal Checkup">Prenatal Checkup</option>
+                            <option value="Immunization / Vaccination">Immunization / Vaccination</option>
+                            <option value="Dental Checkup">Dental Checkup</option>
+                            <option value="Laboratory Request">Laboratory Request</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('queue-form').close()">Cancel</button>
+                    <button type="submit" class="btn-submit">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</dialog>
+<dialog id="delete-queue-modal" class="delete-modal">
+    <div class="modal-card-delete">
+        <div class="modal-header-delete">
+            <h2>Confirm Deletion</h2>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to remove <strong id="deletePatientName"></strong> (<span id="deleteQueueCode"></span>) from the queue?</p>
+            <small class="warning-text">This action cannot be undone.</small>
+        </div>
+        <div class="modal-actions">
+            <button type="button" id="cancelDeleteBtn" class="btn-cancel">Cancel</button>
+            <button type="button" id="confirmDeleteBtn" class="btn-danger">Delete</button>
+        </div>
+    </div>
+</dialog>
+<!-- html/complete-queue-modal.html -->
+<dialog id="complete-queue-modal" class="complete-modal">
+    <div class="modal-card">
+        <div class="modal-header-complete">
+            <h2>Complete Queue</h2>
+            <span id="completeQueueCodeBadge" class="queue-badge">QUEUE: #0000</span>
+        </div>
+
+        <form id="completeQueueForm" method="dialog">
+            <input type="hidden" id="completeQueueId" name="queue_info_id">
+            <input type="hidden" id="completePatientNameInput" name="patient_name">
+            <input type="hidden" id="completeQueueCodeInput" name="queue_code">
+            <input type="hidden" id="completeServiceInput" name="service">
+
+            <div class="formcontainer">
+                <div class="mainform">
+                    <p class="patient-info-label">Patient: <strong id="completePatientName">--</strong></p>
+                    <p class="service-info-label">Service: <strong id="serviceName">--</strong></p>
+
+                    <div class="form-group">
+                        <label for="completeRemarks">Remarks / Notes</label>
+                        <textarea id="completeRemarks" name="remarks" rows="3" placeholder="Enter consultation or queue remarks..." required></textarea>
+                    </div>
+
+                    <div class="form-group switch-group">
+                        <label for="toggleAppointment" class="switch-label">
+                            <span>Add Follow-up Appointment</span>
+                            <input type="checkbox" id="toggleAppointment" name="add_appointment" value="1">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="appointmentContainer" class="appointment-container hidden">
+                        <div class="form-group">
+                            <label for="appointmentDate">Select Appointment Date</label>
+                            <input type="date" id="appointmentDate" name="appointment_date" min="<?php echo date('Y-m-d'); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancelCompleteBtn" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Complete</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</dialog>
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const msg = urlParams.get('msg');
+        const type = urlParams.get('type') || 'info';
+
+        if (msg) {
+            showToast(msg, type);
+
+            // Clean query parameters from the address bar
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+
     const dropdown = document.getElementById('filterSelect');
     const filterBtn = document.getElementById('filterSelector');
 
