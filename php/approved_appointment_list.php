@@ -50,10 +50,9 @@ try {
 
                 <div class="action-buttons">
                     <button class="btn-complete" data-id="<?= $appointment_id ?>" data-patient-id="<?= $patient_id ?>" data-patient-name="<?= $patient_name ?>" data-service="<?= $service ?>" title="Complete Service">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                        Complete
+                        <img style="height:16px; filter: brightness(0) invert(1);" src="../svg/add-queue.svg" alt="add-queue-icon">
+                        Add to Queue
                     </button>
-                    <span class="options-menu" data-id="<?= $appointment_id ?>" title="More Options">⋮</span>
                 </div>
             </div>
             <?php

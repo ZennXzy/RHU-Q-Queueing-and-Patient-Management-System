@@ -147,12 +147,6 @@ $role = $_SESSION['logged_role'];
                                         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
                                         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
                                         echo '<div class="action-container">';
-<<<<<<< HEAD
-                                        echo '<span class="more-options">⋮</span>';
-                                        echo '<button class="btn-accept">Accept</button>';
-                                        echo '</div>';
-                                        echo '</div>';
-=======
                                         echo '<button type="button" class="btn-delete" ' .
                                         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
                                         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
@@ -163,7 +157,6 @@ $role = $_SESSION['logged_role'];
                                         'data-name="' .htmlspecialchars($fullName). '"><img src="../svg/check-icon.svg" alt="check-icon"></button>';
                                         echo        '</div>';
                                         echo    '</div>';
->>>>>>> 8027a0785758c8ea14f415de220098e61d9a1011
                                     }
                                 } else {
                                     echo '<div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;">';
@@ -218,13 +211,9 @@ $role = $_SESSION['logged_role'];
                                         hue-rotate(75deg) brightness(91%) contrast(88%);">
                                         <span class="stat-label">Completed Today</span>
                                     </div>
-<<<<<<< HEAD
-                                    <span class="stat-number"><?php
-                                        $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed'");
-=======
+                                    <span class="stat-number">
                                     <?php
                                         $res = $conn->query("SELECT COUNT(*) AS completed_today_count FROM queue_information WHERE status = 'Completed' AND DATE(created_at) = CURDATE()");
->>>>>>> 8027a0785758c8ea14f415de220098e61d9a1011
                                         $row = $res->fetch_assoc();
 
                                         echo '<span class="stat-number" id="stat-number-completed">'.$row['completed_today_count'].'</span>';

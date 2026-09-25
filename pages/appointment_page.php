@@ -14,7 +14,6 @@ $role = $_SESSION['logged_role'];
     <link rel="stylesheet" href="../styles/appointment.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
-    <link rel="stylesheet" href="../styles/appointments-form.css">
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
@@ -74,5 +73,27 @@ $role = $_SESSION['logged_role'];
         </div>
       </div>
     </div>
+    <div id="declineModal" class="modal-overlay" style="display: none;">
+      <div class="modal-card">
+          <div class="modal-header">
+              <h3>Request declined</h3>
+              <button class="btn-close-modal" id="closeDeclineModal">&times;</button>
+          </div>
+          <form id="declineForm" action="../php/decline_appointment.php" method="POST">
+              <input type="hidden" name="appointment_id" id="declineAppointmentId">
+              
+              <div class="modal-body">
+                  <label for="declineReason">Reason for declining:</label>
+                  <textarea id="declineReason" name="reason" rows="4" placeholder="Enter reason here..." required></textarea>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn-secondary" id="cancelDeclineBtn">Cancel</button>
+                  <button type="submit" class="btn-danger">Submit</button>
+              </div>
+          </form>
+      </div>
+  </div>
   </body>
 </html>
+

@@ -83,9 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
-    if ($emailContact !== '' && !filter_var($emailContact, FILTER_VALIDATE_EMAIL)) {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid email address.') . '&type=error');
-        exit();
+
+    if ($emailContact !== ''){
+        list($user, $domain) = explode("@", $emailContact);
+        if (!filter_var($emailContact, FILTER_VALIDATE_EMAIL) && !getmxrr($domain, $mxhosts)){
+            header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid email address.') . '&type=error');
+            exit();
+        }
     }
 
     if ($employmentStatus === '') {

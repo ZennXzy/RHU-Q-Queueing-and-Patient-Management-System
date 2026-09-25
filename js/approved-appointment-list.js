@@ -20,51 +20,81 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Event handler delegation for Complete button and Options menu
+  // Event handler delegation for Add to Queue button and Options menu
   if (approvedContainer) {
     approvedContainer.addEventListener("click", async (e) => {
       const completeBtn = e.target.closest(".btn-complete");
-      const optionsBtn = e.target.closest(".options-menu");
 
       if (completeBtn) {
         const appointmentId = completeBtn.dataset.id;
-        const patientName = completeBtn.dataset.patientName;
+        const patientId = completeBtn.dataset.patientId;
         const service = completeBtn.dataset.service;
 
-        // Optionally trigger the Complete Queue Modal or complete appointment workflow directly
-        if (typeof openCompleteModal === "function") {
-          openCompleteModal({ appointmentId, patientName, service });
-        } else {
-          await completeAppointmentAction(appointmentId);
-        }
-      } else if (optionsBtn) {
-        const appointmentId = optionsBtn.dataset.id;
-        // Handle options menu dropdown logic here
+        await addToQueueAction({patientId, service });
+        await deleteAppointment({appointmentId});
       }
     });
   }
 
-  const completeAppointmentAction = async (id) => {
+  // Function to process adding patient to queue
+  const addToQueueAction = async ({patientId, service }) => {
     try {
-      const response = await fetch("../php/update_appointment_status.php", {
+      const payload = new URLSearchParams({
+        patient_id: patientId,
+        service_name: service
+      });
+
+      const response = await fetch("../php/add-to-queue.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `appointment_id=${encodeURIComponent(id)}&action=complete`
+        body: payload.toString()
       });
 
       const result = await response.json();
+
       if (result.status === "success") {
         if (typeof showToast === "function") {
-          showToast("Appointment marked as completed.", "success");
+          showToast(result.message || "Added to queue successfully.", "success");
         }
-        loadApprovedAppointments();
+        loadApprovedAppointments(); // Refresh approved list
       } else {
         if (typeof showToast === "function") {
-          showToast("Error: " + result.message, "error");
+          showToast("Error: " + (result.message || "Failed to add to queue."), "error");
         }
       }
     } catch (err) {
-      console.error("Action error:", err);
+      console.error("Queue processing error:", err);
+      if (typeof showToast === "function") {
+        showToast("An error occurred while contacting the server.", "error");
+      }
+    }
+  };
+
+  const deleteAppointment = async ({appointmentId}) => {
+    try {
+      const payload = new URLSearchParams({
+        appointment_id: appointmentId,
+      });
+
+      const response = await fetch("../php/remove_appointment.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString()
+      });
+
+      const result = await response.json();
+      loadApprovedAppointments();
+
+      if (result.status === "error") {
+        if (typeof showToast === "function") {
+          showToast(result.message || "Failed to remove appointment from database", "error");
+        }
+      }
+    } catch (err) {
+      console.error("Queue processing error:", err);
+      if (typeof showToast === "function") {
+        showToast("An error occurred while contacting the server.", "error");
+      }
     }
   };
 

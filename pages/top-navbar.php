@@ -1,3 +1,4 @@
+
 <aside class="top-navbar">
     <div style="display:flex; flex-direction:row; align-items: center;">
         <img src="../images/rhu_logo_topNav.png" alt="rhu_logo2">
