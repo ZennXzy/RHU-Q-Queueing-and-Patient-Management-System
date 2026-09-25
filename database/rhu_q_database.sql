@@ -3,6 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+-- Generation Time: Sep 02, 2026 at 10:46 AM
 -- Generation Time: Sep 23, 2026 at 08:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
@@ -168,6 +169,9 @@ CREATE TABLE `queue_information` (
 
 CREATE TABLE `transactions` (
   `transaction_id` int(11) NOT NULL,
+  `patient_name` varchar(100) NOT NULL,
+  `queue_code` varchar(100) NOT NULL,
+  `service` varchar(100) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `queue_code` varchar(100) NOT NULL,
   `service` varchar(100) NOT NULL,
@@ -187,8 +191,7 @@ CREATE TABLE `transactions` (
 ALTER TABLE `admin_auth`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `fullname` (`fullname`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- Indexes for table `appointments`
@@ -221,6 +224,12 @@ ALTER TABLE `patient_records`
   ADD KEY `idx_patient_name` (`lastname`,`firstname`);
 
 --
+-- Indexes for table `pending_appointments`
+--
+ALTER TABLE `pending_appointments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `patient_id` (`patient_id`);
+=======
 -- Indexes for table `queue_display`
 --
 ALTER TABLE `queue_display`
@@ -231,7 +240,6 @@ ALTER TABLE `queue_display`
 --
 ALTER TABLE `queue_information`
   ADD PRIMARY KEY (`queue_info_id`),
-  ADD UNIQUE KEY `server_name` (`server_name`),
   ADD KEY `patient_id` (`patient_id`);
 
 --
@@ -239,6 +247,10 @@ ALTER TABLE `queue_information`
 --
 ALTER TABLE `transactions`
   ADD PRIMARY KEY (`transaction_id`),
+  ADD KEY `patient_id` (`patient_name`),
+  ADD KEY `queue_id` (`queue_code`),
+  ADD KEY `transactions_ibfk_3` (`service`);
+=======
   ADD KEY `transactions_ibfk_3` (`service`),
   ADD KEY `transactions_ibfk_1` (`server_name`),
   ADD KEY `patient_id` (`patient_id`),
@@ -252,7 +264,7 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `admin_auth`
 --
 ALTER TABLE `admin_auth`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `appointments`
@@ -264,6 +276,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
   MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 
 --
@@ -276,24 +289,27 @@ ALTER TABLE `patient_auth`
 -- AUTO_INCREMENT for table `patient_records`
 --
 ALTER TABLE `patient_records`
-  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=235;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
--- AUTO_INCREMENT for table `queue_display`
+-- AUTO_INCREMENT for table `pending_appointments`
 --
-ALTER TABLE `queue_display`
-  MODIFY `queue_display_id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `pending_appointments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `patient_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=235;
 
 --
 -- AUTO_INCREMENT for table `queue_information`
 --
 ALTER TABLE `queue_information`
+  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
   MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=172;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
   MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
 
 --
@@ -316,6 +332,7 @@ ALTER TABLE `patient_auth`
 -- Constraints for table `queue_information`
 --
 ALTER TABLE `queue_information`
+  ADD CONSTRAINT `queue_information_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`);
   ADD CONSTRAINT `queue_information_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_records` (`patient_id`),
   ADD CONSTRAINT `queue_information_ibfk_2` FOREIGN KEY (`server_name`) REFERENCES `admin_auth` (`id`);
 
