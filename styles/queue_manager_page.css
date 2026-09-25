@@ -49,57 +49,6 @@ background-color:#F9FAFB;
   margin-bottom: 12px; /* Reduced margin */
 }
 
-.filterSelector img{
-  margin:12px;
-  height:20px;
-  width:auto;
-}
-
-.filterSelector.active img{
-  filter: brightness(0) saturate(100%)
-            invert(52%) sepia(89%) saturate(478%)
-            hue-rotate(129deg) brightness(92%) contrast(90%);
-}
-
-.filterSelector img:hover{
-  transform: scale(1.3);
-  filter: brightness(0) saturate(100%)
-            invert(52%) sepia(89%) saturate(478%)
-            hue-rotate(129deg) brightness(92%) contrast(90%);
-}
-
-.filterSelect{
-  cursor: pointer;
-  background-color: white;
-  border: 1 solid #0B695D;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  font-size: 16px;
-  border-radius:6px;
-  padding-left: 20px;
-  padding-right: 20px;
-  position: absolute;
-  top: 67px;
-  right: 67px;
-  opacity:0;
-  pointer-events: none;
-}
-
-.filterSelect.active{
-  opacity:1;
-  pointer-events: auto;
-}
-
-.filterSelect option{
-  margin-top:10px;
-  margin-bottom:10px;
-}
-
-
-.filterSelect option:hover{
-  transform:scale(1.1);
-}
-
-
 .form-grid{
   max-height: 100%;
 }
@@ -190,14 +139,29 @@ background-color:#F9FAFB;
 }
 
 .current-patient-row {
-  background-color: #EBF3FA;
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
   color: #222;
+  transition: all 0.2s ease;
+}
+
+.current-patient-row:hover{
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .waiting-patient-row {
-  background-color: #E0E0E0;
+  background-color: #f8fafc;
+  border: 1px solid #f1f5f9;
+  transition: all 0.2s ease;
   color: #222;
 }
+
+.waiting-patient-row:hover{
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
 
 .queue-id {
   width: 60px; 
@@ -213,7 +177,10 @@ background-color:#F9FAFB;
 
 .service-type {
   flex: 1;
-  color: #333;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #0B695D;
+  padding: 2px 8px;
 }
 
 .action-container {
@@ -336,7 +303,42 @@ background-color:#F9FAFB;
   filter: brightness(0) invert(1);
 }
 
-.btn-complete:hover { background-color: #256628; }
+.btn-complete {
+  color:#0B695D;
+  position: relative;
+  background-color:#ffffff00;
+  overflow: hidden;
+  border: none;
+  height: 100%;
+  padding: 10px 20px;
+  margin-right:-12px;
+  margin-top:-8px;
+  margin-bottom:-8px;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.btn-complete:hover{
+  color:white;
+}
+
+.btn-complete::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #0B695D;
+  transition: right 0.3s ease-in-out;
+  z-index: -1;
+}
+
+.btn-complete:hover::before {
+  right: 0%;
+}
 
 .split-grid {
   display: grid;
