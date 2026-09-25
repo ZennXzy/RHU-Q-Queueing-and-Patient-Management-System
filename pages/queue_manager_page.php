@@ -57,7 +57,10 @@ $role = $_SESSION['logged_role'];
                 <div class="form-grid">
                     <div class="in-progress-card" style="margin-bottom:15px;">
                         <h2 class="section-title">Current Patient</h2>
-                            <div class="in-progress-scroll" id="in-progress-scroll" style="max-height:138px;"></div>
+                            <div class="in-progress-scroll" id="in-progress-scroll" style="max-height:138px;">
+                                <div class="empty-state" style="text-align: center; padding: 51px; color: #6b7280; font-size: 14px;"><p style="margin: 0;">No in-progress records found.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="split-grid">

@@ -281,7 +281,7 @@ require '../php/connection.php';
               <div class="modal-body">
                 <input type="hidden" id="editPatientId" name="patient_id">
 
-                <div class="patient-profile-grid">
+                <div class="edit-patient-profile-grid">
                   
                   <!-- 1. Personal Details -->
                   <div class="info-card">

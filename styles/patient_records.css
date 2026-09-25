@@ -93,7 +93,7 @@ html {
 .table-card {
   background: white;
   border-radius: 12px;
-  padding: 20px;
+  padding:20px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   flex: 1;
 }
@@ -225,8 +225,8 @@ th.sortable:hover {
 #patientModal {
   border: none;
   border-radius: 12px;
-  padding: 24px;
   max-width: 720px;
+  padding-bottom:24px;
   max-height: 679px;
   width: 90%;
   height: 100%;
@@ -242,6 +242,8 @@ th.sortable:hover {
 }
 
 .modal-header {
+  background-color: #0B695D;
+  padding: 24px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -252,13 +254,14 @@ th.sortable:hover {
 .modal-header h2 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0B695D;
+  color: white;
   margin: 0;
 }
 
 .patient-profile-grid {
+  padding-left:24px;
   padding-right: 10px;
-  max-height: 511px;
+  max-height: 566px;
   height: 100%;
   overflow-y: scroll;
 }
@@ -283,12 +286,16 @@ th.sortable:hover {
   margin-top: 4px;
 }
 
+.patient-id-badge{
+  color:white;
+}
+
 .close-modal-btn {
   background: transparent;
   border: none;
   font-size: 25px;
   line-height: 1;
-  color: #64748b;
+  color: white;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 6px;
@@ -366,11 +373,6 @@ th.sortable:hover {
   display: none !important;
 }
 
-.history-section {
-  margin-top: 20px;
-  grid-column: span 2;
-}
-
 .modal-table {
   width: 100%;
   border-collapse: collapse;
@@ -433,8 +435,8 @@ th.sortable:hover {
 #edit-patient {
   border: none;
   border-radius: 12px;
-  padding: 24px;
   max-width: 720px;
+  padding-bottom:24px;
   max-height: 679px;
   width: 90%;
   height: 100%;
@@ -442,8 +444,6 @@ th.sortable:hover {
   background-color: #ffffff;
   left: 343px;
   top: 40px;
-  overflow: clip;
-  outline: none;
 }
 
 #edit-patient::backdrop {
@@ -489,9 +489,27 @@ th.sortable:hover {
 .modal-footer {
   display: flex;
   justify-content: flex-end;
+  padding-top:24px;
+  padding-right:24px;
   gap: 12px;
-  padding: 16px 24px;
   border-top: 1px solid #e2e8f0;
+}
+
+.edit-patient-profile-grid{
+  padding-left:24px;
+  padding-right: 10px;
+  max-height: 519px;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.edit-patient-profile-grid::-webkit-scrollbar {
+  width: 7px;
+}
+
+.edit-patient-profile-grid::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
 }
 
 .btn-primary {
@@ -521,8 +539,6 @@ th.sortable:hover {
 .btn-secondary:hover {
   background-color: #cbd5e1;
 }
-
-
 
 /* Mobile responsiveness */
 @media (max-width: 640px) {
