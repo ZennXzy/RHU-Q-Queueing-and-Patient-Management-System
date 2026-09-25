@@ -26,6 +26,7 @@ require '../php/connection.php';
     <script src="../js/delete-patient.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/session-check.js" defer></script>
+    <script src="../js/patient-view-tab.js" defer></script>
 
 
   </head>
@@ -120,11 +121,15 @@ require '../php/connection.php';
                 <h2>Patient Profile Details</h2>
                 <span id="modalPatientIdBadge" class="patient-id-badge">ID: #0000</span>
               </div>
+              <div class="modal-tab-group">
+                <button type="button" id="btnViewProfile" class="tab-btn active" onclick="switchModalView('profile')">Profile Details</button>
+                <button type="button" id="btnViewTransactions" class="tab-btn" onclick="switchModalView('transactions')">View Transactions</button>
+              </div>
               <button type="button" id="closeModalBtn" class="close-modal-btn" aria-label="Close" onclick="document.getElementById('patientModal').close()">&times;</button>
             </div>
 
             <div class="modal-body">
-              <div class="patient-profile-grid">
+              <div id="patientProfileView" class="patient-profile-grid">
                 
                 <!-- 1. Personal Details -->
                 <div class="info-card">
@@ -242,26 +247,11 @@ require '../php/connection.php';
                     <span id="modalYakapMember">-</span>
                   </div>
                 </div>
-                <hr class="divider" style="margin-top:20px;">
-
-              <!-- Service & Queue History -->
-                <div class="history-section">
-                  <h4 class="card-title">Service & Queue History</h4>
-                  <div class="history-table-container">
-                    <table class="history-table">
-                      <thead>
-                        <tr>
-                          <th>Date & Time</th>
-                          <th>Service Rendered</th>
-                          <th>Ticket #</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody id="modalHistoryBody">
-                        <!-- Dynamic History Rows -->
-                      </tbody>
-                    </table>
-                  </div>
+              </div>
+              <!-- View 2: Patient Transactions Container -->
+              <div id="patientTransactionsView" class="transactions-container" style="display: none;">
+                <div id="transactionsList" class="transactions-list">
+                  <!-- Dynamic transaction cards will be injected here -->
                 </div>
               </div>
             </div>

@@ -141,10 +141,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".view-btn");
+    
     if (!btn) return;
 
     const patientId = btn.dataset.id;
     if (!modal) return;
+
+    // Set patient ID for transaction view tab handler
+    if (typeof window.setModalPatientId === "function") {
+      window.setModalPatientId(patientId);
+    }
 
     try {
       const response = await fetch(
@@ -156,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (result.status === "success") {
         const p = result.patient;
-        console.log("Fetched Patient Data Object:", p);
 
         const badgeEl = document.getElementById("modalPatientIdBadge");
         if (badgeEl)
@@ -321,41 +326,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (elyakapStatus) elyakapStatus.textContent = yakapStatus || "N/A";
 
-
-        const historyBody = document.getElementById("modalHistoryBody");
-        const visits = p.history || [];
-
-        if (historyBody) {
-          if (visits.length === 0) {
-            historyBody.innerHTML = `
-              <tr>
-                <td colspan="4" style="text-align: center; padding: 16px; color: #94a3b8; font-style: italic;">
-                  No service/queue history records available.
-                </td>
-              </tr>
-            `;
-          } else {
-            historyBody.innerHTML = visits
-              .map((item) => {
-                const status = item.status || "Pending";
-                const statusClass = status.toLowerCase().replace(/\s+/g, "-");
-                return `
-                <tr>
-                  <td>${item.date || "-"}</td>
-                  <td>${item.service || "-"}</td>
-                  <td><strong>${item.ticket || "-"}</strong></td>
-                  <td><span class="status-badge status-${statusClass}">${status}</span></td>
-                </tr>
-              `;
-              })
-              .join("");
-          }
-        }
-
         modal.showModal();
       }
     } catch (error) {
-      console.error("Error fetching patient profile:", error);    }
+      console.error("Error fetching patient profile:", error);
+    }
   });
 
   if (modal) {
