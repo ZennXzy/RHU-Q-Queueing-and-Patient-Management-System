@@ -207,10 +207,14 @@ $role = $_SESSION['logged_role'];
                         <select class="service-type" id="service-type" name="service_name">
                             <option value="" disabled selected>Select a service</option>
                             <option value="Medical Consultation">Medical Consultation</option>
-                            <option value="Prenatal Checkup">Prenatal Checkup</option>
-                            <option value="Immunization / Vaccination">Immunization / Vaccination</option>
-                            <option value="Dental Checkup">Dental Checkup</option>
-                            <option value="Laboratory Request">Laboratory Request</option>
+                            <option value="Immunization">Immunization</option>
+                            <option value="Pre-Natal">Pre-Natal</option>
+                            <option value="Medical Laboratory">Medical Laboratory</option>
+                            <option value="Family Planning">Family Planning</option>
+                            <option value="Dental Examination/Tooth Extraction">Dental Examination/Tooth Extraction</option>
+                            <option value="Availment of anti-Tuberculosis Drugs">Availment of anti-Tuberculosis Drugs</option>
+                            <option value="Child Care services">Child Care services</option>
+                            <option value="Availment of Tetanus Vaccine and Anti Rabies Vaccine">Availment of Tetanus Vaccine and Anti Rabies Vaccine</option>
                         </select>
                     </div>
 

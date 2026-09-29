@@ -5,13 +5,13 @@ require '../php/connection.php';
 
 $DEPARTMENT_CONFIG = [
     'Medical Consultation' => ['title' => 'MEDICAL CONSULTATION', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Prenatal Checkup'     => ['title' => 'PRENATAL CHECKUP',     'themeClass' => 'dept-medical', 'icon' => '../svg/prenatal-icon.svg'],
-    'Immunization / Vaccination' => ['title' => 'VACCINATION',    'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
-    'Dental Checkup'       => ['title' => 'DENTAL CHECKUP',       'themeClass' => 'dept-dental',  'icon' => '../svg/dental-icon.svg'],
-    'Laboratory Request'   => ['title' => 'LABORATORY',           'themeClass' => 'dept-medical', 'icon' => '../svg/laboratory-icon.svg'],
+    'Pre-Natal'     => ['title' => 'PRENATAL CHECKUP',     'themeClass' => 'dept-medical', 'icon' => '../svg/prenatal-icon.svg'],
+    'Immunization' => ['title' => 'IMMUNIZATION',    'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
+    'Dental Examination/Tooth Extraction'       => ['title' => 'DENTAL CHECKUP',       'themeClass' => 'dept-dental',  'icon' => '../svg/dental-icon.svg'],
+    'Medical Laboratory'   => ['title' => 'LABORATORY',           'themeClass' => 'dept-medical', 'icon' => '../svg/laboratory-icon.svg'],
     'Family Planning'      => ['title' => 'FAMILY PLANNING',      'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Availment of Anti-Tuberculosis Drugs' => ['title' => 'ANTI-TB DRUGS', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Child Care Services'  => ['title' => 'CHILD CARE',           'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
+    'Availment of anti-Tuberculosis Drugs' => ['title' => 'ANTI-TB DRUGS', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
+    'Child Care services'  => ['title' => 'CHILD CARE',           'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
     'Availment of Tetanus Vaccine and Anti Rabies Vaccine' => ['title' => 'TETANUS & RABIES VACCINE', 'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg']
 ];
 
@@ -91,7 +91,7 @@ if ($settingsQuery) {
                 $stmt->close();
             ?>
 
-                <div class="dept-column" data-service="<?php echo htmlspecialchars($serviceName); ?>" style="display: <?php echo $isVisible ? 'block' : 'none'; ?>;">
+                <div class="dept-column" data-service="<?php echo htmlspecialchars($serviceName); ?>" style="display: <?php echo $isVisible ? 'flex' : 'none'; ?>;">
                     <div class="queue-card <?php echo $config['themeClass']; ?>">
                         <div class="dept-title">
                             <img src="<?php echo $config['icon']; ?>" alt="<?php echo $config['title']; ?>"> 
@@ -156,7 +156,7 @@ if ($settingsQuery) {
                         document.querySelectorAll('.dept-column').forEach(col => {
                             const service = col.getAttribute('data-service');
                             if (activeList.includes(service)) {
-                                col.style.display = 'block';
+                                col.style.display = 'flex';
                                 visibleCount++;
                             } else {
                                 col.style.display = 'none';

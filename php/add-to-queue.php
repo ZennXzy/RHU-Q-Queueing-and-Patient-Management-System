@@ -16,21 +16,33 @@ if ($patient_id <= 0 || empty($service_name)) {
 }
 
 // Map service to prefix letter
-switch (strtolower($service_name)) {
-    case 'medical consultation':
+switch ($service_name) {
+    case 'Medical Consultation':
         $prefix = 'A';
         break;
-    case 'prenatal checkup':
+    case 'Immunization':
         $prefix = 'B';
         break;
-    case 'immunization / vaccination':
+    case 'Pre-Natal':
         $prefix = 'C';
         break;
-    case 'dental checkup':
+    case 'Medical Laboratory':
         $prefix = 'D';
         break;
-    case 'laboratory request':
+    case 'Family Planning':
         $prefix = 'E';
+        break;
+    case 'Dental Examination/Tooth Extraction':
+        $prefix = 'F';
+        break;
+    case 'Availment of anti-Tuberculosis Drugs':
+        $prefix = 'G';
+        break;
+    case 'Child Care services':
+        $prefix = 'H';
+        break;
+    case 'Availment of Tetanus Vaccine and Anti Rabies Vaccine':
+        $prefix = 'I';
         break;
     default:
         $prefix = 'Z';

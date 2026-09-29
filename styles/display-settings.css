@@ -87,13 +87,24 @@ background-color:#F9FAFB;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    overflow-y: scroll;
+    height:100%;
+    max-height: 416px;
+}
+
+.service-stats-list::-webkit-scrollbar {
+  width: 5px;
+}
+.service-stats-list::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
 }
 
 .service-stat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 10px 14px;
     background-color: #f8fafc;
     border-radius: 8px;
     border-left: 4px solid #0B695D;
@@ -102,7 +113,8 @@ background-color:#F9FAFB;
 .service-name-label {
     font-weight: 600;
     color: #1e293b;
-    font-size: 0.95rem;
+    font-size: 13px;
+    max-width: 172px;
 }
 
 .stat-pills {

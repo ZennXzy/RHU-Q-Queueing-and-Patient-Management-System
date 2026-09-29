@@ -10,13 +10,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $allServices = [
     'Medical Consultation',
-    'Prenatal Checkup',
-    'Immunization / Vaccination',
-    'Dental Checkup',
-    'Laboratory Request',
+    'Immunization',
+    'Pre-Natal',
+    'Medical Laboratory',
     'Family Planning',
-    'Availment of Anti-Tuberculosis Drugs',
-    'Child Care Services',
+    'Dental Examination/Tooth Extraction',
+    'Availment of anti-Tuberculosis Drugs',
+    'Child Care services',
     'Availment of Tetanus Vaccine and Anti Rabies Vaccine'
 ];
 

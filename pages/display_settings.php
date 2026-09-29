@@ -6,13 +6,13 @@ require '../php/connection.php';
 // List of all services in RHU-Q
 $allServices = [
     'Medical Consultation',
-    'Prenatal Checkup',
-    'Immunization / Vaccination',
-    'Dental Checkup',
-    'Laboratory Request',
+    'Immunization',
+    'Pre-Natal',
+    'Medical Laboratory',
     'Family Planning',
-    'Availment of Anti-Tuberculosis Drugs',
-    'Child Care Services',
+    'Dental Examination/Tooth Extraction',
+    'Availment of anti-Tuberculosis Drugs',
+    'Child Care services',
     'Availment of Tetanus Vaccine and Anti Rabies Vaccine'
 ];
 
@@ -82,11 +82,9 @@ if ($settingsQuery) {
                             <div class="service-stat-item">
                                 <div class="service-name-label"><?php echo htmlspecialchars($service); ?></div>
                                 <div class="stat-pills">
-                                    <span class="badge badge-in-progress" title="In Progress">
-                                        ⚡ <?php echo $inProgressCount; ?> Serving
+                                    <span class="badge badge-in-progress" title="In Progress"><?php echo $inProgressCount; ?> Serving
                                     </span>
-                                    <span class="badge badge-waiting" title="Waiting">
-                                        ⏳ <?php echo $waitingCount; ?> Waiting
+                                    <span class="badge badge-waiting" title="Waiting"><?php echo $waitingCount; ?> Waiting
                                     </span>
                                 </div>
                             </div>
