@@ -1,90 +1,101 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once '../php/connection.php'; 
-require_once '../api/check-private.php';
-
-if (!canManageRecords()) {
-    echo json_encode([
-        'status'  => 'error',
-        'message' => 'Unauthorized action. Admin privileges required.'
-    ]);
-    exit();
-}
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Invalid request method.'
-    ]);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
 
 $account_id = isset($_POST['account_id']) ? intval($_POST['account_id']) : 0;
+$logged_id  = $_SESSION['logged_id'] ?? 0;
+$logged_role = $_SESSION['logged_role'] ?? '';
 
 if ($account_id <= 0) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Invalid or missing Account ID.'
-    ]);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid or missing Account ID.']);
+    exit;
+}
+
+// Security Check: Users can only edit their own account unless they are Admin
+if ($logged_role !== 'Admin' && $logged_id !== $account_id) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized action.']);
     exit;
 }
 
 function get_post_val($key, $default = null) {
-    if (isset($_POST[$key]) && trim($_POST[$key]) !== '') {
-        return trim($_POST[$key]);
-    }
-    return $default;
+    return (isset($_POST[$key]) && trim($_POST[$key]) !== '') ? trim($_POST[$key]) : $default;
 }
 
 $username = get_post_val('username');
 $fullname = get_post_val('fullname');
 $email    = get_post_val('email');
-$role     = get_post_val('role');
-$password = get_post_val('password');
+$role     = get_post_val('role', $logged_role);
+$current_password = get_post_val('current_password');
+$new_password     = get_post_val('password');
+$target_role      = get_post_val('target_role', $role);
 
-if (!$username || !$fullname || !$email || !$role) {
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Please fill in all required fields (Username, Full Name, Email, and Role).'
-    ]);
-    exit;
+$table = ($target_role === 'Patient') ? 'patient_auth' : 'admin_auth';
+$id_field = ($target_role === 'Patient') ? 'patient_auth_id' : 'id';
+
+// Verify field column existence for patient_auth
+if ($target_role === 'Patient') {
+    $checkCol = $conn->query("SHOW COLUMNS FROM patient_auth LIKE 'patient_auth_id'");
+    if (!$checkCol || $checkCol->num_rows === 0) {
+        $id_field = 'id';
+    }
 }
 
 try {
-    if (!empty($password)) {
+    // Check if user attempts password update
+    if (!empty($new_password)) {
+        if ($logged_role !== 'Admin' && empty($current_password)) {
+            echo json_encode(['status' => 'error', 'message' => 'Current password is required to change password.']);
+            exit;
+        }
+
+        if ($logged_role !== 'Admin') {
+            $passStmt = $conn->prepare("SELECT password FROM {$table} WHERE {$id_field} = ?");
+            $passStmt->bind_param("i", $account_id);
+            $passStmt->execute();
+            $res = $passStmt->get_result()->fetch_assoc();
+            $passStmt->close();
+
+            if (!$res || !password_verify($current_password, $res['password'])) {
+                echo json_encode(['status' => 'error', 'message' => 'Incorrect current password.']);
+                exit;
+            }
+        }
+
         $options = ["cost" => 12];
-        $hashed_password = password_hash($password, PASSWORD_BCRYPT, $options);
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, $options);
         
-        $sql = "UPDATE admin_auth SET 
-                    username = ?, 
-                    fullname = ?, 
-                    email = ?, 
-                    role = ?, 
-                    password = ? 
-                WHERE id = ?";
-
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+        if ($target_role === 'Patient') {
+            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, password = ? WHERE {$id_field} = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
+        } else {
+            $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ?, password = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssssi", $username, $fullname, $email, $role, $hashed_password, $account_id);
         }
-        $stmt->bind_param("sssssi", $username, $fullname, $email, $role, $hashed_password, $account_id);
     } else {
-        $sql = "UPDATE admin_auth SET 
-                    username = ?, 
-                    fullname = ?, 
-                    email = ?, 
-                    role = ? 
-                WHERE id = ?";
-
-        $stmt = $conn->prepare($sql);
-        if (!$stmt) {
-            throw new Exception("Prepare statement failed: " . $conn->error);
+        if ($target_role === 'Patient') {
+            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ? WHERE {$id_field} = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssi", $username, $fullname, $email, $account_id);
+        } else {
+            $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssi", $username, $fullname, $email, $role, $account_id);
         }
-
-        $stmt->bind_param("ssssi", $username, $fullname, $email, $role, $account_id);
     }
 
     if ($stmt->execute()) {
+        if ($logged_id === $account_id) {
+            $_SESSION['logged_account'] = $fullname;
+        }
+
         $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
         $message = "Account " . $username . " has been updated.";
         if ($insertlog) {

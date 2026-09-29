@@ -170,6 +170,11 @@ require '../php/connection.php';
                     </div>
 
                     <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" class="form-control" placeholder="••••••••">
+                    </div>
+
+                    <div class="form-group">
                         <label for="editPassword">New Password</label>
                         <input type="password" id="editPassword" name="password" placeholder="Leave blank to keep unchanged" autocomplete="new-password">
                         <small class="field-hint">Only enter if you want to update the password.</small>

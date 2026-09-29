@@ -1,16 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
   const editModal = document.getElementById('edit-account');
   const editForm = document.getElementById('edit-account-form');
+  const editAccountIdInput = document.getElementById('editAccountId');
 
+  // Load account data directly if viewing Settings Page
+  if (editForm && editAccountIdInput && editAccountIdInput.value && !editModal) {
+    loadAccountDetails(editAccountIdInput.value);
+  }
+
+  // Handle Edit Button Clicks from User Accounts Table Modal
   document.addEventListener('click', async (e) => {
     const editBtn = e.target.closest('.edit-btn');
     if (!editBtn) return;
 
     const accountId = editBtn.dataset.id;
-    if (!editModal || !editForm) return;
+    const roleType = editBtn.dataset.role || 'Staff';
+
+    await loadAccountDetails(accountId, roleType);
+
+    if (editModal && typeof editModal.showModal === 'function') {
+      editModal.showModal();
+    }
+  });
+
+  async function loadAccountDetails(accountId, roleType = '') {
+    if (!accountId) return;
 
     try {
-      const response = await fetch(`../api/get_accounts.php?action=details&id=${accountId}`);
+      const response = await fetch(`../api/get_accounts.php?action=details&id=${accountId}&role=${encodeURIComponent(roleType)}`);
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
       const result = await response.json();
@@ -22,19 +39,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const badgeElement = document.getElementById('modalAccountIdBadge');
         if (badgeElement) badgeElement.textContent = `ID: #${String(accountId).padStart(4, '0')}`;
 
-        const hiddenIdInput = document.getElementById('editAccountId');
-        if (hiddenIdInput) hiddenIdInput.value = accountId;
-
         const setVal = (id, val) => {
           const el = document.getElementById(id);
           if (el) el.value = val !== undefined && val !== null ? val : '';
         };
 
+        setVal('editAccountId', accountId);
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
         setVal('editEmail', account.email);
         setVal('editRole', account.role);
+        setVal('current_password', '');
         setVal('editPassword', '');
+
+        const displayTitle = document.getElementById('displayFullName');
+        if (displayTitle) displayTitle.textContent = account.fullname || account.username;
 
         const adminOption = document.querySelector('#editRole option[value="Admin"]');
         if (adminOption) {
@@ -46,16 +65,18 @@ document.addEventListener("DOMContentLoaded", () => {
             adminOption.textContent = 'Admin';
           }
         }
-
-        editModal.showModal();
       } else {
-        showToast('Failed to fetch account details: ' + (result.message || ''), 'error');
+        if (typeof showToast === 'function') {
+          showToast('Failed to fetch account details: ' + (result.message || ''), 'error');
+        }
       }
     } catch (error) {
-      console.error('Error opening edit account modal:', error);
-      showToast('An error occurred while loading account details.', 'error');
+      console.error('Error opening edit account form:', error);
+      if (typeof showToast === 'function') {
+        showToast('An error occurred while loading account details.', 'error');
+      }
     }
-  });
+  }
 
   if (editModal) {
     editModal.addEventListener("click", (e) => {
@@ -86,14 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          editModal.close();
-          showToast('Account Updated Successfully.', 'success');
+          if (editModal && typeof editModal.close === 'function') {
+            editModal.close();
+          }
+          if (typeof showToast === 'function') {
+            showToast('Account Updated Successfully.', 'success');
+          }
         } else {
-          showToast('Update Failed: ' + (result.message || 'Unable to update account.'), 'error');
+          if (typeof showToast === 'function') {
+            showToast('Update Failed: ' + (result.message || 'Unable to update account.'), 'error');
+          }
         }
       } catch (error) {
         console.error('Error submitting account update:', error);
-        showToast('An error occurred while saving account modifications.', 'error');
+        if (typeof showToast === 'function') {
+          showToast('An error occurred while saving account modifications.', 'error');
+        }
       }
     });
   }
