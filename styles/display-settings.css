@@ -48,131 +48,147 @@ background-color:#F9FAFB;
   margin-bottom: 25px;
 }
 
-
-/* Horizontal Card Container Grid */
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  width: 100%;
-  max-width: 1100px;
-  height: 480px;
+/* 2-Column Grid Layout */
+.settings-two-column-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 24px;
 }
 
-/* Department Cards */
-.dept-card {
-  background-color: #d0d0d0;
-  border: 1px solid #0B695D;
-  border-radius: 20px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 50px;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+@media (max-width: 992px) {
+    .settings-two-column-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
-.dept-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 4px rgba(0, 0, 0, 0.1);
+.grid-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
 }
 
-/* Close "X" Button */
-.close-btn {
-  position: absolute;
-  top: 15px;
-  right: 18px;
-  font-size: 14px;
-  cursor: pointer;
-  color: #333;
-  font-weight: bold;
+.card-heading {
+    font-size: 1.25rem;
+    color: #0B695D;
+    font-weight: 700;
+    margin-bottom: 4px;
 }
 
-.close-btn:hover{
-  color:red;
-  transform: scale(1.5);
-  transition: transform 0.2s, color 0.2s;
+.card-subtext {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 20px;
 }
 
-.dept-title {
-  font-size: 22px;
-  font-weight: 500;
-  color: #0B695D;
+/* Left Column: Service Summary List */
+.service-stats-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-/* Add Card (+) */
-.add-card {
-  background-color: #d0d0d0;
-  border: 1px solid #0B695D;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s, background-color 0.2s;
+.service-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid #0B695D;
 }
 
-.add-card:hover {
-  background-color: #c8c8c8;
-  transform: translateY(-6px);
-  box-shadow: 0px 12px 4px rgba(0, 0, 0, 0.1);
+.service-name-label {
+    font-weight: 600;
+    color: #1e293b;
+    font-size: 0.95rem;
 }
 
-.add-card:hover  img{
-  transform:scale(1.1);
-  transition: transform 0.2s, transition 0.2s;
+.stat-pills {
+    display: flex;
+    gap: 8px;
 }
 
-.add-card img {
-  height: 45px;
-  width: auto;
-  filter: brightness(0) saturate(100%) invert(28%) sepia(69%) saturate(845%) hue-rotate(139deg) brightness(91%) contrast(95%);
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
-/* addcardmodal */
-.addCardModal{
-  padding: 20px; 
-  border-radius: 12px; 
-  border: 1px solid #ccc; 
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  margin: auto;
+.badge-in-progress {
+    background-color: #e0f2fe;
+    color: #0369a1;
 }
 
-.deptSelect {
-  padding: 8px;
-  margin: 10px 0;
-  width: 100%;
-  border: 1px solid #0B695D;
-  border-radius: 10px;
-}
-.actionButton {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 15px;
+.badge-waiting {
+    background-color: #fef3c7;
+    color: #b45309;
 }
 
-.actionButton .closeModalBtn{
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+/* Right Column: Checklist Cells */
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-.actionButton .closeModalBtn:hover{
-  transform: scale(1.1);
+.checklist-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
 }
 
-.actionButton .saveCardBtn {
-  padding: 6px 12px;
-  background: #0B695D;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
+.checklist-cell:hover {
+    border-color: #0B695D;
+    background-color: #f0fdf4;
 }
 
-.actionButton .saveCardBtn:hover{
-  transform: scale(1.1);
-  background-color: #20A59E;
+.checklist-cell.active {
+    border-color: #0B695D;
+    background-color: #e6f4f1;
+}
+
+.checklist-cell input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #0B695D;
+    cursor: pointer;
+}
+
+.service-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Save Button */
+.checklist-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-settings-btn {
+    background-color: #0B695D;
+    color: #ffffff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.save-settings-btn:hover {
+    background-color: #085249;
 }
