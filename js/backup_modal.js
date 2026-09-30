@@ -88,6 +88,19 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!anySelected) {
                 e.preventDefault();
                 alert('Please select at least one database table to back up.');
+                return;
+            }
+
+            const submitBtn = document.getElementById('btnSubmitBackup');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Generating...';
+
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Generate Backup';
+                    closeModal();
+                }, 2500);
             }
         });
     }

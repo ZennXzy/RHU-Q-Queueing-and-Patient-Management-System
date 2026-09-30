@@ -135,7 +135,7 @@ require '../php/connection.php';
     </div>
 
     <!-- Modal Body / Form -->
-    <form action="backup.php" method="POST" id="backupForm" class="backupForm">
+    <form action="../php/backup.php" method="POST" id="backupForm" class="backupForm">
       <div class="custom-modal-body">
         
         <!-- Step 1: Backup Format Type -->
