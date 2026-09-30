@@ -47,7 +47,7 @@ if ($res && $res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
         echo '<tr>';
-        echo '<td style="text-align: center;">#' . htmlspecialchars(str_pad($row['id'], 4, '0', STR_PAD_LEFT)) . '</td>';
+        echo '<td style="text-align: center;">#</td>';
         echo '<td>' . htmlspecialchars($row['username']) . '</td>';
         echo '<td>' . htmlspecialchars($row['fullname']) . '</td>';
         echo '<td>' . htmlspecialchars($row['email']) . '</td>';
@@ -57,9 +57,15 @@ if ($res && $res->num_rows > 0) {
         echo '<td style="text-align: center;">' . htmlspecialchars($row['last_active']) . '</td>';
         echo '<td>';
         echo '<div class="table-actions">';
-        echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-        echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
-        echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
+        if ($type === 'staff'){
+            echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+            echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+            echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
+        } else {
+            echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+            echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+            echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
+        }
         echo '</div>';
         echo '</td>';
         echo '</tr>';
