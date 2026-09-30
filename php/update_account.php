@@ -71,11 +71,11 @@ try {
         $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, $options);
         
         if ($target_role === 'Patient') {
-            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, password = ? WHERE {$id_field} = ?";
+            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, password_hash = ? WHERE {$id_field} = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
         } else {
-            $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ?, password = ? WHERE id = ?";
+            $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ?, password_hash = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sssssi", $username, $fullname, $email, $role, $hashed_password, $account_id);
         }
