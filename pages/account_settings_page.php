@@ -11,6 +11,7 @@ require '../php/connection.php';
   <title>RHU-Q: Account Manager</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/account-settings.css">
+    <link rel="stylesheet" href="../styles/account-settings_2.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/toast.css">
@@ -21,6 +22,7 @@ require '../php/connection.php';
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/edit-account.js" defer></script>
+    <script src="../js/backup_modal.js" defer></script>
     <script src="../js/session-check.js" defer></script>
 </head>
 <body>
@@ -45,7 +47,7 @@ require '../php/connection.php';
           </div>
           <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
           <div class="top-action-button">
-            <button type="button" class="btn btn-secondary" onclick="location.href='backup.php'">
+            <button type="button" class="btn btn-secondary" id="openBackupModalBtn">
               Backup and Restore
             </button>
             <button type="button" class="btn btn-secondary" onclick="location.href='logs.php'">
@@ -124,5 +126,106 @@ require '../php/connection.php';
       </div>
     </div>
   </div>
+  <!-- backup/restore modal -->
+   <dialog class="backupModal" id="backupModal">
+    <!-- Modal Header -->
+    <div class="custom-modal-header">
+      <h5 class="custom-modal-title">DATABASE BACKUP</h5>
+      <button type="button" class="custom-modal-close" id="closeBackupModalBtn">&times;</button>
+    </div>
+
+    <!-- Modal Body / Form -->
+    <form action="backup.php" method="POST" id="backupForm" class="backupForm">
+      <div class="custom-modal-body">
+        
+        <!-- Step 1: Backup Format Type -->
+        <div class="section-group">
+          <span class="section-label">1. Select Backup Type / Format</span>
+          <div class="format-grid">
+            
+            <label class="format-card">
+              <input type="radio" name="backup_type" value="sql" checked>
+              <div class="format-card-content">
+                <strong>Full Database Backup</strong>
+                <span class="format-ext">.sql</span>
+                <small>Standard SQL database dump for full structural restores.</small>
+              </div>
+            </label>
+
+            <label class="format-card">
+              <input type="radio" name="backup_type" value="zip">
+              <div class="format-card-content">
+                <strong>Compressed Backup</strong>
+                <span class="format-ext">.zip</span>
+                <small>Gzipped archive for space-efficient storage.</small>
+              </div>
+            </label>
+
+            <label class="format-card">
+              <input type="radio" name="backup_type" value="csv">
+              <div class="format-card-content">
+                <strong>Data Export</strong>
+                <span class="format-ext">.csv</span>
+                <small>Export individual tables into raw CSV spreadsheets.</small>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <hr class="modal-divider">
+
+        <!-- Step 2: Table Selection -->
+        <div class="section-group">
+          <div class="table-header-row">
+            <span class="section-label">2. Select Tables to Backup</span>
+            <label class="checkbox-label select-all-label">
+              <input type="checkbox" id="selectAllTables" checked>
+              <span>Select All / Unselect</span>
+            </label>
+          </div>
+
+          <div class="table-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="admin_auth" checked>
+              <span>admin_auth</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="appointments" checked>
+              <span>appointments</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="logs" checked>
+              <span>logs</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="patient_auth" checked>
+              <span>patient_auth</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="patient_records" checked>
+              <span>patient_records</span>
+            </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="transactions" checked>
+              <span>transactions</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="custom-modal-footer">
+        <button type="button" class="btn btn-outline" id="cancelBackupModalBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="btnSubmitBackup">Generate Backup</button>
+      </div>
+    </form>
+  </dialog>
 </body>
 </html>
