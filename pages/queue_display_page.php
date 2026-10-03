@@ -1,7 +1,9 @@
 <?php
+session_start();
 require '../api/check-private.php';
-authorizeRoles(['Doctor/Staff', 'Display']);
+authorizeRoles(['Doctor/Staff', 'Display', 'Patient']);
 require '../php/connection.php';
+$role = $_SESSION['logged_role'];
 
 $DEPARTMENT_CONFIG = [
     'Medical Consultation' => ['title' => 'MEDICAL CONSULTATION', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
@@ -32,9 +34,18 @@ if ($settingsQuery) {
     <title>RHU-Q: Queue Display</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/queue_display.css">
+    <?php
+        if ($role === 'Patient'){
+        echo '<link rel="stylesheet" href="../styles/patient_sidebar.css">';
+        echo '<script src="../js/patient_sidebar.js" defer></script>';
+        }
+    ?>
 </head>
 <body>
     <div class="page-container">
+        <?php
+            include '../pages/patient_sidebar.php';
+        ?>
         <div class="top-brand">
             <div class="rhu_logo_topNav">
                 <img src="../images/rhu_logo_topNav.png" alt="rhu_logo">

@@ -14,9 +14,16 @@ if (!isset($_SESSION['logged_id'])) {
     exit();
 }
 
-$user_id = $_SESSION['logged_id'];
+$user_id   = $_SESSION['logged_id'];
+$user_type = $_SESSION['user_type'] ?? 'Admin'; // 'admin' or 'patient'
 
-$stmt = $conn->prepare("SELECT status, username FROM admin_auth WHERE id = ?");
+// Check online status in the appropriate table
+if ($user_type === 'patient') {
+    $stmt = $conn->prepare("SELECT status, username FROM patient_auth WHERE patient_auth_id = ?");
+} else {
+    $stmt = $conn->prepare("SELECT status, username FROM admin_auth WHERE id = ?");
+}
+
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $res = $stmt->get_result();
@@ -40,7 +47,6 @@ if ($row = $res->fetch_assoc()) {
             $insertlog->execute();
             $insertlog->close();
         }
-        $insertlog->close();
         exit();
     }
 } else {
@@ -64,7 +70,6 @@ if (isset($_GET['ajax_check'])) {
     echo json_encode(['status' => 'active']);
     exit();
 }
-
 
 if (!isset($_SESSION['logged_name']) || !isset($_SESSION['logged_id']) || !isset($_SESSION['logged_role'])) {
     header('Location: ../pages/login_page.php');
@@ -96,6 +101,12 @@ function authorizeRoles(array $allowedRoles) {
             header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
             exit();
         } 
+
+        // Handle Patient redirection on unauthorized attempt
+        if ($userRole === 'Patient') {
+            header('Location: ../pages/patient_dashboard.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
+            exit();
+        }
         
         header('Location: ../pages/login_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
         exit();
