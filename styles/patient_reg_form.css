@@ -161,6 +161,19 @@ body, html {
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
 
+.form-group input[type="date"]{
+  color: #333;
+  border: none;
+}
+.date {
+  padding: 11px 14px;
+  border: 1px solid #0B695D;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  height: 43px;
+}
 /* Utility Containers */
 .fieldset-group {
   border: 1px solid #0B695D;

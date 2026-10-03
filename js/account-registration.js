@@ -2,7 +2,53 @@ document.addEventListener('DOMContentLoaded', () => {
   const regForm = document.getElementById('accountRegistrationForm');
   if (!regForm) return;
 
-  // 1. Restore Form Draft from sessionStorage on Load
+  // 1. Copy Token Button Event (Handles unfocused clipboard errors gracefully)
+  const copyTokenBtn = document.getElementById('copyTokenBtn');
+  if (copyTokenBtn) {
+    copyTokenBtn.addEventListener('click', () => {
+      const tokenInput = document.getElementById('account_token');
+      if (!tokenInput || !tokenInput.value) return;
+
+      // Ensure field is focused before copying
+      tokenInput.focus();
+      tokenInput.select();
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(tokenInput.value)
+          .then(() => {
+            notifyUser('Account Token copied to clipboard!', 'success');
+          })
+          .catch(() => {
+            // Fallback if writeText fails or document loses focus
+            fallbackCopyText(tokenInput.value);
+          });
+      } else {
+        fallbackCopyText(tokenInput.value);
+      }
+    });
+  }
+
+  // Fallback function using execCommand
+  function fallbackCopyText(text) {
+    try {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      if (successful) {
+        notifyUser('Account Token copied to clipboard!', 'success');
+      } else {
+        notifyUser('Failed to copy token automatically. Please copy manually.', 'error');
+      }
+    } catch (err) {
+      notifyUser('Failed to copy token automatically. Please copy manually.', 'error');
+    }
+  }
+
+  // 2. Restore Form Draft from sessionStorage on Load
   const savedDraft = sessionStorage.getItem('accountFormDraft');
   if (savedDraft) {
     const draftData = JSON.parse(savedDraft);
@@ -19,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Auto-save Input Changes to sessionStorage
+  // Auto-save Input Changes
   regForm.addEventListener('input', () => {
     const formData = new FormData(regForm);
     const draftObj = {};
@@ -29,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('accountFormDraft', JSON.stringify(draftObj));
   });
 
-  // Helper function for Toast / Alert notifications
   function notifyUser(message, type = 'error') {
     if (typeof showToast === 'function') {
       showToast(message, type);
@@ -38,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 3. Step 1: Client-Side Validation + AJAX Duplication Check & Draft
+  // 3. Step 1: Client-Side Validation & Server Draft Call
   const nextStepBtn = document.getElementById('nextStepBtn');
   if (nextStepBtn) {
     nextStepBtn.addEventListener('click', function () {
@@ -53,46 +98,31 @@ document.addEventListener('DOMContentLoaded', () => {
       const sex = formData.get('gender') || '';
       const civilStatus = formData.get('civilStatus') || '';
       const employmentStatus = formData.get('employment_status') || '';
-      const occupation = formData.get('occupation') || '';
-      const business = formData.get('business') || '';
-      const philStatus = formData.get('philStatusInput') || '';
-      const philNum = formData.get('philNumber') || '';
-      const prinMem = formData.get('prinMember') || '';
-      const yakapmem = formData.get('yakapmem') || '';
 
-      // Clean age input string
-      const ageInput = document.getElementById('age_display');
-      if (ageInput) {
-        ageInput.value = ageInput.value.replace(/\D/g, ''); 
-      }
-
-      // Validations
       if (lname.trim() === '' || fname.trim() === '') {
         notifyUser('Please provide your first and last name', 'error');
         return;
       }
-
       if (address.trim() === '') {
         notifyUser('Please provide your full address', 'error');
         return;
       }
-
       if (!religion || religion.trim() === '') {
         notifyUser('Please select/provide your religion', 'error');
         return;
       }
-
       if (sex.trim() === '') {
         notifyUser('Please select your gender', 'error');
         return;
       }
-
       if (birthDate.trim() === '') {
         notifyUser('Please provide your date of birth', 'error');
         return;
       }
 
-      if (contactnum.trim() === '' || contactnum.replace(/\D/g, '').length < 11) {
+      // Contact Number is now OPTIONAL (Only validate length if filled out)
+      const cleanContact = contactnum.replace(/\D/g, '');
+      if (cleanContact.length > 0 && cleanContact.length < 11) {
         notifyUser('Please provide a valid 11-digit contact number', 'error');
         return;
       }
@@ -101,65 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
         notifyUser('Please select your civil status', 'error');
         return;
       }
-      
       if (employmentStatus.trim() === '') {
         notifyUser('Please select an employment status', 'error');
         return;
-      } else if (employmentStatus === 'Employed' && occupation.trim() === '') {
-        notifyUser('Please provide your occupation', 'error');
-        return;
-      } else if (employmentStatus === 'Self-Employed' && business.trim() === '') {
-        notifyUser('Please provide your business name', 'error');
-        return;
       }
 
-      // Family Info Checks
-      const mfname = formData.get('mfname') || document.getElementById('mfname')?.value || '';
-      const mlname = formData.get('mlname') || document.getElementById('mlname')?.value || '';
-
-      if (mfname.trim() === '' || mlname.trim() === '') {
-        notifyUser("Please provide your mother's first and last name", 'error');
-        return;
-      }
-
-      const ffname = formData.get('ffname') || document.getElementById('ffname')?.value || '';
-      const flname = formData.get('flname') || document.getElementById('flname')?.value || '';
-
-      if (ffname.trim() === '' || flname.trim() === '') {
-        notifyUser("Please provide your father's first and last name", 'error');
-        return;
-      }
-      
-      const sfname = formData.get('sfname') || document.getElementById('sfname')?.value || '';
-      const slname = formData.get('slname') || document.getElementById('slname')?.value || '';
-
-      if (civilStatus === 'Married' || civilStatus === 'Widow') {
-        if (sfname.trim() === '' || slname.trim() === '') {
-          notifyUser("Please provide your spouse's first and last name", 'error');
-          return;
-        }
-      }
-
-      // PhilHealth Info Checks
-      if (philStatus.trim() === '') {
-        notifyUser('Please select PhilHealth status', 'error');
-        return;
-      } else if (philStatus === 'Member' && philNum.trim() === '') {
-        notifyUser('Please provide your PhilHealth Number', 'error');
-        return;
-      } else if (philStatus === 'Dependent') {
-        if (philNum.trim() === '' || prinMem.trim() === '') {
-          notifyUser('Please provide PhilHealth Number and Principal Member Name.', 'error');
-          return;
-        }
-      }
-
-      if (yakapmem.trim() === '') {
-        notifyUser('Please select Yakap Membership status', 'error');
-        return;
-      }
-
-      // Send to Backend for Duplication Check & Server Draft Storage
       const postData = new FormData(regForm);
       postData.append('action', 'check_and_draft');
 
@@ -169,15 +145,16 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .then(async response => {
         const text = await response.text();
-        try {
-          return JSON.parse(text);
-        } catch (err) {
-          console.error('Server returned invalid JSON:', text);
-          throw new Error('Server response error');
-        }
+        try { return JSON.parse(text); } 
+        catch (err) { throw new Error('Server response error'); }
       })
       .then(data => {
         if (data.status === 'success') {
+          // Set generated 6-digit token into read-only field
+          if (data.account_token) {
+            document.getElementById('account_token').value = data.account_token;
+          }
+
           document.getElementById('patientInfoStep').style.display = 'none';
           document.getElementById('credentialsStep').style.display = 'block';
           const pageTitle = document.getElementById('pageTitle');
@@ -194,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. Back Button in Step 2
+  // 4. Back Button Step 2
   const backStepBtn = document.getElementById('backStepBtn');
   if (backStepBtn) {
     backStepBtn.addEventListener('click', function () {
@@ -206,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. Step 2: Final Registration AJAX
+  // 5. Step 2 Submit (Email Optional)
   regForm.addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -220,7 +197,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     
-    if (email.length > 0 && !email.includes("@gmail.com")){
+    // Email optional check
+    if (email.length > 0 && (!email.includes("@") || !email.includes("."))) {
       notifyUser('Please provide a valid email address.', 'error');
       return;
     }
@@ -244,12 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(async response => {
       const text = await response.text();
-      try {
-        return JSON.parse(text);
-      } catch (err) {
-        console.error('Server returned invalid JSON:', text);
-        throw new Error('Server response error');
-      }
+      try { return JSON.parse(text); } 
+      catch (err) { throw new Error('Server response error'); }
     })
     .then(data => {
       if (data.status === 'success') {

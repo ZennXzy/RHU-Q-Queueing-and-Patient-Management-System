@@ -8,10 +8,30 @@ if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     exit();
 }
 
+/**
+ * Generates a cryptographically secure, unique 6-digit account token
+ */
+function generateUniqueAccountToken($conn) {
+    do {
+        // Securely generate a number between 000000 and 999999
+        $token = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        
+        // Check uniqueness against database
+        $stmt = $conn->prepare("SELECT patient_id FROM patient_records WHERE account_token = ? LIMIT 1");
+        $stmt->bind_param('s', $token);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $exists = ($res && $res->num_rows > 0);
+        $stmt->close();
+    } while ($exists);
+
+    return $token;
+}
+
 $action = $_POST['action'] ?? '';
 
 // -------------------------------------------------------------
-// ACTION 1: Check Duplication & Save Patient Data to Draft Session
+// ACTION 1: Check Duplication, Generate Token & Save Draft Session
 // -------------------------------------------------------------
 if ($action === 'check_and_draft') {
 
@@ -57,7 +77,7 @@ if ($action === 'check_and_draft') {
     $prinMem    = trim($_POST['prinMember'] ?? '');
     $yakapmem   = trim($_POST['yakapmem'] ?? '');
 
-    // Form Validations
+    // Validations (Contact is optional now)
     if ($firstname === '' || $lastname === '') {
         echo json_encode(['status' => 'error', 'message' => 'Please provide First and Last Name']);
         exit();
@@ -78,36 +98,8 @@ if ($action === 'check_and_draft') {
         echo json_encode(['status' => 'error', 'message' => 'Please select Date of Birth']);
         exit();
     }
-    if ($contactnum === '' || strlen($contactnum) < 11) {
-        echo json_encode(['status' => 'error', 'message' => 'Please provide a valid numeric contact number']);
-        exit();
-    }
-    if ($employmentStatus === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please select Employment status']);
-        exit();
-    } else if (strtolower($employmentStatus) === 'employed' && $occupation === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please provide occupation']);
-        exit();
-    } else if (strtolower($employmentStatus) === 'self-employed' && $business === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please provide business']);
-        exit();
-    }
-    if ($civilStatus === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please select civil status']);
-        exit();
-    }
-    if ($philStatus === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please select PhilHealth Status']);
-        exit();
-    } else if (strtolower($philStatus) === 'member' && $philNum === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please provide PhilHealth Number']);
-        exit();
-    } else if (strtolower($philStatus) === 'dependent' && ($philNum === '' || $prinMem === '')) {
-        echo json_encode(['status' => 'error', 'message' => 'Please provide PhilHealth Number and Principal Member']);
-        exit();
-    }
-    if ($yakapmem === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please select Yakap Member status']);
+    if ($contactnum !== '' && strlen(preg_replace('/\D/', '', $contactnum)) < 11) {
+        echo json_encode(['status' => 'error', 'message' => 'Please provide a valid 11-digit contact number']);
         exit();
     }
 
@@ -135,8 +127,16 @@ if ($action === 'check_and_draft') {
     }
     $check->close();
 
-    // Store in Session Draft
+    // Generate token if not already in session (ensures token stays unchangeable)
+    if (empty($_SESSION['patient_draft']['account_token'])) {
+        $accountToken = generateUniqueAccountToken($conn);
+    } else {
+        $accountToken = $_SESSION['patient_draft']['account_token'];
+    }
+
+    // Save draft data including the generated token
     $_SESSION['patient_draft'] = [
+        'account_token'     => $accountToken,
         'firstname'         => $firstname,
         'lastname'          => $lastname,
         'middlename'        => ($middlename === '') ? NULL : $middlename,
@@ -144,8 +144,8 @@ if ($action === 'check_and_draft') {
         'address'           => $address,
         'age'               => $age,
         'gender'            => $gender,
-        'birthDate'        => $birthDate,
-        'contactnum'        => $contactnum,
+        'birthDate'         => $birthDate,
+        'contactnum'        => ($contactnum === '') ? NULL : $contactnum,
         'employmentStatus'  => $employmentStatus,
         'occupation'        => (strtolower($employmentStatus) === 'employed') ? $occupation : NULL,
         'business'          => (strtolower($employmentStatus) === 'self-employed') ? $business : NULL,
@@ -160,11 +160,16 @@ if ($action === 'check_and_draft') {
         'yakapmem'          => $yakapmem
     ];
 
-    echo json_encode(['status' => 'success', 'message' => 'Patient details saved. Proceeding to credentials step.']);
+    echo json_encode([
+        'status' => 'success', 
+        'message' => 'Patient details saved.',
+        'account_token' => $accountToken
+    ]);
     exit();
 }
+
 // -------------------------------------------------------------
-// ACTION 2: Save Patient Details First, Get ID, Then Save Credentials
+// ACTION 2: Save Patient Details with Token & Register Credentials
 // -------------------------------------------------------------
 if ($action === 'final_register') {
 
@@ -174,17 +179,23 @@ if ($action === 'final_register') {
     }
 
     $username = trim($_POST['username'] ?? '');
-    $email    = trim($_POST['email'] ?? '');
+    $email    = trim($_POST['email'] ?? ''); // Optional email
     $password = $_POST['password'] ?? '';
 
-    if ($username === '' || $email === '' || $password === '') {
-        echo json_encode(['status' => 'error', 'message' => 'Please fill in Username, Email, and Password.']);
+    if ($username === '' || $password === '') {
+        echo json_encode(['status' => 'error', 'message' => 'Please fill in Username and Password.']);
         exit();
     }
 
-    // Check unique username or email in patient_auth
-    $userCheck = $conn->prepare("SELECT patient_auth_id FROM patient_auth WHERE username = ? OR email = ? LIMIT 1");
-    $userCheck->bind_param('ss', $username, $email);
+    // Check unique username (and unique non-empty email)
+    if ($email !== '') {
+        $userCheck = $conn->prepare("SELECT patient_auth_id FROM patient_auth WHERE username = ? OR email = ? LIMIT 1");
+        $userCheck->bind_param('ss', $username, $email);
+    } else {
+        $userCheck = $conn->prepare("SELECT patient_auth_id FROM patient_auth WHERE username = ? LIMIT 1");
+        $userCheck->bind_param('s', $username);
+    }
+    
     $userCheck->execute();
     $userRes = $userCheck->get_result();
 
@@ -194,28 +205,30 @@ if ($action === 'final_register') {
     }
     $userCheck->close();
 
-    // Begin DB Transaction
+    // Transaction
     $conn->begin_transaction();
-
+    $set_token = NULL;
     try {
-        // 1. Insert into patient_records first using draft data
         $draft = $_SESSION['patient_draft'];
 
+        // 1. Insert into patient_records including account_token
         $sql = "INSERT INTO patient_records (
-            firstname, lastname, middlename, suffix, address, age, gender, 
+            account_token, firstname, lastname, middlename, suffix, address, age, gender, 
             date_of_birth, contact_number, email, employment_status, occupation, 
             business_name, civil_status, religion, mothers_name, fathers_name, 
             spouses_name, phil_status, phil_number, principal_member, yakap_member
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $insertstmt = $conn->prepare($sql);
         if (!$insertstmt) {
             throw new Exception("Database Prepare Failed: " . $conn->error);
         }
 
-        $insertstmt->bind_param("sssssissssssssssssssss", 
-            $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
-            $draft['age'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $email,
+        $formattedEmail = ($email === '') ? NULL : $email;
+        $set_token = $draft['account_token'];
+        $insertstmt->bind_param("isssssissssssssssssssss", 
+            $draft['account_token'], $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
+            $draft['age'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $formattedEmail,
             $draft['employmentStatus'], $draft['occupation'], $draft['business'], $draft['civilStatus'], 
             $draft['religion'], $draft['mothers_name'], $draft['fathers_name'], $draft['spouses_name'], 
             $draft['philStatus'], $draft['philNum'], $draft['prinMem'], $draft['yakapmem']
@@ -225,33 +238,30 @@ if ($action === 'final_register') {
             throw new Exception("Failed to insert patient details: " . $insertstmt->error);
         }
         
-        // 2. Retrieve newly generated patient_id
         $registered_patient_id = $conn->insert_id;
         $insertstmt->close();
 
-        // 3. Hash Password & Insert credentials into patient_auth with patient_id
+        // 2. Hash Password & Insert into patient_auth
         $options = ["cost" => 12];
         $hashed_password = password_hash($password, PASSWORD_BCRYPT, $options);
 
-        // Concatenate full name cleanly with single dots and spaces
         $mInit = !empty($draft['middlename']) ? ' ' . $draft['middlename'] . ' ' : ' ';
         $fullname = trim($draft['firstname'] . $mInit . $draft['lastname']);
         $status = "Offline";
         $role = "Patient";
 
-        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, fullname, email, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $authStmt->bind_param('issssss', $registered_patient_id, $username, $hashed_password, $fullname, $registered_patient_id, $status, $role);
+        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, fullname, email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $authStmt->bind_param('issssiss', $registered_patient_id, $username, $hashed_password, $fullname, $formattedEmail, $set_token, $status, $role);
         
         if (!$authStmt->execute()) {
             throw new Exception("Failed to save patient account: " . $authStmt->error);
         }
         $authStmt->close();
 
-        // Commit Transaction
         $conn->commit();
         unset($_SESSION['patient_draft']);
 
-        echo json_encode(['status' => 'success', 'message' => 'Account and Patient record successfully created!']);
+        echo json_encode(['status' => 'success', 'message' => 'Account created successfully! Account Token: ' . $draft['account_token']]);
         exit();
 
     } catch (Exception $e) {

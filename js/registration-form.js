@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (contactnum.trim() === '' || contactnum.length < 11) {
+    if (contactnum.length < 11) {
       e.preventDefault();
       showToast('Please provide a valid 11-digit contact number', 'error');
       return;

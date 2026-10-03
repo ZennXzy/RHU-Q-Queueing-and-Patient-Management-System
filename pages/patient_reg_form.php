@@ -69,13 +69,19 @@ require '../php/connection.php';
                             <div class="form-group col-4">
                                 <input type="text" name="address" id="address" placeholder="Complete Address" required>
                             </div>
+                            <div class="form-group col-3">
+                                <div class="date">
+                                    <span style="font-size: 13px; color: #555;">Date of Birth:</span>
+                                    <input type="date" id="date_of_birth" name="birthDate">
+                                </div>
+                            </div>
                             <div class="form-group col-2">
                                 <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                             </div>
-                            <div class="form-group col-2 input-select">
+                            <div class="form-group col-3 input-select">
                                 <select name="religion" id="religion">
                                     <option value="" disabled selected>Religion</option>
-                                    <option value="Roman Catholicism">Roman Catholicism</option>
+                                    <option value="Roman Catholicism">Roman Catholic</option>
                                     <option value="Islam">Islam</option>
                                     <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
                                     <option value="Iglesia ni Cristo">Iglesia ni Cristo (INC)</option>
@@ -84,19 +90,14 @@ require '../php/connection.php';
                                 </select>
                             </div>
                             <div class="form-group col-4"> 
-                                <div class="input-container">
+                                <span style="font-size: 13px; color: #555;">Sex</span>
+                                <div class="input-container" style="margin-top:10px; ">
                                     <div class="checkbox-row" style="justify-content:space-evenly;">
-                                        <span style="font-size: 13px; color: #555;">Sex</span>
                                         <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Male"> Male</label>
                                         <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Female"> Female</label>
                                         <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Others"> Others</label>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group col-4">
-                                <span style="font-size: 13px; color: #555;">Date of Birth</span>
-                                <input style="margin-top: 10px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px; font-size: 14px; color: #333; outline: none; height:43px;" type="date" id="date_of_birth" name="birthDate">
                             </div>
                             <div class="form-group col-3">
                                 <span style="font-size: 13px; color: #555;">Contact Number</span>
@@ -244,24 +245,36 @@ require '../php/connection.php';
                 </div>
             </div>
 
-            <!-- STEP 2: CREDENTIALS CARD (Shown after duplication check succeeds) -->
+            <!-- STEP 2: CREDENTIALS CARD -->
             <div id="credentialsStep" style="display: none;">
                 <div class="card-wrapper">
                     <h3 class="section-title">Create Account Credentials</h3>
                     <div class="white-card">
                         <div class="form-grid">
+                            <!-- Account Token Field (Read-only + Copy Button) -->
+                            <div class="form-group col-12">
+                                <label style="font-size: 13px; color: #555;">Account Token (Auto-Generated)</label>
+                                <div style="display: flex; gap: 8px; margin-top: 5px;">
+                                    <input type="text" name="account_token" id="account_token" readonly style="padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px; font-weight: bold; background-color: #f4f4f4; letter-spacing: 2px; flex: 1;">
+                                    <button type="button" id="copyTokenBtn" class="clear-btn" style="background-color: #0B695D; color: white; width: auto; padding: 0 16px; margin: 0;">Copy</button>
+                                </div>
+                            </div>
+
                             <div class="form-group col-12">
                                 <label style="font-size: 13px; color: #555;">Username *</label>
                                 <input type="text" name="username" id="username" placeholder="Choose a unique username" autocomplete="off" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
+
                             <div class="form-group col-12">
-                                <label style="font-size: 13px; color: #555;">Email Address *</label>
-                                <input type="email" name="email" id="email" placeholder="example@domain.com" autocomplete="off" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
+                                <label style="font-size: 13px; color: #555;">Email Address (Optional)</label>
+                                <input type="email" name="email" id="email" placeholder="example@domain.com (Optional)" autocomplete="off" style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
+
                             <div class="form-group col-6">
                                 <label style="font-size: 13px; color: #555;">Password *</label>
                                 <input type="password" name="password" id="password" placeholder="Minimum 6 characters" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
+
                             <div class="form-group col-6">
                                 <label style="font-size: 13px; color: #555;">Confirm Password *</label>
                                 <input type="password" id="confirm_password" placeholder="Re-type password" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
