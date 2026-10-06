@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (approveBtn) {
         const appointmentId = approveBtn.dataset.id;
-        await handleAppointmentAction(appointmentId, "approve");
+        await handleAppointmentAction(appointmentId, "Approve");
       } else if (cancelBtn) {
         const appointmentId = cancelBtn.dataset.id;
         
@@ -98,14 +98,30 @@ document.addEventListener("DOMContentLoaded", () => {
         body: payload.toString()
       });
 
-      const result = await response.json();
+      // Read raw text first to inspect non-JSON output if server errors occur
+      const rawText = await response.text();
+      let result;
+
+      try {
+        result = JSON.parse(rawText);
+      } catch (jsonErr) {
+        console.error("Server output was not valid JSON:", rawText);
+        throw new Error("Server returned an invalid response format.");
+      }
 
       if (result.status === "success") {
         if (typeof showToast === "function") {
           const actionText = action === "Approve" ? "Approved" : "Declined";
           showToast(`Appointment ${actionText} successfully.`, "success");
         }
-        loadPendingAppointments(); // Refresh appointment list dynamically
+        
+        // Refresh Pending List
+        loadPendingAppointments();
+
+        // Refresh Approved List if available on page
+        if (typeof window.loadApprovedAppointments === "function") {
+          window.loadApprovedAppointments();
+        }
       } else {
         if (typeof showToast === "function") {
           showToast("Error: " + (result.message || "Failed to process request"), "error");

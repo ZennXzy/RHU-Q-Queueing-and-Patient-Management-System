@@ -134,6 +134,24 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $philNum      = (strtolower($philStatus) !== 'not applicable') ? $philNum : NULL;
     $prinMem      = (strtolower($philStatus) === 'dependent') ? $prinMem : NULL;
 
+    function generateUniqueAccountToken($conn) {
+        do {
+            // Securely generate a number between 000000 and 999999
+            $token = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            
+            // Check uniqueness against database
+            $stmt = $conn->prepare("SELECT patient_id FROM patient_records WHERE account_token = ? LIMIT 1");
+            $stmt->bind_param('s', $token);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            $exists = ($res && $res->num_rows > 0);
+            $stmt->close();
+        } while ($exists);
+
+        return $token;
+    }
+
+    $accountToken = generateUniqueAccountToken($conn);
 
     // Robust Duplicate Record Verifier
     // Checks standard unique patient identifyers: First Name, Last Name, Birth Date, and Mother's Name
@@ -167,10 +185,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     // Insert Query
     $sql = "INSERT INTO patient_records (
         firstname, lastname, middlename, suffix, address, age, gender, 
-        date_of_birth, contact_number, email, employment_status, occupation, 
+        date_of_birth, contact_number, email, account_token, employment_status, occupation, 
         business_name, civil_status, religion, mothers_name, fathers_name, 
         spouses_name, phil_status, phil_number, principal_member, yakap_member
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     $insertstmt = $conn->prepare($sql);
 
@@ -178,10 +196,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         die("Database Prepare Failed: " . $conn->error);
     }
     
-    $insertstmt->bind_param("sssssissssssssssssssss", 
+    $insertstmt->bind_param("sssssisssssssssssssssss", 
         $firstname, $lastname, $middlename, $suffix, $address, 
         $age, 
-        $gender, $birthDate, $contactnum, $emailContact, 
+        $gender, $birthDate, $contactnum, $emailContact, $accountToken, 
         $employmentStatus, $occupation, $business, $civilStatus, 
         $religion, $mFullName, $fFullName, $sFullName, 
         $philStatus, $philNum, $prinMem, $yakapmem

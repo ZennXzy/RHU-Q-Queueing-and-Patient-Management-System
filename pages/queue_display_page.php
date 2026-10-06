@@ -4,6 +4,7 @@ require '../api/check-private.php';
 authorizeRoles(['Doctor/Staff', 'Display', 'Patient']);
 require '../php/connection.php';
 $role = $_SESSION['logged_role'];
+$currentPage = 'queue_display';
 
 $DEPARTMENT_CONFIG = [
     'Medical Consultation' => ['title' => 'MEDICAL CONSULTATION', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
@@ -40,11 +41,16 @@ if ($settingsQuery) {
         echo '<script src="../js/patient_sidebar.js" defer></script>';
         }
     ?>
+
+    <script src="../js/logout.js" defer></script>
 </head>
 <body>
     <div class="page-container">
+
         <?php
-            include '../pages/patient_sidebar.php';
+            if ($role == 'Patient'){
+                include '../pages/patient_sidebar.php';
+            }
         ?>
         <div class="top-brand">
             <div class="rhu_logo_topNav">
@@ -130,14 +136,7 @@ if ($settingsQuery) {
                         </div>
                     </div>
                 </div>
-
             <?php endforeach; ?>
-
-            <div class="minimize-btn" title="Toggle Fullscreen">
-                <a href="../pages/queue_manager_page.php" class="minimize-button" title="Exit Display">
-                    <img src="../svg/minimize-icon.svg" alt="minimize-button">
-                </a>
-            </div>
         </div>
     </div>
 

@@ -68,6 +68,15 @@ html {
 }
 
 
+.top-bar {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
 .top-action-button {
   display: flex;
   gap: 10px;

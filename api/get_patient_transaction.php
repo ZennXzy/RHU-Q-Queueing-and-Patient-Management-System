@@ -5,19 +5,24 @@ header('Content-Type: application/json');
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
 
-// Allow GET or POST requests for fetching patient transactions
 if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
 
-// Support both GET query parameters and POST body
-$patientId = isset($_REQUEST['patient_id']) ? intval($_REQUEST['patient_id']) : 0;
+$patientId = NULL;
+
+if (isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin') {
+    $patientId = isset($_REQUEST['patient_id']) ? intval($_REQUEST['patient_id']) : 0; 
+} else {
+    // Fallback across potential session variable keys
+    $patientId = $_SESSION['patient_id'] ?? $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
+}
 
 if (!$patientId) {
     echo json_encode([
         'status' => 'error',
-        'message' => 'Invalid Patient ID'
+        'message' => 'Invalid Patient ID or missing session.'
     ]);
     exit();
 }
@@ -25,6 +30,7 @@ if (!$patientId) {
 try {
     $query = "
         SELECT 
+            t.transaction_id,
             t.queue_code,
             t.service,
             COALESCE(t.remarks, 'None') AS remarks,
@@ -45,6 +51,7 @@ try {
     $transactions = [];
     while ($row = $result->fetch_assoc()) {
         $transactions[] = [
+            'transaction_id'   => $row['transaction_id'] ?? null,
             'queue_code'       => htmlspecialchars($row['queue_code']),
             'service'          => htmlspecialchars($row['service']),
             'remarks'          => htmlspecialchars($row['remarks']),
@@ -57,6 +64,7 @@ try {
 
     echo json_encode([
         'status'       => 'success',
+        'data'         => $transactions,
         'transactions' => $transactions
     ]);
 

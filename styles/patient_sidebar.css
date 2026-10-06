@@ -137,8 +137,9 @@
   font-weight: 600;
 }
 
-.nav-link.active svg {
-  stroke: #ffffff;
+.nav-link img {
+  height: 20px;
+  width:auto;
 }
 
 /* Footer / Logout */
@@ -146,6 +147,8 @@
   padding: 16px 12px;
   border-top: 1px solid #f0f0f0;
 }
+
+
 
 .logout-btn {
   display: flex;

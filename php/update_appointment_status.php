@@ -1,11 +1,17 @@
 <?php
 session_start();
+// Prevent any HTML warnings/notices from corrupting the JSON output
+ob_start();
 header('Content-Type: application/json');
 
 require_once '../php/connection.php';
 
+// 1. Retrieve the username securely from session
+$username = $_SESSION['username'] ?? $_SESSION['logged_user'] ?? $_SESSION['fullname'] ?? 'Staff/Doctor';
+
 // Ensure the request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    ob_clean();
     echo json_encode([
         'status' => 'error',
         'message' => 'Invalid request method.'
@@ -20,6 +26,7 @@ $reason        = trim($_POST['reason'] ?? '');
 
 // Validation checks
 if (!$appointmentId) {
+    ob_clean();
     echo json_encode([
         'status' => 'error',
         'message' => 'Invalid or missing Appointment ID.'
@@ -28,6 +35,7 @@ if (!$appointmentId) {
 }
 
 if (!in_array($action, ['Approve', 'Decline'], true)) {
+    ob_clean();
     echo json_encode([
         'status' => 'error',
         'message' => 'Invalid action type.'
@@ -36,6 +44,7 @@ if (!in_array($action, ['Approve', 'Decline'], true)) {
 }
 
 if ($action === 'Decline' && empty($reason)) {
+    ob_clean();
     echo json_encode([
         'status' => 'error',
         'message' => 'A reason is required when declining an appointment.'
@@ -56,6 +65,7 @@ try {
 
     if ($checkResult->num_rows === 0) {
         $checkStmt->close();
+        ob_clean();
         echo json_encode([
             'status' => 'error',
             'message' => 'Appointment record not found.'
@@ -81,29 +91,28 @@ try {
 
     if ($updateStmt->execute()) {
         $updateStmt->close();
+
+        // 2. Safely log the action
+        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
+        if ($insertlog) {
+            $logMsg = $username . " " . strtolower($action) . "d an appointment (ID: " . $appointmentId . ").";
+            $insertlog->bind_param('s', $logMsg);
+            $insertlog->execute();
+            $insertlog->close();
+        }
+
+        ob_clean();
         echo json_encode([
             'status' => 'success',
             'message' => "Appointment successfully {$action}d."
         ]);
-        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-        if ($newStatus === "Approved"){
-          if ($insertlog) {
-              $message = $username . " approved an appointment.";
-              $insertlog->bind_param('s', $message);
-              $insertlog->execute();
-          }
-        } else {
-              $message = $username . " declined an appointment.";
-              $insertlog->bind_param('s', $message);
-              $insertlog->execute();
-        }
-        $insertlog->close();
         exit();
     } else {
         throw new Exception("Failed to update status: " . $updateStmt->error);
     }
 
 } catch (Exception $e) {
+    ob_clean();
     echo json_encode([
         'status' => 'error',
         'message' => 'Server Error: ' . $e->getMessage()

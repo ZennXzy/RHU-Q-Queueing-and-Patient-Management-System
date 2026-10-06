@@ -46,11 +46,6 @@ $role = $_SESSION['logged_role'];
             </div>
             <input type="text" placeholder="Search by name">
           </div>
-          <?php if($role === 'Patient'){?>
-          <button type="button" id="addBtn" class="addButton">
-            Add Appointment
-          </button>
-          <?php }?>
         </div>
         <!-- Content Grid -->
         <div class="appointments-grid">
