@@ -52,6 +52,21 @@ body, html {
 }
 
 
+.form-group input[type="date"]{
+  color: #333;
+  border: none;
+}
+
+.date {
+  padding: 11px 14px;
+  border: 1px solid #0B695D;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  height: 43px;
+}
+
 /* Form Card Containers */
 .section-title {
   font-size: 22px;

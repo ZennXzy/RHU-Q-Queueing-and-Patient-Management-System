@@ -62,12 +62,19 @@ require '../php/connection.php';
                     <div class="form-group col-4">
                         <input type="text" name="address" id="address" placeholder="Complete Address" required>
                     </div>
-                    <div class="form-group col-4">
-                        <span style="font-size: 13px; color: #555;">Date of Birth</span>
-                        <input style="margin-top: 10px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px; font-size: 14px; color: #333; outline: none; height:43px;" type="date" id="date_of_birth" name="birthDate" required>
+
+                    <div class="form-group col-3">
+                        <div class="date">
+                            <span style="font-size: 13px; color: #555;">Date of Birth:</span>
+                            <input type="date" id="date_of_birth" name="birthDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-2">
+                        <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                     </div>
                     
-                    <div class="form-group col-2 input-select">
+                    <div class="form-group col-3 input-select">
                         <select name="religion" id="religion">
                             <option disabled selected>Religion</option>
                             <option value="Roman Catholicism">Roman Catholic</option>
@@ -79,18 +86,16 @@ require '../php/connection.php';
                         </select>
                     </div>
                     <div class="form-group col-4"> 
-                        <div class="input-container">
+                        <span style="font-size: 13px; color: #555;">Sex</span>
+                        <div class="input-container" style="margin-top:10px; ">
                             <div class="checkbox-row" style="justify-content:space-evenly;">
-                                <span style="font-size: 13px; color: #555;">Sex</span>
                                 <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Male"> Male</label>
                                 <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Female"> Female</label>
                                 <label class="checkbox-item"><input type="checkbox" name="gender" class="gender-checkbox" value="Others"> Others</label>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-2">
-                        <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
-                    </div>
+                    
                     <div class="form-group col-3">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
                         <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;" autocomplete="off">
