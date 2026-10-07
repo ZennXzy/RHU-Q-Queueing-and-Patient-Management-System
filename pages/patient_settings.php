@@ -76,7 +76,7 @@ $currentPage = 'settings';
             <!-- Email Field -->
             <div class="form-group">
               <label for="editEmail">Email Address</label>
-              <input type="email" id="editEmail" name="email" class="form-control" placeholder="name@example.com" required>
+              <input type="email" id="editEmail" name="email" class="form-control" placeholder="name@example.com">
             </div>
 
             <div class="form-group">

@@ -8,13 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// 1. Cast IDs
 $account_id  = isset($_POST['account_id']) ? intval($_POST['account_id']) : 0;
-$logged_id   = $_SESSION['logged_id'] ?? $_SESSION['patient_id'] ?? 0;
-$logged_role = $_SESSION['logged_role'] ?? $_SESSION['user_type'] ?? '';
+$logged_id   = isset($_SESSION['patient_id']) ? intval($_SESSION['patient_id']) : (isset($_SESSION['logged_id']) ? intval($_SESSION['logged_id']) : 0);
 
-// Security Check: Ensure user is logged in as a Patient and modifying their own account
-if (strtolower($logged_role) !== 'patient' || $logged_id <= 0 || $logged_id !== $account_id) {
-    echo json_encode(['status' => 'error', 'message' => 'Unauthorized action.']);
+// 2. Fall back between 'user_type' and 'logged_role'
+$logged_role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? '';
+
+// 3. Security Check
+if (strtolower($logged_role) !== 'patient' || $logged_id <= 0) {
+    echo json_encode([
+        'status' => 'error', 
+        'message' => 'Unauthorized action.'
+    ]);
     exit;
 }
 
@@ -28,16 +34,16 @@ $email            = get_post_val('email');
 $current_password = get_post_val('current_password');
 $new_password     = get_post_val('password');
 
-if (!$username || !$fullname || !$email) {
+if (!$username || !$fullname) {
     echo json_encode(['status' => 'error', 'message' => 'Please fill in all required fields.']);
     exit;
 }
 
-// Determine ID column name in patient_auth
-$id_field = 'patient_auth_id';
-$checkCol = $conn->query("SHOW COLUMNS FROM patient_auth LIKE 'patient_auth_id'");
+// Dynamically target patient_id or patient_auth_id column in patient_auth table
+$id_field = 'patient_id';
+$checkCol = $conn->query("SHOW COLUMNS FROM patient_auth LIKE 'patient_id'");
 if (!$checkCol || $checkCol->num_rows === 0) {
-    $id_field = 'id';
+    $id_field = 'patient_auth_id';
 }
 
 try {
@@ -49,18 +55,20 @@ try {
         }
 
         // Retrieve current password hash
-        $passStmt = $conn->prepare("SELECT password_hash FROM patient_auth WHERE {$id_field} = ?");
-        if (!$passStmt) {
-            $passStmt = $conn->prepare("SELECT password FROM patient_auth WHERE {$id_field} = ?");
-        }
+        $passStmt = $conn->prepare("SELECT password_hash, password FROM patient_auth WHERE {$id_field} = ?");
         $passStmt->bind_param("i", $account_id);
         $passStmt->execute();
         $res = $passStmt->get_result()->fetch_assoc();
         $passStmt->close();
 
-        $hashKey = isset($res['password_hash']) ? 'password_hash' : 'password';
+        if (!$res) {
+            echo json_encode(['status' => 'error', 'message' => 'Account record not found.']);
+            exit;
+        }
 
-        if (!$res || !password_verify($current_password, $res[$hashKey])) {
+        $hashKey = !empty($res['password_hash']) ? 'password_hash' : 'password';
+
+        if (!password_verify($current_password, $res[$hashKey])) {
             echo json_encode(['status' => 'error', 'message' => 'Incorrect current password.']);
             exit;
         }
@@ -69,7 +77,7 @@ try {
         $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, $options);
 
         // Update with new password
-        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, password_hash = ? WHERE {$id_field} = ?";
+        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, {$hashKey} = ? WHERE {$id_field} = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
     } else {
@@ -80,6 +88,16 @@ try {
     }
 
     if ($stmt->execute()) {
+        // Check if query matched any records
+        if ($stmt->affected_rows === -1) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to execute update statement.'
+            ]);
+            $stmt->close();
+            exit;
+        }
+
         // Update active session data
         $_SESSION['logged_account'] = $fullname;
         $_SESSION['logged_name'] = $fullname;

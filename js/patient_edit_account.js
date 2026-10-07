@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         setVal('editAccountId', accountId);
-        setVal('editAccountToken', account.account_token || account.token);
+        setVal('editAccountToken', account.account_token);
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
         setVal('editEmail', account.email);
@@ -68,11 +68,14 @@ document.addEventListener("DOMContentLoaded", () => {
           if (typeof showToast === 'function') {
             showToast(result.message || 'Account Updated Successfully.', 'success');
           }
-          // Clear password fields after success
           const curPass = document.getElementById('current_password');
           const newPass = document.getElementById('editPassword');
           if (curPass) curPass.value = '';
           if (newPass) newPass.value = '';
+        } else if (result.status === 'info') {
+          if (typeof showToast === 'function') {
+            showToast(result.message, 'info');
+          }
         } else {
           if (typeof showToast === 'function') {
             showToast('Update Failed: ' + (result.message || 'Unable to save settings.'), 'error');
