@@ -77,7 +77,7 @@ require '../php/connection.php';
                     <th>Full Name</th>
                     <th>Email</th>
                     <th style="text-align: center;">Status</th>
-                    <th style="text-align: center;">Role</th>
+                    <th style="text-align: center;">Token</th>
                     <th style="text-align: center;">Created</th>
                     <th style="text-align: center;">Last Login</th>
                     <th style="text-align: center; border-top-right-radius:6px;">Actions</th>

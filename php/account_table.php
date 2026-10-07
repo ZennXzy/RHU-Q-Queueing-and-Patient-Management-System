@@ -14,7 +14,7 @@ if ($type === 'staff') {
     $activeQuery = "SELECT COUNT(*) AS active FROM admin_auth WHERE status = 'Online' AND id != ?";
 } else {
     $table = "patient_auth";
-    $query = "SELECT patient_auth_id, username, fullname, email, status, 'Patient' AS role, created_at, last_active FROM patient_auth";
+    $query = "SELECT patient_auth_id, username, fullname, email, account_token, status, 'Patient' AS role, created_at, last_active FROM patient_auth";
     $totalQuery = "SELECT COUNT(*) AS total FROM patient_auth";
     $activeQuery = "SELECT COUNT(*) AS active FROM patient_auth WHERE status = 'Online'";
 }
@@ -52,7 +52,11 @@ if ($res && $res->num_rows > 0) {
         echo '<td>' . htmlspecialchars($row['fullname']) . '</td>';
         echo '<td>' . htmlspecialchars($row['email']) . '</td>';
         echo '<td style="text-align: center;"><span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span></td>';
-        echo '<td style="text-align: center;">' . htmlspecialchars($row['role']) . '</td>';
+        if ($type === 'staff'){
+            echo '<td style="text-align: center;">' . htmlspecialchars($row['role']) . '</td>';
+        } else {
+            echo '<td style="text-align: center;">' . htmlspecialchars($row['account_token']) . '</td>';
+        }
         echo '<td style="text-align: center;">' . htmlspecialchars($row['created_at']) . '</td>';
         echo '<td style="text-align: center;">' . htmlspecialchars($row['last_active']) . '</td>';
         echo '<td>';
@@ -60,11 +64,9 @@ if ($res && $res->num_rows > 0) {
         if ($type === 'staff'){
             echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
             echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
-            echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
         } else {
             echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
             echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
-            echo '<button class="logout-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/logout-icon.svg" alt="logout-icon"></button>';
         }
         echo '</div>';
         echo '</td>';
