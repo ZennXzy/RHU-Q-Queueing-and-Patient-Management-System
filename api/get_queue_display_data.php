@@ -1,6 +1,6 @@
 <?php
 require 'check-private.php';
-authorizeRoles(['Doctor/Staff', 'Display']);
+authorizeRoles(['Doctor/Staff', 'Display','Patient']);
 require '../php/connection.php';
 
 header('Content-Type: application/json');

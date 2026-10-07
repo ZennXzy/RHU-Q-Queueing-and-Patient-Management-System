@@ -183,6 +183,7 @@ $role = $_SESSION['logged_role'];
     </div>
     
 </body>
+<!-- UPDATE: Add Patient Queue Dialog with Vitals and Complaints -->
 <dialog id="queue-form" class="queue-form">
     <div class="modal-card" id="modal-card">
         <div class="toast-container" id="toastContainer"></div>
@@ -194,17 +195,15 @@ $role = $_SESSION['logged_role'];
                     <!-- Patient Search Group -->
                     <div class="form-group" style="position: relative;">
                         <label for="patient-search">Patient Name</label>
-                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off" >
-                        <!-- Hidden input to store selected patient ID -->
+                        <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off">
                         <input type="hidden" id="patient-id" name="patient_id" required>
-                        <!-- Dropdown list for search results -->
                         <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
                     </div>
 
                     <!-- Service Type Select Group -->
                     <div class="form-group">
                         <label for="service-type">Service Type</label>
-                        <select class="service-type" id="service-type" name="service_name">
+                        <select class="service-type" id="service-type" name="service_name" required>
                             <option value="" disabled selected>Select a service</option>
                             <option value="Medical Consultation">Medical Consultation</option>
                             <option value="Immunization">Immunization</option>
@@ -218,6 +217,40 @@ $role = $_SESSION['logged_role'];
                         </select>
                     </div>
 
+                    <!-- Vitals Inputs Grid -->
+                    <div class="vitals-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <div class="form-group">
+                            <label for="blood-pressure">Blood Pressure (mmHg)</label>
+                            <input type="text" id="blood-pressure" name="blood_pressure" placeholder="e.g. 120/80">
+                        </div>
+                        <div class="form-group">
+                            <label for="respiratory-rate">Respiratory Rate (cpm)</label>
+                            <input type="text" id="respiratory-rate" name="respiratory_rate" placeholder="e.g. 18">
+                        </div>
+                        <div class="form-group">
+                            <label for="temperature">Temperature (°C)</label>
+                            <input type="text" id="temperature" name="temperature" placeholder="e.g. 36.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="pulse-rate">Pulse Rate (bpm)</label>
+                            <input type="text" id="pulse-rate" name="pulse_rate" placeholder="e.g. 72">
+                        </div>
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="text" id="weight" name="weight" placeholder="e.g. 60.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="text" id="height" name="height" placeholder="e.g. 165">
+                        </div>
+                    </div>
+
+                    <!-- Complaints Field -->
+                    <div class="form-group" style="margin-top: 10px;">
+                        <label for="complaints">Chief Complaints / Reason for Visit</label>
+                        <textarea id="complaints" name="complaints" rows="3" placeholder="Enter patient complaints..."></textarea>
+                    </div>
+
                 </div>
                 <div class="form-actions">
                     <button type="button" id="closeBtn" class="btn-cancel" onclick="document.getElementById('queue-form').close()">Cancel</button>
@@ -225,6 +258,22 @@ $role = $_SESSION['logged_role'];
                 </div>
             </div>
         </form>
+    </div>
+</dialog>
+
+<!-- NEW: 5-Second Queue Success Modal -->
+<dialog id="queue-success-modal" class="complete-modal">
+    <div class="modal-card" style="text-align: center; padding: 25px;">
+        <h2 style="color: #0B695D; margin-bottom: 5px;">Patient Queued Successfully!</h2>
+        <div style="font-size: 2.5rem; font-weight: bold; color: #0B695D; margin: 15px 0;" id="modalQueueCode">#0000</div>
+        
+        <div style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; line-height: 1.8;">
+            <p><strong>Patient Name:</strong> <span id="modalPatientName">--</span></p>
+            <p><strong>Service:</strong> <span id="modalServiceName">--</span></p>
+            <p><strong>Date & Time:</strong> <span id="modalDateTime">--</span></p>
+        </div>
+
+        <small style="color: #6b7280;">This window will automatically close in <span id="successCountdown">5</span>s...</small>
     </div>
 </dialog>
 <dialog id="delete-queue-modal" class="delete-modal">

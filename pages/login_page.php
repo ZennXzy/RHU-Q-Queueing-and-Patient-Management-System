@@ -1,6 +1,5 @@
 <?php
     require '../api/check-public.php';
-    require '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,15 +33,15 @@
                 </div>
                 <div class="login-title">Login</div>
                 
-                <form action="../php/login.php" method="post">
+                <form action="../php/login.php" method="post" id="loginForm">
                     <div class="input-group">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" autocomplete="off">
+                        <input type="text" id="username" name="username" autocomplete="username" required>
                     </div>
                     
                     <div class="input-group">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password">
+                        <input type="password" id="password" name="password" autocomplete="current-password" required>
                     </div>
                     
                     <button type="submit" id="loginBtn" class="login-btn" name="login">Login</button>
@@ -52,7 +51,6 @@
                     <span>Don't have an account?</span>
                 </div>
 
-                <!-- Modified button to open Terms Card instead of navigating directly -->
                 <button type="button" id="openTermsBtn" class="register-btn">Create Account</button>
             </div>
 
@@ -77,7 +75,7 @@
             </div>
         </div>
     </div>
-</body>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loginCard = document.getElementById('loginCard');
@@ -101,9 +99,18 @@
             cancelTermsBtn.addEventListener('click', function () {
                 termsCard.style.display = 'none';
                 loginCard.style.display = 'block';
-                headerText.style.display = 'block'; // Or 'flex' depending on your layout
+                headerText.style.display = 'block';
             });
+        }
+
+        // Check if redirected due to expired session
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'expired') {
+            if (typeof showToast === 'function') {
+                showToast('Your session has expired due to inactivity. Please log in again.', 'warning');
+            }
         }
     });
 </script>
+</body>
 </html>
