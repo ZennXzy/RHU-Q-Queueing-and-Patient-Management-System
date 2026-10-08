@@ -156,12 +156,11 @@ require '../php/connection.php';
 
                     <div class="form-group">
                         <label for="editEmail">Email Address</label>
-                        <input type="email" id="editEmail" name="email" placeholder="Enter email..." required autocomplete="off">
+                        <input type="email" id="editEmail" name="email" placeholder="Enter email..." autocomplete="off">
                     </div>
-
                     <div class="form-group">
                         <label for="editRole">Account Role</label>
-                        <select id="editRole" name="role" class="service-type" required>
+                        <select id="editRole" name="role" class="service-type">
                             <option value="" disabled selected>Select Role</option>
                             <option value="Admin">Admin</option>
                             <option value="Doctor/Staff">Doctor/Staff</option>
