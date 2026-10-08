@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once_once '../php/connection.php';
+require_once '../php/connection.php';
 
 // Check if user is logged in
 $logged_id = $_SESSION['logged_id'] ?? 0;

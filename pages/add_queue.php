@@ -1,6 +1,6 @@
 <?php
-require_once_once '../api/check-private.php';
-require_once_once '../php/connection.php';
+require_once '../api/check-private.php';
+require_once '../php/connection.php';
 
 // Enforce Patient Authorization
 authorizeRoles(['Patient']);

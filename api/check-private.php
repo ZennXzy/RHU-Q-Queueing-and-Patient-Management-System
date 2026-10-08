@@ -2,7 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once_once '../php/connection.php';
+require_once '../php/connection.php';
 
 if (!isset($_SESSION['logged_id'])) {
     if (isset($_GET['ajax_check'])) {

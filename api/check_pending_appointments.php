@@ -1,8 +1,8 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once_once '../php/connection.php';
-require_once_once '../api/check-private.php';
+require_once '../php/connection.php';
+require_once '../api/check-private.php';
 
 try {
     $stmt = $conn->prepare("SELECT COUNT(*) AS pending_count FROM appointments WHERE status = 'Pending'");

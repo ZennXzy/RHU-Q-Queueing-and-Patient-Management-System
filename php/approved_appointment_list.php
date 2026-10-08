@@ -1,8 +1,8 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once_once '../php/connection.php';
-require_once_once '../api/check-private.php';
+require_once '../php/connection.php';
+require_once '../api/check-private.php';
 
 try {
     // 1. Fetch total count of approved appointments

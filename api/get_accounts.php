@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once_once '../php/connection.php';
+require_once '../php/connection.php';
 
 if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id'])) {
 

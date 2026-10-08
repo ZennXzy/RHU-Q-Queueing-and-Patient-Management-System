@@ -1,7 +1,7 @@
 <?php
-require_once_once '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Patient']);
-require_once_once '../php/connection.php';
+require_once '../php/connection.php';
 
 // Retrieve session identity data
 $loggedId   = $_SESSION['patient_id'] ?? 0;
