@@ -8,18 +8,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// 1. Cast IDs
-$account_id  = isset($_POST['account_id']) ? intval($_POST['account_id']) : 0;
-$logged_id   = isset($_SESSION['patient_id']) ? intval($_SESSION['patient_id']) : (isset($_SESSION['logged_id']) ? intval($_SESSION['logged_id']) : 0);
+// 1. Get logged-in patient ID directly from session
+$logged_id = $_SESSION['logged_id'] ?? 0;
+$account_id = isset($_POST['account_id']) ? intval($_POST['account_id']) : $logged_id;
 
-// 2. Fall back between 'user_type' and 'logged_role'
-$logged_role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? '';
+// Fallback if account_id wasn't posted
+if ($account_id <= 0) {
+    $account_id = $logged_id;
+}
 
-// 3. Security Check
-if (strtolower($logged_role) !== 'patient' || $logged_id <= 0) {
+// 2. Authentication Check (Ensure user is logged in)
+if ($logged_id <= 0 || $account_id <= 0) {
     echo json_encode([
         'status' => 'error', 
-        'message' => 'Unauthorized action.'
+        'message' => 'Unauthorized access. Please log in again.'
     ]);
     exit;
 }
@@ -39,15 +41,8 @@ if (!$username || !$fullname) {
     exit;
 }
 
-// Dynamically target patient_id or patient_auth_id column in patient_auth table
-$id_field = 'patient_id';
-$checkCol = $conn->query("SHOW COLUMNS FROM patient_auth LIKE 'patient_id'");
-if (!$checkCol || $checkCol->num_rows === 0) {
-    $id_field = 'patient_auth_id';
-}
-
 try {
-    // If updating password, verify current password first
+    // Password Update Logic
     if (!empty($new_password)) {
         if (empty($current_password)) {
             echo json_encode(['status' => 'error', 'message' => 'Current password is required to set a new password.']);
@@ -55,7 +50,7 @@ try {
         }
 
         // Retrieve current password hash
-        $passStmt = $conn->prepare("SELECT password_hash, password FROM patient_auth WHERE {$id_field} = ?");
+        $passStmt = $conn->prepare("SELECT password_hash, password FROM patient_auth WHERE patient_auth_id = ?");
         $passStmt->bind_param("i", $account_id);
         $passStmt->execute();
         $res = $passStmt->get_result()->fetch_assoc();
@@ -73,37 +68,24 @@ try {
             exit;
         }
 
-        $options = ["cost" => 12];
-        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, $options);
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, ["cost" => 12]);
 
-        // Update with new password
-        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, {$hashKey} = ? WHERE {$id_field} = ?";
+        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, {$hashKey} = ? WHERE patient_auth_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
     } else {
-        // Update details without changing password
-        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ? WHERE {$id_field} = ?";
+        // Basic Profile Update Logic
+        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ? WHERE patient_auth_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("sssi", $username, $fullname, $email, $account_id);
     }
 
     if ($stmt->execute()) {
-        // Check if query matched any records
-        if ($stmt->affected_rows === -1) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to execute update statement.'
-            ]);
-            $stmt->close();
-            exit;
-        }
-
         // Update active session data
         $_SESSION['logged_account'] = $fullname;
-        $_SESSION['logged_name'] = $fullname;
-        $_SESSION['username'] = $username;
+        $_SESSION['logged_name'] = $username;
 
-        // Log the activity
+        // Log activity
         $logMsg = "Patient account " . $username . " updated their settings.";
         $logStmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
         if ($logStmt) {

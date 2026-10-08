@@ -57,7 +57,7 @@ $currentPage = 'settings';
         
         <!-- Patient Account Settings Form -->
         <form id="edit-account-form" class="settings-form">
-          <input type="hidden" id="editAccountId" name="account_id" value="<?= htmlspecialchars($loggedId) ?>">
+          <input type="hidden" id="editAccountId" name="account_id" value="<?= htmlspecialchars($_SESSION['logged_id'] ?? 0) ?>">
           <input type="hidden" id="editAccountRoleType" name="target_role" value="<?= htmlspecialchars($loggedRole) ?>">
           
           <div class="form-grid">

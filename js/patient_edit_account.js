@@ -2,17 +2,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const patientForm = document.getElementById('edit-account-form');
   const accountIdInput = document.getElementById('editAccountId');
 
-  // Load patient account details on page load
   if (patientForm && accountIdInput && accountIdInput.value) {
     loadPatientDetails(accountIdInput.value);
   }
 
-  // Fetch details from get_accounts API
   async function loadPatientDetails(accountId) {
     if (!accountId) return;
 
     try {
-      const response = await fetch(`../api/get_accounts.php?action=details&id=${accountId}&role=Patient`);
+      const response = await fetch(`../api/get_patient_accounts.php?id=${accountId}`);
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
       const result = await response.json();
@@ -26,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         setVal('editAccountId', accountId);
-        setVal('editAccountToken', account.account_token);
+        setVal('editAccountToken', account.account_token || account.token || account.patient_token || '');
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
         setVal('editEmail', account.email);
@@ -49,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Handle patient settings form submission
   if (patientForm) {
     patientForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -72,10 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const newPass = document.getElementById('editPassword');
           if (curPass) curPass.value = '';
           if (newPass) newPass.value = '';
-        } else if (result.status === 'info') {
-          if (typeof showToast === 'function') {
-            showToast(result.message, 'info');
-          }
         } else {
           if (typeof showToast === 'function') {
             showToast('Update Failed: ' + (result.message || 'Unable to save settings.'), 'error');
