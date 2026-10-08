@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 

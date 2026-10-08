@@ -545,7 +545,7 @@ th.sortable:hover {
 
 
 /* Asterisk styling */
-.required-asterisk {
+.require_onced-asterisk {
   color: #ef4444;
   font-weight: bold;
   margin-left: 2px;

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = formData.get('password')?.toString();
 
       if (!username || !fullname || !email || !password) {
-        showToast('Please fill in all required fields.', 'error');
+        showToast('Please fill in all require_onced fields.', 'error');
         return; 
       }
 

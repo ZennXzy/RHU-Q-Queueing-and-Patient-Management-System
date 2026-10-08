@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
@@ -37,7 +37,7 @@ $current_password = get_post_val('current_password');
 $new_password     = get_post_val('password');
 
 if (!$username || !$fullname) {
-    echo json_encode(['status' => 'error', 'message' => 'Please fill in all required fields.']);
+    echo json_encode(['status' => 'error', 'message' => 'Please fill in all require_onced fields.']);
     exit;
 }
 
@@ -45,7 +45,7 @@ try {
     // Password Update Logic
     if (!empty($new_password)) {
         if (empty($current_password)) {
-            echo json_encode(['status' => 'error', 'message' => 'Current password is required to set a new password.']);
+            echo json_encode(['status' => 'error', 'message' => 'Current password is require_onced to set a new password.']);
             exit;
         }
 

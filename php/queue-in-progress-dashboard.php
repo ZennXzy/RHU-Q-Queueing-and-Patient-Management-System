@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../php/connection.php';
+require_once '../php/connection.php';
 
   $res = $conn->query("SELECT COUNT(*) AS in_progress_count FROM queue_information WHERE status = 'In Progress'");
   $row = $res->fetch_assoc();

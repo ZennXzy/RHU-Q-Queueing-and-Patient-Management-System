@@ -1,7 +1,7 @@
 <?php
-require 'check-private.php';
+require_once 'check-private.php';
 authorizeRoles(['Doctor/Staff', 'Display','Patient']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 header('Content-Type: application/json');
 

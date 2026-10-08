@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once_once '../api/check-private.php';
 authorizeRoles(['Patient']);
-require '../php/connection.php';
+require_once_once '../php/connection.php';
 
 // Retrieve session identity data
 $loggedId   = $_SESSION['patient_id'] ?? 0;
@@ -64,13 +64,13 @@ $currentPage = 'settings';
             <!-- Username Field -->
             <div class="form-group">
               <label for="editUsername">Username</label>
-              <input type="text" id="editUsername" name="username" class="form-control" placeholder="Enter username" required>
+              <input type="text" id="editUsername" name="username" class="form-control" placeholder="Enter username" require_onced>
             </div>
 
             <!-- Full Name Field -->
             <div class="form-group">
               <label for="editFullname">Full Name</label>
-              <input type="text" id="editFullname" name="fullname" class="form-control" placeholder="Enter full name" required>
+              <input type="text" id="editFullname" name="fullname" class="form-control" placeholder="Enter full name" require_onced>
             </div>
 
             <!-- Email Field -->

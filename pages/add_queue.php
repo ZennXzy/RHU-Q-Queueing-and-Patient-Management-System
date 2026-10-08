@@ -1,6 +1,6 @@
 <?php
-require_once '../api/check-private.php';
-require_once '../php/connection.php';
+require_once_once '../api/check-private.php';
+require_once_once '../php/connection.php';
 
 // Enforce Patient Authorization
 authorizeRoles(['Patient']);
@@ -95,9 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <!-- Section 1: Service Selection -->
                 <div class="form-card">
-                    <h3 class="card-title">1. Select Health Service <span class="required">*</span></h3>
+                    <h3 class="card-title">1. Select Health Service <span class="require_onced">*</span></h3>
                     <div class="form-group">
-                        <select name="service" id="service" class="form-control" required>
+                        <select name="service" id="service" class="form-control" require_onced>
                             <option value="" disabled selected>-- Choose Service --</option>
                             <option value="Medical Consultation">Medical Consultation</option>
                             <option value="Immunization">Immunization</option>

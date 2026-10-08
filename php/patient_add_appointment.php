@@ -3,8 +3,8 @@ session_start();
 header('Content-Type: application/json');
 
 // 1. Include system connection and authorization guards
-require_once '../php/connection.php';
-require_once '../api/check-private.php';
+require_once_once '../php/connection.php';
+require_once_once '../api/check-private.php';
 
 // Authorize patient role
 authorizeRoles(['Patient']);
@@ -24,7 +24,7 @@ $service          = isset($_POST['service']) ? trim($_POST['service']) : (isset(
 $appointment_date = isset($_POST['appointment_date']) ? trim($_POST['appointment_date']) : '';
 $remarks          = isset($_POST['remarks']) ? trim($_POST['remarks']) : (isset($_POST['reason']) ? trim($_POST['reason']) : '');
 
-// 4. Validate required fields
+// 4. Validate require_onced fields
 if ($patient_id <= 0) {
     echo json_encode([
         'status' => 'error',

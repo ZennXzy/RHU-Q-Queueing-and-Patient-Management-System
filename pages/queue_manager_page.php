@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
 <!DOCTYPE html>
@@ -196,14 +196,14 @@ $role = $_SESSION['logged_role'];
                     <div class="form-group" style="position: relative;">
                         <label for="patient-search">Patient Name</label>
                         <input type="text" id="patient-search" placeholder="Type to search patient..." autocomplete="off">
-                        <input type="hidden" id="patient-id" name="patient_id" required>
+                        <input type="hidden" id="patient-id" name="patient_id" require_onced>
                         <div id="patient-search-results" class="search-results-dropdown" style="display: none;"></div>
                     </div>
 
                     <!-- Service Type Select Group -->
                     <div class="form-group">
                         <label for="service-type">Service Type</label>
-                        <select class="service-type" id="service-type" name="service_name" required>
+                        <select class="service-type" id="service-type" name="service_name" require_onced>
                             <option value="" disabled selected>Select a service</option>
                             <option value="Medical Consultation">Medical Consultation</option>
                             <option value="Immunization">Immunization</option>
@@ -312,7 +312,7 @@ $role = $_SESSION['logged_role'];
 
                     <div class="form-group">
                         <label for="completeRemarks">Remarks / Notes</label>
-                        <textarea id="completeRemarks" name="remarks" rows="3" placeholder="Enter consultation or queue remarks..." required></textarea>
+                        <textarea id="completeRemarks" name="remarks" rows="3" placeholder="Enter consultation or queue remarks..." require_onced></textarea>
                     </div>
 
                     <div class="form-group switch-group">

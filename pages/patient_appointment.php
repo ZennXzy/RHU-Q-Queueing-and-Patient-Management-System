@@ -1,6 +1,6 @@
 <?php
-require_once '../api/check-private.php';
-require_once '../php/connection.php';
+require_once_once '../api/check-private.php';
+require_once_once '../php/connection.php';
 
 // Authorize ONLY Patients
 authorizeRoles(['Patient']);
@@ -60,8 +60,8 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
         <form id="addAppointmentForm" action="../php/patient_add_appointment.php" method="POST">
           <div class="modal-body">
             <div class="form-group">
-              <label for="service">Select Service <span class="required">*</span></label>
-              <select name="service" id="service" class="form-control" required>
+              <label for="service">Select Service <span class="require_onced">*</span></label>
+              <select name="service" id="service" class="form-control" require_onced>
                 <option value="" disabled selected>-- Select Service --</option>
                 <option value="Medical Consultation">Medical Consultation</option>
                 <option value="Immunization">Immunization</option>
@@ -76,8 +76,8 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
             </div>
 
             <div class="form-group">
-              <label for="appointment_date">Preferred Date <span class="required">*</span></label>
-              <input type="date" id="appointment_date" name="appointment_date" class="form-control" min="<?= date('Y-m-d') ?>" required>
+              <label for="appointment_date">Preferred Date <span class="require_onced">*</span></label>
+              <input type="date" id="appointment_date" name="appointment_date" class="form-control" min="<?= date('Y-m-d') ?>" require_onced>
             </div>
 
             <div class="form-group">

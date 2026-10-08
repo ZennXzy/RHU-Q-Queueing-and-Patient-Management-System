@@ -1,5 +1,5 @@
 <?php
-    require '../api/check-public.php';
+    require_once '../api/check-public.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,12 +36,12 @@
                 <form action="../php/login.php" method="post" id="loginForm">
                     <div class="input-group">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" autocomplete="username" required>
+                        <input type="text" id="username" name="username" autocomplete="username" require_onced>
                     </div>
                     
                     <div class="input-group">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" autocomplete="current-password" required>
+                        <input type="password" id="password" name="password" autocomplete="current-password" require_onced>
                     </div>
                     
                     <button type="submit" id="loginBtn" class="login-btn" name="login">Login</button>

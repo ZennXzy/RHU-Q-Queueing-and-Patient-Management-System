@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../php/connection.php';
+require_once '../php/connection.php';
   $sql = "SELECT 
               q.queue_info_id, 
               q.queue_code, 

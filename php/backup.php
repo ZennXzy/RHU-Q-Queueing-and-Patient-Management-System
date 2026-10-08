@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Admin']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: account_settings_page_2.php");

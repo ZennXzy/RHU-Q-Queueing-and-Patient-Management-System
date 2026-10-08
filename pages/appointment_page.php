@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
 <!doctype html>
@@ -79,7 +79,7 @@ $role = $_SESSION['logged_role'];
               
               <div class="modal-body">
                   <label for="declineReason">Reason for declining:</label>
-                  <textarea id="declineReason" name="reason" rows="4" placeholder="Enter reason here..." required></textarea>
+                  <textarea id="declineReason" name="reason" rows="4" placeholder="Enter reason here..." require_onced></textarea>
               </div>
 
               <div class="modal-footer">

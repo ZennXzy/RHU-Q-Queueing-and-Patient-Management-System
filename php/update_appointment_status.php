@@ -4,7 +4,7 @@ session_start();
 ob_start();
 header('Content-Type: application/json');
 
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 // 1. Retrieve the username securely from session
 $username = $_SESSION['username'] ?? $_SESSION['logged_user'] ?? $_SESSION['fullname'] ?? 'Staff/Doctor';
@@ -47,7 +47,7 @@ if ($action === 'Decline' && empty($reason)) {
     ob_clean();
     echo json_encode([
         'status' => 'error',
-        'message' => 'A reason is required when declining an appointment.'
+        'message' => 'A reason is require_onced when declining an appointment.'
     ]);
     exit();
 }

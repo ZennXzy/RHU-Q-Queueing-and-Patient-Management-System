@@ -2,8 +2,8 @@
 header('Content-Type: application/json');
 
 // Ensure session is started and user is authorized as a Patient
-require_once '../api/check-private.php';
-require_once '../php/connection.php';
+require_once_once '../api/check-private.php';
+require_once_once '../php/connection.php';
 
 // Check if request is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

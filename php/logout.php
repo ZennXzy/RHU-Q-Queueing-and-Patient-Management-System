@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 $role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'Patient';
 $username = $_SESSION['logged_name'] ?? $_SESSION['username'] ?? null;

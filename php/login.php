@@ -1,13 +1,13 @@
 <?php
 session_start();
-require_once 'connection.php';
+require_once_once 'connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   $username = trim($_POST['username'] ?? '');
   $password = $_POST['password'] ?? '';
 
   if ($username === '' || $password === ''){
-    header('Location: ../pages/login_page.php?msg=' . urlencode('Username and password are required') . '&type=error');
+    header('Location: ../pages/login_page.php?msg=' . urlencode('Username and password are require_onced') . '&type=error');
     exit();
   }
 

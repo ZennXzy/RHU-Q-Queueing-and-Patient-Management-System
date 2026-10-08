@@ -1,8 +1,8 @@
 <?php
 session_start();
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff', 'Display', 'Patient']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 $currentPage = 'queue_display';
 

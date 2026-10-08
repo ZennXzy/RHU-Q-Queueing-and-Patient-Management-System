@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (toggleAppointment) toggleAppointment.checked = false;
     if (appointmentContainer) appointmentContainer.classList.add("hidden");
     if (appointmentDate) {
-      appointmentDate.required = false;
+      appointmentDate.require_onced = false;
       appointmentDate.value = "";
     }
 
@@ -49,10 +49,10 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleAppointment.addEventListener("change", (e) => {
       if (e.target.checked) {
         appointmentContainer.classList.remove("hidden");
-        appointmentDate.required = true;
+        appointmentDate.require_onced = true;
       } else {
         appointmentContainer.classList.add("hidden");
-        appointmentDate.required = false;
+        appointmentDate.require_onced = false;
         appointmentDate.value = "";
       }
     });

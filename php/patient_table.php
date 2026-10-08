@@ -1,8 +1,8 @@
 <?php
 session_start();
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number,phil_status, date_registered FROM patient_records ORDER BY firstname ASC");
 

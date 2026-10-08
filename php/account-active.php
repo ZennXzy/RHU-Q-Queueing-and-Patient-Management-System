@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 $excluded = $_SESSION['logged_id'];
 $stmt = $conn->prepare("SELECT COUNT(*) AS Online FROM admin_auth WHERE status = 'Online' AND id != ?");

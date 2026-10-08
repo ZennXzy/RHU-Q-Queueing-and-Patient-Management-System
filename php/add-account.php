@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
@@ -16,7 +16,7 @@ $role     = "Doctor/staff";
 
 // 1. Validation checks
 if (empty($username) || empty($fullname) || empty($email) || empty($password)) {
-    echo json_encode(['status' => 'error', 'message' => 'Please fill in all required fields.']);
+    echo json_encode(['status' => 'error', 'message' => 'Please fill in all require_onced fields.']);
     exit();
 }
 

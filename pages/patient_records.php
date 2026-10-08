@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -278,16 +278,16 @@ require '../php/connection.php';
                     <h4 class="card-title">Personal Information</h4>
                     
                     <div class="info-group">
-                      <label for="editFirstName">First Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editFirstName" name="editFirstName" required placeholder="First Name">
+                      <label for="editFirstName">First Name <span class="require_onced-asterisk">*</span></label>
+                      <input type="text" id="editFirstName" name="editFirstName" require_onced placeholder="First Name">
                     </div>
                     <div class="info-group">
                       <label for="editMiddleName">Middle Name</label>
                       <input type="text" id="editMiddleName" name="editMiddleName" placeholder="Middle Name">
                     </div>
                     <div class="info-group">
-                      <label for="editLastName">Last Name <span class="required-asterisk">*</span></label>
-                      <input type="text" id="editLastName" name="editLastName" required placeholder="Last Name">
+                      <label for="editLastName">Last Name <span class="require_onced-asterisk">*</span></label>
+                      <input type="text" id="editLastName" name="editLastName" require_onced placeholder="Last Name">
                     </div>
                     
 
@@ -305,21 +305,21 @@ require '../php/connection.php';
                         </select>
                       </div>
                       <div class="info-group">
-                        <label for="editGender">Gender <span class="required-asterisk">*</span></label>
-                        <select id="editGender" name="editGender" required>
+                        <label for="editGender">Gender <span class="require_onced-asterisk">*</span></label>
+                        <select id="editGender" name="editGender" require_onced>
                           <option value="">Select Gender</option>
                           <option value="Male">Male</option>
                           <option value="Female">Female</option>
                         </select>
                       </div>
                       <div class="info-group">
-                        <label for="editBirthDate">Birth Date <span class="required-asterisk">*</span></label>
-                        <input type="date" id="editBirthDate" name="editBirthDate" required>
+                        <label for="editBirthDate">Birth Date <span class="require_onced-asterisk">*</span></label>
+                        <input type="date" id="editBirthDate" name="editBirthDate" require_onced>
                       </div>
                     </div>
                     <div class="info-row">
                       <div class="info-group">
-                        <label for="editCivilStatus">Civil Status <span class="required-asterisk">*</span></label>
+                        <label for="editCivilStatus">Civil Status <span class="require_onced-asterisk">*</span></label>
                         <select id="editCivilStatus" name="editCivilStatus">
                           <option value="Single">Single</option>
                           <option value="Married">Married</option>
@@ -327,7 +327,7 @@ require '../php/connection.php';
                         </select>
                       </div>
                       <div class="info-group">
-                        <label for="editReligion">Religion <span class="required-asterisk">*</span></label>
+                        <label for="editReligion">Religion <span class="require_onced-asterisk">*</span></label>
                         <select name="editReligion" id="editReligion">
                             <option value="Roman Catholicism">Roman Catholicism</option>
                             <option value="Islam">Islam</option>
@@ -344,11 +344,11 @@ require '../php/connection.php';
                   <div class="info-card">
                     <h4 class="card-title">Contact & Location</h4>
                     <div class="info-group">
-                      <label for="editContact">Contact Number <span class="required-asterisk">*</span></label>
+                      <label for="editContact">Contact Number <span class="require_onced-asterisk">*</span></label>
                       <input type="tel" id="editContact" name="editContact" placeholder="e.g. 09123456789">
                     </div>
                     <div class="info-group">
-                      <label for="editAddress">Address <span class="required-asterisk">*</span></label>
+                      <label for="editAddress">Address <span class="require_onced-asterisk">*</span></label>
                       <input type="text" id="editAddress" name="editAddress" placeholder="Full Address">
                     </div>
                     <div class="info-group">
@@ -361,7 +361,7 @@ require '../php/connection.php';
                   <div class="info-card">
                     <h4 class="card-title">Mother's Details</h4>
                     <div class="info-group">
-                      <label for="editMotherName">Mother's Maiden Name <span class="required-asterisk">*</span></label>
+                      <label for="editMotherName">Mother's Maiden Name <span class="require_onced-asterisk">*</span></label>
                       <input type="text" id="editMotherName" name="editMotherName" placeholder="Mother's Full Maiden Name">
                     </div>
                   </div>
@@ -369,7 +369,7 @@ require '../php/connection.php';
                   <div class="info-card">
                     <h4 class="card-title">Father's Details</h4>
                     <div class="info-group">
-                      <label for="editFatherName">Father's Name <span class="required-asterisk">*</span></label>
+                      <label for="editFatherName">Father's Name <span class="require_onced-asterisk">*</span></label>
                       <input type="text" id="editFatherName" name="editFatherName" placeholder="Father's Full Name">
                     </div>
                   </div>
@@ -387,7 +387,7 @@ require '../php/connection.php';
                   <div class="info-card">
                     <h4 class="card-title">Employment Information</h4>
                     <div class="info-group">
-                      <label for="editEmploymentStatus">Employment Status <span class="required-asterisk">*</span></label>
+                      <label for="editEmploymentStatus">Employment Status <span class="require_onced-asterisk">*</span></label>
                       <select id="editEmploymentStatus" name="editEmploymentStatus">
                         <option value="Unemployed">Unemployed</option>
                         <option value="Employed">Employed</option>
@@ -408,7 +408,7 @@ require '../php/connection.php';
                   <div class="info-card">
                     <h4 class="card-title">PhilHealth & Yakap</h4>
                     <div class="info-group">
-                      <label for="editPhilStatus">PhilHealth Status <span class="required-asterisk">*</span></label>
+                      <label for="editPhilStatus">PhilHealth Status <span class="require_onced-asterisk">*</span></label>
                       <select id="editPhilStatus" name="editPhilStatus">
                         <option value="Not Applicable">Not Applicable</option>
                         <option value="Member">Member</option>
@@ -427,7 +427,7 @@ require '../php/connection.php';
                     <hr class="card-inner-divider">
                     
                     <div class="info-group">
-                      <label for="editYakapMember">Yakap Membership Status <span class="required-asterisk">*</span></label>
+                      <label for="editYakapMember">Yakap Membership Status <span class="require_onced-asterisk">*</span></label>
                       <select id="editYakapMember" name="editYakapMember">
                         <option value="Yes">Yes</option>
                         <option value="No">No</option>
@@ -459,8 +459,8 @@ require '../php/connection.php';
                 <input type="hidden" id="deletePatientId" name="patient_id">
                 
                 <div class="info-group">
-                  <label for="deleteAdminPassword">Enter Password to Confirm <span class="required-asterisk">*</span></label>
-                  <input type="password" id="deleteAdminPassword" name="admin_password" required placeholder="Enter your password">
+                  <label for="deleteAdminPassword">Enter Password to Confirm <span class="require_onced-asterisk">*</span></label>
+                  <input type="password" id="deleteAdminPassword" name="admin_password" require_onced placeholder="Enter your password">
                 </div>
                 <div id="deleteErrorMsg" class="error-message" style="color: #ef4444; margin-top: 8px; display: none;"></div>
               </div>

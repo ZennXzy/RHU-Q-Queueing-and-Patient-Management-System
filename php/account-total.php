@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 $res = $conn->query("SELECT id FROM admin_auth");
 $total = $res ? $res->num_rows : 0;

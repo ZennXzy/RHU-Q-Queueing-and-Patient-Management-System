@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 
 // List of all services in RHU-Q
 $allServices = [

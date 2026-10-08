@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Admin']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -146,12 +146,12 @@ require '../php/connection.php';
                 <div class="mainform">
                     <div class="form-group">
                         <label for="editUsername">Username</label>
-                        <input type="text" id="editUsername" name="username" placeholder="Enter username..." required autocomplete="off">
+                        <input type="text" id="editUsername" name="username" placeholder="Enter username..." require_onced autocomplete="off">
                     </div>
 
                     <div class="form-group">
                         <label for="editFullname">Full Name</label>
-                        <input type="text" id="editFullname" name="fullname" placeholder="Enter full name..." required autocomplete="off">
+                        <input type="text" id="editFullname" name="fullname" placeholder="Enter full name..." require_onced autocomplete="off">
                     </div>
 
                     <div class="form-group">

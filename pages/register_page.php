@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Admin']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,10 +39,10 @@ require '../php/connection.php';
             <div class="white-card">
                 <div class="form-grid">    
                     <div class="form-group col-4">
-                        <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" required>
+                        <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" require_onced>
                     </div>
                     <div class="form-group col-3">
-                        <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off" required>
+                        <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off" require_onced>
                     </div>
                     <div class="form-group col-3">
                         <input type="text" name="mname" id="mname" placeholder="Middle Name" autocomplete="off">
@@ -60,7 +60,7 @@ require '../php/connection.php';
                     </div>
 
                     <div class="form-group col-4">
-                        <input type="text" name="address" id="address" placeholder="Complete Address" required>
+                        <input type="text" name="address" id="address" placeholder="Complete Address" require_onced>
                     </div>
 
                     <div class="form-group col-3">

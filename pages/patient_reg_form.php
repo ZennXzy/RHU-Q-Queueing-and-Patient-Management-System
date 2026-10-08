@@ -1,6 +1,6 @@
 <?php
-require '../api/check-public.php';
-require '../php/connection.php';
+require_once '../api/check-public.php';
+require_once '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,10 +46,10 @@ require '../php/connection.php';
                     <div class="white-card">
                         <div class="form-grid">    
                             <div class="form-group col-4">
-                                <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" required>
+                                <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" require_onced>
                             </div>
                             <div class="form-group col-3">
-                                <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off" required>
+                                <input type="text" name="fname" id="fname" placeholder="First Name" autocomplete="off" require_onced>
                             </div>
                             <div class="form-group col-3">
                                 <input type="text" name="mname" id="mname" placeholder="Middle Name" autocomplete="off">
@@ -67,7 +67,7 @@ require '../php/connection.php';
                             </div>
 
                             <div class="form-group col-4">
-                                <input type="text" name="address" id="address" placeholder="Complete Address" required>
+                                <input type="text" name="address" id="address" placeholder="Complete Address" require_onced>
                             </div>
                             <div class="form-group col-3">
                                 <div class="date">
@@ -262,7 +262,7 @@ require '../php/connection.php';
 
                             <div class="form-group col-12">
                                 <label style="font-size: 13px; color: #555;">Username *</label>
-                                <input type="text" name="username" id="username" placeholder="Choose a unique username" autocomplete="off" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
+                                <input type="text" name="username" id="username" placeholder="Choose a unique username" autocomplete="off" require_onced style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
 
                             <div class="form-group col-12">
@@ -272,12 +272,12 @@ require '../php/connection.php';
 
                             <div class="form-group col-6">
                                 <label style="font-size: 13px; color: #555;">Password *</label>
-                                <input type="password" name="password" id="password" placeholder="Minimum 6 characters" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
+                                <input type="password" name="password" id="password" placeholder="Minimum 6 characters" require_onced style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
 
                             <div class="form-group col-6">
                                 <label style="font-size: 13px; color: #555;">Confirm Password *</label>
-                                <input type="password" id="confirm_password" placeholder="Re-type password" required style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
+                                <input type="password" id="confirm_password" placeholder="Re-type password" require_onced style="margin-top: 5px; padding: 11px 14px; border: 1px solid #0B695D; border-radius: 6px;">
                             </div>
                         </div>
                     </div>

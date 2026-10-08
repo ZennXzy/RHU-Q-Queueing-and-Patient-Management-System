@@ -1,5 +1,5 @@
 <?php
-require '../php/connection.php';
+require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
 <aside class="sidebar">

@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once '../php/connection.php';
+require_once_once '../php/connection.php';
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 

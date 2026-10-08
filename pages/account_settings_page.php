@@ -1,7 +1,7 @@
 <?php
-require '../api/check-private.php';
+require_once '../api/check-private.php';
 authorizeRoles(['Admin', 'Doctor/Staff', 'Patient']);
-require '../php/connection.php';
+require_once '../php/connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,19 +68,19 @@ require '../php/connection.php';
             <!-- Username Field -->
             <div class="form-group">
               <label for="editUsername">Username</label>
-              <input type="text" id="editUsername" name="username" class="form-control" placeholder="Enter username" required>
+              <input type="text" id="editUsername" name="username" class="form-control" placeholder="Enter username" require_onced>
             </div>
 
             <!-- Full Name Field -->
             <div class="form-group">
               <label for="editFullname">Full Name</label>
-              <input type="text" id="editFullname" name="fullname" class="form-control" placeholder="Enter full name" required>
+              <input type="text" id="editFullname" name="fullname" class="form-control" placeholder="Enter full name" require_onced>
             </div>
 
             <!-- Email Field -->
             <div class="form-group">
               <label for="editEmail">Email Address</label>
-              <input type="email" id="editEmail" name="email" class="form-control" placeholder="name@example.com" required>
+              <input type="email" id="editEmail" name="email" class="form-control" placeholder="name@example.com" require_onced>
             </div>
 
             <!-- Account Role -->

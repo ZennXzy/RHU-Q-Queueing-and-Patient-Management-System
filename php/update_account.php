@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once '../php/connection.php'; 
+require_once_once '../php/connection.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
@@ -50,7 +50,7 @@ try {
     // Check if user attempts password update
     if (!empty($new_password)) {
         if ($logged_role !== 'Admin' && empty($current_password)) {
-            echo json_encode(['status' => 'error', 'message' => 'Current password is required to change password.']);
+            echo json_encode(['status' => 'error', 'message' => 'Current password is require_onced to change password.']);
             exit;
         }
 
