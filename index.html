@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Prevent InfinityFree / Browser Caching -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <!-- Meta Refresh Fallback (Redirects after 3 seconds if JS is disabled) -->
+    <meta http-equiv="refresh" content="3; url=pages/login_page.php">
+    
+    <title>RHU-Q | Loading...</title>
+    <link rel="icon" href="images/rhu_logo_topNav.png" type="image/png">
+    <link rel="stylesheet" href="../styles/toast.css">
+    <script src="../js/toast.js" defer></script>
+
+    
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #2d3748;
+        }
+
+        .loader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Spinner Ring */
+        .spinner {
+            width: 42px;
+            height: 42px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #0B695D; /* Theme Green */
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loading-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0B695D;
+            letter-spacing: 0.5px;
+        }
+
+        .loading-subtext {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .fallback-link {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #a0aec0;
+        }
+
+        .fallback-link a {
+            color: #0B695D;
+            text-decoration: underline;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-container">
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- Optional RHU Logo -->
+        <img src="images/rhu_logo_topNav.png" alt="RHU-Q Logo" class="logo" onerror="this.style.display='none'">
+        
+        <div class="spinner"></div>
+        
+        <div>
+            <div class="loading-title">RHU-Q Management System</div>
+            <div class="loading-subtext">Connecting to portal, please wait...</div>
+        </div>
+
+        <div class="fallback-link">
+            Taking too long? <a href="../pages/login_page.php">Click here to continue</a>
+        </div>
+    </div>
+
+    <script>
+        // Redirect precisely after 3 seconds (3000ms)
+        setTimeout(() => {
+            window.location.href = "../pages/login_page.php";
+        }, 3000);
+    </script>
+</body>
+</html>

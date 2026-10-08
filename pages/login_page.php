@@ -1,5 +1,18 @@
 <?php
-    require_once '../api/check-public.php';
+session_start();
+
+// If user is already logged in, redirect them to their respective workspace/dashboard
+if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
+    $role = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? '');
+
+    if ($role === 'patient') {
+        header('Location: ../pages/launch_page.php');
+        exit();
+    } else {
+        header('Location: ../pages/launch_page.php');
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +22,7 @@
     <title>RHU-Q: Login</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     
-    <link rel="stylesheet" href="../styles/login_page.css">
+    <link rel="stylesheet" href="https://rhu-q-testing.ifree.page/styles/login_page.css?v=1.0">
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/login-form.js" defer></script>
@@ -36,12 +49,12 @@
                 <form action="../php/login.php" method="post" id="loginForm">
                     <div class="input-group">
                         <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" autocomplete="username" require_onced>
+                        <input type="text" id="username" name="username" autocomplete="username" required>
                     </div>
                     
                     <div class="input-group">
                         <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" autocomplete="current-password" require_onced>
+                        <input type="password" id="password" name="password" autocomplete="current-password" required>
                     </div>
                     
                     <button type="submit" id="loginBtn" class="login-btn" name="login">Login</button>
