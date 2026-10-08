@@ -8,13 +8,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loadAccountDetails(editAccountIdInput.value);
   }
 
-  // Handle Edit Button Clicks from User Accounts Table Modal
+  // Handle Edit Button Clicks from User Accounts Table
   document.addEventListener('click', async (e) => {
     const editBtn = e.target.closest('.edit-btn');
     if (!editBtn) return;
 
     const accountId = editBtn.dataset.id;
-    const roleType = editBtn.dataset.role || 'Staff';
+    // Fix 1: Read data-type attribute ("patient" or "staff")
+    const roleType = editBtn.dataset.type || editBtn.dataset.role || 'staff';
 
     await loadAccountDetails(accountId, roleType);
 
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  async function loadAccountDetails(accountId, roleType = '') {
+  async function loadAccountDetails(accountId, roleType = 'staff') {
     if (!accountId) return;
 
     try {
@@ -48,23 +49,58 @@ document.addEventListener("DOMContentLoaded", () => {
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
         setVal('editEmail', account.email);
-        setVal('editRole', account.role);
         setVal('current_password', '');
         setVal('editPassword', '');
+
+        // Fix 2: Dynamically add/update hidden target_role input for update_account.php
+        let targetRoleInput = document.getElementById('editTargetRole');
+        if (!targetRoleInput && editForm) {
+          targetRoleInput = document.createElement('input');
+          targetRoleInput.type = 'hidden';
+          targetRoleInput.id = 'editTargetRole';
+          targetRoleInput.name = 'target_role';
+          editForm.appendChild(targetRoleInput);
+        }
+        if (targetRoleInput) {
+          targetRoleInput.value = roleType.toLowerCase() === 'patient' ? 'Patient' : account.role;
+        }
+
+        // Fix 3: Handle Role Selector disabling & selection for Patients
+        const roleSelect = document.getElementById('editRole');
+        const adminOption = document.querySelector('#editRole option[value="Admin"]');
+
+        if (roleSelect) {
+          let patientOpt = roleSelect.querySelector('option[value="Patient"]');
+
+          if (roleType.toLowerCase() === 'patient') {
+            if (!patientOpt) {
+              patientOpt = document.createElement('option');
+              patientOpt.value = 'Patient';
+              patientOpt.textContent = 'Patient';
+              roleSelect.appendChild(patientOpt);
+            }
+            roleSelect.value = 'Patient';
+            roleSelect.disabled = true;
+          } else {
+            if (patientOpt) patientOpt.remove();
+            roleSelect.disabled = false;
+            setVal('editRole', account.role);
+
+            if (adminOption) {
+              if (hasAdmin && account.role !== 'Admin') {
+                adminOption.disabled = true;
+                adminOption.textContent = 'Admin (Already Exists)';
+              } else {
+                adminOption.disabled = false;
+                adminOption.textContent = 'Admin';
+              }
+            }
+          }
+        }
 
         const displayTitle = document.getElementById('displayFullName');
         if (displayTitle) displayTitle.textContent = account.fullname || account.username;
 
-        const adminOption = document.querySelector('#editRole option[value="Admin"]');
-        if (adminOption) {
-          if (hasAdmin && account.role !== 'Admin') {
-            adminOption.disabled = true;
-            adminOption.textContent = 'Admin (Already Exists)';
-          } else {
-            adminOption.disabled = false;
-            adminOption.textContent = 'Admin';
-          }
-        }
       } else {
         if (typeof showToast === 'function') {
           showToast('Failed to fetch account details: ' + (result.message || ''), 'error');
@@ -98,6 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const formData = new FormData(editForm);
 
+      // Fix 4: Explicitly append role value if disabled (disabled controls are ignored by FormData)
+      const roleSelect = document.getElementById('editRole');
+      if (roleSelect && roleSelect.disabled) {
+        formData.append('role', roleSelect.value);
+      }
+
       try {
         const response = await fetch('../php/update_account.php', {
           method: 'POST',
@@ -112,6 +154,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           if (typeof showToast === 'function') {
             showToast('Account Updated Successfully.', 'success');
+          }
+          if (typeof loadAccounts === 'function') {
+            loadAccounts();
           }
         } else {
           if (typeof showToast === 'function') {
