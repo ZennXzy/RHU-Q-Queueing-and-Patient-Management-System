@@ -77,7 +77,7 @@ $role = $_SESSION['logged_role'];
           </div>
       </a>
       <?php if($role === 'Admin'){?>
-      <a href="#" class="menu-item">
+      <a href="../pages/reports_page.php" class="menu-item">
           <div class="menu-content">
               <div class="menu-icon">
                   <img src="../svg/reports.svg" alt="reports-icon">
