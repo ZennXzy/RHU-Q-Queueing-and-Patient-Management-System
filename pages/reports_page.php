@@ -121,12 +121,16 @@ require '../php/connection.php';
                         <div class="form-group">
                             <label for="filterService">Service Taken</label>
                             <select id="filterService" name="service" class="service-type" style="width: 100%; padding: 8px; border-radius: 6px;">
-                                <option value="">All Services</option>
-                                <option value="General Consultation">General Consultation</option>
-                                <option value="Dental">Dental</option>
-                                <option value="Prenatal">Prenatal</option>
-                                <option value="Pediatrics">Pediatrics</option>
-                                <option value="Vaccination">Vaccination</option>
+                                <option value="" disabled selected>All Services</option>
+                                <option value="Medical Consultation">Medical Consultation</option>
+                                <option value="Immunization">Immunization</option>
+                                <option value="Pre-Natal">Pre-Natal</option>
+                                <option value="Medical Laboratory">Medical Laboratory</option>
+                                <option value="Family Planning">Family Planning</option>
+                                <option value="Dental Examination/Tooth Extraction">Dental Examination/Tooth Extraction</option>
+                                <option value="Availment of anti-Tuberculosis Drugs">Availment of anti-Tuberculosis Drugs</option>
+                                <option value="Child Care services">Child Care services</option>
+                                <option value="Availment of Tetanus Vaccine and Anti Rabies Vaccine">Availment of Tetanus Vaccine and Anti Rabies Vaccine</option>
                             </select>
                         </div>
 
@@ -134,7 +138,7 @@ require '../php/connection.php';
                         <div class="form-group">
                             <label for="filterGender">Gender</label>
                             <select id="filterGender" name="gender" class="service-type" style="width: 100%; padding: 8px; border-radius: 6px;">
-                                <option value="">All Genders</option>
+                                <option value="" disabled selected>All Genders</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
