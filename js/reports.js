@@ -41,7 +41,11 @@ document.addEventListener("DOMContentLoaded", () => {
     filterForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const formData = new FormData(filterForm);
-      fetchReports(formData, searchInput ? searchInput.value : '');
+      
+      // FIX: Convert FormData to URLSearchParams so .toString() works correctly
+      const params = new URLSearchParams(formData);
+      
+      fetchReports(params, searchInput ? searchInput.value : '');
       if (filterModal) filterModal.close();
     });
   }

@@ -65,12 +65,20 @@ try {
         $types .= "ss";
     }
 
-    // Date Range Filter
+    // Date Range Filter (Flexible: allows from-only, to-only, or both)
     if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
         $where[] = "DATE(t.transaction_date) BETWEEN ? AND ?";
         $params[] = $_GET['date_from'];
         $params[] = $_GET['date_to'];
         $types .= "ss";
+    } elseif (!empty($_GET['date_from'])) {
+        $where[] = "DATE(t.transaction_date) >= ?";
+        $params[] = $_GET['date_from'];
+        $types .= "s";
+    } elseif (!empty($_GET['date_to'])) {
+        $where[] = "DATE(t.transaction_date) <= ?";
+        $params[] = $_GET['date_to'];
+        $types .= "s";
     }
 
     // Age Range Filter
