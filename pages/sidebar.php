@@ -4,7 +4,7 @@ $role = $_SESSION['logged_role'];
 ?>
 <aside class="sidebar">
   <div class="nav-group">
-    <a href="#" class="menu-item">
+    <a href="../pages/dashboard_page.php" class="menu-item">
           <div class="menu-content">
               <div class="menu-icon">
                   <img src="../svg/dashboard-monitor.svg" alt="dashboard_icon">
