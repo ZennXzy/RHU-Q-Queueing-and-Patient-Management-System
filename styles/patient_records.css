@@ -667,3 +667,646 @@ th.sortable:hover {
   font-size: 14px;
   color: #777;
 }
+
+/* =====================================================
+   LAYOUT FIXES (all screen sizes)
+   ===================================================== */
+
+/* The page is locked (overflow hidden), so the content area must scroll itself */
+.content-area {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.content-area > * {
+  flex-shrink: 0;
+}
+
+/* Popups: the old fixed "left: 343px" pushed them off-screen on narrow
+   screens. They are now centered in the viewport and sized by their content. */
+#patientModal,
+#edit-patient,
+#deleteConfirmModal {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  height: fit-content;
+  max-height: calc(100vh - 48px);
+  max-height: calc(100dvh - 48px);
+}
+
+#deleteConfirmModal {
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
+}
+
+/* Header and footer stay put; only the body scrolls */
+#patientModal[open],
+#edit-patient[open] {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+}
+
+#edit-patient form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+dialog .modal-header,
+dialog .modal-footer {
+  flex-shrink: 0;
+}
+
+#patientModal .modal-body,
+#edit-patient .modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+#patientModal .modal-body::-webkit-scrollbar,
+#edit-patient .modal-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+#patientModal .modal-body::-webkit-scrollbar-thumb,
+#edit-patient .modal-body::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
+}
+
+/* Scrolling moved from these boxes to .modal-body */
+.patient-profile-grid,
+.edit-patient-profile-grid {
+  max-height: none;
+  height: auto;
+  overflow-y: visible;
+}
+
+#edit-patient .modal-footer {
+  padding-bottom: 20px;
+}
+
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   Mobile: 767.98px and below
+   Desktop / Tablet (ONE tier): 768px - 3439.98px
+   Extra Large: 3440px and up
+   ===================================================== */
+
+/* Whenever the top navbar is visible (576px and up), size the workspace from the
+   space that is left instead of the fixed calc(100vh - 118px) */
+@media (min-width: 576px) {
+  .workspace {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Desktop / Tablet (768px - 3439.98px) */
+@media (min-width: 768px) and (max-width: 3439.98px) {
+  .content-area {
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .page-title {
+    font-size: clamp(26px, 2.6vw, 32px);
+  }
+
+  .table-card {
+    padding: clamp(14px, 1.6vw, 20px);
+  }
+
+  /* Table height follows the screen instead of a fixed 444px */
+  .patient-table {
+    max-height: max(320px, calc(100vh - 400px));
+    overflow-x: auto;
+  }
+
+  /* Keeps columns readable; scrolls sideways inside the box on narrow screens */
+  .patient-table table {
+    min-width: 760px;
+  }
+
+  .patient-table th,
+  .patient-table td {
+    padding-left: clamp(10px, 1.2vw, 16px);
+    padding-right: clamp(10px, 1.2vw, 16px);
+  }
+}
+
+/* Mobile and large phones (767.98px and below) */
+@media (max-width: 767.98px) {
+  .content-area {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  /* ---------- Search ---------- */
+  .search-container {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  .search-container input {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  /* ---------- Table becomes a list of patient cards ---------- */
+  .table-card {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .patient-table {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .patient-table table,
+  .patient-table tbody,
+  .patient-table tr,
+  .patient-table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Header row (and its sort controls) hidden visually, still read by screen readers */
+  .patient-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .patient-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .patient-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 12px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #0B695D;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  .patient-table td {
+    padding: 0;
+    border: none;
+    min-width: 0;
+    width: auto;
+    font-size: 0.92rem;
+    color: #334155;
+    overflow-wrap: anywhere;
+  }
+
+  /* Empty-state / "no results" row: one cell that spans everything */
+  .patient-table td[colspan] {
+    grid-column: 1 / -1;
+    padding: 24px 12px !important;
+    text-align: center;
+  }
+
+  /* Overrides the inline text-align in patient_records.php */
+  .patient-table td:not([colspan]) {
+    text-align: left !important;
+  }
+
+  /* Row 1: name */
+  .patient-table td:nth-child(1):not([colspan]) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0B695D;
+  }
+
+  /* Rows 2-4: labelled fields, two per row */
+  .patient-table td:nth-child(2):not([colspan]) { grid-column: 1; grid-row: 2; }
+  .patient-table td:nth-child(3):not([colspan]) { grid-column: 2; grid-row: 2; }
+  .patient-table td:nth-child(4):not([colspan]) { grid-column: 1; grid-row: 3; }
+  .patient-table td:nth-child(5):not([colspan]) { grid-column: 2; grid-row: 3; }
+  .patient-table td:nth-child(6):not([colspan]) { grid-column: 1 / -1; grid-row: 4; }
+
+  .patient-table td:nth-child(2):not([colspan])::before { content: "Age"; }
+  .patient-table td:nth-child(3):not([colspan])::before { content: "Sex at Birth"; }
+  .patient-table td:nth-child(4):not([colspan])::before { content: "Contact Number"; }
+  .patient-table td:nth-child(5):not([colspan])::before { content: "PhilHealth Status"; }
+  .patient-table td:nth-child(6):not([colspan])::before { content: "Date Registered"; }
+
+  .patient-table td:nth-child(n+2):nth-child(-n+6):not([colspan])::before {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+
+  /* Row 5: action buttons */
+  .patient-table td:nth-child(7):not([colspan]) {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  .patient-table .edit-btn,
+  .patient-table .view-btn,
+  .patient-table .delete-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 44px;
+    background-color: #f1f5f9;
+  }
+
+  /* Hover zoom sticks on touch screens */
+  .edit-btn:hover,
+  .view-btn:hover,
+  .delete-btn:hover,
+  .close-modal-btn:hover {
+    transform: none;
+  }
+
+  /* ---------- Popups become bottom sheets ---------- */
+  #patientModal,
+  #edit-patient,
+  #deleteConfirmModal {
+    top: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0 0;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  #deleteConfirmModal {
+    padding: 0 0 env(safe-area-inset-bottom, 0px);
+  }
+
+  #deleteConfirmModal .modal-body,
+  #deleteConfirmModal .modal-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #deleteConfirmModal .modal-body {
+    padding-top: 16px;
+  }
+
+  #deleteConfirmModal .modal-footer {
+    padding-top: 16px;
+    padding-bottom: 20px;
+  }
+
+  .modal-header {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 16px 12px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-header h2 {
+    font-size: 1.1rem;
+  }
+
+  /* Tabs go on their own full-width row */
+  .modal-tab-group {
+    order: 3;
+    width: 100%;
+    margin: 0;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-height: 40px;
+  }
+
+  .close-modal-btn {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .patient-profile-grid,
+  .edit-patient-profile-grid {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .info-row,
+  .grid-3-col,
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* 16px stops iOS Safari from zooming in when a field is focused */
+  .info-group input,
+  .info-group select {
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .transaction-card {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  /* Footer buttons: full width, primary action on top */
+  .modal-footer {
+    flex-direction: column-reverse;
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .modal-footer .btn-primary,
+  .modal-footer .btn-secondary,
+  .modal-footer .btn-danger {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  #edit-patient .modal-footer {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Mobile (575.98px and below): the top bar is hidden, so the whole page scrolls vertically */
+@media (max-width: 575.98px) {
+  html {
+    height: auto;
+    overflow: visible;
+  }
+
+  body {
+    height: auto;
+    min-height: 100%;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .workspace {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .content-area {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: 64px 14px 24px; /* top space clears the fixed sidebar toggle */
+  }
+
+  .tx-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tx-field.full-width {
+    grid-column: span 1;
+  }
+}
+
+/* Extra Large Devices (3440px and up) - everything enlarged */
+@media (min-width: 3440px) {
+  .content-area {
+    padding: 80px;
+  }
+
+  .content-area::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  .page-title {
+    font-size: 64px;
+  }
+
+  .search-container {
+    max-width: 840px;
+    margin-top: 24px;
+    margin-bottom: 30px;
+    margin-left: 40px;
+    padding-left: 22px;
+  }
+
+  .search-container input {
+    padding: 20px 28px 20px 20px;
+    font-size: 26px;
+  }
+
+  .search-container .search-icon img {
+    height: 36px;
+  }
+
+  .table-card {
+    padding: 40px;
+    border-radius: 20px;
+  }
+
+  .patient-table {
+    max-height: max(500px, calc(100vh - 600px));
+  }
+
+  .patient-table::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .patient-table th {
+    font-size: 26px;
+    padding: 24px 32px;
+  }
+
+  .patient-table td {
+    font-size: 26px;
+    padding: 22px 32px;
+  }
+
+  .edit-btn,
+  .view-btn,
+  .delete-btn {
+    padding: 12px 26px;
+  }
+
+  .edit-btn img,
+  .view-btn img,
+  .delete-btn img {
+    height: 34px;
+  }
+
+  .empty-title {
+    font-size: 34px;
+  }
+
+  .empty-subtitle,
+  .search-empty-row {
+    font-size: 26px;
+  }
+
+  /* Popups */
+  #patientModal,
+  #edit-patient {
+    max-width: 1500px;
+    max-height: calc(100dvh - 160px);
+    border-radius: 24px;
+  }
+
+  #deleteConfirmModal {
+    max-width: 1100px;
+    padding: 48px;
+    border-radius: 24px;
+  }
+
+  .modal-header {
+    padding: 40px 48px 28px;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .modal-header h2,
+  .modal-header h3 {
+    font-size: 2.6rem;
+  }
+
+  .patient-id-badge {
+    font-size: 1.5rem;
+  }
+
+  .modal-tab-group {
+    gap: 16px;
+    margin-right: 28px;
+  }
+
+  .tab-btn {
+    padding: 12px 28px;
+    font-size: 1.5rem;
+    border-radius: 36px;
+  }
+
+  .close-modal-btn {
+    font-size: 50px;
+    padding: 8px 16px;
+  }
+
+  .patient-profile-grid,
+  .edit-patient-profile-grid {
+    padding-left: 48px;
+    padding-right: 28px;
+  }
+
+  .info-card {
+    padding: 30px;
+    gap: 22px;
+    border-radius: 14px;
+    margin-top: 16px;
+  }
+
+  .info-row,
+  .grid-3-col {
+    gap: 24px;
+  }
+
+  .card-title {
+    font-size: 1.8rem;
+    padding-bottom: 12px;
+  }
+
+  .info-group label {
+    font-size: 1.2rem;
+  }
+
+  .info-group span {
+    font-size: 1.6rem;
+  }
+
+  .highlight-text {
+    font-size: 1.9rem !important;
+  }
+
+  .patient-badge {
+    font-size: 1.4rem;
+  }
+
+  .info-group input,
+  .info-group select {
+    padding: 16px 22px;
+    font-size: 1.6rem;
+    border-radius: 10px;
+  }
+
+  .transaction-card {
+    padding: 30px;
+    margin-left: 48px;
+    margin-right: 48px;
+    border-left-width: 8px;
+    border-radius: 14px;
+  }
+
+  .tx-code-badge {
+    font-size: 1.7rem;
+    padding: 8px 18px;
+  }
+
+  .tx-date {
+    font-size: 1.5rem;
+  }
+
+  .tx-grid {
+    gap: 22px;
+  }
+
+  .tx-field label {
+    font-size: 1.2rem;
+  }
+
+  .tx-field span {
+    font-size: 1.6rem;
+  }
+
+  .empty-transactions {
+    font-size: 1.6rem;
+  }
+
+  .modal-footer {
+    gap: 22px;
+    padding: 32px 48px;
+  }
+
+  #edit-patient .modal-footer {
+    padding-bottom: 32px;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-danger {
+    padding: 18px 40px;
+    font-size: 1.6rem;
+    border-radius: 12px;
+  }
+}

@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -281,4 +280,422 @@ dialog::backdrop {
 
 .view-record-btn:hover {
   background-color: #e0e7ff;
+}
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   Mobile: 767.98px and below
+   Desktop / Tablet (ONE tier): 768px - 3439.98px
+   Extra Large: 3440px and up
+   ===================================================== */
+
+/* Whenever the top navbar is visible (576px and up), size the workspace from the
+   space that is left instead of the fixed calc(100vh - 118px) */
+@media (min-width: 576px) {
+  .workspace {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Desktop / Tablet (768px - 3439.98px) */
+@media (min-width: 768px) and (max-width: 3439.98px) {
+  .content-area {
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .page-title {
+    font-size: clamp(26px, 2.6vw, 32px);
+    margin-bottom: clamp(16px, 2vw, 25px);
+  }
+
+  .content-card {
+    padding: clamp(16px, 2vw, 24px);
+  }
+
+  /* Table keeps a sensible minimum width and scrolls sideways inside its own box */
+  .table-responsive table {
+    min-width: 720px;
+  }
+
+  th,
+  td {
+    padding: 12px clamp(10px, 1.2vw, 16px);
+  }
+}
+
+/* Mobile and large phones (767.98px and below) */
+@media (max-width: 767.98px) {
+  .content-area {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .content-card {
+    padding: 14px;
+    margin-top: 12px;
+    border-radius: 10px;
+  }
+
+  /* ---------- Top bar: search on top, buttons below ---------- */
+  .card-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .left-bar,
+  .right-bar {
+    width: 100%;
+  }
+
+  .right-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .search-group {
+    width: 100%;
+  }
+
+  /* !important overrides the inline styles in reports_page.php; 16px stops iOS zoom */
+  #searchReports {
+    width: 100% !important;
+    min-height: 44px;
+    font-size: 16px !important;
+  }
+
+  .top-action-button {
+    width: 100%;
+  }
+
+  .top-action-button .btn {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  .stats-group {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* ---------- Table becomes a list of cards ---------- */
+  .table-responsive {
+    overflow-x: visible;
+  }
+
+  table,
+  tbody,
+  tr,
+  td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Header row is hidden visually but still read by screen readers */
+  thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  tbody tr {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 12px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  tbody tr:hover {
+    background-color: #ffffff;
+  }
+
+  td {
+    padding: 0;
+    border: none;
+    min-width: 0;
+    width: auto;
+    overflow-wrap: anywhere;
+  }
+
+  /* "Loading..." and empty-state rows (one cell that spans all columns) */
+  td[colspan] {
+    grid-column: 1 / -1;
+    padding: 12px 0 !important;
+  }
+
+  td:not([colspan]) {
+    text-align: left !important;
+  }
+
+  /* Hide the "#" column */
+  td:nth-child(1):not([colspan]) {
+    display: none;
+  }
+
+  /* Row 1: patient name + view button */
+  td:nth-child(3):not([colspan]) {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0B695D;
+  }
+
+  td:nth-child(7):not([colspan]) {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+  }
+
+  td:nth-child(7) .view-record-btn {
+    min-width: 44px;
+    min-height: 44px;
+    background-color: #eef2ff;
+    border-radius: 8px;
+  }
+
+  /* Row 2: date and time */
+  td:nth-child(2):not([colspan]) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 0.82rem;
+    color: #64748b;
+  }
+
+  /* Rows 3-5: labelled fields */
+  td:nth-child(4):not([colspan]),
+  td:nth-child(5):not([colspan]),
+  td:nth-child(6):not([colspan]) {
+    grid-column: 1 / -1;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.92rem;
+    color: #334155;
+  }
+
+  td:nth-child(4):not([colspan]) { grid-row: 3; }
+  td:nth-child(5):not([colspan]) { grid-row: 4; }
+  td:nth-child(6):not([colspan]) { grid-row: 5; }
+
+  td:nth-child(4):not([colspan])::before { content: "Age / Gender"; }
+  td:nth-child(5):not([colspan])::before { content: "Service"; }
+  td:nth-child(6):not([colspan])::before { content: "Address / Brgy"; }
+
+  td:nth-child(4):not([colspan])::before,
+  td:nth-child(5):not([colspan])::before,
+  td:nth-child(6):not([colspan])::before {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+
+  /* ---------- Popups become bottom sheets ---------- */
+  dialog.edit-account[open] {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92vh;
+    max-height: 92dvh;
+    margin: auto 0 0 0;
+    overflow-y: auto;
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* Date / age pairs sit side by side if they fit, otherwise stack */
+  .form-group > div[style*="display: flex"] {
+    flex-wrap: wrap;
+  }
+
+  .form-group .form-control,
+  .form-group .service-type {
+    flex: 1 1 140px;
+    min-width: 0;
+    min-height: 44px;
+    font-size: 16px !important;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+
+  .form-actions .btn-cancel,
+  .form-actions .btn-submit {
+    width: 100%;
+    min-height: 46px;
+  }
+}
+
+/* Mobile (575.98px and below): the top bar is hidden, so the whole page scrolls vertically */
+@media (max-width: 575.98px) {
+  html {
+    height: auto;
+    overflow: visible;
+  }
+
+  body {
+    height: auto;
+    min-height: 100%;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .workspace {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .content-area {
+    height: auto;
+    overflow: visible;
+    padding: 64px 14px 24px; /* top space clears the fixed sidebar toggle */
+  }
+}
+
+/* Extra Large Devices (3440px and up) - everything enlarged */
+@media (min-width: 3440px) {
+  .content-area {
+    padding: 80px;
+  }
+
+  .content-area::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  .page-title {
+    font-size: 64px;
+    margin-bottom: 44px;
+  }
+
+  .content-card {
+    padding: 44px;
+    margin-top: 32px;
+    border-radius: 20px;
+  }
+
+  .card-top-bar {
+    gap: 28px;
+    margin-bottom: 36px;
+  }
+
+  .left-bar,
+  .right-bar {
+    gap: 22px;
+  }
+
+  /* !important overrides the inline styles in reports_page.php */
+  #searchReports {
+    width: 620px !important;
+    padding: 16px 24px !important;
+    font-size: 1.5rem !important;
+    border-radius: 10px !important;
+  }
+
+  .top-action-button {
+    gap: 18px !important;
+  }
+
+  .top-action-button .btn {
+    padding: 16px 34px !important;
+    font-size: 1.5rem;
+    border-radius: 10px !important;
+  }
+
+  .stats-group {
+    padding: 14px 26px;
+    border-radius: 12px;
+  }
+
+  .stat-label {
+    font-size: 1.5rem;
+  }
+
+  table {
+    font-size: 1.5rem;
+  }
+
+  th {
+    padding: 22px 28px;
+  }
+
+  td {
+    padding: 24px 28px;
+  }
+
+  .view-record-btn {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .view-record-btn img {
+    height: 36px;
+    width: auto;
+  }
+
+  /* Popups */
+  dialog.edit-account[open] {
+    max-width: 1000px;
+    border-radius: 20px;
+  }
+
+  .modal-header h2 {
+    font-size: 2.3rem;
+  }
+
+  .modal-header button {
+    font-size: 2.6rem !important;
+  }
+
+  .mainform {
+    gap: 28px;
+  }
+
+  .form-group label {
+    font-size: 1.4rem;
+  }
+
+  .form-control,
+  .service-type {
+    padding: 16px 22px !important;
+    font-size: 1.5rem;
+    border-radius: 10px !important;
+  }
+
+  .form-actions {
+    gap: 20px;
+    margin-top: 36px;
+    padding-top: 26px;
+  }
+
+  .btn-cancel,
+  .btn-submit {
+    padding: 16px 34px;
+    font-size: 1.5rem;
+    border-radius: 12px;
+  }
 }
