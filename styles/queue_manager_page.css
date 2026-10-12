@@ -520,6 +520,34 @@ background-color:#F9FAFB;
     background-color: #e2e8f0;
 }
 
+@media print {
+    /* Hide everything on the page */
+    body * {
+        visibility: hidden !important;
+        display: none !important;
+    }
+    
+    /* Force the receipt container and its children to show and be visible */
+    #thermal-receipt-template, 
+    #thermal-receipt-template * {
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    #thermal-receipt-template {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 58mm !important;
+        margin: 0 !important;
+        padding: 5mm !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        font-size: 12px !important;
+        color: #000 !important;
+        background: #fff !important;
+    }
+}
+
 @media screen and (max-width: 1024px) {
   .split-grid {
     grid-template-columns: 1fr;

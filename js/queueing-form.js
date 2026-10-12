@@ -119,8 +119,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
           // Open 5-second auto-close modal
           if (success_modal && typeof success_modal.showModal === 'function') {
-            success_modal.showModal();
+            // 1. Populate the hidden receipt template
+            document.getElementById('printQueueCode').textContent = result.queue_code;
+            document.getElementById('printPatientName').textContent = result.patient_name;
+            document.getElementById('printServiceName').textContent = result.service_name;
+            document.getElementById('printDateTime').textContent = result.datetime;
 
+            // 2. Automatically trigger the thermal print dialog
+            window.print();
+            success_modal.showModal();
             let secondsLeft = 5;
             successCountdown.textContent = secondsLeft;
 

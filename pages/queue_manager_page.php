@@ -181,6 +181,22 @@ $role = $_SESSION['logged_role'];
             </div>
         </div>
     </div>
+    <!-- Hidden Receipt Template for Thermal Printer -->
+    <div id="thermal-receipt-template" style="display: none;">
+        <div class="receipt-container">
+            <h3>RURAL HEALTH UNIT - ODIONGAN</h3>
+            <p>RHU-Q Patient Management System</p>
+            <hr>
+            <h2>QUEUE CODE</h2>
+            <h1 id="printQueueCode">A-001</h1>
+            <hr>
+            <p><strong>Patient:</strong> <span id="printPatientName">John Doe</span></p>
+            <p><strong>Service:</strong> <span id="printServiceName">General Consultation</span></p>
+            <p><strong>Date/Time:</strong> <span id="printDateTime">2026-10-13 01:00 PM</span></p>
+            <hr>
+            <p style="text-align: center;">Please wait for your number to be called.</p>
+        </div>
+    </div>
     
 </body>
 <!-- UPDATE: Add Patient Queue Dialog with Vitals and Complaints -->

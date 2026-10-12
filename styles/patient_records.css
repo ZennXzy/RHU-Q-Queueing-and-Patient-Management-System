@@ -786,7 +786,7 @@ dialog .modal-footer {
 
   /* Table height follows the screen instead of a fixed 444px */
   .patient-table {
-    max-height: max(320px, calc(100vh - 400px));
+    max-height: max(444px, calc(100vh - 400px));
     overflow-x: auto;
   }
 
