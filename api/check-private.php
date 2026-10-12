@@ -23,10 +23,9 @@ $user_id   = $_SESSION['logged_id'];
 $user_type = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'patient');
 
 // 2. Specific Time Auto-Logout Check
+$currentHourMin = date('H:i'); // Now correctly matches local time
+$cutoffTime = '19:30'; // Set your target closing time (24-hour format)
 if ($user_type !== 'admin') { 
-    $currentHourMin = date('H:i'); // Now correctly matches local time
-    $cutoffTime = '19:30'; // Set your target closing time (24-hour format)
-
     if ($currentHourMin >= $cutoffTime) {
         // Update user status to 'Offline' in database
         if ($user_type === 'patient') {
@@ -34,6 +33,27 @@ if ($user_type !== 'admin') {
         } else {
             $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
         }
+        $updateStmt->bind_param("i", $user_id);
+        $updateStmt->execute();
+        $updateStmt->close();
+
+        // Clear session and destroy
+        session_unset();
+        session_destroy();
+
+        if (isset($_GET['ajax_check'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'logged_out', 'reason' => 'Clinic closed']);
+            exit();
+        }
+
+        header('Location: ../pages/login_page.php?msg=' . urlencode('System closed for the day. Logged out.') . '&type=error');
+        exit();
+    }
+} else ($user_type == 'admin'){
+    if ($currentHourMin >= $cutoffTime) {
+        
+        $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
         $updateStmt->bind_param("i", $user_id);
         $updateStmt->execute();
         $updateStmt->close();
