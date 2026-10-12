@@ -24,7 +24,6 @@ $user_type = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'p
 
 // 2. Specific Time Auto-Logout Check
 $currentHourMin = date('H:i'); // Now correctly matches local time
-
 if ($user_type !== 'admin') { 
     $cutoffTime = '19:30'; // Set your target closing time (24-hour format)
     if ($currentHourMin >= $cutoffTime) {
@@ -51,9 +50,10 @@ if ($user_type !== 'admin') {
         header('Location: ../pages/login_page.php?msg=' . urlencode('System closed for the day. Logged out.') . '&type=error');
         exit();
     }
-} else ($user_type == 'admin'){
-    $cutoffTime = '04:30'; // Set your target closing time (24-hour format)
+}  else if ($user_type == 'admin'){
+    $cutoffTime = '23:50'; // Set your target closing time (24-hour format)
     if ($currentHourMin >= $cutoffTime) {
+        // Update user status to 'Offline' in database
         $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
         $updateStmt->bind_param("i", $user_id);
         $updateStmt->execute();
