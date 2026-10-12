@@ -2,8 +2,13 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-require_once '../php/connection.php';
 
+// Set the correct local timezone so date('H:i') matches your local time
+date_default_timezone_set('Asia/Manila');
+
+require '../php/connection.php';
+
+// 1. Check if user is authenticated
 if (!isset($_SESSION['logged_id'])) {
     if (isset($_GET['ajax_check'])) {
         header('Content-Type: application/json');
@@ -15,9 +20,40 @@ if (!isset($_SESSION['logged_id'])) {
 }
 
 $user_id   = $_SESSION['logged_id'];
-$user_type = $_SESSION['user_type'] ?? 'Admin'; // 'admin' or 'patient'
+$user_type = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'patient');
 
-// Check online status in the appropriate table
+// 2. Specific Time Auto-Logout Check
+if ($user_type !== 'admin') { 
+    $currentHourMin = date('H:i'); // Now correctly matches local time
+    $cutoffTime = '19:30'; // Set your target closing time (24-hour format)
+
+    if ($currentHourMin >= $cutoffTime) {
+        // Update user status to 'Offline' in database
+        if ($user_type === 'patient') {
+            $updateStmt = $conn->prepare("UPDATE patient_auth SET status = 'Offline' WHERE patient_auth_id = ?");
+        } else {
+            $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
+        }
+        $updateStmt->bind_param("i", $user_id);
+        $updateStmt->execute();
+        $updateStmt->close();
+
+        // Clear session and destroy
+        session_unset();
+        session_destroy();
+
+        if (isset($_GET['ajax_check'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'logged_out', 'reason' => 'Clinic closed']);
+            exit();
+        }
+
+        header('Location: ../pages/login_page.php?msg=' . urlencode('System closed for the day. Logged out.') . '&type=error');
+        exit();
+    }
+}
+
+// 3. Check active database status for all users
 if ($user_type === 'patient') {
     $stmt = $conn->prepare("SELECT status, username FROM patient_auth WHERE patient_auth_id = ?");
 } else {
@@ -40,13 +76,6 @@ if ($row = $res->fetch_assoc()) {
         }
 
         header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
-        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-        if ($insertlog) {
-            $message = "Account " . $row['username'] . " logged out.";
-            $insertlog->bind_param('s', $message);
-            $insertlog->execute();
-            $insertlog->close();
-        }
         exit();
     }
 } else {
@@ -59,30 +88,19 @@ if ($row = $res->fetch_assoc()) {
         exit();
     }
     
-    header('Location: ../pages/login_page.php?msg=' . urlencode('Logged Out') . '&type=info');
+    header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
     exit();
 }
-
 $stmt->close();
 
+// 4. Handle AJAX background heartbeat check from session-check.js
 if (isset($_GET['ajax_check'])) {
     header('Content-Type: application/json');
     echo json_encode(['status' => 'active']);
     exit();
 }
 
-if (!isset($_SESSION['logged_name']) || !isset($_SESSION['logged_id']) || !isset($_SESSION['logged_role'])) {
-    header('Location: ../pages/login_page.php');
-    exit();
-}
-
-if (isset($_GET['logout'])) {
-    session_unset();
-    session_destroy();
-    header('Location: ../pages/login_page.php');
-    exit();
-}
-
+// 5. Role Authorization Function used across pages
 function authorizeRoles(array $allowedRoles) {
     $userRole = $_SESSION['logged_role'] ?? '';
 
@@ -91,18 +109,14 @@ function authorizeRoles(array $allowedRoles) {
     }
 
     if (!in_array($userRole, $allowedRoles, true)) {
-        
         if ($userRole === 'Display') {
             header('Location: ../pages/queue_display_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
             exit();
         }
-
         if ($userRole === 'Doctor/Staff') {
             header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
             exit();
         } 
-
-        // Handle Patient redirection on unauthorized attempt
         if ($userRole === 'Patient') {
             header('Location: ../pages/patient_dashboard.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
             exit();
