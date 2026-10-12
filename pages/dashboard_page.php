@@ -58,7 +58,10 @@ require '../php/connection.php';
                         <span class="tile-label">Waiting (Today)</span>
                         <h2 class="tile-value" id="valWaiting">0</h2>
                     </div>
-                    <div class="tile-icon"></div>
+                    <div class="tile-icon">
+                        <img src="../svg/waiting.svg" alt="waiting-icon" style="filter: brightness(0) saturate(100%) invert(52%) sepia(96%)
+                                        saturate(1536%) hue-rotate(7deg) brightness(98%) contrast(101%);">
+                    </div>
                 </div>
 
                 <div class="tile tile-lightblue">
@@ -66,7 +69,11 @@ require '../php/connection.php';
                         <span class="tile-label">In Progress (Today)</span>
                         <h2 class="tile-value" id="valInProgress">0</h2>
                     </div>
-                    <div class="tile-icon"></div>
+                    <div class="tile-icon">
+                        <img src="../svg/progress.svg" alt="progress-icon" style="filter: brightness(0) saturate(100%)
+                                        invert(28%) sepia(88%) saturate(1097%)
+                                        hue-rotate(186deg) brightness(91%) contrast(93%);">
+                    </div>
                 </div>
 
                 <div class="tile tile-green">
@@ -108,15 +115,15 @@ require '../php/connection.php';
                     <h3>Service Distribution</h3>
                     <div class="chart-container"><canvas id="serviceDistributionChart"></canvas></div>
                 </div>
-                <div class="content-card" style="grid-column: span 2;">
+                <div class="content-card chart-wide">
                     <h3>Employment Status</h3>
-                    <div class="chart-container" style="max-height: 320px;"><canvas id="employmentStatusChart"></canvas></div>
+                    <div class="chart-container chart-container-wide"><canvas id="employmentStatusChart"></canvas></div>
                 </div>
             </div>
 
             <!-- Text-Type Data Summary Section -->
             <div class="content-card text-summary-card">
-                <h3>📊 Analytics Data Summary</h3>
+                <h3>Analytics Data Summary</h3>
                 <div id="textDataSummary" class="text-summary-content">
                     <p>Loading analytics data summary...</p>
                 </div>
