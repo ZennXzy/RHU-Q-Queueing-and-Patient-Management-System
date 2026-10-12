@@ -31,3 +31,113 @@
   border-radius: 10px;
   max-width:200px;
 }
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   ===================================================== */
+
+/* Let the title shrink and truncate instead of pushing the user box off-screen */
+.top-navbar > div:first-child {
+  min-width: 0;
+}
+
+.top-navbar h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rightNav {
+  flex-shrink: 0;
+}
+
+/* Extra Large Devices - everything enlarged */
+@media (min-width: 1200px) {
+  .top-navbar {
+    height: 110px;
+    padding: 20px 40px;
+    font-size: 28px;
+    letter-spacing: 0.8px;
+  }
+
+  .top-navbar img {
+    height: 100px;
+    width: 100px;
+    margin-right: 32px;
+  }
+
+  .rightNav {
+    padding: 8px 28px;
+    max-width: 320px;
+    border-radius: 14px;
+  }
+
+  /* !important overrides the inline font sizes in top-navbar.php */
+  .rightNav h3 {
+    font-size: 28px !important;
+  }
+
+  .rightNav span {
+    font-size: 15px !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .top-navbar {
+    height: 80px;
+    padding: 15px 25px;
+    font-size: 20px;
+  }
+}
+
+/* Tablet and larger phones: leave room for the sidebar toggle button
+   (fixed at top-left, 44px wide) and scale the bar down */
+@media (min-width: 576px) and (max-width: 991.98px) {
+  .top-navbar {
+    height: 70px;
+    padding: 10px 20px 10px 70px;
+    font-size: 16px;
+  }
+
+  .top-navbar img {
+    height: 52px;
+    width: 52px;
+    margin-right: 14px;
+  }
+
+  .rightNav {
+    padding: 4px 14px;
+    max-width: 160px;
+  }
+
+  .rightNav h3 {
+    font-size: 15px !important;
+  }
+
+  .rightNav span {
+    font-size: 9px !important;
+  }
+}
+
+/* Tablet only: a little more breathing room */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .top-navbar {
+    font-size: 18px;
+  }
+
+  .rightNav {
+    max-width: 200px;
+  }
+
+  .rightNav h3 {
+    font-size: 17px !important;
+  }
+}
+
+/* Mobile: top bar is hidden */
+@media (max-width: 575.98px) {
+  .top-navbar {
+    display: none;
+  }
+}
