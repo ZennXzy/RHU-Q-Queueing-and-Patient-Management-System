@@ -7,11 +7,11 @@
     if ($userRole === 'Display') {
         $targetPage = '../pages/queue_display_page.php';
     } else if ($userRole === 'Doctor/Staff') {
-        $targetPage = '../pages/queue_manager_page.php';
+        $targetPage = '../pages/dashboard_page.php';
     } else if ($userRole === 'Patient') {
         $targetPage = '../pages/queue_display_page.php';
     } else {
-        $targetPage = '../pages/register_page.php'; // Default for Admin / Staff
+        $targetPage = '../pages/dashboard_page.php'; // Default for Admin / Staff
     }
 ?>
 <!DOCTYPE html>

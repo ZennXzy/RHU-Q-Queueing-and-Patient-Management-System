@@ -221,3 +221,260 @@
 .sidebar .account-item:hover {
   border-top: none;
 }
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   ===================================================== */
+
+/* Toggle button + overlay are hidden on desktop and up */
+.sidebar-toggle,
+.sidebar-overlay {
+  display: none;
+}
+
+/* Extra Large Devices - everything enlarged */
+@media (min-width: 3440px) {
+  .sidebar {
+    width: 320px;
+  }
+
+  .nav-group {
+    margin-top: 16px;
+  }
+
+  .sidebar .menu-item {
+    height: 76px;
+    padding-left: 28px;
+    letter-spacing: 1.2px;
+  }
+
+  .sidebar .menu-content {
+    height: 40px;
+  }
+
+  .sidebar .menu-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 20px;
+  }
+
+  .sidebar .menu-text {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .sidebar .dropdown-arrow {
+    right: 28px;
+  }
+
+  .sidebar .dropdown-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .sidebar .sub-nav-link {
+    height: 64px;
+    padding-left: 56px;
+  }
+
+  .sidebar .dropdown-group.open .submenu-container {
+    max-height: 400px;
+  }
+
+  .dot-notification {
+    width: 11px;
+    height: 11px;
+  }
+
+  .lowercontrol {
+    gap: 12px;
+  }
+
+  /* Overrides the inline width on the Settings button */
+  .sidebar .account-item {
+    width: 250px !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .sidebar {
+    width: 250px;
+  }
+
+  .sidebar .menu-item {
+    height: 62px;
+  }
+
+  .sidebar .menu-text {
+    font-size: 12px;
+  }
+
+  .sidebar .sub-nav-link {
+    height: 52px;
+  }
+}
+
+/* Tablet and Mobile: sidebar becomes an off-canvas drawer.
+   (Shared range so there is no dead zone between 576px and 767px.) */
+@media (max-width: 991.98px) {
+  .sidebar-toggle {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1002;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    background: #0B695D;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+  }
+
+  .sidebar-toggle .bar {
+    display: block;
+    width: 22px;
+    height: 2.5px;
+    background: #FFFFFF;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+  }
+
+  /* Hamburger -> X */
+  .sidebar-toggle.is-open .bar:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+  }
+
+  .sidebar-toggle.is-open .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .sidebar-toggle.is-open .bar:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+  }
+
+  .sidebar-overlay.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0s;
+  }
+
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 1001;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.3s ease, visibility 0s linear 0.3s;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 6px 0 24px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease, visibility 0s;
+  }
+
+  /* Leave room for the toggle button, which sits over the drawer's top-left */
+  .nav-group {
+    margin-top: 0;
+    padding-top: 68px;
+  }
+
+  .lowercontrol {
+    margin-top: auto;
+    padding-bottom: 14px;
+  }
+
+  /* Overrides the inline width on the Settings button so it fits the drawer */
+  .sidebar .account-item {
+    width: auto !important;
+    flex: 1;
+  }
+
+  /* Disable hover zoom: it sticks on touch screens */
+  .sidebar .menu-item.active,
+  .sidebar .menu-item:hover,
+  .sidebar .sub-nav-link:hover,
+  .sidebar .sub-nav-link.active {
+    transform: none;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .sidebar {
+    width: 290px;
+  }
+
+  .sidebar .menu-item {
+    height: 58px;
+  }
+
+  .sidebar .menu-text {
+    font-size: 13px;
+  }
+
+  .sidebar .sub-nav-link {
+    height: 52px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 575.98px) {
+  .sidebar {
+    width: min(82vw, 300px);
+  }
+
+  .sidebar-toggle {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-group {
+    padding-top: 60px;
+  }
+
+  .sidebar .menu-item {
+    height: 54px;
+    padding-left: 16px;
+  }
+
+  .sidebar .menu-text {
+    font-size: 13px;
+  }
+
+  .sidebar .sub-nav-link {
+    height: 48px;
+    padding-left: 36px;
+  }
+}

@@ -2,7 +2,15 @@
 require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
-<aside class="sidebar">
+<!-- Mobile/Tablet toggle (hidden on desktop via CSS) -->
+<button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainSidebar">
+  <span class="bar"></span>
+  <span class="bar"></span>
+  <span class="bar"></span>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="mainSidebar">
   <div class="nav-group">
     <a href="../pages/dashboard_page.php" class="menu-item">
           <div class="menu-content">
@@ -158,6 +166,41 @@ $role = $_SESSION['logged_role'];
                 if (submenuContainer) submenuContainer.style.display = "block";
             }
             }
+        });
+
+        // 3. Sidebar toggle for tablet / mobile
+        const sidebar = document.getElementById("mainSidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        const overlay = document.getElementById("sidebarOverlay");
+        const desktopQuery = window.matchMedia("(min-width: 992px)");
+
+        function setSidebarOpen(open) {
+            sidebar.classList.toggle("open", open);
+            overlay.classList.toggle("show", open);
+            toggleBtn.classList.toggle("is-open", open);
+            toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+            toggleBtn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+            document.body.classList.toggle("sidebar-open", open);
+        }
+
+        toggleBtn.addEventListener("click", () => {
+            setSidebarOpen(!sidebar.classList.contains("open"));
+        });
+
+        overlay.addEventListener("click", () => setSidebarOpen(false));
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") setSidebarOpen(false);
+        });
+
+        // Close after choosing a page (but not when opening the Queue dropdown)
+        sidebar.querySelectorAll("a[href]:not(.dropdown-toggle)").forEach((a) => {
+            a.addEventListener("click", () => setSidebarOpen(false));
+        });
+
+        // Reset when resizing up to desktop
+        desktopQuery.addEventListener("change", (e) => {
+            if (e.matches) setSidebarOpen(false);
         });
     });
 </script>
