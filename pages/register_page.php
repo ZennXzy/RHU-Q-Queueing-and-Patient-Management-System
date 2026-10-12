@@ -397,5 +397,45 @@ require_once '../php/connection.php';
         }
     }
 
+
+    // Desktop/Tablet (768px - 3439.98px): Date of Birth starts as plain text, becomes a date picker when tapped
+    (function () {
+        const dob = document.getElementById('date_of_birth');
+        if (!dob) return;
+        const tabletQuery = window.matchMedia('(min-width: 768px) and (max-width: 3439.98px)');
+
+        function showAsText() {
+            dob.type = 'text';
+            dob.placeholder = 'Select date';
+        }
+
+        function showAsDate() {
+            dob.type = 'date';
+            try { dob.showPicker(); } catch (e) { /* picker opens on next tap if unsupported */ }
+        }
+
+        function applyLayout() {
+            if (tabletQuery.matches) {
+                if (!dob.value) showAsText();
+            } else if (dob.type !== 'date') {
+                dob.type = 'date';
+            }
+        }
+
+        function activate() {
+            if (tabletQuery.matches && dob.type === 'text') showAsDate();
+        }
+
+        dob.addEventListener('focus', activate);
+        dob.addEventListener('click', activate);
+
+        // Reset button clears the form, so go back to the text look
+        dob.form.addEventListener('reset', function () {
+            setTimeout(applyLayout, 0);
+        });
+
+        tabletQuery.addEventListener('change', applyLayout);
+        applyLayout();
+    })();
 </script>
 </html>

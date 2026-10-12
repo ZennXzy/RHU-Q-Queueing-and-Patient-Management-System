@@ -52,7 +52,7 @@
 }
 
 /* Extra Large Devices - everything enlarged */
-@media (min-width: 1200px) {
+@media (min-width: 3440px) {
   .top-navbar {
     height: 110px;
     padding: 20px 40px;

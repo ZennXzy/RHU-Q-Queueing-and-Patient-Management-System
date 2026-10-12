@@ -299,3 +299,342 @@ body, html {
 .col-7 { grid-column: span 7; }
 .col-2 { grid-column: span 2; }
 .col-1 { grid-column: span 1; }
+
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   Extra Large = 3440px and up (ultrawide monitors).
+   Desktop / Tablet are ONE tier: 768px - 3439.98px.
+   Mobile: 767.98px and below.
+   ===================================================== */
+
+/* Whenever the top navbar is visible (576px and up), size the workspace from the
+   space that is left instead of the fixed calc(100vh - 118px) */
+@media (min-width: 576px) {
+  .workspace {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Extra Large Devices (3440px and up) - everything enlarged */
+@media (min-width: 3438px) {
+  .content-area {
+    padding: 80px;
+  }
+
+  .content-area::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  .content-area span {
+    font-size: 22px !important; /* overrides inline 13px labels */
+  }
+
+  .page-title {
+    font-size: 64px;
+    margin-bottom: 44px;
+  }
+
+  .section-title {
+    font-size: 40px;
+    margin-bottom: 26px;
+    margin-left: 26px;
+  }
+
+  .white-card {
+    max-width: 2200px;
+    padding: 56px;
+    border-radius: 20px;
+    margin-bottom: 52px;
+  }
+
+  .form-grid {
+    gap: 36px;
+  }
+
+  /* Text inputs */
+  .form-group input[type="text"],
+  .fieldset-group input[type="text"] {
+    padding: 20px 26px;
+    border-width: 2px;
+    border-radius: 10px;
+    font-size: 26px;
+  }
+
+  .fieldset-group input[type="text"] {
+    padding: 8px 0 0;
+    border: none;
+  }
+
+  /* Date of birth */
+  .date {
+    height: 78px;
+    padding: 18px 26px;
+    border-width: 2px;
+    border-radius: 10px;
+    font-size: 26px;
+  }
+
+  .form-group input[type="date"] {
+    font-size: 26px;
+  }
+
+  /* Select boxes and grouped controls */
+  .input-select,
+  .input-container {
+    padding: 20px 26px;
+    border-width: 2px;
+    border-radius: 10px;
+  }
+
+  .input-select select {
+    font-size: 26px;
+  }
+
+  .fieldset-group {
+    padding: 20px 26px;
+    border-width: 2px;
+    border-radius: 10px;
+  }
+
+  .fieldset-group legend {
+    font-size: 24px;
+    padding: 0 10px;
+  }
+
+  /* Titles that carry an inline font-size in the PHP */
+  .row-section .row-title {
+    font-size: 30px !important;
+    margin-left: 26px;
+  }
+
+  .row-section {
+    max-width: none;
+    margin-bottom: 16px;
+  }
+
+  /* Checkboxes and radios */
+  .checkbox-row,
+  .radio-row {
+    gap: 36px;
+    font-size: 26px;
+  }
+
+  .checkbox-item,
+  .radio-item,
+  .radiobox-item {
+    font-size: 24px;
+    gap: 12px;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    width: 26px;
+    height: 26px;
+  }
+
+  .inline-input-line {
+    width: 340px;
+    font-size: 24px;
+    padding: 6px 10px;
+  }
+
+  /* Buttons */
+  .form-grid .col-3.button-group {
+    gap: 24px;
+  }
+
+  .submit-btn,
+  .clear-btn {
+    min-width: 240px;
+    padding: 22px;
+    font-size: 28px;
+    border-radius: 14px;
+  }
+}
+
+/* Desktop / Tablet (768px - 3439.98px): ONE combined tier.
+   Spacing scales smoothly with clamp(), so large desktops keep the original look
+   and smaller screens get tighter automatically. */
+@media (min-width: 768px) and (max-width: 3439.98px) {
+  .content-area {
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .page-title {
+    font-size: clamp(26px, 2.6vw, 32px);
+    margin-bottom: clamp(16px, 2vw, 25px);
+  }
+
+  .section-title {
+    font-size: clamp(19px, 1.9vw, 22px);
+    margin-left: clamp(6px, 1.2vw, 15px);
+  }
+
+  .white-card {
+    padding: clamp(20px, 2.3vw, 30px);
+    margin-bottom: clamp(22px, 2.4vw, 30px);
+  }
+
+  .form-grid {
+    gap: clamp(14px, 1.6vw, 20px);
+  }
+
+  .checkbox-row,
+  .radio-row {
+    flex-wrap: wrap;
+    gap: 10px clamp(12px, 1.6vw, 20px);
+  }
+
+  /* Reset / Register buttons: wider span so they never overflow on narrower screens */
+  .form-grid .col-3.button-group {
+    grid-column: 8 / -1;
+    justify-content: flex-end;
+  }
+
+  /* Date of Birth: label and field on one line; also styles the text-mode version */
+  .date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  #date_of_birth {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    font-size: 14px;
+    color: #333;
+    box-shadow: none;
+  }
+}
+
+/* Mobile and large phones (767.98px and below): one field per row */
+@media (max-width: 767.98px) {
+  .content-area {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    margin-left: 4px;
+    margin-bottom: 10px;
+  }
+
+  .white-card {
+    max-width: none;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .form-grid {
+    gap: 14px;
+  }
+
+  /* Every column becomes full width */
+  .col-1,
+  .col-2,
+  .col-3,
+  .col-4,
+  .col-5,
+  .col-6,
+  .col-7 {
+    grid-column: 1 / -1;
+  }
+
+  /* Employment block has an inline "grid-row: span 2" in the PHP */
+  .form-group.col-5 {
+    grid-row: auto !important;
+  }
+
+  /* 16px stops iOS Safari from zooming in when a field is focused */
+  .form-group input[type="text"],
+  .fieldset-group input[type="text"],
+  .form-group input[type="date"],
+  .input-select select,
+  .inline-input-line {
+    font-size: 16px;
+  }
+
+  .input-select select {
+    width: 100%;
+  }
+
+  .date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: auto;
+    min-height: 43px;
+  }
+
+  .date input[type="date"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .checkbox-row,
+  .radio-row {
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  .inline-input-line {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .row-section {
+    max-width: none;
+  }
+
+  /* Reset / Register buttons: full width, side by side */
+  .form-grid .col-3.button-group {
+    grid-column: 1 / -1;
+  }
+
+  .button-group .submit-btn,
+  .button-group .clear-btn {
+    flex: 1;
+    min-height: 46px;
+  }
+}
+
+/* Mobile (575.98px and below): the top bar is hidden, so the page scrolls normally */
+@media (max-width: 575.98px) {
+  html {
+    height: auto;
+    overflow: visible;
+  }
+
+  body {
+    height: auto;
+    min-height: 100%;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .workspace {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .content-area {
+    height: auto;
+    overflow: visible;
+    padding: 64px 14px 24px; /* top space clears the fixed sidebar toggle */
+  }
+}
