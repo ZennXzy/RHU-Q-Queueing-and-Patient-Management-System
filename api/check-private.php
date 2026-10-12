@@ -24,9 +24,10 @@ $user_type = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'p
 
 // 2. Specific Time Auto-Logout Check
 $currentHourMin = date('H:i'); // Now correctly matches local time
-$cutoffTime = '19:30'; // Set your target closing time (24-hour format)
+
 if ($user_type !== 'admin') { 
     if ($currentHourMin >= $cutoffTime) {
+        $cutoffTime = '19:30'; // Set your target closing time (24-hour format)
         // Update user status to 'Offline' in database
         if ($user_type === 'patient') {
             $updateStmt = $conn->prepare("UPDATE patient_auth SET status = 'Offline' WHERE patient_auth_id = ?");
@@ -52,7 +53,7 @@ if ($user_type !== 'admin') {
     }
 } else ($user_type == 'admin'){
     if ($currentHourMin >= $cutoffTime) {
-        
+        $cutoffTime = '04:30'; // Set your target closing time (24-hour format)
         $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
         $updateStmt->bind_param("i", $user_id);
         $updateStmt->execute();
