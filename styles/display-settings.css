@@ -30,6 +30,21 @@ background-color:#F9FAFB;
   display: flex;
   flex-direction: column;
   padding: 40px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.content-area > * {
+  flex-shrink: 0;
+}
+
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background-color: #20A59E;
+  border-radius: 4px;
 }
 
 .content-header {
@@ -55,11 +70,6 @@ background-color:#F9FAFB;
     gap: 24px;
 }
 
-@media (max-width: 992px) {
-    .settings-two-column-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 .grid-card {
     background: #ffffff;
@@ -142,7 +152,7 @@ background-color:#F9FAFB;
 /* Right Column: Checklist Cells */
 .checklist-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
     gap: 12px;
     margin-bottom: 24px;
 }
@@ -203,4 +213,242 @@ background-color:#F9FAFB;
 
 .save-settings-btn:hover {
     background-color: #085249;
+}
+
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   Mobile: 767.98px and below
+   Desktop / Tablet (ONE tier): 768px - 3439.98px
+   Extra Large: 3440px and up
+   ===================================================== */
+
+/* Whenever the top navbar is visible (576px and up), size the workspace from the
+   space that is left instead of the fixed calc(100vh - 118px) */
+@media (min-width: 576px) {
+  .workspace {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+/* Desktop / Tablet (768px - 3439.98px) */
+@media (min-width: 768px) and (max-width: 3439.98px) {
+  .content-area {
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .page-title {
+    font-size: clamp(26px, 2.6vw, 32px);
+    margin-bottom: clamp(16px, 2vw, 25px);
+  }
+
+  /* One column on narrower screens, two columns once there is room */
+  .settings-two-column-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+    gap: clamp(16px, 1.8vw, 24px);
+  }
+
+  .grid-card {
+    padding: clamp(18px, 2vw, 24px);
+  }
+}
+
+/* Mobile and large phones (767.98px and below) */
+@media (max-width: 767.98px) {
+  .content-area {
+    padding: 20px 16px;
+  }
+
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 14px;
+  }
+
+  .settings-two-column-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .grid-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .card-heading {
+    font-size: 1.1rem;
+  }
+
+  .card-subtext {
+    margin-bottom: 14px;
+  }
+
+  /* No scroll box inside the page scroll: show the whole list */
+  .service-stats-list {
+    overflow-y: visible;
+    height: auto;
+    max-height: none;
+  }
+
+  /* Service name on top, Serving / Waiting pills underneath */
+  .service-stat-item {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .service-name-label {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+
+  .checklist-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .checklist-cell {
+    padding: 14px;
+  }
+
+  .checklist-cell input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+
+  .checklist-actions {
+    justify-content: stretch;
+  }
+
+  .save-settings-btn {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* Mobile (575.98px and below): the top bar is hidden, so the whole page scrolls vertically */
+@media (max-width: 575.98px) {
+  html {
+    height: auto;
+    overflow: visible;
+  }
+
+  body {
+    height: auto;
+    min-height: 100%;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .workspace {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+
+  .content-area {
+    display: block;
+    height: auto;
+    overflow: visible;
+    padding: 64px 14px 24px; /* top space clears the fixed sidebar toggle */
+  }
+
+  .settings-two-column-grid {
+    margin-top: 0;
+  }
+}
+
+/* Extra Large Devices (3440px and up) - everything enlarged */
+@media (min-width: 3440px) {
+  .content-area {
+    padding: 80px;
+  }
+
+  .content-area::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  .page-title {
+    font-size: 64px;
+    margin-bottom: 44px;
+  }
+
+  .settings-two-column-grid {
+    gap: 48px;
+  }
+
+  .grid-card {
+    padding: 44px;
+    border-radius: 20px;
+  }
+
+  .card-heading {
+    font-size: 2.3rem;
+    margin-bottom: 8px;
+  }
+
+  .card-subtext {
+    font-size: 1.45rem;
+    margin-bottom: 32px;
+  }
+
+  .service-stats-list {
+    gap: 20px;
+    max-height: 760px;
+  }
+
+  .service-stats-list::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .service-stat-item {
+    padding: 18px 26px;
+    border-radius: 14px;
+    border-left-width: 7px;
+  }
+
+  .service-name-label {
+    font-size: 24px;
+    max-width: 520px;
+  }
+
+  .stat-pills {
+    gap: 14px;
+  }
+
+  .badge {
+    padding: 8px 20px;
+    border-radius: 36px;
+    font-size: 1.4rem;
+  }
+
+  .checklist-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 440px), 1fr));
+    gap: 22px;
+    margin-bottom: 40px;
+  }
+
+  .checklist-cell {
+    gap: 20px;
+    padding: 26px 30px;
+    border-width: 3px;
+    border-radius: 16px;
+  }
+
+  .checklist-cell input[type="checkbox"] {
+    width: 32px;
+    height: 32px;
+  }
+
+  .service-title {
+    font-size: 1.6rem;
+  }
+
+  .save-settings-btn {
+    padding: 22px 56px;
+    font-size: 1.7rem;
+    border-radius: 14px;
+  }
 }
