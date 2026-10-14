@@ -29,6 +29,18 @@ html {
     flex: 1;
     padding: 40px;
     height: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.content-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+    background-color: #20A59E;
+    border-radius: 4px;
 }
 
 
@@ -363,4 +375,402 @@ tr:not(:last-child) td {
     font-size: 1.1rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =====================================================
+   RESPONSIVE BREAKPOINTS
+   Mobile: 767.98px and below
+   Desktop / Tablet (ONE tier): 768px - 3439.98px
+   Extra Large: 3440px and up
+   ===================================================== */
+
+/* Whenever the top navbar is visible (576px and up), size the workspace from the
+   space that is left instead of the fixed calc(100vh - 118px) */
+@media (min-width: 576px) {
+    .workspace {
+        height: auto;
+        min-height: 0;
+    }
+
+    .content-area {
+        height: auto;
+    }
+}
+
+/* Desktop / Tablet (768px - 3439.98px) */
+@media (min-width: 768px) and (max-width: 3439.98px) {
+    .content-area {
+        padding: clamp(24px, 3vw, 40px);
+    }
+
+    .page-title {
+        font-size: clamp(1.7rem, 2.6vw, 2.2rem);
+    }
+
+    /* Tabs and stats wrap onto two lines instead of squeezing */
+    .card-top-bar {
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 14px;
+    }
+
+    .right-bar {
+        flex-wrap: wrap;
+    }
+
+    /* 9 columns: keep them readable and scroll sideways inside the box if needed */
+    .table-responsive table {
+        min-width: 900px;
+    }
+
+    th,
+    td {
+        white-space: nowrap;
+    }
+
+    td:nth-child(4) {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* Mobile and large phones (767.98px and below) */
+@media (max-width: 767.98px) {
+    .content-area {
+        padding: 20px 16px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+        margin-bottom: 14px;
+    }
+
+    /* ---------- Top bar: Staff / Patient tabs, then stats, then Add ---------- */
+    .card-top-bar {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .left-bar {
+        width: 100%;
+    }
+
+    /* Tabs stretch across the screen like a segmented control */
+    .table-selector {
+        width: 100%;
+        margin: 0;
+    }
+
+    .table-selector .tab-btn {
+        flex: 1;
+        width: auto;
+        min-height: 46px;
+        padding: 10px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+    }
+
+    .table-selector .tab-btn + .tab-btn {
+        margin-left: 8px;
+    }
+
+    .table-selector .tab-btn.active {
+        border-color: #0B695D;
+    }
+
+    .right-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    /* Stats on one row, Add button full width underneath */
+    .stats-group {
+        order: -1;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+    }
+
+    .top-action-button {
+        width: 100%;
+    }
+
+    .top-action-button .btn {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .account-action {
+        flex-wrap: wrap;
+    }
+
+    /* ---------- Table becomes a list of account cards ---------- */
+    .table-responsive {
+        margin-top: 12px;
+        overflow-x: visible;
+    }
+
+    table,
+    tbody,
+    tr,
+    td {
+        display: block;
+        width: 100%;
+    }
+
+    /* Header row hidden visually, still read by screen readers */
+    thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 12px;
+        padding: 14px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #0b695d;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    tr:not(:last-child) td {
+        border-bottom: none;
+    }
+
+    td {
+        padding: 0;
+        min-width: 0;
+        width: auto;
+        font-size: 0.9rem;
+        overflow-wrap: anywhere;
+    }
+
+    /* "No accounts" / loading rows: one cell spanning all columns */
+    td[colspan] {
+        grid-column: 1 / -1;
+        padding: 20px 12px;
+        text-align: center;
+    }
+
+    td:not([colspan]) {
+        text-align: left !important;
+    }
+
+    /* Hide the "#" column */
+    td:nth-child(1):not([colspan]) {
+        display: none;
+    }
+
+    /* Row 1: full name + status */
+    td:nth-child(3):not([colspan]) {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: center;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #0b695d;
+    }
+
+    td:nth-child(5):not([colspan]) {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+        align-self: center;
+    }
+
+    /* Rows 2-4: labelled fields */
+    td:nth-child(2):not([colspan]) { grid-column: 1;      grid-row: 2; }
+    td:nth-child(6):not([colspan]) { grid-column: 2;      grid-row: 2; }
+    td:nth-child(4):not([colspan]) { grid-column: 1 / -1; grid-row: 3; }
+    td:nth-child(7):not([colspan]) { grid-column: 1;      grid-row: 4; }
+    td:nth-child(8):not([colspan]) { grid-column: 2;      grid-row: 4; }
+
+    td:nth-child(2):not([colspan])::before { content: "Username"; }
+    td:nth-child(6):not([colspan])::before { content: "Token"; }
+    td:nth-child(4):not([colspan])::before { content: "Email"; }
+    td:nth-child(7):not([colspan])::before { content: "Created"; }
+    td:nth-child(8):not([colspan])::before { content: "Last Login"; }
+
+    td:nth-child(2):not([colspan])::before,
+    td:nth-child(4):not([colspan])::before,
+    td:nth-child(6):not([colspan])::before,
+    td:nth-child(7):not([colspan])::before,
+    td:nth-child(8):not([colspan])::before {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #94a3b8;
+    }
+
+    /* Row 5: action buttons */
+    td:nth-child(9):not([colspan]) {
+        grid-column: 1 / -1;
+        grid-row: 5;
+        padding-top: 10px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .table-actions {
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .table-actions button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 48px;
+        min-height: 44px;
+        background-color: #f1f5f9;
+        border-radius: 8px;
+    }
+
+    /* Hover zoom sticks on touch screens */
+    .edit-btn:hover,
+    .delete-btn:hover,
+    .logout-btn:hover,
+    .top-action-button button:hover {
+        transform: none;
+    }
+}
+
+/* Mobile (575.98px and below): the top bar is hidden, so the whole page scrolls vertically */
+@media (max-width: 575.98px) {
+    html {
+        height: auto;
+        overflow: visible;
+    }
+
+    body {
+        height: auto;
+        min-height: 100%;
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    .workspace {
+        display: block;
+        height: auto;
+        min-height: 0;
+    }
+
+    .content-area {
+        height: auto;
+        overflow: visible;
+        padding: 64px 14px 24px; /* top space clears the fixed sidebar toggle */
+    }
+}
+
+/* Extra Large Devices (3440px and up) - everything enlarged */
+@media (min-width: 3440px) {
+    .content-area {
+        padding: 80px;
+    }
+
+    .content-area::-webkit-scrollbar {
+        width: 14px;
+    }
+
+    .page-title {
+        font-size: 4rem;
+        margin-bottom: 32px;
+    }
+
+    .card-top-bar {
+        margin-bottom: 4px;
+    }
+
+    .table-selector {
+        margin-left: 30px;
+    }
+
+    .table-selector .tab-btn {
+        width: auto;
+        min-width: 200px;
+        padding: 14px 44px;
+        font-size: 1.6rem;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+
+    .right-bar {
+        gap: 36px;
+        margin-right: 30px;
+    }
+
+    .stat-info {
+        gap: 30px;
+    }
+
+    .stat-label {
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+    }
+
+    .btn {
+        padding: 18px 44px;
+        font-size: 1.5rem;
+        border-radius: 10px;
+    }
+
+    .table-responsive {
+        margin-top: 5px;
+    }
+
+    table {
+        font-size: 1.5rem;
+    }
+
+    th {
+        padding: 24px 20px;
+    }
+
+    td {
+        padding: 26px 20px;
+    }
+
+    .badge {
+        padding: 8px 24px;
+        font-size: 1.35rem;
+        border-radius: 24px;
+    }
+
+    .table-actions img {
+        height: 34px;
+    }
+
+    .edit-btn,
+    .delete-btn,
+    .logout-btn {
+        padding: 12px 20px;
+        border-radius: 10px;
+    }
 }
