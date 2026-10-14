@@ -46,7 +46,7 @@ $role = $_SESSION['logged_role'];
               </div>
           </a> 
           <div class="submenu-container">
-              <a href="../pages/queue_display_page.php" class="sub-nav-link">
+              <a href="../pages/queue_display_page.php" target="_blank" class="sub-nav-link">
                   <div class="menu-icon">         
                       <img src="../svg/queue-signal.svg" alt="queue_display_icon">
                   </div>

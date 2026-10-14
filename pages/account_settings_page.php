@@ -16,6 +16,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/edit-account-form.css">
+    <link rel="stylesheet" href="../styles/logs_modal.css">
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
@@ -24,6 +25,7 @@ require_once '../php/connection.php';
     <script src="../js/edit-account.js" defer></script>
     <script src="../js/backup_modal.js" defer></script>
     <script src="../js/session-check.js" defer></script>
+    <script src="../js/logs-modal.js" defer></script>
 </head>
 <body>
     <?php include '../pages/top-navbar.php'; ?>
@@ -50,9 +52,7 @@ require_once '../php/connection.php';
             <button type="button" class="btn btn-secondary" id="openBackupModalBtn">
               Backup and Restore
             </button>
-            <button type="button" class="btn btn-secondary" onclick="location.href='logs.php'">
-              Logs
-            </button>
+            <button class="btn btn-secondary" id="open-logs-button" type="button">Logs</button>
           </div> 
           <?php } ?>
         </div>
@@ -227,5 +227,37 @@ require_once '../php/connection.php';
       </div>
     </form>
   </dialog>
+ <!-- Logs modal -->
+<dialog id="logsModal" class="logs-modal" aria-labelledby="logsTitle">
+    <div class="logs-modal__header">
+        <h2 class="logs-modal__title" id="logsTitle">Activity Logs</h2>
+        <button type="button" class="logs-modal__close" id="logsCloseBtn" aria-label="Close logs">&times;</button>
+    </div>
+
+    <div class="logs-modal__toolbar">
+        <input type="search" id="logsSearch" class="logs-modal__search" placeholder="Search logs..." autocomplete="off" aria-label="Search logs">
+        <button type="button" class="logs-btn" id="logsRefreshBtn">Refresh</button>
+    </div>
+
+    <div class="logs-modal__body">
+        <table class="logs-table">
+            <thead>
+                <tr id="logsHeadRow"></tr>
+            </thead>
+            <tbody id="logsBody">
+                <tr class="logs-state"><td>Loading logs...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="logs-modal__footer">
+        <span class="logs-modal__info" id="logsInfo" aria-live="polite"></span>
+        <div class="logs-modal__pager">
+            <button type="button" class="logs-btn" id="logsPrevBtn" disabled>Previous</button>
+            <span class="logs-modal__page" id="logsPageLabel"></span>
+            <button type="button" class="logs-btn logs-btn--primary" id="logsNextBtn" disabled>Next</button>
+        </div>
+    </div>
+</dialog>
 </body>
 </html>
