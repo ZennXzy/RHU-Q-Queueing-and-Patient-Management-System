@@ -1,5 +1,25 @@
 let currentModalPatientId = null;
 
+// Escape text before putting it into innerHTML
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Clicks on the tab buttons must not bubble up to the dialog. Otherwise a
+// "click outside to close" handler can see the click after the layout has
+// changed and wrongly close the modal.
+document.addEventListener('DOMContentLoaded', () => {
+  ['btnViewProfile', 'btnViewTransactions'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', e => e.stopPropagation());
+  });
+});
+
 // Expose function globally so view buttons can set patient ID
 window.setModalPatientId = function(patientId) {
   currentModalPatientId = patientId;
@@ -28,7 +48,7 @@ function switchModalView(view) {
         '<div class="empty-transactions">No patient selected.</div>';
     }
   } else {
-    profileView.style.display = 'grid';
+    profileView.style.display = '';
     transactionsView.style.display = 'none';
 
     btnTransactions.classList.remove('active');
@@ -55,25 +75,25 @@ async function loadPatientTransactions(patientId) {
       container.innerHTML = data.transactions.map(tx => `
         <div class="transaction-card">
           <div class="tx-header">
-            <span class="tx-code-badge">Queue Code: ${tx.queue_code}</span>
-            <span class="tx-date">${tx.transaction_date}</span>
+            <span class="tx-code-badge">Queue Code: ${escapeHtml(tx.queue_code)}</span>
+            <span class="tx-date">${escapeHtml(tx.transaction_date)}</span>
           </div>
           <div class="tx-grid">
             <div class="tx-field">
               <label>Service</label>
-              <span>${tx.service}</span>
+              <span>${escapeHtml(tx.service)}</span>
             </div>
             <div class="tx-field">
               <label>Server / Attendant</label>
-              <span>${tx.server_name}</span>
+              <span>${escapeHtml(tx.server_name)}</span>
             </div>
             <div class="tx-field">
               <label>Service Duration</label>
-              <span>${tx.service_duration}</span>
+              <span>${escapeHtml(tx.service_duration)}</span>
             </div>
             <div class="tx-field full-width">
               <label>Remarks</label>
-              <span class="tx-remarks">"${tx.remarks}"</span>
+              <span class="tx-remarks">"${escapeHtml(tx.remarks)}"</span>
             </div>
           </div>
         </div>
