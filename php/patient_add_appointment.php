@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 // 1. Include system connection and authorization guards
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
+date_default_timezone_set('Asia/Manila');
 
 // Authorize patient role
 authorizeRoles(['Patient']);

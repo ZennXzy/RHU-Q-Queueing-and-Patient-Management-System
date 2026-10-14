@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'connection.php';
+date_default_timezone_set('Asia/Manila');
 
 if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   $username = trim($_POST['username'] ?? '');

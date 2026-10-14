@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
 
 $res = $conn->query("SELECT COUNT(*) AS waiting_count FROM queue_information WHERE status = 'Waiting'");
 

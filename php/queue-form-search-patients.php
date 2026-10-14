@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
 
 $query = isset($_GET['query']) ? trim($_GET['query']) : '';
 

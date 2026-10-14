@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit();
 }
-
+date_default_timezone_set('Asia/Manila');
 $username = isset($_POST['username']) ? trim($_POST['username']) : '';
 $fullname = isset($_POST['fullname']) ? trim($_POST['fullname']) : '';
 $email    = isset($_POST['email']) ? trim($_POST['email']) : '';

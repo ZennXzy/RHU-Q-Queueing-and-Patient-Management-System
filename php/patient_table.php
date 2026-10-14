@@ -16,7 +16,7 @@ if ($res && $res->num_rows > 0) {
       echo '<td>' . htmlspecialchars($row['phil_status']) . '</td>';
       echo '<td>' . htmlspecialchars($row['date_registered']) . '</td>';
 
-      echo '<td>';
+      echo '<td style="display:flex;">';
       if (canManageRecords()) {
           echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
           echo '<button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button>';

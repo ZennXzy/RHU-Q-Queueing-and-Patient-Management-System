@@ -3,6 +3,7 @@ session_start();
 header('Content-Type: application/json');
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
+date_default_timezone_set('Asia/Manila');
 
 $patient_id = $_SESSION['patient_id'] ?? 0;
 

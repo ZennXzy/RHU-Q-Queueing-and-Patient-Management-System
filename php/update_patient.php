@@ -2,6 +2,8 @@
 header('Content-Type: application/json');
 require_once '../php/connection.php'; 
 require_once '../api/check-private.php';
+date_default_timezone_set('Asia/Manila');
+
 if (!canManageRecords()) {
     echo json_encode([
         'status'  => 'error',

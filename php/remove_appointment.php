@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
+date_default_timezone_set('Asia/Manila');
 
 // Ensure the request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

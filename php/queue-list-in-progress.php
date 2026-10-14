@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
+
   $sql = "SELECT 
               q.queue_info_id, 
               q.queue_code, 

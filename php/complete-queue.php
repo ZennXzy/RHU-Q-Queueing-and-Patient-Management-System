@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 session_start();
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);

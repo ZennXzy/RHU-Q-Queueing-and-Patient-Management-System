@@ -4,8 +4,8 @@ header('Content-Type: application/json');
 
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
-
-authorizeRoles(['Admin']);
+date_default_timezone_set('Asia/Manila');
+authorizeRoles(['Admin','Doctor/Staff']);
 
 // Date range inputs (defaults to current month or all-time if blank)
 $dateFrom = $_GET['date_from'] ?? date('Y-m-01');

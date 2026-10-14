@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
-
+date_default_timezone_set('Asia/Manila');
 $queue_info_id = isset($_POST['queue_info_id']) ? intval($_POST['queue_info_id']) : 0;
 
 if ($queue_info_id <= 0) {

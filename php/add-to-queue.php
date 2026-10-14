@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
     exit;
 }
+date_default_timezone_set('Asia/Manila');
 
 $patient_id       = isset($_POST['patient_id']) ? intval($_POST['patient_id']) : 0;
 $service_name     = isset($_POST['service_name']) ? trim($_POST['service_name']) : '';

@@ -5,6 +5,7 @@ ob_start();
 header('Content-Type: application/json');
 
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
 
 // 1. Retrieve the username securely from session
 $username = $_SESSION['username'] ?? $_SESSION['logged_user'] ?? $_SESSION['fullname'] ?? 'Staff/Doctor';

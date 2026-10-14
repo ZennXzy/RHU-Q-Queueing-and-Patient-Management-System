@@ -2,6 +2,7 @@
 require_once '../api/check-private.php';
 authorizeRoles(['Admin']);
 require_once '../php/connection.php';
+date_default_timezone_set('Asia/Manila');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: account_settings_page_2.php");
