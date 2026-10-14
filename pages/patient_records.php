@@ -15,8 +15,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/patient_records.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
-    
-
+  
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>

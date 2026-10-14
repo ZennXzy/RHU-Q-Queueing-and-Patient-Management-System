@@ -2,6 +2,7 @@
 require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
+
 <!-- Mobile/Tablet toggle (hidden on desktop via CSS) -->
 <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainSidebar">
   <span class="bar"></span>
