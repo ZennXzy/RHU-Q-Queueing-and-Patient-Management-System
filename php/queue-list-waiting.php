@@ -29,6 +29,13 @@ if($res && $res->num_rows > 0){
         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
         echo '<div class="action-container">';
+        echo '<button type="button" class="btn-view-queue" ' .
+        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+        'data-name="' .htmlspecialchars($fullName). '" ' .
+        'title="View queue information" aria-label="View queue information for ' .htmlspecialchars($fullName). '">' .
+        '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' .
+        '</button>';
         echo '<button type="button" class="btn-delete" ' .
         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .

@@ -18,6 +18,7 @@ $role = $_SESSION['logged_role'];
     <link rel="stylesheet" href="../styles/complete-queue-modal.css">
     <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/queue_info_modal.css">
     
     <script src="../js/submenu.js" defer></script>
     <script src="../js/queueing-form.js" defer></script>
@@ -30,6 +31,7 @@ $role = $_SESSION['logged_role'];
     <script src="../js/queue-list-loader.js" defer></script>
     <script src="../js/accept-queue.js" defer></script>
     <script src="../js/complete-queue.js" defer></script>
+    <script src="../js/queue_info_modal.js" defer></script>
     <script src="../js/session-check.js" defer></script>
 
 
@@ -95,6 +97,13 @@ $role = $_SESSION['logged_role'];
                                         echo '<span class="patient-name">'.htmlspecialchars($fullName).'</span>';
                                         echo '<span class="service-type">'.htmlspecialchars($row['service_name']).'</span>';
                                         echo '<div class="action-container">';
+                                        echo '<button type="button" class="btn-view-queue" ' .
+                                        'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
+                                        'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
+                                        'data-name="' .htmlspecialchars($fullName). '" ' .
+                                        'title="View queue information" aria-label="View queue information for ' .htmlspecialchars($fullName). '">' .
+                                        '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' .
+                                        '</button>';
                                         echo '<button type="button" class="btn-delete" ' .
                                         'data-id="' .htmlspecialchars($row['queue_info_id']). '" ' .
                                         'data-code="' .htmlspecialchars($row['queue_code']). '" ' .
@@ -198,7 +207,6 @@ $role = $_SESSION['logged_role'];
             <p style="text-align: center;">Please wait for your number to be called.</p>
         </div>
     </div>
-    
 </body>
 <!-- UPDATE: Add Patient Queue Dialog with Vitals and Complaints -->
 <dialog id="queue-form" class="queue-form">
@@ -354,6 +362,75 @@ $role = $_SESSION['logged_role'];
                 </div>
             </div>
         </form>
+    </div>
+</dialog>
+<!-- Queue Information modal -->
+<dialog id="queueInfoModal" class="qinfo-modal" aria-labelledby="qiTitle">
+    <div class="qinfo-header">
+        <div class="qinfo-header__text">
+            <h2 class="qinfo-title" id="qiTitle">Queue Information</h2>
+            <span class="qinfo-code" id="qiQueueCode"></span>
+        </div>
+        <button type="button" class="qinfo-close" id="qiCloseBtn" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="qinfo-body">
+        <p class="qinfo-status" id="qiStatus" role="status" hidden></p>
+
+        <div class="qinfo-content" id="qiContent">
+            <section class="qinfo-patient">
+                <h3 class="qinfo-patient__name" id="qiPatient">--</h3>
+                <dl class="qinfo-meta">
+                    <div>
+                        <dt>Service</dt>
+                        <dd id="qiService">--</dd>
+                    </div>
+                    <div>
+                        <dt>Date and time</dt>
+                        <dd id="qiDate">--</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section>
+                <h3 class="qinfo-section-title">Vital signs</h3>
+                <div class="qinfo-vitals">
+                    <div class="qinfo-tile" data-vital="blood_pressure">
+                        <span class="qinfo-tile__label">Blood pressure</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                    <div class="qinfo-tile" data-vital="respiratory_rate">
+                        <span class="qinfo-tile__label">Respiratory rate</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                    <div class="qinfo-tile" data-vital="temperature">
+                        <span class="qinfo-tile__label">Temperature</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                    <div class="qinfo-tile" data-vital="pulse_rate">
+                        <span class="qinfo-tile__label">Pulse rate</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                    <div class="qinfo-tile" data-vital="weight">
+                        <span class="qinfo-tile__label">Weight</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                    <div class="qinfo-tile" data-vital="height">
+                        <span class="qinfo-tile__label">Height</span>
+                        <span class="qinfo-tile__value">--</span>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="qinfo-section-title">Diagnosis</h3>
+                <p class="qinfo-diagnosis" id="qiDiagnosis">--</p>
+            </section>
+        </div>
+    </div>
+
+    <div class="qinfo-footer">
+        <button type="button" class="qinfo-btn" id="qiFooterCloseBtn">Close</button>
     </div>
 </dialog>
 <script>

@@ -9,8 +9,8 @@
   if (!document.getElementById('logoutModalStyles')) {
     var script = document.currentScript;
     var cssUrl = script && script.src
-      ? new URL('../styles/logout-modal.css', script.src).href
-      : '../styles/logout-modal.css';
+      ? new URL('../styles/logout_modal.css', script.src).href
+      : '../styles/logout_modal.css';
 
     var link = document.createElement('link');
     link.id = 'logoutModalStyles';
