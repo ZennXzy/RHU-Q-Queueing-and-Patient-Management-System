@@ -22,6 +22,7 @@ $currentPage = 'settings';
   <link rel="stylesheet" href="../styles/account-settings_2.css">
   <link rel="stylesheet" href="../styles/patient_sidebar.css">
   <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
   <link rel="stylesheet" href="../styles/edit-account-form.css">
 
   <!-- Script Modules -->

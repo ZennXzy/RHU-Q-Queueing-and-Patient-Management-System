@@ -69,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/patient_sidebar.css">
     <link rel="stylesheet" href="../styles/patient_add_queue.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
 
     <script src="../js/toast.js" defer></script>
     <script src="../js/patient_sidebar.js" defer></script>

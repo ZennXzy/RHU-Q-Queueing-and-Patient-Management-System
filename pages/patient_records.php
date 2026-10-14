@@ -14,6 +14,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/patient_records.css">
     <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
 
   
     <script src="../js/submenu.js" defer></script>

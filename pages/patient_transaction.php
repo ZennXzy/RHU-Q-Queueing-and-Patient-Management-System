@@ -13,6 +13,7 @@ $currentPage = 'transactions';
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/patient_sidebar.css">
     <link rel="stylesheet" href="../styles/patient_transactions.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/patient_sidebar.js" defer></script>

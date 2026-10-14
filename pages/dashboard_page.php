@@ -15,6 +15,8 @@ require '../php/connection.php';
   <link rel="stylesheet" href="../styles/sidebar.css">
   <link rel="stylesheet" href="../styles/navbar.css">
   <link rel="stylesheet" href="../styles/dashboard.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
+
 
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>

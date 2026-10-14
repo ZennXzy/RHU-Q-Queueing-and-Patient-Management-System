@@ -15,6 +15,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/add-account-form.css">
     <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/edit-account-form.css">
 
 

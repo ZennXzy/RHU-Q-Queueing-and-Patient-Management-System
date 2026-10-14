@@ -16,6 +16,8 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/appointment.css">
     <link rel="stylesheet" href="../styles/patient_sidebar.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
+
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>

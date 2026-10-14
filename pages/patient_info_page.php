@@ -15,6 +15,8 @@ $currentPage = 'patient_info'
     <link rel="stylesheet" href="../styles/patient_sidebar.css">
     <link rel="stylesheet" href="../styles/patient_information.css">
     <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
+
 
     <script src="../js/patient_sidebar.js" defer></script>
     <script src="../js/logout.js" defer></script>

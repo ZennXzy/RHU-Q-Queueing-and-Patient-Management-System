@@ -13,6 +13,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/register_page.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/submenu.js" defer></script>

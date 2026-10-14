@@ -16,6 +16,7 @@ $role = $_SESSION['logged_role'];
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/queue-forms.css">
     <link rel="stylesheet" href="../styles/complete-queue-modal.css">
+    <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
     
     <script src="../js/submenu.js" defer></script>
