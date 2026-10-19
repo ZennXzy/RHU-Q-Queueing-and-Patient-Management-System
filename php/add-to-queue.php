@@ -15,7 +15,8 @@ $respiratory_rate = isset($_POST['respiratory_rate']) ? trim($_POST['respiratory
 $temperature      = isset($_POST['temperature']) ? trim($_POST['temperature']) : '';
 $pulse_rate       = isset($_POST['pulse_rate']) ? trim($_POST['pulse_rate']) : '';
 $weight           = isset($_POST['weight']) ? trim($_POST['weight']) : '';
-$height           = isset($_POST['height']) ? trim($_POST['height']) : '';$complaints       = isset($_POST['complaints']) ? trim($_POST['complaints']) : '';
+$height           = isset($_POST['height']) ? trim($_POST['height']) : '';
+$complaints       = isset($_POST['complaints']) ? trim($_POST['complaints']) : '';
 
 if ($patient_id <= 0 || empty($service_name)) {
     echo json_encode(['status' => 'error', 'message' => 'Please select both a valid patient and service.']);
@@ -40,7 +41,9 @@ try {
     // Get patient name for the response badge
     $p_stmt =$conn->prepare("SELECT CONCAT(firstname, ' ', lastname, ' ', COALESCE(suffix, '')) AS fullname FROM patient_records WHERE patient_id = ?");
     $p_stmt->bind_param("i", $patient_id);
-    $p_stmt->execute();$p_res = $p_stmt->get_result();$patient_name = ($p_row =$p_res->fetch_assoc()) ? trim($p_row['fullname']) : "Patient #{$patient_id}";
+    $p_stmt->execute();
+    $p_res = $p_stmt->get_result();
+    $patient_name = ($p_row =$p_res->fetch_assoc()) ? trim($p_row['fullname']) : "Patient #{$patient_id}";
     $p_stmt->close();
 
     // Select the TRUE numerical MAXIMUM for this prefix created today (CURDATE())
@@ -49,15 +52,22 @@ try {
                  WHERE queue_code LIKE CONCAT(?, '%') 
                    AND DATE(`created_at`) = CURDATE()";
 
-    $stmt_code =$conn->prepare($code_sql);$stmt_code->bind_param("s", $prefix);$stmt_code->execute();
+    $stmt_code =$conn->prepare($code_sql);
+    $stmt_code->bind_param("s", $prefix);
+    $stmt_code->execute();
     $code_result =$stmt_code->get_result();
 
     $next_number = 1;
     if ($row =$code_result->fetch_assoc()) {
-        if (!is_null($row['max_num'])) {$next_number = intval($row['max_num']) + 1;         }     }$stmt_code->close();
+        if (!is_null($row['max_num'])) {
+            $next_number = intval($row['max_num']) + 1;
+        }     
+    }
+    $stmt_code->close();
 
-    $queue_code = sprintf("%s%04d", $prefix,$next_number);
-    $initial_status = 'Waiting';$current_datetime = date('F j, Y, g:i A');
+    $queue_code = sprintf("%s%03d", $prefix,$next_number);
+    $initial_status = 'Waiting';
+    $current_datetime = date('F j, Y, g:i A');
 
     // Insert queue record with vital signs and complaints
     $insert_sql = "INSERT INTO queue_information 
