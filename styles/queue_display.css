@@ -13,19 +13,6 @@ body, html {
 }
 
 
-/* Top branding header */
-.top-brand {
-    display: flex;
-    flex: row;
-    align-items: center;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
-    margin-bottom: 15px;
-}
-
-
 .rhu_logo_topNav img{
   height: 50px;
   width:auto;
