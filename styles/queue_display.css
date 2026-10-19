@@ -110,13 +110,104 @@ body, html {
     border-radius: 12px;
     padding: 15px;
     flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: 14px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.queue-card .dept-title,
+.queue-card .time-stat {
+    grid-column: 1 / -1;
+}
+
+.queue-card .dept-title,
+.queue-card .time-stat {
+    grid-column: 1 / -1;
+}
+
+.queue-card .time-stat {
+    margin-top: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Colored Queue Card: 2-column grid (Waiting | Now Serving) */
+.queue-card {
+    border-radius: 12px;
+    padding: 15px;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    column-gap: 14px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    margin-bottom: 10px;
+    overflow: hidden; /* columns scroll internally instead */
+}
+
+/* Title and stats span both columns */
+.queue-card .dept-title,
+.queue-card .time-stat {
+    grid-column: 1 / -1;
+}
+
+.queue-card .time-stat {
+    margin-top: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Column base */
+.queue-col {
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-bottom: 10px;
-    overflow-y: auto; /* Scroll internally if active tickets exceed card height */
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
 }
+
+.queue-col-waiting {
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+    padding-right: 12px;
+}
+
+.queue-col-header {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #222;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+}
+
+.queue-col .ticket-box {
+    width: 100%;
+}
+
+/* Waiting tickets look quieter than the one being served */
+.ticket-box.is-waiting {
+    background-color: rgba(255, 255, 255, 0.65);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Now Serving tickets stand out */
+.queue-col-serving .ticket-box {
+    font-size: 24px;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+}
+
 /* Department Theme Colors */
 .dept-medical {
     background-color: #E3F2FD;
@@ -296,8 +387,27 @@ body, html {
         padding: 30px;
         border-radius: 18px;
         margin-bottom: 16px;
+        column-gap: 28px;
     }
- 
+
+    .queue-col-waiting {
+        padding-right: 22px;
+    }
+
+    .queue-col-header {
+        font-size: 22px;
+        padding-bottom: 10px;
+        margin-bottom: 16px;
+    }
+
+    .ticket-box.is-waiting {
+        font-size: 28px;
+    }
+
+    .queue-col-serving .ticket-box {
+        font-size: 42px;
+    }
+
     .waiting-card {
         padding-top: 8px;
     }
@@ -366,21 +476,24 @@ body, html {
     .no-services-message p {
         font-size: 1.6rem;
     }
- 
-    .minimize-btn {
-        font-size: 26px;
-        bottom: 22px;
-        right: 22px;
-    }
- 
-    .minimize-btn .minimize-button img {
-        height: 30px;
-    }
+
 }
 /* Desktop */
 @media (min-width: 992px) and (max-width: 1199.98px) {
     .page-container {
         padding: 22px 36px;
+    }
+
+    .queue-col-header {
+        font-size: 12px;
+    }
+
+    .ticket-box.is-waiting {
+        font-size: 15px;
+    }
+
+    .queue-col-serving .ticket-box {
+        font-size: 20px;
     }
 
     .top-brand {
@@ -420,7 +533,17 @@ body, html {
     .page-container {
         padding: 18px 24px;
     }
+    .queue-col-header {
+        font-size: 12px;
+    }
 
+    .ticket-box.is-waiting {
+        font-size: 15px;
+    }
+
+    .queue-col-serving .ticket-box {
+        font-size: 20px;
+    }
     .top-brand {
         font-size: 13px;
         margin-bottom: 12px;
@@ -542,8 +665,23 @@ body, html {
     .queue-card {
         padding: 12px;
         overflow-y: auto;
+        column-gap: 10px;
+    }
+    .queue-col-waiting {
+        padding-right: 8px;
     }
 
+    .queue-col-header {
+        font-size: 11px;
+    }
+
+    .ticket-box.is-waiting {
+        font-size: 14px;
+    }
+
+    .queue-col-serving .ticket-box {
+        font-size: 18px;
+    }
     .no-services-message {
         flex: 0 0 100%;
     }

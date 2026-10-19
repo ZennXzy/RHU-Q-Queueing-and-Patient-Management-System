@@ -57,6 +57,6 @@ if (ini_get("session.use_cookies")) {
 session_unset();
 session_destroy();
 
-header('Location: ../pages/login_page.php');
+header('Location: ../index.html');
 exit();
 ?>
