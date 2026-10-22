@@ -1,63 +1,13 @@
 <?php
+// Note: Session checking and role authorization can stay here or be handled in the external processor, 
+// but keeping session checks here ensures security before rendering the view.
 require_once '../api/check-private.php';
-require_once '../php/connection.php';
-
-// Enforce Patient Authorization
 authorizeRoles(['Patient']);
 
 $currentPage = 'add_queue';
-$patient_id  = $_SESSION['patient_id'] ?? null;
-$message     = '';
-$messageType = '';
-
-// Handle Form Submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $service          = trim($_POST['service'] ?? '');
-    $bp               = trim($_POST['blood_pressure'] ?? '');
-    $respiratory_rate = trim($_POST['respiratory_rate'] ?? '');
-    $temperature      = trim($_POST['temperature'] ?? '');
-    $pulse_rate       = trim($_POST['pulse_rate'] ?? '');
-    $weight           = trim($_POST['weight'] ?? '');
-    $height           = trim($_POST['height'] ?? '');
-    $description      = trim($_POST['description'] ?? '');
-
-    if (empty($service)) {
-        $message = "Please select a health service.";
-        $messageType = "error";
-    } else {
-        // Insert Queue Record
-        $stmt = $conn->prepare("INSERT INTO queue_information 
-            (patient_id, service_type, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, description, status, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Waiting', NOW())");
-
-        if ($stmt) {
-            $stmt->bind_param("issssssss", $patient_id, $service, $bp, $respiratory_rate, $temperature, $pulse_rate, $weight, $height, $description);
-            
-            if ($stmt->execute()) {
-                $queue_id = $conn->insert_id;
-                
-                // Log activity
-                $logStmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
-                if ($logStmt) {
-                    $logMsg = "Patient (ID: $patient_id) submitted a new queue ticket #$queue_id for $service.";
-                    $logStmt->bind_param("s", $logMsg);
-                    $logStmt->execute();
-                    $logStmt->close();
-                }
-
-                header("Location: queue_display_page.php?msg=" . urlencode("Queue request submitted successfully!") . "&type=success");
-                exit();
-            } else {
-                $message = "Failed to submit queue. Please try again.";
-                $messageType = "error";
-            }
-            $stmt->close();
-        } else {
-            $message = "Database error: " . $conn->error;
-            $messageType = "error";
-        }
-    }
-}
+// Retrieve flash messages if passed from redirect
+$message     = $_GET['msg'] ?? '';
+$messageType = $_GET['type'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -72,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../styles/logout_modal.css">
 
     <script src="../js/toast.js" defer></script>
+    <script src="../js/logout.js" defer></script>
     <script src="../js/patient_sidebar.js" defer></script>
+    <script src="../js/patient_add_queue.js" defer></script>
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>
@@ -89,16 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="form-container">
             <?php if (!empty($message)): ?>
-                <div class="alert alert-<?= $messageType ?>"><?= htmlspecialchars($message) ?></div>
+                <div class="alert alert-<?= htmlspecialchars($messageType) ?>"><?= htmlspecialchars($message) ?></div>
             <?php endif; ?>
 
-            <form action="../php/patient_add_queue.php" method="POST" id="addQueueForm">
+            <!-- Form targets the external PHP processor -->
+            <form action="../php/patient_add_queue_process.php" method="POST" id="addQueueForm">
                 
                 <!-- Section 1: Service Selection -->
                 <div class="form-card">
                     <h3 class="card-title">1. Select Health Service <span class="require_onced">*</span></h3>
                     <div class="form-group">
-                        <select name="service" id="service" class="form-control" require_onced>
+                        <select name="service" id="service" class="form-control" required>
                             <option value="" disabled selected>-- Choose Service --</option>
                             <option value="Medical Consultation">Medical Consultation</option>
                             <option value="Immunization">Immunization</option>

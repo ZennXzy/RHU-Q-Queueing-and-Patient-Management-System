@@ -46,7 +46,7 @@ if ($settingsQuery) {
 </head>
 <body>
     <div class="page-container">
-        <div class="top-brand">
+        <div class="top-brand" >
             <div class="rhu_logo_topNav">
                 <?php
                     if ($role == 'Patient'){
@@ -55,7 +55,9 @@ if ($settingsQuery) {
                 ?>
                 <img src="../images/rhu_logo_topNav.png" alt="rhu_logo">
             </div> 
-            RHU-Q: Queuing and Patient Management System
+            <div style="text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">
+                RHU-Q: Queuing and Patient Management System
+            </div>
         </div>
 
         <h1 class="page-title">Queue Display</h1>

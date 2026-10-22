@@ -40,7 +40,7 @@
       </li>
 
       <li class="nav-item">
-        <a href="../pages/add_queue.php" class="nav-link <?= ($currentPage === 'add_queue') ? 'active' : '' ?>">
+        <a href="../pages/patient_add_queue.php" class="nav-link <?= ($currentPage === 'add_queue') ? 'active' : '' ?>">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="16"></line>

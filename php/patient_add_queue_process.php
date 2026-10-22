@@ -85,7 +85,7 @@ try {
         if (!is_null($row['max_num'])) {$next_number = intval($row['max_num']) + 1;         }     }$stmt_code->close();
 
     // Format new code (e.g. A0001, A0002)
-    $queue_code = sprintf("%s%04d", $prefix, $next_number);
+    $queue_code = sprintf("%s%03d", $prefix, $next_number);
     $initial_status = 'Waiting';
 
     // Insert queue record with PE findings and description
