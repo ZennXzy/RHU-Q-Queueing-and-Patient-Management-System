@@ -30,6 +30,8 @@ $currentPage = 'settings';
   <script src="../js/patient_edit_account.js" defer></script>
   <script src="../js/session-check.js" defer></script>
   <script src="../js/patient_sidebar.js" defer></script>
+  <script src="../js/patient_notification.js" defer></script>
+
 </head>
 <body>
 

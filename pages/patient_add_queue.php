@@ -25,6 +25,8 @@ $messageType = $_GET['type'] ?? '';
     <script src="../js/logout.js" defer></script>
     <script src="../js/patient_sidebar.js" defer></script>
     <script src="../js/patient_add_queue.js" defer></script>
+    <script src="../js/patient_notification.js" defer></script>
+
 </head>
 <body>
     <div class="toast-container" id="toastContainer"></div>

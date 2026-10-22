@@ -24,6 +24,8 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
     <script src="../js/session-check.js" defer></script>
     <script src="../js/patient-appointment.js" defer></script>
     <script src="../js/patient_sidebar.js" defer></script>
+    <script src="../js/patient_notification.js" defer></script>
+
   </head>
   <body>
     <div class="workspace">

@@ -21,6 +21,8 @@ $currentPage = 'transactions';
     <script src="../js/toast.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/patient_transactions.js" defer></script>
+    <script src="../js/patient_notification.js" defer></script>
+
   </head>
   <body>
 

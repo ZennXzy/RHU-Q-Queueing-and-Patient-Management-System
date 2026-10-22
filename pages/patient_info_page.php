@@ -23,6 +23,8 @@ $currentPage = 'patient_info'
     <script src="../js/toast.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/patient_information.js" defer></script>
+    <script src="../js/patient_notification.js" defer></script>
+
   </head>
   <body>
 
