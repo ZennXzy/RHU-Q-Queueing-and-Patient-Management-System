@@ -1,0 +1,170 @@
+/* Fixed Positioning Aside Panel */
+.queue-aside-panel {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Floating Toggle Tab */
+.queue-toggle-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 10px;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s;
+}
+
+.queue-toggle-btn:hover {
+    background-color: #0056b3;
+}
+
+.queue-toggle-btn .toggle-icon {
+    font-size: 1.2rem;
+}
+
+.queue-toggle-btn .toggle-text {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+/* Panel Content Container */
+.queue-content-wrapper {
+    background: #ffffff;
+    width: 280px;
+    border-left: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 0 0 8px;
+    box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Hidden state class controlled by JS */
+.queue-aside-panel.collapsed .queue-content-wrapper {
+    width: 0;
+    opacity: 0;
+    border: none;
+    box-shadow: none;
+}
+
+/* Header & Body Layout */
+.queue-aside-header {
+    background: #f8f9fa;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.queue-aside-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.queue-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.queue-close-btn:hover {
+    color: #000;
+}
+
+.queue-aside-body {
+    padding: 15px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+/* Queue Info Details */
+.queue-info-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.queue-status-badge {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.queue-status-badge.waiting {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.queue-status-badge.serving {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.queue-detail-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #e9ecef;
+    padding-bottom: 6px;
+}
+
+.queue-detail-item.description {
+    flex-direction: column;
+    gap: 2px;
+}
+
+.queue-detail-item .label {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.queue-detail-item .value {
+    color: #212529;
+    text-align: right;
+}
+
+.no-active-queue {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.btn-request-queue {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.btn-request-queue:hover {
+    background-color: #218838;
+}

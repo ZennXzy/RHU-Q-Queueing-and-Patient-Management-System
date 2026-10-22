@@ -46,6 +46,11 @@ if ($settingsQuery) {
 </head>
 <body>
     <div class="page-container">
+        <?php
+            if ($role == 'Patient'){
+                include '../pages/patient_queue_aside.php';
+            }
+        ?>
         <div class="top-brand" >
             <div class="rhu_logo_topNav">
                 <?php

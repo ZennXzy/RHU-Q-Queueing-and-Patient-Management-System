@@ -30,6 +30,7 @@ $messageType = $_GET['type'] ?? '';
     <div class="toast-container" id="toastContainer"></div>
 
     <main class="main-content">
+          <?php include '../pages/patient_queue_aside.php'; ?>
         <!-- Top App Bar -->
         <header class="top-bar">
             <div class="top-bar-left">

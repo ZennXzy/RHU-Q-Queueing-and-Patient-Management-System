@@ -30,6 +30,7 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
 
       <!-- Main Content Area -->
       <div class="content-area">
+        <?php include '../pages/patient_queue_aside.php'; ?>
         <div class="topbar">
           <?php include '../pages/patient_sidebar.php'; ?>
           <h1 class="page-title">My Appointments</h1>

@@ -1,6 +1,6 @@
 <?php
 require_once '../api/check-private.php';
-authorizeRoles(['Admin', 'Doctor/Staff', 'Patient']);
+authorizeRoles(['Admin', 'Doctor/Staff']);
 require_once '../php/connection.php';
 ?>
 <!DOCTYPE html>

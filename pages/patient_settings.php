@@ -36,10 +36,9 @@ $currentPage = 'settings';
   <div class="workspace">
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toastContainer"></div>
-
-
     <!-- Main Workspace Content -->
     <main class="content-card">
+          <?php include '../pages/patient_queue_aside.php'; ?>
       <header class="top-bar">
           <div class="toast-container" id="toastContainer"></div>
           <?php include '../pages/patient_sidebar.php'; ?>

@@ -27,6 +27,7 @@ $currentPage = 'transactions';
     <div class="workspace">
       <!-- Main Content Area -->
       <div class="content-area">
+        <?php include '../pages/patient_queue_aside.php'; ?>
         <header class="top-bar">
           <div class="toast-container" id="toastContainer"></div>
           <?php include '../pages/patient_sidebar.php'; ?>
