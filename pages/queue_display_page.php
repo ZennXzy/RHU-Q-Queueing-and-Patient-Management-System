@@ -43,6 +43,8 @@ if ($settingsQuery) {
     ?>
 
     <script src="../js/logout.js" defer></script>
+    <script src="../js/patient_notification.js" defer></script>
+
 </head>
 <body>
     <div class="page-container">

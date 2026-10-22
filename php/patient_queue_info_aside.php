@@ -14,7 +14,7 @@ if (!$patient_id) {
 }
 
 // Fixed SQL syntax: Added parentheses to the IN clause
-$stmt = $conn->prepare("SELECT * FROM queue_information WHERE patient_id = ? ORDER BY created_at DESC LIMIT 1");
+$stmt = $conn->prepare("SELECT * FROM queue_information WHERE patient_id = ? AND status IN ('Waiting', 'In Progress') ORDER BY created_at DESC LIMIT 1");
 
 if ($stmt) {
     $stmt->bind_param("i", $patient_id);
