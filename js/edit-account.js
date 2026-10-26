@@ -65,9 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
           targetRoleInput.value = roleType.toLowerCase() === 'patient' ? 'Patient' : account.role;
         }
 
-        // Fix 3: Handle Role Selector disabling & selection for Patients
+        // Handle Role Selector & Full Name field based on account type
         const roleSelect = document.getElementById('editRole');
         const adminOption = document.querySelector('#editRole option[value="Admin"]');
+        const editFullnameInput = document.getElementById('editFullname');
 
         if (roleSelect) {
           let patientOpt = roleSelect.querySelector('option[value="Patient"]');
@@ -81,10 +82,26 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             roleSelect.value = 'Patient';
             roleSelect.disabled = true;
+
+            // Make Full Name read-only for patient accounts (managed via patient records)
+            if (editFullnameInput) {
+              editFullnameInput.disabled = true;
+              editFullnameInput.style.backgroundColor = '#f1f5f9';
+              editFullnameInput.style.cursor = 'not-allowed';
+              editFullnameInput.title = "Full name is linked from Patient Records and cannot be edited here.";
+            }
           } else {
             if (patientOpt) patientOpt.remove();
             roleSelect.disabled = false;
             setVal('editRole', account.role);
+
+            // Enable Full Name for staff accounts
+            if (editFullnameInput) {
+              editFullnameInput.disabled = false;
+              editFullnameInput.style.backgroundColor = '';
+              editFullnameInput.style.cursor = '';
+              editFullnameInput.title = "";
+            }
 
             if (adminOption) {
               if (hasAdmin && account.role !== 'Admin') {

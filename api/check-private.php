@@ -15,7 +15,62 @@ if (!isset($_SESSION['logged_id'])) {
         echo json_encode(['status' => 'unauthenticated']);
         exit();
     }
-    header('Location: ../pages/login_page.php?msg=' . urlencode('Unauthenticated Access') . '&type=error');
+    $role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'Patient';
+    $username = $_SESSION['logged_name'] ?? null;
+    $patientId = $_SESSION['patient_id'] ?? null;
+
+    if ($username || $patientId) {
+        switch (strtolower($role)) {
+            case 'admin':
+            case 'doctor/staff':
+                // Update admin / staff account status
+                $stmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE username = ?");
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $stmt->close();
+                $logMessage = $username."(Admin) session expired";
+                break;
+
+            case 'patient':
+            default:
+                // Update patient status in patients table
+                if ($patientId) {
+                    $stmt = $conn->prepare("UPDATE patient_auth SET status = 'Offline' WHERE patient_id = ?");
+                    $stmt->bind_param("i", $patientId);
+                }
+                $stmt->execute();
+                $stmt->close();
+                $logMessage = $username."(Patient) session expired";
+                break;
+        }
+        
+        $insertLog = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
+        if ($insertLog) {
+            $insertLog->bind_param("s", $logMessage);
+            $insertLog->execute();
+            $insertLog->close();
+        }
+    }
+
+    // Clear session cookies and destroy active session
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
+        );
+    }
+
+    session_unset();
+    session_destroy();
+
+    header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
+    
     exit();
 }
 

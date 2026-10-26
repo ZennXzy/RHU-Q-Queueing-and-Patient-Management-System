@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
   // 2. If not found in admin_auth, search in patient_auth table
   // ------------------------------------------------------------------
   if (!$user) {
-      $stmt = $conn->prepare('SELECT patient_auth_id AS id, username, fullname, password_hash, status, role, patient_id FROM patient_auth WHERE username = ?');
+      $stmt = $conn->prepare('SELECT patient_auth_id AS id, username, lastname, firstname, middlename, suffix, password_hash, status, role, patient_id FROM patient_auth WHERE username = ?');
       $stmt->bind_param('s', $username);
       $stmt->execute();
       $res = $stmt->get_result();
@@ -61,10 +61,13 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['login'])){
           $_SESSION['logged_id']      = $user['id'];
           $_SESSION['logged_name']    = $user['username'];
           $_SESSION['logged_role']    = $user['role'];
-          $_SESSION['logged_account'] = $user['fullname'];
           $_SESSION['user_type']      = $userType; // 'admin' or 'patient'
+
           if ($userType === 'patient') {
+                $_SESSION['logged_account'] = $user['firstname']." ".$user['middlename']." ".$user['lastname']." ".$user['suffix']; 
               $_SESSION['patient_id'] = $user['patient_id'];
+          } else {
+            $_SESSION['logged_account'] = $user['fullname'];
           }
 
           // Insert into activity logs

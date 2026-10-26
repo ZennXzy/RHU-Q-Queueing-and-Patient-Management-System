@@ -72,7 +72,7 @@ $currentPage = 'settings';
             <!-- Full Name Field -->
             <div class="form-group">
               <label for="editFullname">Full Name</label>
-              <input type="text" id="editFullname" name="fullname" class="form-control" placeholder="Enter full name" require_onced>
+              <input type="text" id="editFullname" name="fullname" class="form-control" readonly disabled>
             </div>
 
             <!-- Email Field -->

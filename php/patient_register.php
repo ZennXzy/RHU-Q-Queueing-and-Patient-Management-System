@@ -247,12 +247,11 @@ if ($action === 'final_register') {
         $hashed_password = password_hash($password, PASSWORD_BCRYPT, $options);
 
         $mInit = !empty($draft['middlename']) ? ' ' . $draft['middlename'] . ' ' : ' ';
-        $fullname = trim($draft['firstname'] . $mInit . $draft['lastname']);
         $status = "Offline";
         $role = "Patient";
 
-        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, fullname, email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $authStmt->bind_param('issssiss', $registered_patient_id, $username, $hashed_password, $fullname, $formattedEmail, $set_token, $status, $role);
+        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, lastname, firstname, middlename, suffix, email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $authStmt->bind_param('issiiiisiss', $registered_patient_id, $username, $hashed_password, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $formattedEmail, $set_token, $status, $role);
         
         if (!$authStmt->execute()) {
             throw new Exception("Failed to save patient account: " . $authStmt->error);

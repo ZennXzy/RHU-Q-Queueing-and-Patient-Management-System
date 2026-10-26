@@ -4,8 +4,8 @@ require_once '../php/connection.php';
 date_default_timezone_set('Asia/Manila');
 
 $role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'Patient';
-$username = $_SESSION['logged_name'] ?? $_SESSION['username'] ?? null;
-$patientId = $_SESSION['patient_id'] ?? $_SESSION['user_id'] ?? null;
+$username = $_SESSION['logged_name'] ?? null;
+$patientId = $_SESSION['patient_id'] ?? null;
 
 if ($username || $patientId) {
     switch (strtolower($role)) {

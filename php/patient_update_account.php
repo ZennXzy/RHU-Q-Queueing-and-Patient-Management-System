@@ -32,12 +32,11 @@ function get_post_val($key, $default = null) {
 }
 
 $username         = get_post_val('username');
-$fullname         = get_post_val('fullname');
 $email            = get_post_val('email');
 $current_password = get_post_val('current_password');
 $new_password     = get_post_val('password');
 
-if (!$username || !$fullname) {
+if (!$username) {
     echo json_encode(['status' => 'error', 'message' => 'Please fill in all require_onced fields.']);
     exit;
 }
@@ -71,19 +70,18 @@ try {
 
         $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, ["cost" => 12]);
 
-        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, {$hashKey} = ? WHERE patient_auth_id = ?";
+        $sql = "UPDATE patient_auth SET username = ?, email = ?, {$hashKey} = ? WHERE patient_auth_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
+        $stmt->bind_param("sssi", $username, $email, $hashed_password, $account_id);
     } else {
         // Basic Profile Update Logic
-        $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ? WHERE patient_auth_id = ?";
+        $sql = "UPDATE patient_auth SET username = ?, email = ? WHERE patient_auth_id = ?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssi", $username, $fullname, $email, $account_id);
+        $stmt->bind_param("ssi", $username, $email, $account_id);
     }
 
     if ($stmt->execute()) {
         // Update active session data
-        $_SESSION['logged_account'] = $fullname;
         $_SESSION['logged_name'] = $username;
 
         // Log activity

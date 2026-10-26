@@ -17,7 +17,16 @@ if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id']
     if ($role_type === 'patient') {
 
         // Fetch patient details strictly from patient_auth
-        $stmt = $conn->prepare("SELECT * FROM patient_auth WHERE patient_auth_id = ?");
+        $stmt = $conn->prepare("SELECT pa.*, 
+                                TRIM(CONCAT(
+                                    p.firstname, ' ', 
+                                    COALESCE(CONCAT(p.middlename, ' '), ''), 
+                                    p.lastname, 
+                                    COALESCE(CONCAT(' ', p.suffix), '')
+                                )) AS fullname
+                            FROM patient_auth pa
+                            JOIN patient_records p ON pa.patient_id = p.patient_id
+                            WHERE pa.patient_auth_id = ?");
         $stmt->bind_param("i", $account_id);
         $stmt->execute();
         $result = $stmt->get_result();

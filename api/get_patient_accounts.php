@@ -14,7 +14,16 @@ if ($requested_id <= 0) {
 
 try {
 
-    $stmt = $conn->prepare("SELECT * FROM patient_auth WHERE patient_auth_id = ?");
+    $stmt = $conn->prepare("SELECT pa.*, 
+                                TRIM(CONCAT(
+                                    p.firstname, ' ', 
+                                    COALESCE(CONCAT(p.middlename, ' '), ''), 
+                                    p.lastname, 
+                                    COALESCE(CONCAT(' ', p.suffix), '')
+                                )) AS fullname
+                            FROM patient_auth pa
+                            JOIN patient_records p ON pa.patient_id = p.patient_id
+                            WHERE pa.patient_auth_id = ?");
     $stmt->bind_param("i", $requested_id);
     $stmt->execute();
     $result = $stmt->get_result();

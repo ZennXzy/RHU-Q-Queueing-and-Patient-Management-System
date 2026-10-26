@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         setVal('editAccountId', accountId);
-        setVal('editAccountToken', account.account_token || account.token || account.patient_token || '');
+        setVal('editAccountToken', account.account_token || '');
         setVal('editUsername', account.username);
         setVal('editFullname', account.fullname);
         setVal('editEmail', account.email);

@@ -72,19 +72,19 @@ try {
         $hashed_password = password_hash($new_password, PASSWORD_BCRYPT, $options);
         
         if ($target_role === 'Patient') {
-            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ?, password_hash = ? WHERE {$id_field} = ?";
+            $sql = "UPDATE patient_auth SET username = ?, email = ?, password_hash = ? WHERE {$id_field} = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssi", $username, $fullname, $email, $hashed_password, $account_id);
+            $stmt->bind_param("ssi", $username, $email, $hashed_password, $account_id);
         } else {
-            $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ?, password_hash = ? WHERE id = ?";
+            $sql = "UPDATE admin_auth SET username = ?, fullname=?, email = ?, role = ?, password_hash = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sssssi", $username, $fullname, $email, $role, $hashed_password, $account_id);
         }
     } else {
         if ($target_role === 'Patient') {
-            $sql = "UPDATE patient_auth SET username = ?, fullname = ?, email = ? WHERE {$id_field} = ?";
+            $sql = "UPDATE patient_auth SET username = ?, email = ? WHERE {$id_field} = ?";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sssi", $username, $fullname, $email, $account_id);
+            $stmt->bind_param("ssi", $username, $email, $account_id);
         } else {
             $sql = "UPDATE admin_auth SET username = ?, fullname = ?, email = ?, role = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
