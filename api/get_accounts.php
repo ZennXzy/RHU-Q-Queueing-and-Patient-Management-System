@@ -15,7 +15,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id']
     $hasAdmin = ($adminCheck && $adminCheck->num_rows > 0);
 
     if ($role_type === 'patient') {
-
         // Fetch patient details strictly from patient_auth
         $stmt = $conn->prepare("SELECT pa.*, 
                                 TRIM(CONCAT(
@@ -23,7 +22,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id']
                                     COALESCE(CONCAT(p.middlename, ' '), ''), 
                                     p.lastname, 
                                     COALESCE(CONCAT(' ', p.suffix), '')
-                                )) AS fullname
+                                )) AS fullname,
+                                TRIM(p.email) AS email
                             FROM patient_auth pa
                             JOIN patient_records p ON pa.patient_id = p.patient_id
                             WHERE pa.patient_auth_id = ?");

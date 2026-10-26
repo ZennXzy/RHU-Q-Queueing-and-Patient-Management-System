@@ -14,13 +14,14 @@ if ($type === 'staff') {
     $activeQuery = "SELECT COUNT(*) AS active FROM admin_auth WHERE status = 'Online' AND id != ?";
 } else {
     $table = "patient_auth";
-    $query = "SELECT pa.patient_auth_id, pa.username, pa.email, pa.account_token, pa.status, 'Patient' AS role, pa.created_at, pa.last_active, 
+    $query = "SELECT pa.patient_auth_id, pa.username, pa.account_token, pa.status, 'Patient' AS role, pa.created_at, pa.last_active, 
                  TRIM(CONCAT(
                      pr.firstname, ' ', 
                      COALESCE(CONCAT(pr.middlename, ' '), ''), 
                      pr.lastname, 
                      COALESCE(CONCAT(' ', pr.suffix), '')
-                 )) AS fullname 
+                 )) AS fullname,
+                 TRIM(pr.email) AS email
           FROM patient_auth pa
           LEFT JOIN patient_records pr ON pa.patient_id = pr.patient_id";
     $totalQuery = "SELECT COUNT(*) AS total FROM patient_auth";
