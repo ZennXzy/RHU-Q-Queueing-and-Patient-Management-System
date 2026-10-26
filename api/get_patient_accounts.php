@@ -14,13 +14,15 @@ if ($requested_id <= 0) {
 
 try {
 
-    $stmt = $conn->prepare("SELECT pa.*, 
+    $stmt = $conn->prepare("SELECT 
+                                pa.*, 
                                 TRIM(CONCAT(
                                     p.firstname, ' ', 
                                     COALESCE(CONCAT(p.middlename, ' '), ''), 
                                     p.lastname, 
                                     COALESCE(CONCAT(' ', p.suffix), '')
-                                )) AS fullname
+                                )) AS fullname,
+                                TRIM(p.email) AS email
                             FROM patient_auth pa
                             JOIN patient_records p ON pa.patient_id = p.patient_id
                             WHERE pa.patient_auth_id = ?");

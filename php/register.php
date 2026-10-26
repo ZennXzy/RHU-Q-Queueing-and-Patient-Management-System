@@ -47,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $ssname = trim($_POST['ssname'] ?? '');
     $sFullName = trim("$slname $sfname $smname $ssname");
 
-    // 3. PhilHealth & Yakap (Corrected POST Keys)
+    // 3. PhilHealth & Yakap
     $philStatus = trim($_POST['philStatusInput'] ?? '');
     $philNum    = trim($_POST['philNumber'] ?? '');
     $prinMem    = trim($_POST['prinMember'] ?? '');
@@ -79,11 +79,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     }
 
-    if ($contactnum === '' || strlen($contactnum) < 11){
+    if (strlen($contactnum) < 11 && strlen($contactnum) > 0){
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid numeric contact number') . '&type=error');
         exit();
     }
-
 
     if ($emailContact !== ''){
         list($user, $domain) = explode("@", $emailContact);
@@ -155,7 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $accountToken = generateUniqueAccountToken($conn);
 
     // Robust Duplicate Record Verifier
-    // Checks standard unique patient identifyers: First Name, Last Name, Birth Date, and Mother's Name
     $check = $conn->prepare("
         SELECT patient_id 
         FROM patient_records 
@@ -183,35 +181,85 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     }
     $check->close();
 
-    // Insert Query
-    $sql = "INSERT INTO patient_records (
-        firstname, lastname, middlename, suffix, address, age, gender, 
-        date_of_birth, contact_number, email, account_token, employment_status, occupation, 
-        business_name, civil_status, religion, mothers_name, fathers_name, 
-        spouses_name, phil_status, phil_number, principal_member, yakap_member
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    // Begin Transaction to safely write to both patient_records and patient_auth (if email exists)
+    $conn->begin_transaction();
 
-    $insertstmt = $conn->prepare($sql);
+    try {
+        // 1. Insert into patient_records
+        $sql = "INSERT INTO patient_records (
+            firstname, lastname, middlename, suffix, address, age, gender, 
+            date_of_birth, contact_number, email, account_token, employment_status, occupation, 
+            business_name, civil_status, religion, mothers_name, fathers_name, 
+            spouses_name, phil_status, phil_number, principal_member, yakap_member
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    if (!$insertstmt) {
-        die("Database Prepare Failed: " . $conn->error);
-    }
-    
-    $insertstmt->bind_param("sssssisssssssssssssssss", 
-        $firstname, $lastname, $middlename, $suffix, $address, 
-        $age, 
-        $gender, $birthDate, $contactnum, $emailContact, $accountToken, 
-        $employmentStatus, $occupation, $business, $civilStatus, 
-        $religion, $mFullName, $fFullName, $sFullName, 
-        $philStatus, $philNum, $prinMem, $yakapmem
-    );
+        $insertstmt = $conn->prepare($sql);
 
-    if ($insertstmt->execute()) {
+        if (!$insertstmt) {
+            throw new Exception("Database Prepare Failed: " . $conn->error);
+        }
+        
+        $insertstmt->bind_param("sssssisssssssssssssssss", 
+            $firstname, $lastname, $middlename, $suffix, $address, 
+            $age, 
+            $gender, $birthDate, $contactnum, $emailContact, $accountToken, 
+            $employmentStatus, $occupation, $business, $civilStatus, 
+            $religion, $mFullName, $fFullName, $sFullName, 
+            $philStatus, $philNum, $prinMem, $yakapmem
+        );
+
+        if (!$insertstmt->execute()) {
+            throw new Exception("Error registering patient: " . $insertstmt->error);
+        }
+
+        $new_patient_id = $conn->insert_id;
+        $insertstmt->close();
+
+        // 2. If registered with email, save corresponding record to patient_auth
+        if (!empty($emailContact)) {
+            $status = "Disabled";
+            $role = "Patient";
+            $username = NULL;
+            $password_hash = NULL;
+
+            $authSql = "INSERT INTO patient_auth (
+                patient_id, username, password_hash, lastname, firstname, middlename, suffix, email, account_token, status, role
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            $authStmt = $conn->prepare($authSql);
+            if (!$authStmt) {
+                throw new Exception("Auth Database Prepare Failed: " . $conn->error);
+            }
+
+            // Mapping parameters: patient_id for all related relational foreign keys, email, account_token, status, role
+            $authStmt->bind_param("issiiiisiss", 
+                $new_patient_id, 
+                $username, 
+                $password_hash, 
+                $new_patient_id, 
+                $new_patient_id, 
+                $new_patient_id, 
+                $new_patient_id, 
+                $new_patient_id, 
+                $accountToken, 
+                $status, 
+                $role
+            );
+
+            if (!$authStmt->execute()) {
+                throw new Exception("Error saving patient auth record: " . $authStmt->error);
+            }
+            $authStmt->close();
+        }
+
+        $conn->commit();
         unset($_SESSION['form_data']);
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Successfully Registered') . '&type=success');
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Successfully Registered. Token: ' . $accountToken) . '&type=success');
         exit();
-    } else {
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Error registering patient: ' . $insertstmt->error) . '&type=error');
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        header('Location: ../pages/register_page.php?msg=' . urlencode($e->getMessage()) . '&type=error');
         exit();
     }
 
