@@ -1,301 +1,731 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
+
+:root {
+  --teal-900: #064a41;
+  --teal-800: #085249;
+  --teal-700: #0B695D;
+  --teal-500: #20A59E;
+  --ink: #0f172a;
+  --body: #334155;
+  --muted: #64748b;
+  --line: #d9e2e7;
+  --field: #f8fafc;
+  --page: #f3f6f7;
 }
 
-body, html {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--page);
+  color: var(--ink);
   cursor: default;
 }
 
-/* Background container with overlay */
+/* ---------- Page layout: hero on the left, form on the right ---------- */
 .background-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    /* Replace the URL below with your local image path, e.g., 'image_dc9ae0.jpg' */
-    background-image: url(../images/rhu_image.jpg);
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1fr);
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
-/* Container for logo */
-.rhu-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
+/* ---------- Hero ---------- */
+/* The teal artwork (gradient + photo). On mobile it is the hero banner itself.
+   On bigger screens the same artwork is painted behind the WHOLE page (see the
+   Desktop / Tablet block) so it can fade out under the login card. */
+.hero,
+.background-container::before {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(32, 165, 158, 0.55) 0%, rgba(32, 165, 158, 0) 60%),
+    linear-gradient(160deg, rgba(8, 82, 73, 0.94) 0%, rgba(11, 105, 93, 0.9) 55%, rgba(6, 74, 65, 0.96) 100%),
+    url(../images/rhu_image.jpg) center / cover no-repeat;
 }
 
-/* Control logo size */
-.rhu-logo img {
-    width: 150px;  
-    height: auto; 
-    object-fit: contain;
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+  padding: clamp(32px, 5vw, 72px);
+  color: #ffffff;
+  overflow: hidden;
 }
 
-
-/* Main Welcome Typography */
-.header-text {
-    text-align: center;
-    color: white;
-    margin-bottom: -20px;
-    z-index: 1;
+/* Only used on bigger screens */
+.background-container::before {
+  content: none;
 }
 
-.header-text h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-    margin-bottom: 5px;
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
-.header-text p {
-    font-size: 1.8rem;
-    font-weight: 500;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+.hero-brand img {
+  height: 56px;
+  width: auto;
 }
 
-/* Login Card Container */
+.hero-copy {
+  max-width: 34rem;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4.2vw, 4rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.hero-sub {
+  margin-top: 14px;
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.hero-points {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 36px;
+  list-style: none;
+}
+
+.hero-points li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hero-points li::before {
+  content: "";
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E")
+    center / 13px no-repeat;
+}
+
+/* ---------- Form side ---------- */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 5vw, 72px);
+}
+
+.login-card,
+.terms-card {
+  width: 100%;
+  max-width: 440px;
+  padding: clamp(28px, 4vw, 44px);
+  background-color: #ffffff;
+  border: 1px solid #e6edf0;
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 14px 36px rgba(11, 105, 93, 0.09);
+  animation: card-in 0.45s ease-out both;
+}
+
 .login-card {
-    background-color: white;
-    width: 380px;
-    padding-top: 0px;
-    padding-bottom: 35px;
-    padding-left: 40px;
-    padding-right: 40px;
-    border-radius: 16px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    z-index: 2;
-    margin-top: 40px;
+  text-align: left;
 }
 
-/* "Login" Header inside card */
 .login-title {
-    color: #0B695D;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    position: relative;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    display: inline-block;
-    width: 100%;
-    padding-bottom: 8px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
-/* Form styling */
+.login-subtitle {
+  margin: 6px 0 28px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* ---------- Form fields ---------- */
 .input-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 25px;
-    position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 18px;
 }
 
 .input-group label {
-    color: #0B695D;
-    font-size: 13px;
-    font-weight: 600;
-    width: 80px;
-    text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--body);
+}
+
+.input-field {
+  position: relative;
 }
 
 .input-group input {
-    flex: 1;
-    border: none;
-    border-bottom: 2px solid #0B695D;
-    padding: 4px 5px;
-    font-size: 15px;
-    color: #333;
-    outline: none;
-    background: transparent;
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  font-size: 1rem;
+  color: var(--ink);
+  background-color: var(--field);
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
-/* Login Button */
+.input-group input:hover {
+  border-color: #b6c5cd;
+}
+
+.input-group input:focus {
+  background-color: #ffffff;
+  border-color: var(--teal-700);
+  box-shadow: 0 0 0 4px rgba(11, 105, 93, 0.14);
+}
+
+.input-group input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--field) inset;
+  -webkit-text-fill-color: var(--ink);
+}
+
+.input-field--password input {
+  padding-right: 52px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  color: var(--muted);
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.toggle-password:hover {
+  color: var(--teal-700);
+  background-color: #eef4f3;
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toggle-password .icon-eye-off,
+.toggle-password.is-visible .icon-eye {
+  display: none;
+}
+
+.toggle-password.is-visible .icon-eye-off {
+  display: block;
+}
+
+/* ---------- Buttons ---------- */
 .login-btn {
-    background-color: #0B695D;
-    color: white;
-    border: none;
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 700;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    transition: background-color 0.2s, transform 0.1s;
-    margin-top: 15px;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 8px;
+  padding: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: var(--teal-700);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(11, 105, 93, 0.28);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
 }
 
 .login-btn:hover {
-    background-color: #20A59E;
+  background-color: var(--teal-800);
+  box-shadow: 0 8px 20px rgba(11, 105, 93, 0.34);
 }
 
 .login-btn:active {
-    transform: scale(0.98);
+  transform: scale(0.985);
 }
 
-/* Bottom-left footer text */
-.bottom-brand {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    line-height: 1.3;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
-/* Divider text between Login & Create Account */
+
 .register-divider {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0 15px 0;
-    color: #666;
-    font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 18px;
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 .register-divider::before,
 .register-divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #ddd;
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--line);
 }
 
-.register-divider span {
-    padding: 0 10px;
-}
-
-/* Secondary "Create Account" Action Button */
 .register-btn {
-    display: block;
-    width: 100%;
-    padding: 11px;
-    background-color: transparent;
-    color: #0B695D;
-    border: 1.5px solid #0B695D;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    text-align: center;
-    box-sizing: border-box;
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 11px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--teal-700);
+  background-color: transparent;
+  border: 1.5px solid var(--teal-700);
+  border-radius: 12px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .register-btn:hover {
-    background-color: #0B695D;
-    color: #ffffff;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  color: #ffffff;
+  background-color: var(--teal-700);
 }
 
 .register-btn:active {
-    transform: scale(0.98);
+  transform: scale(0.985);
 }
 
-/* Container transition setup */
-.auth-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login-btn:focus-visible,
+.register-btn:focus-visible,
+.toggle-password:focus-visible,
+.btn-cancel:focus-visible,
+.btn-accept:focus-visible {
+  outline: 3px solid rgba(32, 165, 158, 0.6);
+  outline-offset: 2px;
 }
 
-/* Terms Card Layout */
+/* ---------- Terms of Agreement ---------- */
 .terms-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 30px;
-    max-width: 420px;
-    width: 100%;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .terms-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #0B695D;
-    text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
 }
 
-/* Scrollable terms box */
 .terms-content {
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    background-color: #f8fafc;
-    font-size: 0.875rem;
-    color: #475569;
-    line-height: 1.5;
+  max-height: min(280px, 40vh);
+  overflow-y: auto;
+  padding: 16px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--body);
+  background-color: var(--field);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.terms-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terms-content::-webkit-scrollbar-thumb {
+  background-color: var(--teal-500);
+  border-radius: 4px;
 }
 
 .terms-content ul {
-    margin-top: 8px;
-    padding-left: 18px;
+  margin-top: 10px;
+  padding-left: 20px;
 }
 
 .terms-content li {
-    margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-/* Action Buttons */
 .terms-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
 }
 
 .btn-cancel,
 .btn-accept {
-    flex: 1;
-    padding: 10px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border-radius: 6px;
-    text-align: center;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-cancel {
-    background-color: #edf2f7;
-    color: #4a5568;
-    border: 1px solid #cbd5e0;
+  flex: 0 0 auto;
+  padding-left: 28px;
+  padding-right: 28px;
+  color: var(--body);
+  background-color: #ffffff;
+  border: 1.5px solid var(--line);
 }
 
 .btn-cancel:hover {
-    background-color: #e2e8f0;
-    color: #1a202c;
+  background-color: #f1f5f9;
 }
 
 .btn-accept {
-    background-color: #0B695D;
-    color: #ffffff;
-    border: none;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: var(--teal-700);
+  border: none;
 }
 
 .btn-accept:hover {
-    background-color: #085249;
+  background-color: var(--teal-800);
 }
 
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
-/* Responsive scale down for smaller screens */
-@media (max-width: 480px) {
-    .header-text h1 { font-size: 2.2rem; }
-    .header-text p { font-size: 1.2rem; }
-    .login-card { width: 90%; padding: 25px; }
+/* ---------- Desktop / Tablet and up (768px+): fade that ends near the middle of the login card ----------
+   Change --fade-start / --fade-end to move it. The login card's middle sits at about 3/4 of the
+   screen width, so 75% makes the teal disappear right around the middle of the card.
+   Not used on mobile. */
+@media (min-width: 768px) {
+  .background-container {
+    --fade-start: 36%;   /* teal is solid up to here */
+    --fade-end: 75%;     /* teal is fully gone here (about the middle of the login card) */
+    position: relative;
+    background-color: var(--page);
+  }
+
+  .background-container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 1) var(--fade-start),
+      rgba(0, 0, 0, 0.88) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.25),
+      rgba(0, 0, 0, 0.65) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.45),
+      rgba(0, 0, 0, 0.35) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.65),
+      rgba(0, 0, 0, 0.12) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.85),
+      rgba(0, 0, 0, 0) var(--fade-end)
+    );
+    mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 1) var(--fade-start),
+      rgba(0, 0, 0, 0.88) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.25),
+      rgba(0, 0, 0, 0.65) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.45),
+      rgba(0, 0, 0, 0.35) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.65),
+      rgba(0, 0, 0, 0.12) calc(var(--fade-start) + (var(--fade-end) - var(--fade-start)) * 0.85),
+      rgba(0, 0, 0, 0) var(--fade-end)
+    );
+  }
+
+  /* The hero's own background is replaced by the page-wide one above */
+  .hero {
+    background: none;
+    overflow: visible;
+  }
+
+  .hero,
+  .auth-container {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* Short laptop screens: keep the hero tidy */
+@media (min-width: 768px) and (max-height: 640px) {
+  .hero-points {
+    display: none;
+  }
+}
+
+/* ---------- Mobile (767.98px and below): hero banner, form card overlaps it ---------- */
+@media (max-width: 767.98px) {
+  .background-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero {
+    justify-content: flex-start;
+    gap: 18px;
+    padding: 28px 22px 72px;
+  }
+
+  .hero-brand img {
+    height: 42px;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-sub {
+    margin-top: 8px;
+    font-size: 0.95rem;
+  }
+
+  .hero-points {
+    display: none;
+  }
+
+  .auth-container {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    align-items: flex-start;
+    margin-top: -44px;
+    padding: 0 16px 32px;
+  }
+
+  .login-card,
+  .terms-card {
+    max-width: none;
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
+  }
+
+  .login-subtitle {
+    margin-bottom: 22px;
+  }
+
+  /* 16px stops iOS Safari from zooming in when a field is focused */
+  .input-group input {
+    height: 52px;
+    font-size: 16px;
+  }
+
+  .login-btn {
+    min-height: 52px;
+  }
+
+  .terms-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancel {
+    flex: 1 1 auto;
+  }
+
+  .btn-cancel,
+  .btn-accept {
+    min-height: 50px;
+  }
+}
+
+/* ---------- Extra Large Devices (3440px and up) - everything enlarged ---------- */
+@media (min-width: 3440px) {
+  .hero {
+    padding: 120px;
+  }
+
+  .hero-brand {
+    gap: 24px;
+    font-size: 2rem;
+  }
+
+  .hero-brand img {
+    height: 110px;
+  }
+
+  .hero-copy {
+    max-width: 62rem;
+  }
+
+  .hero h1 {
+    font-size: 7rem;
+  }
+
+  .hero-sub {
+    margin-top: 24px;
+    font-size: 2.3rem;
+  }
+
+  .hero-points {
+    gap: 26px;
+    margin-top: 64px;
+  }
+
+  .hero-points li {
+    gap: 22px;
+    font-size: 1.9rem;
+  }
+
+  .hero-points li::before {
+    width: 48px;
+    height: 48px;
+    background-size: 24px;
+  }
+
+  .auth-container {
+    padding: 120px;
+  }
+
+  .login-card,
+  .terms-card {
+    max-width: 800px;
+    padding: 80px;
+    border-radius: 36px;
+  }
+
+  .login-title {
+    font-size: 3.2rem;
+  }
+
+  .login-subtitle {
+    margin: 12px 0 52px;
+    font-size: 1.6rem;
+  }
+
+  .input-group {
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .input-group label {
+    font-size: 1.45rem;
+  }
+
+  .input-group input {
+    height: 92px;
+    padding: 0 28px;
+    font-size: 1.8rem;
+    border-radius: 20px;
+  }
+
+  .input-field--password input {
+    padding-right: 96px;
+  }
+
+  .toggle-password {
+    right: 10px;
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+  }
+
+  .toggle-password svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .login-btn {
+    min-height: 92px;
+    margin-top: 14px;
+    font-size: 1.8rem;
+    border-radius: 20px;
+  }
+
+  .register-divider {
+    margin: 44px 0 32px;
+    font-size: 1.5rem;
+  }
+
+  .register-btn {
+    min-height: 88px;
+    font-size: 1.7rem;
+    border-radius: 20px;
+  }
+
+  .terms-card {
+    gap: 32px;
+  }
+
+  .terms-title {
+    font-size: 2.8rem;
+  }
+
+  .terms-content {
+    max-height: min(520px, 40vh);
+    padding: 28px;
+    font-size: 1.6rem;
+    border-radius: 20px;
+  }
+
+  .terms-actions {
+    gap: 22px;
+  }
+
+  .btn-cancel,
+  .btn-accept {
+    min-height: 88px;
+    font-size: 1.7rem;
+    border-radius: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .terms-card {
+    animation: none;
+  }
+
+  .input-group input,
+  .login-btn,
+  .register-btn,
+  .btn-cancel,
+  .btn-accept,
+  .toggle-password {
+    transition: none;
+  }
 }
