@@ -40,11 +40,14 @@ $currentPage = 'settings';
     <div class="toast-container" id="toastContainer"></div>
     <!-- Main Workspace Content -->
     <main class="content-card">
-          <?php include '../pages/patient_queue_aside.php'; ?>
+      <?php include '../pages/patient_queue_aside.php'; ?>
+  
       <header class="top-bar">
-          <div class="toast-container" id="toastContainer"></div>
-          <?php include '../pages/patient_sidebar.php'; ?>
-          <h1 class="page-title">Account Settings</h1>
+        <div class="toast-container" id="toastContainer"></div>
+        <div class="top-bar-left">
+            <?php include '../pages/patient_sidebar.php'; ?>
+            <h2 class="page-title">Account Settings</h2>
+        </div>
       </header>
       <div class="account-card">  
         <div class="card-top-bar">

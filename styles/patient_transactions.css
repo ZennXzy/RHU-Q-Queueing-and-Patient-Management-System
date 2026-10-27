@@ -41,11 +41,22 @@ html {
   font-weight: 700;
 }
 
+/* Top App Bar */
 .top-bar {
-  display: flex;
-  justify-content: flex-start;
-  gap: 20px;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .transactions-page-container {
@@ -242,6 +253,12 @@ html {
 
 /* Mobile Specific Adjustments */
 @media (max-width: 600px) {
+  .page-title {
+    color: #0B695D;
+    font-size: 25px;
+    /* Reduced from 32px */
+    font-weight: 700;
+  }
   .transaction-item {
     flex-direction: column;
     align-items: stretch;

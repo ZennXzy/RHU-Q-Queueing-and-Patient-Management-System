@@ -32,21 +32,84 @@ html {
   padding: 40px;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
-.page-title {
-  color: #0B695D;
-  font-size: 32px;
-  /* Reduced from 32px */
-  font-weight: 700;
-}
-
+/* Top App Bar */
 .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 16px 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+}
+
+.top-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.top-bar h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #0B695D;
+}
+
+/* Top bar action buttons */
+.top-bar-actions {
   display: flex;
-  justify-content: flex-start;
-  gap: 20px;
-  align-items: center;
-  margin-bottom: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.top-bar-actions button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.top-bar-actions button:active {
+  transform: scale(0.98);
+}
+
+.btn-edit, .btn-save {
+  background-color: #0B695D;
+  color: #fff;
+}
+
+.btn-edit:hover, .btn-save:hover {
+  background-color: #095249;
+}
+
+.btn-cancel {
+  background-color: #e2e8f0;
+  color: #334155;
+}
+
+.btn-cancel:hover {
+  background-color: #cbd5e1;
+}
+
+.patient-info-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+#patientInfoForm {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
 }
 
 .patient-profile-grid {
@@ -55,20 +118,8 @@ html {
   height: 100%;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 20px;
-  overflow-y: scroll;
-}
-
-.close-modal-btn {
-  background: transparent;
-  border: none;
-  font-size: 25px;
-  line-height: 1;
-  color: white;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  outline: none;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .info-card {
@@ -100,7 +151,7 @@ html {
 .info-group {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .info-group label {
@@ -123,29 +174,80 @@ html {
   color: #0f172a !important;
 }
 
+/* Form Controls when Edit Mode is active */
+.info-group .form-control {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-group .form-control:focus {
+  border-color: #0B695D;
+  box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.15);
+}
+
 /* Ensure hidden conditional groups leave no blank space */
-.info-group[style*="display: none"] {
+.info-group[style*="display: none"],
+.conditional-field[style*="display: none"] {
   display: none !important;
 }
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
-  .top-bar{
-    justify-content: space-between;
+  .content-area {
+    padding: 20px 16px;
   }
 
-  .profile-header-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+  .top-bar {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .page-title {
+    font-size: 26px;
+  }
+
+  .top-bar-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .top-bar-actions button {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+
+  /* When edit mode is active, make Save & Cancel take full width or split evenly */
+  #btnEditProfile {
+    grid-column: span 2;
   }
 
   .patient-profile-grid {
     grid-template-columns: 1fr;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .info-row {
-    flex-direction: column;
-    gap: 14px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Stack name fields grid cleanly on ultra-small screens */
+  #infoFullName div[style*="display: grid"] {
+    grid-template-columns: 1fr !important;
   }
 }

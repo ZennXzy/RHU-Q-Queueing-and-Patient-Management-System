@@ -32,8 +32,10 @@ $currentPage = 'transactions';
         <?php include '../pages/patient_queue_aside.php'; ?>
         <header class="top-bar">
           <div class="toast-container" id="toastContainer"></div>
-          <?php include '../pages/patient_sidebar.php'; ?>
-          <h1 class="page-title">Transaction History</h1>
+          <div class="top-bar-left">
+              <?php include '../pages/patient_sidebar.php'; ?>
+              <h1 class="page-title">Transaction History</h1>
+          </div>
         </header>
 
         <div class="transactions-page-container">

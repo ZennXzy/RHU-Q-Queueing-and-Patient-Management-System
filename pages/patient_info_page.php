@@ -35,22 +35,23 @@ $currentPatientId = $_SESSION['patient_id'] ?? $_SESSION['logged_id'] ?? 0;
         
         <header class="top-bar">
           <div class="toast-container" id="toastContainer"></div>
-          <?php include '../pages/patient_sidebar.php'; ?>
-          <h1 class="page-title">Patient Information</h1>
-
-          <!-- Header Actions -->
-          <div class="top-bar-actions" style="margin-left: auto; display: flex; gap: 10px;">
-            <button type="button" id="btnEditProfile" class="btn-edit" style="padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-              Edit Profile
-            </button>
-            <button type="button" id="btnCancelEdit" class="btn-cancel" style="display: none; padding: 8px 16px; background-color: #e2e8f0; color: #334155; border: none; border-radius: 6px; cursor: pointer;">
-              Cancel
-            </button>
-            <button type="submit" form="patientInfoForm" id="btnSaveProfile" class="btn-save" style="display: none; padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-              Save Changes
-            </button>
+          <div class="top-bar-left">
+              <?php include '../pages/patient_sidebar.php'; ?>
+              <h2>Patient Information</h2>
           </div>
         </header>
+        <!-- Header Actions -->
+        <div class="top-bar-actions" style="margin-left: auto; display: flex; gap: 10px;">
+          <button type="button" id="btnEditProfile" class="btn-edit" style="padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            Edit Profile
+          </button>
+          <button type="button" id="btnCancelEdit" class="btn-cancel" style="display: none; padding: 8px 16px; background-color: #e2e8f0; color: #334155; border: none; border-radius: 6px; cursor: pointer;">
+            Cancel
+          </button>
+          <button type="submit" form="patientInfoForm" id="btnSaveProfile" class="btn-save" style="display: none; padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+            Save Changes
+          </button>
+        </div>
 
         <!-- Profile Content Form -->
         <div class="patient-info-container">

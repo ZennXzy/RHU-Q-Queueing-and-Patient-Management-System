@@ -33,10 +33,13 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
       <!-- Main Content Area -->
       <div class="content-area">
         <?php include '../pages/patient_queue_aside.php'; ?>
-        <div class="topbar">
-          <?php include '../pages/patient_sidebar.php'; ?>
-          <h1 class="page-title">My Appointments</h1>
-        </div>
+        <header class="top-bar">
+          <div class="toast-container" id="toastContainer"></div>
+          <div class="top-bar-left">
+              <?php include '../pages/patient_sidebar.php'; ?>
+              <h2>My Appointments</h2>
+          </div>
+        </header>
         <div class="action-button">
           <button type="button" id="addBtn" class="addButton">
             Book Appointment
