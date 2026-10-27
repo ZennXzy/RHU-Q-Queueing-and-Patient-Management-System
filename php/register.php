@@ -10,8 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     $_SESSION['form_data'] = $_POST;
 
     // 1. Personal Info Sanitization
-    $firstname = trim($_POST['fname'] ?? '');
-    $lastname  = trim($_POST['lname'] ?? '');
+    $firstname  = trim($_POST['fname'] ?? '');
+    $lastname   = trim($_POST['lname'] ?? '');
     $middlename = trim($_POST['mname'] ?? '');
     $suffix     = trim($_POST['sname'] ?? '');
     $address    = trim($_POST['address'] ?? '');
@@ -59,11 +59,30 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         exit();
     } 
 
+    $address_id = 0;
+
     if ($address === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide the address') . '&type=error');
         exit();
+    } else {
+        // Ensure the table and column names match your database schema
+        $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_address = ? LIMIT 1");
+        $barangayCheck->bind_param("s", $address);
+        $barangayCheck->execute();
+        $barangayRes = $barangayCheck->get_result();
+        
+        if ($barangayRes->num_rows === 0) {
+            $barangayCheck->close();
+            header('Location: ../pages/register_page.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
+            exit();
+        } else {
+            // FIX: Fetch the row into an array first
+            $row = $barangayRes->fetch_assoc();
+            $address_id = $row['barangay_id'];
+        }
+        $barangayCheck->close();
     }
-    
+
     if ($religion === '') {
         header('Location: ../pages/register_page.php?msg=' . urlencode('Please select Religion') . '&type=error');
         exit();
@@ -85,8 +104,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     }
 
     if ($emailContact !== ''){
-        list($user, $domain) = explode("@", $emailContact);
-        if (!filter_var($emailContact, FILTER_VALIDATE_EMAIL) && !getmxrr($domain, $mxhosts)){
+        $domain = substr(strrchr($emailContact, "@"), 1);
+        if (!filter_var($emailContact, FILTER_VALIDATE_EMAIL)){
             header('Location: ../pages/register_page.php?msg=' . urlencode('Please provide a valid email address.') . '&type=error');
             exit();
         }
@@ -136,10 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
 
     function generateUniqueAccountToken($conn) {
         do {
-            // Securely generate a number between 000000 and 999999
             $token = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Check uniqueness against database
             $stmt = $conn->prepare("SELECT patient_id FROM patient_records WHERE account_token = ? LIMIT 1");
             $stmt->bind_param('s', $token);
             $stmt->execute();
@@ -181,7 +197,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     }
     $check->close();
 
-    // Begin Transaction to safely write to both patient_records and patient_auth (if email exists)
+    // Begin Transaction
     $conn->begin_transaction();
 
     try {
@@ -199,8 +215,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
             throw new Exception("Database Prepare Failed: " . $conn->error);
         }
         
-        $insertstmt->bind_param("sssssisssssssssssssssss", 
-            $firstname, $lastname, $middlename, $suffix, $address, 
+        $insertstmt->bind_param("ssssiisssssssssssssssss", 
+            $firstname, $lastname, $middlename, $suffix, $address_id, 
             $age, 
             $gender, $birthDate, $contactnum, $emailContact, $accountToken, 
             $employmentStatus, $occupation, $business, $civilStatus, 
@@ -219,8 +235,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
         if (!empty($emailContact)) {
             $status = "Disabled";
             $role = "Patient";
-            $username = NULL;
-            $password_hash = NULL;
+            $username = null;
+            $password_hash = null;
 
             $authSql = "INSERT INTO patient_auth (
                 patient_id, username, password_hash, lastname, firstname, middlename, suffix, email, account_token, status, role
@@ -231,8 +247,8 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
                 throw new Exception("Auth Database Prepare Failed: " . $conn->error);
             }
 
-            // Mapping parameters: patient_id for all related relational foreign keys, email, account_token, status, role
-            $authStmt->bind_param("issiiiisiss", 
+            // Correct data binding types: i (int), s (string/null)
+            $authStmt->bind_param("issiiiiisss", 
                 $new_patient_id, 
                 $username, 
                 $password_hash, 
@@ -240,7 +256,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
                 $new_patient_id, 
                 $new_patient_id, 
                 $new_patient_id, 
-                $new_patient_id, 
+                $new_patient_id,
                 $accountToken, 
                 $status, 
                 $role

@@ -19,7 +19,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'details') {
         exit;
     }
 
-    $stmt = $conn->prepare("SELECT * FROM patient_records WHERE patient_id = ?");
+    $stmt = $conn->prepare("SELECT p.*,
+                            TRIM(b.barangay_address) AS address
+                            FROM patient_records p
+                            JOIN barangay b ON p.address = b.barangay_id
+                            WHERE p.patient_id = ?");
     $stmt->bind_param("i", $patient_id);
     $stmt->execute();
     $result = $stmt->get_result();

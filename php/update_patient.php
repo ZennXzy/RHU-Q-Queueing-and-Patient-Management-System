@@ -69,6 +69,33 @@ if (!$fname || !$lname || !$gender || !$birthdate) {
     exit();
 }
 
+
+$address_id = 0;
+
+if ($address === '') {
+    header('Location: ../pages/patient_records.php?msg=' . urlencode('Please provide the address') . '&type=error');
+    exit();
+} else {
+    // Ensure the table and column names match your database schema
+    $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_address = ? LIMIT 1");
+    $barangayCheck->bind_param("s", $address);
+    $barangayCheck->execute();
+    $barangayRes = $barangayCheck->get_result();
+    
+    if ($barangayRes->num_rows === 0) {
+        $barangayCheck->close();
+        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
+        exit();
+    } else {
+        // FIX: Fetch the row into an array first
+        $row = $barangayRes->fetch_assoc();
+        $address_id = $row['barangay_id'];
+    }
+    $barangayCheck->close();
+}
+
+
+
 if(get_post_val('editSuffix') === 'None'){
     $sname = NULL;
 }
@@ -105,7 +132,7 @@ try {
     }
 
     $stmt->bind_param(
-        "sssssssssssssssssssssi",
+        "sssssssssisssssssssssi",
         $fname,
         $mname,
         $lname,
@@ -115,7 +142,7 @@ try {
         $civil_status,
         $religion,
         $contactnum,
-        $address,
+        $address_id,
         $date_registered,
         $mother_maiden_name,
         $father_name,

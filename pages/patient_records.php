@@ -22,6 +22,7 @@ require_once '../php/connection.php';
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/search.js" defer></script>
     <script src="../js/patient-records.js" defer></script>
+    <script src="../js/barangay-search.js" defer></script>
     <script src="../js/edit-patient.js" defer></script>
     <script src="../js/delete-patient.js" defer></script>
     <script src="../js/toast.js" defer></script>
@@ -349,7 +350,7 @@ require_once '../php/connection.php';
                     </div>
                     <div class="info-group">
                       <label for="editAddress">Address <span class="require_onced-asterisk">*</span></label>
-                      <input type="text" id="editAddress" name="editAddress" placeholder="Full Address">
+                      <input type="text" id="editAddress" name="editAddress" placeholder="Full Address" autocomplete="off">
                     </div>
                     <div class="info-group">
                       <label for="editDateRegistered">Date Registered</label>
