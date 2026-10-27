@@ -12,7 +12,6 @@ html {
   background-color: #F9FAFB;
   background-repeat: repeat;
   background-attachment: fixed;
-  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   cursor: default;
@@ -32,7 +31,7 @@ html {
   padding: 40px;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* Top App Bar */
@@ -236,7 +235,7 @@ html {
   .patient-profile-grid {
     grid-template-columns: 1fr;
     max-height: none;
-    overflow-y: visible;
+    overflow-y: scroll;
   }
 
   .info-row {
