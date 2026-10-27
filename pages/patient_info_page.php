@@ -3,7 +3,8 @@ require_once '../api/check-private.php';
 authorizeRoles(['Patient']);
 require_once '../php/connection.php';
 
-$currentPage = 'patient_info'
+$currentPage = 'patient_info';
+$currentPatientId = $_SESSION['patient_id'] ?? $_SESSION['logged_id'] ?? 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -17,148 +18,166 @@ $currentPage = 'patient_info'
     <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/logout_modal.css">
 
-
     <script src="../js/patient_sidebar.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/patient_information.js" defer></script>
+    <script src="../js/patient_edit_info.js" defer></script>
     <script src="../js/patient_notification.js" defer></script>
-
   </head>
   <body>
 
     <div class="workspace">
       <!-- Main Content Area -->
       <div class="content-area">
-          <?php include '../pages/patient_queue_aside.php'; ?>
+        <?php include '../pages/patient_queue_aside.php'; ?>
+        
         <header class="top-bar">
           <div class="toast-container" id="toastContainer"></div>
           <?php include '../pages/patient_sidebar.php'; ?>
           <h1 class="page-title">Patient Information</h1>
+
+          <!-- Header Actions -->
+          <div class="top-bar-actions" style="margin-left: auto; display: flex; gap: 10px;">
+            <button type="button" id="btnEditProfile" class="btn-edit" style="padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+              Edit Profile
+            </button>
+            <button type="button" id="btnCancelEdit" class="btn-cancel" style="display: none; padding: 8px 16px; background-color: #e2e8f0; color: #334155; border: none; border-radius: 6px; cursor: pointer;">
+              Cancel
+            </button>
+            <button type="submit" form="patientInfoForm" id="btnSaveProfile" class="btn-save" style="display: none; padding: 8px 16px; background-color: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+              Save Changes
+            </button>
+          </div>
         </header>
 
-        <!-- Embedded Profile Content (No Modal wrappers) -->
+        <!-- Profile Content Form -->
         <div class="patient-info-container">
-          <div id="patientProfileView" class="patient-profile-grid">
-            
-            <!-- 1. Personal Details -->
-            <div class="info-card">
-              <h4 class="card-title">Personal Information</h4>
-              <div class="info-group">
-                <label>Full Name</label>
-                <span id="infoFullName" class="highlight-text">-</span>
-              </div>
-              <div class="info-row">
-                <div class="info-group">
-                  <label>Age / Gender</label>
-                  <span id="infoAgeGender">-</span>
-                </div>
-                <div class="info-group">
-                  <label>Birth Date</label>
-                  <span id="infoBirthDate">-</span>
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-group">
-                  <label>Civil Status</label>
-                  <span id="infoCivilStatus">-</span>
-                </div>
-                <div class="info-group">
-                  <label>Religion</label>
-                  <span id="infoReligion">-</span>
-                </div>
-              </div>
-            </div>
+          <form id="patientInfoForm">
+            <!-- Hidden Patient ID for API fetch and form submission -->
+            <input type="hidden" id="patientId" name="patient_id" value="<?= htmlspecialchars($currentPatientId) ?>">
 
-            <!-- 2. Contact & Address -->
-            <div class="info-card">
-              <h4 class="card-title">Contact & Location</h4>
-              <div class="info-group">
-                <label>Contact Number</label>
-                <span id="infoContact">-</span>
-              </div>
-              <div class="info-group">
-                <label>Email Address</label>
-                <span id="infoEmail">-</span>
-              </div>
-              <div class="info-group">
-                <label>Address</label>
-                <span id="infoAddress">-</span>
-              </div>
-              <div class="info-group">
-                <label>Date Registered</label>
-                <span id="infoDateRegistered">-</span>
-              </div>
-            </div>
-
-            <!-- 3. Family Background (Parents & Spouse) -->
-            <div class="info-card">
-              <h4 class="card-title">Mother's Details</h4>
-              <div class="info-group">
-                <label>Mother's Maiden Name</label>
-                <span id="infoMotherName">-</span>
-              </div>
-            </div>
-
-            <div class="info-card">
-              <h4 class="card-title">Father's Details</h4>
-              <div class="info-group">
-                <label>Father's Name</label>
-                <span id="infoFatherName">-</span>
-              </div>
-            </div>
-
-            <div class="info-card conditional-field" id="infoSpouseGroup" style="display: none;">
-              <h4 class="card-title">Spouse's Details</h4>  
-              <div class="info-group">
-                <label>Spouse Name</label>
-                <span id="infoSpouseName">-</span>
-              </div>
-            </div>
-
-            <!-- 4. Employment Information -->
-            <div class="info-card">
-              <h4 class="card-title">Employment Information</h4>
-              <div class="info-group">
-                <label>Employment Status</label>
-                <span id="infoEmploymentStatus">-</span>
-              </div>
-              <div class="info-group conditional-field" id="infoOccupationGroup" style="display: none;">
-                <label>Occupation</label>
-                <span id="infoOccupation">-</span>
-              </div>
-              <div class="info-group conditional-field" id="infoBusinessGroup" style="display: none;">
-                <label>Business</label>
-                <span id="infoBusiness">-</span>
-              </div>
-            </div>
-
-            <!-- 5. Government Program Health Cards -->
-            <div class="info-card">
-              <h4 class="card-title">PhilHealth & Yakap</h4>
-              <div class="info-group">
-                <label>PhilHealth Status</label>
-                <span id="infoPhilStatus">-</span>
-              </div>
-              <div class="info-group conditional-field" id="infoPhilNumberGroup" style="display: none;">
-                <label>PhilHealth Number</label>
-                <span id="infoPhilNumber">-</span>
-              </div>
-              <div class="info-group conditional-field" id="infoPrinMemberGroup" style="display: none;">
-                <label>Principal Member</label>
-                <span id="infoPrinMember">-</span>
-              </div>
+            <div id="patientProfileView" class="patient-profile-grid">
               
-              <hr class="card-inner-divider">
-              
-              <div class="info-group">
-                <label>Yakap Membership Status</label>
-                <span id="infoYakapMember">-</span>
+              <!-- 1. Personal Details -->
+              <div class="info-card">
+                <h4 class="card-title">Personal Information</h4>
+                <div class="info-group">
+                  <label>Full Name</label>
+                  <span id="infoFullName" class="highlight-text">-</span>
+                </div>
+                <div class="info-row">
+                  <div class="info-group">
+                    <label>Age / Gender</label>
+                    <span id="infoAgeGender">-</span>
+                  </div>
+                  <div class="info-group">
+                    <label>Birth Date</label>
+                    <span id="infoBirthDate">-</span>
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-group">
+                    <label>Civil Status</label>
+                    <span id="infoCivilStatus">-</span>
+                  </div>
+                  <div class="info-group">
+                    <label>Religion</label>
+                    <span id="infoReligion">-</span>
+                  </div>
+                </div>
               </div>
-            </div>
 
-          </div>
+              <!-- 2. Contact & Address -->
+              <div class="info-card">
+                <h4 class="card-title">Contact & Location</h4>
+                <div class="info-group">
+                  <label>Contact Number</label>
+                  <span id="infoContact">-</span>
+                </div>
+                <div class="info-group">
+                  <label>Email Address</label>
+                  <span id="infoEmail">-</span>
+                </div>
+                <div class="info-group">
+                  <label>Address</label>
+                  <span id="infoAddress">-</span>
+                </div>
+                <div class="info-group">
+                  <label>Date Registered</label>
+                  <span id="infoDateRegistered">-</span>
+                </div>
+              </div>
+
+              <!-- 3. Family Background -->
+              <div class="info-card">
+                <h4 class="card-title">Mother's Details</h4>
+                <div class="info-group">
+                  <label>Mother's Maiden Name</label>
+                  <span id="infoMotherName">-</span>
+                </div>
+              </div>
+
+              <div class="info-card">
+                <h4 class="card-title">Father's Details</h4>
+                <div class="info-group">
+                  <label>Father's Name</label>
+                  <span id="infoFatherName">-</span>
+                </div>
+              </div>
+
+              <div class="info-card conditional-field" id="infoSpouseGroup" style="display: none;">
+                <h4 class="card-title">Spouse's Details</h4>  
+                <div class="info-group">
+                  <label>Spouse Name</label>
+                  <span id="infoSpouseName">-</span>
+                </div>
+              </div>
+
+              <!-- 4. Employment Information -->
+              <div class="info-card">
+                <h4 class="card-title">Employment Information</h4>
+                <div class="info-group">
+                  <label>Employment Status</label>
+                  <span id="infoEmploymentStatus">-</span>
+                </div>
+                <div class="info-group conditional-field" id="infoOccupationGroup" style="display: none;">
+                  <label>Occupation</label>
+                  <span id="infoOccupation">-</span>
+                </div>
+                <div class="info-group conditional-field" id="infoBusinessGroup" style="display: none;">
+                  <label>Business</label>
+                  <span id="infoBusiness">-</span>
+                </div>
+              </div>
+
+              <!-- 5. Government Program Health Cards -->
+              <div class="info-card">
+                <h4 class="card-title">PhilHealth & Yakap</h4>
+                <div class="info-group">
+                  <label>PhilHealth Status</label>
+                  <span id="infoPhilStatus">-</span>
+                </div>
+                <div class="info-group conditional-field" id="infoPhilNumberGroup" style="display: none;">
+                  <label>PhilHealth Number</label>
+                  <span id="infoPhilNumber">-</span>
+                </div>
+                <div class="info-group conditional-field" id="infoPrinMemberGroup" style="display: none;">
+                  <label>Principal Member</label>
+                  <span id="infoPrinMember">-</span>
+                </div>
+                
+                <hr class="card-inner-divider">
+                
+                <div class="info-group">
+                  <label>Yakap Membership Status</label>
+                  <span id="infoYakapMember">-</span>
+                </div>
+              </div>
+
+            </div>
+          </form>
         </div>
       </div>
     </div>
