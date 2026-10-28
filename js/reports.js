@@ -108,12 +108,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (contentContainer) {
           contentContainer.innerHTML = `
             <p><strong>Patient Name:</strong> ${rec.fullname}</p>
-            <p><strong>Visit Date:</strong> ${rec.visit_date}</p>
+            <p><strong>Visit Date:</strong> ${rec.transaction_date}</p>
             <p><strong>Age / Gender:</strong> ${rec.age} / ${rec.gender}</p>
             <p><strong>Service Taken:</strong> ${rec.service_type}</p>
             <p><strong>Address:</strong> ${rec.address}</p>
-            <p><strong>Vital Signs:</strong> BP: ${rec.blood_pressure || 'N/A'}, Temp: ${rec.temperature || 'N/A'}</p>
-            <p><strong>Chief Complaint:</strong> ${rec.chief_complaint || 'N/A'}</p>
+            <p><strong>Vital Signs:</strong><br>
+            <p>Blood Pressure: ${rec.blood_pressure || 'N/A'}</p>
+            <p>Temperature: ${rec.temperature || 'N/A'}</p>
+            <p>Respiratory Rate: ${rec.respiratory_rate || 'N/A'}</p>
+            <p>Pulse Rate: ${rec.pulse_rate || 'N/A'}</p>
+            <p>Weight: ${rec.weight || 'N/A'}</p>
+            <p>Height: ${rec.height || 'N/A'}</p>
+            <p><strong>Chief Complaint:</strong> ${rec.remarks || 'N/A'}</p>
           `;
         }
         if (viewModal) viewModal.showModal();

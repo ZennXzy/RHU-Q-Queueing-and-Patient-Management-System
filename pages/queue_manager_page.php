@@ -75,13 +75,14 @@ $role = $_SESSION['logged_role'];
                                             q.queue_info_id, 
                                             q.queue_code, 
                                             q.patient_id, 
-                                            q.service_name, 
+                                            s.service_name, 
                                             q.created_at,
                                             p.firstname, 
                                             p.lastname,
                                             p.suffix
                                         FROM queue_information q
                                         INNER JOIN patient_records p ON q.patient_id = p.patient_id
+                                        LEFT JOIN services s ON q.service_name = s.service_id
                                         WHERE q.status = 'Waiting' 
                                         ORDER BY q.created_at ASC";
 
@@ -230,15 +231,6 @@ $role = $_SESSION['logged_role'];
                         <label for="service-type">Service Type</label>
                         <select class="service-type" id="service-type" name="service_name" require_onced>
                             <option value="" disabled selected>Select a service</option>
-                            <option value="Medical Consultation">Medical Consultation</option>
-                            <option value="Immunization">Immunization</option>
-                            <option value="Pre-Natal">Pre-Natal</option>
-                            <option value="Medical Laboratory">Medical Laboratory</option>
-                            <option value="Family Planning">Family Planning</option>
-                            <option value="Dental Examination/Tooth Extraction">Dental Examination/Tooth Extraction</option>
-                            <option value="Availment of anti-Tuberculosis Drugs">Availment of anti-Tuberculosis Drugs</option>
-                            <option value="Child Care services">Child Care services</option>
-                            <option value="Availment of Tetanus Vaccine and Anti Rabies Vaccine">Availment of Tetanus Vaccine and Anti Rabies Vaccine</option>
                         </select>
                     </div>
 
@@ -446,7 +438,24 @@ $role = $_SESSION['logged_role'];
             const newUrl = window.location.pathname;
             window.history.replaceState({}, document.title, newUrl);
         }
-    });
 
+        // Fetch and populate services dynamically from the API
+        fetch('../api/get_services.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.services) {
+                    const serviceSelect = document.getElementById('service-type');
+                    if (serviceSelect) {
+                        data.services.forEach(service => {
+                            const option = document.createElement('option');
+                            option.value = service.service_name;
+                            option.textContent = service.service_name;
+                            serviceSelect.appendChild(option);
+                        });
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching services for queue form:', error));
+    });
 </script>
 </html>

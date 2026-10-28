@@ -24,6 +24,26 @@ if ($queue_info_id <= 0 || trim($patient_name) === '') {
     exit;
 }
 
+
+$service_id = 0;
+
+$serviceCheck = $conn->prepare("SELECT service_id FROM services WHERE service_name = ? LIMIT 1");
+$serviceCheck->bind_param("s", $service);
+$serviceCheck->execute();
+$serviceRes = $serviceCheck->get_result();
+
+if ($serviceRes->num_rows === 0) {
+    $serviceCheck->close();
+    header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Please select a valid service from the list.') . '&type=error');
+    exit();
+} else {
+    // FIX: Fetch the row into an array first
+    $row = $serviceRes->fetch_assoc();
+    $service_id = $row['service_id'];
+}
+$serviceCheck->close();
+
+
 $conn->begin_transaction();
 
 try {
@@ -89,7 +109,7 @@ try {
         throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    $stmt_insert->bind_param("isssis", $patient_id, $queue_code, $service, $remarks, $server_name, $service_duration);
+    $stmt_insert->bind_param("isisis", $patient_id, $queue_code, $service_id, $remarks, $server_name, $service_duration);
     
     if (!$stmt_insert->execute()) {
         throw new Exception("Insert transaction failed: " . $stmt_insert->error);

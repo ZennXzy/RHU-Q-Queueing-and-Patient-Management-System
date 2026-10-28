@@ -23,21 +23,49 @@ if ($patient_id <= 0 || empty($service_name)) {
     exit;
 }
 
-// Map service to prefix letter
-switch ($service_name) {
-    case 'Medical Consultation': $prefix = 'A'; break;
-    case 'Immunization': $prefix = 'B'; break;
-    case 'Pre-Natal': $prefix = 'C'; break;
-    case 'Medical Laboratory': $prefix = 'D'; break;
-    case 'Family Planning': $prefix = 'E'; break;
-    case 'Dental Examination/Tooth Extraction': $prefix = 'F'; break;
-    case 'Availment of anti-Tuberculosis Drugs': $prefix = 'G'; break;
-    case 'Child Care services': $prefix = 'H'; break;
-    case 'Availment of Tetanus Vaccine and Anti Rabies Vaccine': $prefix = 'I'; break;
-    default: $prefix = 'Z'; break;
+$service_id = 0;
+
+if ($service_name === '') {
+    header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Please select a service') . '&type=error');
+    exit();
+} else {
+    // Ensure the table and column names match your database schema
+    $serviceCheck = $conn->prepare("SELECT service_id FROM services WHERE service_name = ? LIMIT 1");
+    $serviceCheck->bind_param("s", $service_name);
+    $serviceCheck->execute();
+    $serviceRes = $serviceCheck->get_result();
+    
+    if ($serviceRes->num_rows === 0) {
+        $serviceCheck->close();
+        header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Please select a valid service from the list.') . '&type=error');
+        exit();
+    } else {
+        // FIX: Fetch the row into an array first
+        $row = $serviceRes->fetch_assoc();
+        $service_id = $row['service_id'];
+    }
+    $serviceCheck->close();
 }
 
 try {
+    // 1. Fetch all services ordered by creation/ID to dynamically determine the prefix letter based on position
+    $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
+    $prefix = 'Z'; // Default fallback if not found
+    $index = 0;
+
+    if ($services_res && $services_res->num_rows > 0) {
+        while ($row = $services_res->fetch_assoc()) {
+            if (strcasecmp($row['service_name'], $service_name) === 0) {
+                // Map index 0->A, 1->B, 2->C, etc. (up to 26 letters)
+                if ($index < 26) {
+                    $prefix = chr(65 + $index); // 65 is ASCII for 'A'
+                }
+                break;
+            }
+            $index++;
+        }
+    }
+
     // Get patient name for the response badge
     $p_stmt =$conn->prepare("SELECT CONCAT(firstname, ' ', lastname, ' ', COALESCE(suffix, '')) AS fullname FROM patient_records WHERE patient_id = ?");
     $p_stmt->bind_param("i", $patient_id);
@@ -75,8 +103,8 @@ try {
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert =$conn->prepare($insert_sql);$stmt_insert->bind_param(
-        "sisssssssss", 
-        $queue_code, $patient_id,$service_name, 
+        "siissssssss", 
+        $queue_code, $patient_id,$service_id, 
         $blood_pressure,$respiratory_rate, $temperature,$pulse_rate, $weight,$height, $complaints,$initial_status
     );
 

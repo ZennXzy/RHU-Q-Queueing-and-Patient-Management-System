@@ -1,7 +1,6 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
 
@@ -32,13 +31,14 @@ try {
         SELECT 
             t.transaction_id,
             t.queue_code,
-            t.service,
+            s.service_name AS service,
             COALESCE(t.remarks, 'None') AS remarks,
             COALESCE(a.fullname, 'N/A') AS server_name,
             COALESCE(t.service_duration, 'N/A') AS service_duration,
             DATE_FORMAT(t.transaction_date, '%b %d, %Y %h:%i %p') AS transaction_date
         FROM transactions t
         LEFT JOIN admin_auth a ON t.server_name = a.id
+        LEFT JOIN services s ON t.service = s.service_id
         WHERE t.patient_id = ?
         ORDER BY t.transaction_date DESC
     ";

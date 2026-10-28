@@ -1,7 +1,6 @@
 <?php
 header('Content-Type: application/json');
 require_once '../php/connection.php';
-require_once '../api/check-public.php';
 
 $query = "SELECT barangay_address FROM barangay ORDER BY barangay_address ASC";
 $result = $conn->query($query);

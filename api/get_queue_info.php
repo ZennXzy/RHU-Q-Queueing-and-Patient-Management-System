@@ -17,7 +17,7 @@ try {
     $sql = "SELECT 
                 q.queue_info_id, 
                 q.queue_code, 
-                q.service_name, 
+                s.service_name, 
                 q.blood_pressure, 
                 q.respiratory_rate, 
                 q.temperature, 
@@ -31,6 +31,7 @@ try {
                 p.suffix
             FROM queue_information q
             INNER JOIN patient_records p ON q.patient_id = p.patient_id
+            LEFT JOIN services s ON q.service_name = s.service_id
             WHERE q.queue_info_id = ?";
 
     $stmt = $conn->prepare($sql);

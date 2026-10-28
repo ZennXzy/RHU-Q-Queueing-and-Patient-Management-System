@@ -7,13 +7,14 @@ date_default_timezone_set('Asia/Manila');
               q.queue_info_id, 
               q.queue_code, 
               q.patient_id, 
-              q.service_name, 
+              s.service_name, 
               q.created_at,
               p.firstname, 
               p.lastname,
               p.suffix
           FROM queue_information q
           INNER JOIN patient_records p ON q.patient_id = p.patient_id
+          LEFT JOIN services s ON q.service_name = s.service_id
           WHERE q.status = 'In Progress' 
           ORDER BY q.created_at ASC";
 

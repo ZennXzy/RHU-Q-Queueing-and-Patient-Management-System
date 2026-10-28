@@ -25,12 +25,32 @@ if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id']
                     COALESCE(p.firstname, ''), ' ', 
                     COALESCE(p.middlename, ''), '.'
                 )) AS fullname,
-                p.email,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.blood_pressure, ''), 'N/A'), ' (mmHg)')
+                )) AS blood_pressure,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.respiratory_rate, ''), 'N/A'), ' (bpm)')
+                )) AS respiratory_rate,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.temperature, ''), 'N/A'), ' (°C)')
+                )) AS temperature,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.pulse_rate, ''), 'N/A'), ' (bpm)')
+                )) AS pulse_rate,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.weight, ''), 'N/A'), ' (kg)')
+                )) AS weight,
+                TRIM(CONCAT(
+                    CONCAT(COALESCE(NULLIF(t.height, ''), 'N/A'), ' (cm)')
+                )) AS height,
                 p.gender,
-                p.address,
+                b.barangay_address AS address,
+                s.service_name AS service_type,
                 p.age
             FROM transactions t
             LEFT JOIN patient_records p ON t.patient_id = p.patient_id
+            LEFT JOIN barangay b ON p.address = b.barangay_id
+            LEFT JOIN services s ON t.service = s.service_id
             WHERE t.transaction_id = ?
         ";
         $stmt = $conn->prepare($detailQuery);
@@ -118,7 +138,7 @@ try {
         SELECT 
             t.transaction_id,
             t.queue_code,
-            t.service AS service_type,
+            s.service_name AS service_type,
             COALESCE(t.blood_pressure, 'N/A') AS blood_pressure,
             COALESCE(t.respiratory_rate, 'N/A') AS respiratory_rate,
             COALESCE(t.temperature, 'N/A') AS temperature,
@@ -134,9 +154,11 @@ try {
             )) AS fullname,
             COALESCE(p.age, 'N/A') AS age,
             COALESCE(p.gender, 'N/A') AS gender,
-            COALESCE(p.address, 'N/A') AS address
+            COALESCE(b.barangay_address, 'N/A') AS address
         FROM transactions t
         LEFT JOIN patient_records p ON t.patient_id = p.patient_id
+        LEFT JOIN services s ON t.service = s.service_id
+        LEFT JOIN barangay b ON p.address = b.barangay_id
         WHERE " . implode(" AND ", $where) . "
         ORDER BY t.transaction_date DESC
     ";
