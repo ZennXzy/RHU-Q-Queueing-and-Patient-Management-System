@@ -128,6 +128,34 @@ if ($action === 'check_and_draft') {
     }
     $check->close();
 
+        
+
+    $address_id = 0;
+
+    if ($address === '') {
+        header('Location: ../pages/patient_reg_form.php?msg=' . urlencode('Please provide the address') . '&type=error');
+        exit();
+    } else {
+        // Ensure the table and column names match your database schema
+        $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_address = ? LIMIT 1");
+        $barangayCheck->bind_param("s", $address);
+        $barangayCheck->execute();
+        $barangayRes = $barangayCheck->get_result();
+        
+        if ($barangayRes->num_rows === 0) {
+            $barangayCheck->close();
+            header('Location: ../pages/patient_records.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
+            exit();
+        } else {
+            // FIX: Fetch the row into an array first
+            $row = $barangayRes->fetch_assoc();
+            $address_id = $row['barangay_id'];
+        }
+        $barangayCheck->close();
+    }
+
+
+
     // Generate token if not already in session (ensures token stays unchangeable)
     if (empty($_SESSION['patient_draft']['account_token'])) {
         $accountToken = generateUniqueAccountToken($conn);
@@ -142,7 +170,7 @@ if ($action === 'check_and_draft') {
         'lastname'          => $lastname,
         'middlename'        => ($middlename === '') ? NULL : $middlename,
         'suffix'            => ($suffix === '') ? NULL : $suffix,
-        'address'           => $address,
+        'address'           => $address_id,
         'age'               => $age,
         'gender'            => $gender,
         'birthDate'         => $birthDate,
@@ -251,7 +279,7 @@ if ($action === 'final_register') {
         $role = "Patient";
 
         $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, lastname, firstname, middlename, suffix, email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $authStmt->bind_param('issiiiisiss', $registered_patient_id, $username, $hashed_password, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $formattedEmail, $set_token, $status, $role);
+        $authStmt->bind_param('issiiiiiiss', $registered_patient_id, $username, $hashed_password, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $set_token, $status, $role);
         
         if (!$authStmt->execute()) {
             throw new Exception("Failed to save patient account: " . $authStmt->error);

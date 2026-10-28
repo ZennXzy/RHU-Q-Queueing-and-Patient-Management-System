@@ -13,6 +13,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/toast.js" defer></script>
+    <script src="../js/barangay-search.js" defer></script>
     <script src="../js/account-registration.js" defer></script>
 </head>
 <body>
@@ -66,8 +67,8 @@ require_once '../php/connection.php';
                                 </select>
                             </div>
 
-                            <div class="form-group col-4">
-                                <input type="text" name="address" id="address" placeholder="Complete Address" require_onced>
+                            <div class="form-group col-4" style="position: relative;">
+                                <input type="text" name="address" id="address" placeholder="Search Address" autocomplete="off" require_onced>
                             </div>
                             <div class="form-group col-3">
                                 <div class="date">
