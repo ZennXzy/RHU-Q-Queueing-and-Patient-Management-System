@@ -43,6 +43,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id']
                 TRIM(CONCAT(
                     CONCAT(COALESCE(NULLIF(t.height, ''), 'N/A'), ' (cm)')
                 )) AS height,
+                t.service_snapshot,
                 p.gender,
                 b.barangay_address AS address,
                 s.service_name AS service_type,
@@ -183,7 +184,11 @@ try {
             <td>{$row['formatted_date']}</td>
             <td><strong>" . htmlspecialchars($row['fullname']) . "</strong><br><small style='color:#6b7280;'>Queue: {$row['queue_code']}</small></td>
             <td style='text-align: center;'>" . htmlspecialchars($row['age']) . " / " . htmlspecialchars($row['gender']) . "</td>
-            <td>" . htmlspecialchars($row['service_type']) . "</td>
+            <td>" . htmlspecialchars(
+                !empty($row['service_type'])
+                    ? $row['service_type']
+                    : $row['service_snapshot']
+            ) . "</td>
             <td>" . htmlspecialchars($row['address']) . "</td>
             <td style='text-align: center;'>
                 <button class='view-record-btn' data-id='{$row['transaction_id']}' title='View Details'>👁️</button>

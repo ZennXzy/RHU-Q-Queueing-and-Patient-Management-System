@@ -101,15 +101,15 @@ try {
     $totalSeconds = $end->getTimestamp() - $start->getTimestamp();
     $service_duration = $interval->format('%d days, %h hours, %i minutes');
 
-    $insert_sql = "INSERT INTO transactions (patient_id, queue_code, service, remarks, server_name, service_duration, transaction_date) 
-                  VALUES (?, ?, ?, ?, ?, ?, NOW())";
+    $insert_sql = "INSERT INTO transactions (patient_id, queue_code, service, service_snapshot, remarks, server_name, service_duration, transaction_date) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert = $conn->prepare($insert_sql);
     if (!$stmt_insert) {
         throw new Exception("Prepare failed: " . $conn->error);
     }
 
-    $stmt_insert->bind_param("isisis", $patient_id, $queue_code, $service_id, $remarks, $server_name, $service_duration);
+    $stmt_insert->bind_param("isissis", $patient_id, $queue_code, $service_id, $service, $remarks, $server_name, $service_duration);
     
     if (!$stmt_insert->execute()) {
         throw new Exception("Insert transaction failed: " . $stmt_insert->error);

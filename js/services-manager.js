@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       html += `
         <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 12px; color: #334155;">#${service.service_id}</td>
+          <td style="padding: 12px; color: #334155;">#</td>
           <td style="padding: 12px; font-weight: 500; color: #0f172a;">${escapeHtml(service.service_name)}</td>
           <td style="padding: 12px; color: #64748b;">${service.created_at || 'N/A'}</td>
           ${isAdmin ? `

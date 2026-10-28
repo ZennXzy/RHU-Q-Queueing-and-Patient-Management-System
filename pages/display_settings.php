@@ -3,20 +3,16 @@ require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
 require_once '../php/connection.php';
 
-// List of all services in RHU-Q
-$allServices = [
-    'Medical Consultation',
-    'Immunization',
-    'Pre-Natal',
-    'Medical Laboratory',
-    'Family Planning',
-    'Dental Examination/Tooth Extraction',
-    'Availment of anti-Tuberculosis Drugs',
-    'Child Care services',
-    'Availment of Tetanus Vaccine and Anti Rabies Vaccine'
-];
+// Fetch all services dynamically from the services table
+$allServices = [];
+$servicesQuery = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
+if ($servicesQuery) {
+    while ($row = $servicesQuery->fetch_assoc()) {
+        $allServices[] = $row['service_name'];
+    }
+}
 
-// Fetch active services from queue_display_settings
+// Fetch active services from queue_display
 $activeServices = [];
 $settingsQuery = $conn->query("SELECT service_type, status FROM queue_display");
 if ($settingsQuery) {
@@ -64,31 +60,35 @@ if ($settingsQuery) {
                     <p class="card-subtext">Real-time counts of patients currently queued across services.</p>
                     
                     <div class="service-stats-list">
-                        <?php foreach ($allServices as $service): 
-                            // Fetch In Progress count
-                            $stmt1 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'In Progress'");
-                            $stmt1->bind_param("s", $service);
-                            $stmt1->execute();
-                            $inProgressCount = $stmt1->get_result()->fetch_assoc()['total'] ?? 0;
-                            $stmt1->close();
+                        <?php if (empty($allServices)): ?>
+                            <div class="empty-state" style="text-align: center; padding: 20px; color: #6b7280;">No services found in the catalog.</div>
+                        <?php else: ?>
+                            <?php foreach ($allServices as $service): 
+                                // Fetch In Progress count
+                                $stmt1 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'In Progress'");
+                                $stmt1->bind_param("s", $service);
+                                $stmt1->execute();
+                                $inProgressCount = $stmt1->get_result()->fetch_assoc()['total'] ?? 0;
+                                $stmt1->close();
 
-                            // Fetch Waiting count
-                            $stmt2 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'Waiting'");
-                            $stmt2->bind_param("s", $service);
-                            $stmt2->execute();
-                            $waitingCount = $stmt2->get_result()->fetch_assoc()['total'] ?? 0;
-                            $stmt2->close();
-                        ?>
-                            <div class="service-stat-item">
-                                <div class="service-name-label"><?php echo htmlspecialchars($service); ?></div>
-                                <div class="stat-pills">
-                                    <span class="badge badge-in-progress" title="In Progress"><?php echo $inProgressCount; ?> Serving
-                                    </span>
-                                    <span class="badge badge-waiting" title="Waiting"><?php echo $waitingCount; ?> Waiting
-                                    </span>
+                                // Fetch Waiting count
+                                $stmt2 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'Waiting'");
+                                $stmt2->bind_param("s", $service);
+                                $stmt2->execute();
+                                $waitingCount = $stmt2->get_result()->fetch_assoc()['total'] ?? 0;
+                                $stmt2->close();
+                            ?>
+                                <div class="service-stat-item">
+                                    <div class="service-name-label"><?php echo htmlspecialchars($service); ?></div>
+                                    <div class="stat-pills">
+                                        <span class="badge badge-in-progress" title="In Progress"><?php echo $inProgressCount; ?> Serving
+                                        </span>
+                                        <span class="badge badge-waiting" title="Waiting"><?php echo $waitingCount; ?> Waiting
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -103,15 +103,19 @@ if ($settingsQuery) {
                         </div>
 
                         <div class="checklist-grid">
-                            <?php foreach ($allServices as $index => $service): 
-                                $isChecked = in_array($service, $activeServices);
-                            ?>
-                                <label class="checklist-cell <?php echo $isChecked ? 'active' : ''; ?>">
-                                    <input type="checkbox" name="services[]" value="<?php echo htmlspecialchars($service); ?>" <?php echo $isChecked ? 'checked' : ''; ?>>
-                                    <span class="checkbox-custom"></span>
-                                    <span class="service-title"><?php echo htmlspecialchars($service); ?></span>
-                                </label>
-                            <?php endforeach; ?>
+                            <?php if (empty($allServices)): ?>
+                                <p style="color: #6b7280;">No services available to display.</p>
+                            <?php else: ?>
+                                <?php foreach ($allServices as $index => $service): 
+                                    $isChecked = in_array($service, $activeServices);
+                                ?>
+                                    <label class="checklist-cell <?php echo $isChecked ? 'active' : ''; ?>">
+                                        <input type="checkbox" name="services[]" value="<?php echo htmlspecialchars($service); ?>" <?php echo $isChecked ? 'checked' : ''; ?>>
+                                        <span class="checkbox-custom"></span>
+                                        <span class="service-title"><?php echo htmlspecialchars($service); ?></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
 
                         <div class="checklist-actions">

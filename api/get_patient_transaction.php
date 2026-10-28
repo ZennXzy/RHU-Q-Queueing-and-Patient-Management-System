@@ -31,6 +31,7 @@ try {
         SELECT 
             t.transaction_id,
             t.queue_code,
+            t.service_snapshot,
             s.service_name AS service,
             COALESCE(t.remarks, 'None') AS remarks,
             COALESCE(a.fullname, 'N/A') AS server_name,
@@ -53,7 +54,9 @@ try {
         $transactions[] = [
             'transaction_id'   => $row['transaction_id'] ?? null,
             'queue_code'       => htmlspecialchars($row['queue_code']),
-            'service'          => htmlspecialchars($row['service']),
+            'service' => htmlspecialchars(
+                !empty($row['service']) ? $row['service'] : ($row['service_snapshot'] ?? 'N/A')
+            ),
             'remarks'          => htmlspecialchars($row['remarks']),
             'server_name'      => htmlspecialchars($row['server_name']),
             'service_duration' => htmlspecialchars($row['service_duration']),

@@ -99,12 +99,12 @@ try {
 
     // Insert queue record with vital signs and complaints
     $insert_sql = "INSERT INTO queue_information 
-                   (queue_code, patient_id, service_name, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                   (queue_code, patient_id, service_name, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert =$conn->prepare($insert_sql);$stmt_insert->bind_param(
-        "siissssssss", 
-        $queue_code, $patient_id,$service_id, 
+        "siisssssssss", 
+        $queue_code, $patient_id,$service_id, $service_name, 
         $blood_pressure,$respiratory_rate, $temperature,$pulse_rate, $weight,$height, $complaints,$initial_status
     );
 

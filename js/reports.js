@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <p><strong>Patient Name:</strong> ${rec.fullname}</p>
             <p><strong>Visit Date:</strong> ${rec.transaction_date}</p>
             <p><strong>Age / Gender:</strong> ${rec.age} / ${rec.gender}</p>
-            <p><strong>Service Taken:</strong> ${rec.service_type}</p>
+            <p><strong>Service Taken:</strong> ${rec.service_type || rec.service_snapshot || 'N/A'}</p>
             <p><strong>Address:</strong> ${rec.address}</p>
             <p><strong>Vital Signs:</strong><br>
             <p>Blood Pressure: ${rec.blood_pressure || 'N/A'}</p>
