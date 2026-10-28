@@ -19,11 +19,12 @@ $service_name = trim($_POST['service_name'] ?? '');
 
 try {
     if ($action === 'add') {
+        $service_status = "Inactive";
         if (empty($service_name)) {
             throw new Exception('Service name cannot be empty.');
         }
-        $stmt = $conn->prepare("INSERT INTO services (service_name) VALUES (?)");
-        $stmt->bind_param("s", $service_name);
+        $stmt = $conn->prepare("INSERT INTO services (service_name, status) VALUES (?, ?)");
+        $stmt->bind_param("ss", $service_name, $service_status);
         $stmt->execute();
         $stmt->close();
 

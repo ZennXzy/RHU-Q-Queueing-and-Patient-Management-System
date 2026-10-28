@@ -80,10 +80,10 @@ try {
     }
 
     // --- 7. SERVICE DISTRIBUTION (Horizontal Bar Graph) ---
-    $serviceQuery = $conn->query("SELECT service, COUNT(*) as cnt FROM transactions GROUP BY service");
+    $serviceQuery = $conn->query("SELECT service_snapshot, COUNT(*) AS cnt FROM transactions GROUP BY service_snapshot");
     $serviceLabels = []; $serviceCounts = [];
     while($row = $serviceQuery->fetch_assoc()) {
-        $serviceLabels[] = $row['service'] ?: 'General';
+        $serviceLabels[] = $row['service_snapshot'] ?: 'General';
         $serviceCounts[] = intval($row['cnt']);
     }
 

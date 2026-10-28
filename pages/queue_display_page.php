@@ -6,24 +6,40 @@ require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 $currentPage = 'queue_display';
 
-$DEPARTMENT_CONFIG = [
-    'Medical Consultation' => ['title' => 'MEDICAL CONSULTATION', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Pre-Natal'     => ['title' => 'PRENATAL CHECKUP',     'themeClass' => 'dept-medical', 'icon' => '../svg/prenatal-icon.svg'],
-    'Immunization' => ['title' => 'IMMUNIZATION',    'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
-    'Dental Examination/Tooth Extraction'       => ['title' => 'DENTAL CHECKUP',       'themeClass' => 'dept-dental',  'icon' => '../svg/dental-icon.svg'],
-    'Medical Laboratory'   => ['title' => 'LABORATORY',           'themeClass' => 'dept-medical', 'icon' => '../svg/laboratory-icon.svg'],
-    'Family Planning'      => ['title' => 'FAMILY PLANNING',      'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Availment of anti-Tuberculosis Drugs' => ['title' => 'ANTI-TB DRUGS', 'themeClass' => 'dept-medical', 'icon' => '../svg/medical-icon.svg'],
-    'Child Care services'  => ['title' => 'CHILD CARE',           'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg'],
-    'Availment of Tetanus Vaccine and Anti Rabies Vaccine' => ['title' => 'TETANUS & RABIES VACCINE', 'themeClass' => 'dept-vaccine', 'icon' => '../svg/vaccine-icon.svg']
+// Professional medical color themes with guaranteed high-contrast dark text/accents
+$COLOR_THEMES = [
+    'dept-teal',
+    'dept-blue',
+    'dept-emerald',
+    'dept-indigo',
+    'dept-cyan',
+    'dept-violet'
 ];
 
-// Fetch active services configured in DB
+// Fetch ALL services dynamically from the database
+$DEPARTMENT_CONFIG = [];
+$servicesQuery = $conn->query("SELECT service_name, status FROM services ORDER BY service_id ASC");
+if ($servicesQuery) {
+    $i = 0;
+    while ($row = $servicesQuery->fetch_assoc()) {
+        $sName = $row['service_name'];
+        // Assign a theme sequentially or cyclically so every service gets a clean readable color
+        $themeClass = $COLOR_THEMES[$i % count($COLOR_THEMES)];
+
+        $DEPARTMENT_CONFIG[$sName] = [
+            'title' => strtoupper($sName),
+            'themeClass' => $themeClass
+        ];
+        $i++;
+    }
+}
+
+// Fetch active services configured in DB (where status = 'Active')
 $activeServices = [];
-$settingsQuery = $conn->query("SELECT service_type FROM queue_display WHERE status = 'Active'");
-if ($settingsQuery) {
-    while ($sRow = $settingsQuery->fetch_assoc()) {
-        $activeServices[] = $sRow['service_type'];
+$activeQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active'");
+if ($activeQuery) {
+    while ($sRow = $activeQuery->fetch_assoc()) {
+        $activeServices[] = $sRow['service_name'];
     }
 }
 ?>
@@ -45,6 +61,28 @@ if ($settingsQuery) {
     <script src="../js/logout.js" defer></script>
     <script src="../js/patient_notification.js" defer></script>
 
+    <style>
+        /* Modern Medical Theme Palette (No Icons, High Contrast, Crisp Typography) */
+        .queue-card.dept-teal { border-top: 5px solid #0d9488; background: #f0fdfa; }
+        .queue-card.dept-blue { border-top: 5px solid #2563eb; background: #eff6ff; }
+        .queue-card.dept-emerald { border-top: 5px solid #059669; background: #ecfdf5; }
+        .queue-card.dept-indigo { border-top: 5px solid #4f46e5; background: #eef2ff; }
+        .queue-card.dept-cyan { border-top: 5px solid #0891b2; background: #ecfeff; }
+        .queue-card.dept-violet { border-top: 5px solid #7c3aed; background: #f5f3ff; }
+
+        .dept-column .dept-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1e293b;
+            padding: 14px 16px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+            letter-spacing: 0.5px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="page-container">
@@ -120,8 +158,8 @@ if ($settingsQuery) {
 
                 <div class="dept-column" data-service="<?php echo htmlspecialchars($serviceName); ?>" style="display: <?php echo $isVisible ? 'flex' : 'none'; ?>;">
                     <div class="queue-card <?php echo $config['themeClass']; ?>">
+                        <!-- Header without icons -->
                         <div class="dept-title">
-                            <img src="<?php echo $config['icon']; ?>" alt="<?php echo $config['title']; ?>"> 
                             <?php echo htmlspecialchars($config['title']); ?>
                         </div>
 
@@ -177,7 +215,6 @@ if ($settingsQuery) {
                             const col = document.querySelector(`.dept-column[data-service="${CSS.escape(item.service)}"]`);
                             if (!col) return;
 
-                            // Visibility check
                             if (item.isVisible) {
                                 col.style.display = 'flex';
                                 visibleCount++;
@@ -185,7 +222,6 @@ if ($settingsQuery) {
                                 col.style.display = 'none';
                             }
 
-                            // Right column: Now Serving
                             const servingList = col.querySelector('.serving-list');
                             if (servingList) {
                                 servingList.innerHTML = item.active.length > 0
@@ -193,15 +229,13 @@ if ($settingsQuery) {
                                     : `<div class="no-queue">No Queue</div>`;
                             }
 
-                            // Left column: Waiting
                             const waitingList = col.querySelector('.waiting-list');
                             if (waitingList) {
                                 waitingList.innerHTML = item.waiting.length > 0
                                     ? item.waiting.map(code => `<div class="ticket-box is-waiting">${escapeHtml(code)}</div>`).join('')
-                                    : `<div class="no-queue">No Waiting</div>`;
+                                    : `<div class="no-queue">No Waiting`;
                             }
 
-                            // Update Avg Time
                             const avgVal = col.querySelector('.avg-time-val');
                             if (avgVal) {
                                 avgVal.textContent = item.avgTime;
@@ -222,7 +256,6 @@ if ($settingsQuery) {
                 return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
 
-            // Automatically poll live data every 3 seconds
             setInterval(fetchLiveQueueData, 3000);
         });
     </script>
