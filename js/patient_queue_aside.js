@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="queue-detail-item">
                                 <span class="label">Service:</span>
-                                <span class="value">${escapeHtml(q.service_name)}</span>
+                                <span class="value">${escapeHtml(q.service_snapshot)}</span>
                             </div>
                             <div class="queue-detail-item">
                                 <span class="label">Requested At:</span>

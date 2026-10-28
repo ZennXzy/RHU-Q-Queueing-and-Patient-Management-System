@@ -6,6 +6,15 @@ require_once '../php/connection.php';
 authorizeRoles(['Patient']);
 $currentPage = 'appointments';
 $patient_id = $_SESSION['patient_id'] ?? 0;
+
+// Fetch services dynamically from database
+$servicesList = [];
+$servicesQuery = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
+if ($servicesQuery) {
+    while ($row = $servicesQuery->fetch_assoc()) {
+        $servicesList[] = $row['service_name'];
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -69,23 +78,17 @@ $patient_id = $_SESSION['patient_id'] ?? 0;
           <div class="modal-body">
             <div class="form-group">
               <label for="service">Select Service <span class="require_onced">*</span></label>
-              <select name="service" id="service" class="form-control" require_onced>
+              <select name="service" id="service" class="form-control" required>
                 <option value="" disabled selected>-- Select Service --</option>
-                <option value="Medical Consultation">Medical Consultation</option>
-                <option value="Immunization">Immunization</option>
-                <option value="Pre-Natal">Pre-Natal</option>
-                <option value="Medical Laboratory">Medical Laboratory</option>
-                <option value="Family Planning">Family Planning</option>
-                <option value="Dental Examination/Tooth Extraction">Dental Examination/Tooth Extraction</option>
-                <option value="Availment of anti-Tuberculosis Drugs">Availment of anti-Tuberculosis Drugs</option>
-                <option value="Child Care services">Child Care services</option>
-                <option value="Availment of Tetanus Vaccine and Anti Rabies Vaccine">Availment of Tetanus Vaccine and Anti Rabies Vaccine</option>
+                <?php foreach ($servicesList as $svc): ?>
+                  <option value="<?php echo htmlspecialchars($svc); ?>"><?php echo htmlspecialchars($svc); ?></option>
+                <?php endforeach; ?>
               </select>
             </div>
 
             <div class="form-group">
               <label for="appointment_date">Preferred Date <span class="require_onced">*</span></label>
-              <input type="date" id="appointment_date" name="appointment_date" class="form-control" min="<?= date('Y-m-d') ?>" require_onced>
+              <input type="date" id="appointment_date" name="appointment_date" class="form-control" min="<?= date('Y-m-d') ?>" required>
             </div>
 
             <div class="form-group">

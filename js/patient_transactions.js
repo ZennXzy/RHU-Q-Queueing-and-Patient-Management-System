@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="item-left">
               <div class="queue-code-badge">${escapeHtml(item.queue_code || "N/A")}</div>
               <div class="service-info">
-                <span class="service-name">${escapeHtml(item.service || "General Service")}</span>
+                <span class="service-name">${escapeHtml(item.service || item.service_snapshot || "General Service")}</span>
                 <span class="transaction-date">${escapeHtml(item.transaction_date)}</span>
                 <span class="server-info">Served by: ${escapeHtml(item.server_name)}</span>
               </div>

@@ -3,11 +3,21 @@
 // but keeping session checks here ensures security before rendering the view.
 require_once '../api/check-private.php';
 authorizeRoles(['Patient']);
+require_once '../php/connection.php';
 
 $currentPage = 'add_queue';
 // Retrieve flash messages if passed from redirect
 $message     = $_GET['msg'] ?? '';
 $messageType = $_GET['type'] ?? '';
+
+// Fetch services dynamically from the database
+$servicesList = [];
+$servicesQuery = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
+if ($servicesQuery) {
+    while ($row = $servicesQuery->fetch_assoc()) {
+        $servicesList[] = $row['service_name'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,15 +66,9 @@ $messageType = $_GET['type'] ?? '';
                     <div class="form-group">
                         <select name="service" id="service" class="form-control" required>
                             <option value="" disabled selected>-- Choose Service --</option>
-                            <option value="Medical Consultation">Medical Consultation</option>
-                            <option value="Immunization">Immunization</option>
-                            <option value="Pre-Natal">Pre-Natal</option>
-                            <option value="Medical Laboratory">Medical Laboratory</option>
-                            <option value="Family Planning">Family Planning</option>
-                            <option value="Dental Examination/Tooth Extraction">Dental Examination/Tooth Extraction</option>
-                            <option value="Availment of anti-Tuberculosis Drugs">Availment of anti-Tuberculosis Drugs</option>
-                            <option value="Child Care services">Child Care services</option>
-                            <option value="Availment of Tetanus Vaccine and Anti Rabies Vaccine">Availment of Tetanus Vaccine and Anti Rabies Vaccine</option>
+                            <?php foreach ($servicesList as $svc): ?>
+                                <option value="<?php echo htmlspecialchars($svc); ?>"><?php echo htmlspecialchars($svc); ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                 </div>
