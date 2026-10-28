@@ -12,14 +12,12 @@ if ($servicesQuery) {
     }
 }
 
-// Fetch active services from queue_display
+// Fetch active services where status = 'Active' from the services table
 $activeServices = [];
-$settingsQuery = $conn->query("SELECT service_type, status FROM queue_display");
-if ($settingsQuery) {
-    while ($row = $settingsQuery->fetch_assoc()) {
-        if ($row['status'] === 'Active') {
-            $activeServices[] = $row['service_type'];
-        }
+$activeQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active'");
+if ($activeQuery) {
+    while ($row = $activeQuery->fetch_assoc()) {
+        $activeServices[] = $row['service_name'];
     }
 }
 ?>

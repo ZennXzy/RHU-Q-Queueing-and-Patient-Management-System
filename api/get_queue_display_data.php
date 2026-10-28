@@ -5,26 +5,23 @@ require_once '../php/connection.php';
 
 header('Content-Type: application/json');
 
-// Fetch active services configured in DB
+// Fetch active services where status = 'Active' from the services table
 $activeServices = [];
-$settingsQuery = $conn->query("SELECT service_type FROM queue_display WHERE status = 'Active'");
+$settingsQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active'");
 if ($settingsQuery) {
     while ($sRow = $settingsQuery->fetch_assoc()) {
-        $activeServices[] = $sRow['service_type'];
+        $activeServices[] = $sRow['service_name'];
     }
 }
 
-$DEPARTMENT_CONFIG = [
-    'Medical Consultation',
-    'Pre-Natal',
-    'Immunization',
-    'Dental Examination/Tooth Extraction',
-    'Medical Laboratory',
-    'Family Planning',
-    'Availment of anti-Tuberculosis Drugs',
-    'Child Care services',
-    'Availment of Tetanus Vaccine and Anti Rabies Vaccine'
-];
+// Fetch all services dynamically from the services table
+$DEPARTMENT_CONFIG = [];
+$allServicesQuery = $conn->query("SELECT service_id, service_name FROM services ORDER BY service_id ASC");
+if ($allServicesQuery) {
+    while ($row = $allServicesQuery->fetch_assoc()) {
+        $DEPARTMENT_CONFIG[] = $row['service_name'];
+    }
+}
 
 $responseData = [];
 
