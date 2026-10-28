@@ -361,4 +361,62 @@ body, html {
         padding: 14px;
         overflow-y: auto;
     }
+    .queue-col-waiting {
+        padding-right: 8px;
+    }
+
+    .queue-col-header {
+        font-size: 11px;
+    }
+
+    .ticket-box.is-waiting {
+        font-size: 14px;
+    }
+
+    .queue-col-serving .ticket-box {
+        font-size: 18px;
+    }
+    .no-services-message {
+        flex: 0 0 100%;
+    }
+
+    .dept-title {
+        font-size: 14px;
+        gap: 10px;
+    }
+
+    .dept-title img {
+        height: 26px;
+    }
+
+    .ticket-box {
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .time-stat .label {
+        font-size: 12px;
+    }
+
+    .time-stat .value {
+        font-size: 15px;
+    }
+
+    .waiting-title {
+        font-size: 13px;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .no-services-message h2,
+    .no-services-message h3 {
+        font-size: 1.4rem;
+    }
+
+    .no-services-message p {
+        font-size: 0.95rem;
+    }
 }

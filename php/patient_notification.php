@@ -3,7 +3,7 @@ require_once '../api/check-private.php';
 require_once '../php/connection.php';
 
 // Enforce Patient Authorization
-authorizeRoles(['Patient']);
+authorizeRoles(['Admin','Doctor/Staff','Patient']);
 
 $patient_id = $_SESSION['patient_id'] ?? null;
 header('Content-Type: application/json');

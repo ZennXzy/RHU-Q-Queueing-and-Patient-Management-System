@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('display-settings-form');
   const cells = document.querySelectorAll('.checklist-cell');
 
+  function notifyUser(message, type = 'error') {
+    if (typeof showToast === 'function') {
+      showToast(message, type);
+    } else {
+      alert(message);
+    }
+  }
+
   // Toggle active class visually when clicking checklist cell
   cells.forEach(cell => {
     const checkbox = cell.querySelector('input[type="checkbox"]');
@@ -34,13 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          alert('Queue card settings saved successfully!');
+          notifyUser(result.message || 'Queue card settings saved successfully!', 'success');
         } else {
-          alert('Error: ' + result.message);
+          notifyUser('Error: ' + (result.message || 'Operation failed.'), 'error');
         }
       } catch (error) {
         console.error('Save error:', error);
-        alert('An error occurred while saving queue card settings.');
+        notifyUser('An error occurred while saving queue card settings.', 'error');
       }
     });
   }
