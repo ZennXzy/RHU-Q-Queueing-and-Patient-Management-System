@@ -8,6 +8,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const serviceModalTitle = document.getElementById('serviceModalTitle');
   const serviceIdInput = document.getElementById('serviceId');
   const serviceNameInput = document.getElementById('serviceNameInput');
+  
+  // Mobile toggle elements
+  const toggleBtn = document.getElementById('toggleServicesBtn');
+  const cardBody = document.getElementById('servicesCardBody');
+  const divider = document.getElementById('servicesDivider');
+
+  // Mobile Collapse Toggle Logic
+  if (toggleBtn && cardBody) {
+    const isMobile = window.innerWidth <= 767.98;
+    if (isMobile) {
+      cardBody.style.display = 'none';
+      if (divider) divider.classList.add('collapsed-divider');
+      toggleBtn.textContent = 'Show Services';
+    } else {
+      cardBody.style.display = 'block';
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = cardBody.style.display === 'none' || getComputedStyle(cardBody).display === 'none';
+      
+      if (isHidden) {
+        cardBody.style.display = 'block';
+        if (divider) divider.classList.remove('collapsed-divider');
+        toggleBtn.textContent = 'Hide Services';
+      } else {
+        cardBody.style.display = 'none';
+        if (divider) divider.classList.add('collapsed-divider');
+        toggleBtn.textContent = 'Show Services';
+      }
+    });
+  }
 
   if (!servicesTableBody) return;
 
@@ -48,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       html += `
         <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 12px; color: #334155;">#</td>
+          <td style="padding: 12px; color: #334155;">#${service.service_id}</td>
           <td style="padding: 12px; font-weight: 500; color: #0f172a;">${escapeHtml(service.service_name)}</td>
           <td style="padding: 12px; color: #64748b;">${service.created_at || 'N/A'}</td>
           ${isAdmin ? `

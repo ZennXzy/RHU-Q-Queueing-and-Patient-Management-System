@@ -134,36 +134,41 @@ require_once '../php/connection.php';
             <h2 class="account-title">Manage Services</h2>
             <span class="badge-role" style="background-color: #0B695D; color: #fff;">Catalog</span>
           </div>
-          <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
           <div class="top-action-button">
+            <!-- Mobile Toggle Button -->
+            <button type="button" class="btn btn-secondary" id="toggleServicesBtn">Show Services</button>
+            
+            <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
             <button type="button" class="btn btn-primary" id="openAddServiceModalBtn" style="background-color: #0B695D; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer;">
               + Add New Service
             </button>
+            <?php } ?>
           </div>
-          <?php } ?>
         </div>
 
-        <hr class="divider">
+        <hr class="divider" id="servicesDivider">
 
-        <!-- Services Management Table Layout -->
-        <div class="table-responsive" style="overflow-x: auto; margin-top: 15px;">
-          <table class="logs-table" style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-              <tr style="border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
-                <th style="padding: 12px; font-weight: 600; color: #475569;">ID</th>
-                <th style="padding: 12px; font-weight: 600; color: #475569;">Service Name</th>
-                <th style="padding: 12px; font-weight: 600; color: #475569;">Created At</th>
-                <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
-                <th style="padding: 12px; font-weight: 600; color: #475569; text-align: right;">Actions</th>
-                <?php } ?>
-              </tr>
-            </thead>
-            <tbody id="servicesTableBody">
-              <tr>
-                <td colspan="4" style="padding: 20px; text-align: center; color: #64748b;">Loading services...</td>
-              </tr>
-            </tbody>
-          </table>
+        <!-- Collapsable Services Body -->
+        <div class="services-card-body" id="servicesCardBody">
+          <div class="table-responsive" style="overflow-x: auto; margin-top: 15px;">
+            <table class="logs-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+              <thead>
+                <tr style="border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
+                  <th style="padding: 12px; font-weight: 600; color: #475569;">ID</th>
+                  <th style="padding: 12px; font-weight: 600; color: #475569;">Service Name</th>
+                  <th style="padding: 12px; font-weight: 600; color: #475569;">Created At</th>
+                  <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
+                  <th style="padding: 12px; font-weight: 600; color: #475569; text-align: right;">Actions</th>
+                  <?php } ?>
+                </tr>
+              </thead>
+              <tbody id="servicesTableBody">
+                <tr>
+                  <td colspan="4" style="padding: 20px; text-align: center; color: #64748b;">Loading services...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 

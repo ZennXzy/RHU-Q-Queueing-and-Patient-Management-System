@@ -250,13 +250,6 @@ html {
 }
 
 
-/* =====================================================
-   RESPONSIVE BREAKPOINTS
-   Mobile: 767.98px and below
-   Desktop / Tablet (ONE tier): 768px - 3439.98px
-   Extra Large: 3440px and up
-   ===================================================== */
-
 .content-card {
   min-width: 0;
 }
@@ -287,6 +280,10 @@ html {
   /* Form box height follows the screen instead of a fixed 345px */
   .form-grid {
     max-height: max(345px, calc(100vh - 460px));
+  }
+  
+  #toggleServicesBtn {
+    display: none;
   }
 }
 
@@ -366,6 +363,22 @@ html {
     width: 100%;
     min-height: 46px;
   }
+  
+  /* Show toggle button on mobile */
+  #toggleServicesBtn {
+    display: inline-flex;
+  }
+
+  /* Start collapsed on mobile by default to keep screen compact */
+  .services-card-body {
+    display: none;
+  }
+
+  /* Hide divider when collapsed on mobile */
+  #servicesDivider.collapsed-divider {
+    display: none;
+  }
+
 }
 
 /* Mobile (575.98px and below): the top bar is hidden, so the whole page scrolls vertically */
@@ -395,6 +408,96 @@ html {
     overflow: visible;
     padding: 14px 24px; /* top space clears the fixed sidebar toggle */
   }
+
+  /* Show toggle button on mobile */
+  #toggleServicesBtn {
+    display: inline-flex;
+  }
+
+  /* Start collapsed on mobile by default to keep screen compact */
+  .services-card-body {
+    display: none;
+  }
+
+  /* Hide divider when collapsed on mobile */
+  #servicesDivider.collapsed-divider {
+    display: none;
+  }
+
+  /* Hide standard table headers on mobile */
+  #services-card .logs-table thead {
+    display: none;
+  }
+
+  /* Make table, tbody, and tr behave like a stacked card layout */
+  #services-card .logs-table,
+  #services-card .logs-table tbody,
+  #services-card .logs-table tr {
+    display: block;
+    width: 100%;
+  }
+
+  /* Style each row as a modern individual card */
+  #services-card .logs-table tr {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Style individual cells to act as distinct rows inside the card */
+  #services-card .logs-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0 !important;
+    border: none !important;
+    text-align: right !important;
+  }
+
+  /* Add descriptive labels using CSS pseudo-elements based on data attributes */
+  #services-card .logs-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  /* Service Name emphasis */
+  #services-card .logs-table td:nth-child(2) {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #0f172a;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 6px;
+  }
+
+  /* Actions container spanning full width at the bottom of the card */
+  #services-card .logs-table td:last-child {
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 10px !important;
+    border-top: 1px solid #f1f5f9 !important;
+  }
+
+  #services-card .logs-table td:last-child::before {
+    content: none; /* Hide label for action buttons */
+  }
+
+  /* Modern mobile buttons */
+  #services-card .logs-table .btn-edit-service,
+  #services-card .logs-table .btn-delete-service {
+    padding: 6px 14px !important;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    margin-right: 0 !important;
+  }
+  
 }
 
 /* Extra Large Devices (3440px and up) - everything enlarged */
