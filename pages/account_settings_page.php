@@ -27,6 +27,7 @@ require_once '../php/connection.php';
     <script src="../js/backup_modal.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/logs-modal.js" defer></script>
+    <script src="../js/services-manager.js" defer></script>
 </head>
 <body>
     <?php include '../pages/top-navbar.php'; ?>
@@ -125,8 +126,69 @@ require_once '../php/connection.php';
           </div>
         </form>
       </div>
+
+      <!-- SERVICES-CARD: Manage Services (Add, Edit, Delete) -->
+      <div class="account-card" id="services-card" style="margin-top: 30px;">
+        <div class="card-top-bar">
+          <div class="account-header">
+            <h2 class="account-title">Manage Services</h2>
+            <span class="badge-role" style="background-color: #0B695D; color: #fff;">Catalog</span>
+          </div>
+          <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
+          <div class="top-action-button">
+            <button type="button" class="btn btn-primary" id="openAddServiceModalBtn" style="background-color: #0B695D; color: #fff; border: none; padding: 10px 16px; border-radius: 6px; cursor: pointer;">
+              + Add New Service
+            </button>
+          </div>
+          <?php } ?>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Services Management Table Layout -->
+        <div class="table-responsive" style="overflow-x: auto; margin-top: 15px;">
+          <table class="logs-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
+                <th style="padding: 12px; font-weight: 600; color: #475569;">ID</th>
+                <th style="padding: 12px; font-weight: 600; color: #475569;">Service Name</th>
+                <th style="padding: 12px; font-weight: 600; color: #475569;">Created At</th>
+                <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
+                <th style="padding: 12px; font-weight: 600; color: #475569; text-align: right;">Actions</th>
+                <?php } ?>
+              </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+              <tr>
+                <td colspan="4" style="padding: 20px; text-align: center; color: #64748b;">Loading services...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   </div>
+
+  <!-- Add/Edit Service Modal Dialog -->
+  <dialog id="serviceModal" class="logs-modal" style="max-width: 450px; width: 100%;">
+    <div class="logs-modal__header">
+        <h2 class="logs-modal__title" id="serviceModalTitle">Add New Service</h2>
+        <button type="button" class="logs-modal__close" id="closeServiceModalBtn">&times;</button>
+    </div>
+    <form id="serviceForm" style="padding: 20px;">
+        <input type="hidden" id="serviceId" name="service_id">
+        <div class="form-group" style="margin-bottom: 15px;">
+            <label for="serviceNameInput" style="display: block; margin-bottom: 5px; font-weight: 500; color: #334155;">Service Name</label>
+            <input type="text" id="serviceNameInput" name="service_name" class="form-control" placeholder="e.g., General Consultation" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+        </div>
+        <div class="custom-modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button type="button" class="btn btn-outline" id="cancelServiceModalBtn" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; cursor: pointer;">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="saveServiceBtn" style="padding: 8px 16px; background: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Save Service</button>
+        </div>
+    </form>
+  </dialog>
+
   <!-- backup/restore modal -->
    <dialog class="backupModal" id="backupModal">
     <!-- Modal Header -->
@@ -216,6 +278,11 @@ require_once '../php/connection.php';
               <input type="checkbox" class="table-checkbox" name="tables[]" value="transactions" checked>
               <span>transactions</span>
             </label>
+
+            <label class="checkbox-label">
+              <input type="checkbox" class="table-checkbox" name="tables[]" value="services" checked>
+              <span>services</span>
+            </label>
           </div>
         </div>
 
@@ -228,6 +295,7 @@ require_once '../php/connection.php';
       </div>
     </form>
   </dialog>
+
  <!-- Logs modal -->
 <dialog id="logsModal" class="logs-modal" aria-labelledby="logsTitle">
     <div class="logs-modal__header">
