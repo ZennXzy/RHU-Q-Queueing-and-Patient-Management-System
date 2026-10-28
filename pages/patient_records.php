@@ -349,6 +349,10 @@ require_once '../php/connection.php';
                       <input type="tel" id="editContact" name="editContact" placeholder="e.g. 09123456789">
                     </div>
                     <div class="info-group">
+                      <label for="editEmail">Email Address<span class="require_onced-asterisk">*</span></label>
+                      <input type="email" id="editEmail" name="editEmail" placeholder="e.g. sample@gmail.com">
+                    </div>
+                    <div class="info-group">
                       <label for="editAddress">Address <span class="require_onced-asterisk">*</span></label>
                       <input type="text" id="editAddress" name="editAddress" placeholder="Full Address" autocomplete="off">
                     </div>

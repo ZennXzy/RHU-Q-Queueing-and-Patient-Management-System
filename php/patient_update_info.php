@@ -68,6 +68,33 @@ if (!$fname || !$lname || !$gender || !$birthdate) {
     exit();
 }
 
+
+$address_id = 0;
+
+if ($address === '') {
+    header('Location: ../pages/patient_info_page.php?msg=' . urlencode('Please provide the address') . '&type=error');
+    exit();
+} else {
+    // Ensure the table and column names match your database schema
+    $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_address = ? LIMIT 1");
+    $barangayCheck->bind_param("s", $address);
+    $barangayCheck->execute();
+    $barangayRes = $barangayCheck->get_result();
+    
+    if ($barangayRes->num_rows === 0) {
+        $barangayCheck->close();
+        header('Location: ../pages/patient_info_page.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
+        exit();
+    } else {
+        // FIX: Fetch the row into an array first
+        $row = $barangayRes->fetch_assoc();
+        $address_id = $row['barangay_id'];
+    }
+    $barangayCheck->close();
+}
+
+
+
 if ($sname === 'None') {
     $sname = NULL;
 }
@@ -86,6 +113,7 @@ try {
                 civil_status = ?, 
                 religion = ?, 
                 contact_number = ?, 
+                email = ?,
                 address = ?, 
                 mothers_name = ?, 
                 fathers_name = ?, 
@@ -105,7 +133,7 @@ try {
     }
 
     $stmt->bind_param(
-        "ssssssssssssssssssssi",
+        "ssssssssssissssssssssi",
         $fname,
         $mname,
         $lname,
@@ -115,7 +143,8 @@ try {
         $civil_status,
         $religion,
         $contactnum,
-        $address,
+        $email,
+        $address_id,
         $mother_maiden_name,
         $father_name,
         $spouse_name,
@@ -138,7 +167,7 @@ try {
     if ($email) {
         $stmtAuth = $conn->prepare("UPDATE patient_auth SET email = ? WHERE patient_id = ?");
         if ($stmtAuth) {
-            $stmtAuth->bind_param("si", $email, $patient_id);
+            $stmtAuth->bind_param("ii", $patient_id, $patient_id);
             $stmtAuth->execute();
             $stmtAuth->close();
         }

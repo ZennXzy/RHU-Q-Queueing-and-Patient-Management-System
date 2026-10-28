@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setVal('editCivilStatus', p.civil_status);
         setVal('editReligion', p.religion);
         setVal('editContact', p.contact_number);
+        setVal('editEmail', p.email);
         setVal('editAddress', p.address);
         setVal('editDateRegistered', p.date_registered);
         setVal('editMotherName', p.mothers_name);
@@ -67,8 +68,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const occGroup = document.getElementById('modalOccupationGroup');
         const bizGroup = document.getElementById('modalBusinessGroup');
 
-        if (occGroup) occGroup.style.display = (empStatus.includes('Employed') && !empStatus.includes('Unemployed') && !empStatus.includes('self')) ? 'block' : 'none';
-        if (bizGroup) bizGroup.style.display = empStatus.includes('Self') ? 'block' : 'none';
+        if(empStatus.includes('Unemployed')){
+          occGroup.style.display = "none";
+          bizGroup.style.display = "none";
+        }
+        if(empStatus.includes('Employed')){
+          occGroup.style.display = "block";
+          occGroup.style.display = "none";
+        }
+        if(empStatus.includes('Self-Employed')){
+          occGroup.style.display = "none";
+          occGroup.style.display = "block";
+        }
 
         const philStatus = p.phil_status;
         const philNumGroup = document.getElementById('modalPhilNumberGroup');
@@ -77,15 +88,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if(philStatus.includes('Member')){
           philNumGroup.style.display = 'block';
           prinMemGroup.style.display = 'none';
-          console.log("Member");
-        } else if (philStatus.includes('Dependent')){
+        }
+
+        if (philStatus.includes('Dependent')){
           philNumGroup.style.display = 'block';
           prinMemGroup.style.display = 'block';
-          console.log("Dependent");
-        } else {
+        }
+
+        if(philStatus.includes('Not Applicable')){
           philNumGroup.style.display = 'none';
           prinMemGroup.style.display = 'none';
-          console.log("Not Applicable");
         }
 
         editModal.showModal();

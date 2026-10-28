@@ -47,6 +47,7 @@ $civil_status       = get_post_val('editCivilStatus');
 $religion           = get_post_val('editReligion');
 
 $contactnum         = get_post_val('editContact');
+$email              = get_post_val('editEmail');
 $address            = get_post_val('editAddress');
 $date_registered    = get_post_val('editDateRegistered');
 
@@ -84,7 +85,7 @@ if ($address === '') {
     
     if ($barangayRes->num_rows === 0) {
         $barangayCheck->close();
-        header('Location: ../pages/register_page.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
+        header('Location: ../pages/patient_records.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
         exit();
     } else {
         // FIX: Fetch the row into an array first
@@ -110,7 +111,8 @@ try {
                 date_of_birth = ?, 
                 civil_status = ?, 
                 religion = ?, 
-                contact_number = ?, 
+                contact_number = ?,
+                email = ?, 
                 address = ?, 
                 date_registered = ?, 
                 mothers_name = ?, 
@@ -132,7 +134,7 @@ try {
     }
 
     $stmt->bind_param(
-        "sssssssssisssssssssssi",
+        "ssssssssssisssssssssssi",
         $fname,
         $mname,
         $lname,
@@ -142,6 +144,7 @@ try {
         $civil_status,
         $religion,
         $contactnum,
+        $email,
         $address_id,
         $date_registered,
         $mother_maiden_name,
@@ -158,6 +161,10 @@ try {
     );
 
     if ($stmt->execute()) {
+        $update_sql = "UPDATE patient_auth SET email = ? WHERE patient_id = ?";
+        $update_admin = $conn->prepare($update_sql);
+        $update_admin->bind_param("ii", $patient_id, $patient_id);
+        $update_admin->execute();
         echo json_encode([
             'status' => 'success',
             'message' => 'Patient profile updated successfully.'

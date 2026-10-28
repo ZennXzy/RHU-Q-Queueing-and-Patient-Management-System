@@ -5,6 +5,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const infoForm = document.getElementById('patientInfoForm');
 
   let isEditMode = false;
+  let cachedBarangays = [];
+
+  // Pre-fetch barangays for the inline search feature
+  async function fetchBarangaysForEdit() {
+    if (cachedBarangays.length > 0) return cachedBarangays;
+    try {
+      const response = await fetch('../api/get_barangay.php');
+      const data = await response.json();
+      if (data.status === 'success') {
+        cachedBarangays = data.barangays;
+      }
+    } catch (error) {
+      console.error('Error fetching barangays for edit mode:', error);
+    }
+    return cachedBarangays;
+  }
+
+  fetchBarangaysForEdit();
 
   if (!btnEdit || !infoForm) return;
 
@@ -19,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const patientIdInput = document.getElementById('patientId');
       const patientId = patientIdInput ? patientIdInput.value : '';
 
-      // Fetch fresh profile details from API with ID
+      // Fetch fresh profile details from API with ID[cite: 7]
       const response = await fetch(`../api/get_patients.php?action=details&id=${patientId}`);
       if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
 
@@ -37,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       btnCancel.style.display = 'inline-block';
       btnSave.style.display = 'inline-block';
 
-      // Convert spans into input/select fields pre-populated with fetched data
+      // Convert spans into input/select fields pre-populated with fetched data[cite: 7]
       replaceSpanWithInput('infoFullName', 'nameFields', p);
       replaceSpanWithInput('infoAgeGender', 'select_gender', 'editGender', p.gender);
       replaceSpanWithInput('infoBirthDate', 'date', 'editBirthDate', p.date_of_birth);
@@ -45,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
       replaceSpanWithInput('infoReligion', 'text', 'editReligion', p.religion);
       replaceSpanWithInput('infoContact', 'text', 'editContact', p.contact_number);
       replaceSpanWithInput('infoEmail', 'email', 'editEmail', p.email);
-      replaceSpanWithInput('infoAddress', 'text', 'editAddress', p.address);
+      replaceSpanWithInput('infoAddress', 'editAddress', 'editAddress', p.address);
       replaceSpanWithInput('infoMotherName', 'text', 'editMotherName', p.mothers_name);
       replaceSpanWithInput('infoFatherName', 'text', 'editFatherName', p.fathers_name);
       replaceSpanWithInput('infoSpouseName', 'text', 'editSpouseName', p.spouses_name);
@@ -57,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
       replaceSpanWithInput('infoPrinMember', 'text', 'editPrinMember', p.principal_member);
       replaceSpanWithInput('infoYakapMember', 'select_yakap', 'editYakapMember', p.yakap_member);
 
-      // Attach dynamic listeners and apply initial conditional visibility
+      // Attach dynamic listeners and apply initial conditional visibility[cite: 7]
       setupConditionalListeners();
 
     } catch (error) {
@@ -74,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
     btnCancel.style.display = 'none';
     btnSave.style.display = 'none';
 
-    // Reload original text view
     if (typeof loadPatientInformation === 'function') {
       loadPatientInformation();
     } else {
@@ -100,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <option value="Jr." ${p.suffix === 'Jr.' ? 'selected' : ''}>Jr.</option>
             <option value="Sr." ${p.suffix === 'Sr.' ? 'selected' : ''}>Sr.</option>
             <option value="I" ${p.suffix === 'I' ? 'selected' : ''}>I</option>
-            <option value="I" ${p.suffix === 'II' ? 'selected' : ''}>II</option>
+            <option value="II" ${p.suffix === 'II' ? 'selected' : ''}>II</option>
             <option value="III" ${p.suffix === 'III' ? 'selected' : ''}>III</option>
             <option value="IV" ${p.suffix === 'IV' ? 'selected' : ''}>IV</option>
           </select>
@@ -119,6 +136,68 @@ document.addEventListener("DOMContentLoaded", () => {
           <option value="Female" ${val === 'Female' ? 'selected' : ''}>Female</option>
           <option value="Other" ${val === 'Other' ? 'selected' : ''}>Other</option>
         </select>`;
+    } else if (type === 'editAddress') {
+      // Render searchable address input structure with its own isolated dropdown container
+      span.innerHTML = `
+        <div style="position: relative;" id="editAddressWrapper">
+          <input type="text" name="editAddress" id="editAddressInput" value="${val}" class="form-control" placeholder="Search Barangay / Address..." autocomplete="off" required style="${ctrlStyle}">
+          <div id="editBarangayDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 6px 6px; max-height: 180px; overflow-y: auto; z-index: 1050; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"></div>
+        </div>
+      `;
+      
+      // Initialize self-contained search autocomplete behavior for this input
+      setTimeout(() => {
+        const inputEl = document.getElementById('editAddressInput');
+        const dropdownEl = document.getElementById('editBarangayDropdown');
+        const wrapperEl = document.getElementById('editAddressWrapper');
+
+        if (!inputEl || !dropdownEl) return;
+
+        inputEl.addEventListener('input', async function() {
+          const query = this.value.toLowerCase().trim();
+          dropdownEl.innerHTML = '';
+
+          if (!query) {
+            dropdownEl.style.display = 'none';
+            return;
+          }
+
+          const list = await fetchBarangaysForEdit();
+          const filtered = list.filter(b => b.toLowerCase().includes(query));
+
+          if (filtered.length > 0) {
+            dropdownEl.style.display = 'block';
+            filtered.forEach(item => {
+              const div = document.createElement('div');
+              div.textContent = item;
+              div.style.cssText = `
+                padding: 8px 12px;
+                cursor: pointer;
+                font-size: 0.9rem;
+                border-bottom: 1px solid #f1f5f9;
+              `;
+              div.addEventListener('mouseenter', () => div.style.backgroundColor = '#f8fafc');
+              div.addEventListener('mouseleave', () => div.style.backgroundColor = '#fff');
+              div.addEventListener('click', () => {
+                inputEl.value = item;
+                dropdownEl.style.display = 'none';
+              });
+              dropdownEl.appendChild(div);
+            });
+          } else {
+            dropdownEl.style.display = 'none';
+          }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+          if (wrapperEl && !wrapperEl.contains(e.target)) {
+            dropdownEl.style.display = 'none';
+          }
+        });
+      }, 0);
+
+      return;
     } else if (type === 'select_civil') {
       inputHtml = `
         <select name="${nameOrConfig}" id="editCivilStatusSelect" class="form-control" style="${ctrlStyle}">
@@ -154,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setupConditionalListeners() {
-    // 1. Civil Status -> Spouse Group
+    // 1. Civil Status -> Spouse Group[cite: 7]
     const civilSelect = document.getElementById('editCivilStatusSelect');
     const spouseGroup = document.getElementById('infoSpouseGroup');
     
@@ -166,10 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (civilSelect) {
       civilSelect.addEventListener('change', updateSpouseVisibility);
-      updateSpouseVisibility(); // Initial check
+      updateSpouseVisibility(); 
     }
 
-    // 2. Employment Status -> Occupation & Business Groups
+    // 2. Employment Status -> Occupation & Business Groups[cite: 7]
     const empSelect = document.getElementById('editEmpStatusSelect');
     const occGroup = document.getElementById('infoOccupationGroup');
     const bizGroup = document.getElementById('infoBusinessGroup');
@@ -184,10 +263,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (empSelect) {
       empSelect.addEventListener('change', updateEmploymentVisibility);
-      updateEmploymentVisibility(); // Initial check
+      updateEmploymentVisibility(); 
     }
 
-    // 3. PhilHealth Status -> PhilHealth Number & Principal Member Groups
+    // 3. PhilHealth Status -> PhilHealth Number & Principal Member Groups[cite: 7]
     const philSelect = document.getElementById('editPhilStatusSelect');
     const philNumGroup = document.getElementById('infoPhilNumberGroup');
     const prinMemGroup = document.getElementById('infoPrinMemberGroup');
@@ -210,7 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (philSelect) {
       philSelect.addEventListener('change', updatePhilHealthVisibility);
-      updatePhilHealthVisibility(); // Initial check
+      updatePhilHealthVisibility(); 
     }
   }
 
@@ -226,21 +305,32 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function validateAndUpdate(formData) {
-    const response = await fetch('../php/patient_update_info.php', {
-      method: 'POST',
-      body: formData
-    });
+    try {
+      const response = await fetch('../php/patient_update_info.php', {
+        method: 'POST',
+        body: formData
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.status === 'success') {
-      if (typeof showToast === 'function') {
-        showToast(result.message || 'Profile updated successfully.', 'success');
+      if (result.status === 'success') {
+        if (typeof showToast === 'function') {
+          showToast(result.message || 'Profile updated successfully.', 'success');
+        }
+        // Wait 1.2 seconds so the toast is visible before canceling edit mode / reloading
+        setTimeout(() => {
+          cancelEditMode();
+        }, 1200);
+
+      } else {
+        if (typeof showToast === 'function') {
+          showToast('Update Failed: ' + (result.message || 'Unable to update profile.'), 'error');
+        }
       }
-      cancelEditMode();
-    } else {
+    } catch (error) {
+      console.error('Error submitting patient profile update:', error);
       if (typeof showToast === 'function') {
-        showToast('Update Failed: ' + (result.message || 'Unable to update profile.'), 'error');
+        showToast('An unexpected error occurred.', 'error');
       }
     }
   }
