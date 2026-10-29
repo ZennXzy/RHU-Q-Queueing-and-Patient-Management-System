@@ -35,7 +35,6 @@
     align-items: center;
     background-color: #0B695D;
     padding-right: 24px;
-    margin-bottom: 20px;
 }
 
 .modal-header h2 {
@@ -61,6 +60,7 @@
 }
 
 .mainform {
+    margin-top:20px;
     max-height: 380px;
     overflow-y: auto;
     padding: 0 24px;

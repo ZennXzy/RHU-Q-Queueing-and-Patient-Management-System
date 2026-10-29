@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // If user is already logged in, redirect them to their respective workspace/dashboard
 if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
     $role = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? '');

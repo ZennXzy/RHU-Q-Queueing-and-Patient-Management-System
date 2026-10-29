@@ -127,6 +127,7 @@ require_once '../php/connection.php';
         </form>
       </div>
 
+      <?php if($_SESSION['logged_role'] === 'Admin'){ ?>
       <!-- SERVICES-CARD: Manage Services (Add, Edit, Delete) -->
       <div class="account-card" id="services-card" style="margin-top: 30px;">
         <div class="card-top-bar">
@@ -172,7 +173,7 @@ require_once '../php/connection.php';
           </div>
         </div>
       </div>
-
+      <?php }?>
     </div>
   </div>
 

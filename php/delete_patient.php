@@ -32,20 +32,25 @@ if ($patient_id <= 0 || empty($entered_password)) {
 }
 
 $user_name = $_SESSION['logged_name'];
-
+$role = $_SESSION['logged_role'];
 try {
-    $stmt = $conn->prepare("SELECT password_hash FROM admin_auth WHERE username = ?");
-    $stmt->bind_param("s", $user_name);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    if ($role === 'Admin'){
+         $stmt = $conn->prepare("SELECT password_hash FROM admin_auth WHERE username = ?");
+        $stmt->bind_param("s", $user_name);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($row = $result->fetch_assoc()) {
-        if (!password_verify($entered_password, $row['password_hash'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Incorrect authorization password.']);
+        if ($row = $result->fetch_assoc()) {
+            if (!password_verify($entered_password, $row['password_hash'])) {
+                echo json_encode(['status' => 'error', 'message' => 'Incorrect authorization password.']);
+                exit;
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'User account not found.']);
             exit;
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'User account not found.']);
+        echo json_encode(['status' => 'error', 'message' => 'You are unauthorized for this action.']);
         exit;
     }
     $stmt->close();

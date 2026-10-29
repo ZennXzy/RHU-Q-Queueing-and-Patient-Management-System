@@ -25,6 +25,7 @@ require_once '../php/connection.php';
     <script src="../js/add-account.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/edit-account.js" defer></script>
+    <script src="../js/delete-accounts.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/account-tabs.js" defer></script>
 
@@ -188,5 +189,31 @@ require_once '../php/connection.php';
             </div>
         </form>
     </div>
+</dialog>
+<!-- Delete Confirmation Modal -->
+<dialog id="deleteAccountModal" class="delete-modal">
+    <div class="toast-container" id="toastContainer"></div>
+    <form id="deleteAccountForm" method="dialog">
+        <div class="modal-header">
+        <h3>Confirm Account Deletion</h3>
+        <button type="button" class="close-modal-btn" onclick="document.getElementById('deleteAccountModal').close()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+        <p>Are you sure you want to delete this user account? This action cannot be undone.</p>
+        <input type="hidden" id="deleteAccountId" name="id">
+        <input type="hidden" id="deleteAccountType" name="type">
+        
+        <div class="info-group" style="margin-top: 15px;">
+            <label for="deleteAdminPassword">Enter Admin Password to Confirm <span class="require_onced-asterisk">*</span></label>
+            <input type="password" id="deleteAdminPassword" name="admin_password" required placeholder="Enter your password">
+        </div>
+        </div>
+
+        <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="document.getElementById('deleteAccountModal').close()">Cancel</button>
+        <button type="submit" class="btn-danger" id="confirmDeleteBtn">Delete Account</button>
+        </div>
+    </form>
 </dialog>
 </html>

@@ -361,22 +361,337 @@ tr:not(:last-child) td {
     opacity: 0.7;
 }
 
+/* ========================================
+   DELETE ACCOUNT MODAL
+======================================== */
 
+.delete-modal {
+    width: min(460px, calc(100% - 32px));
+    max-width: 460px;
+    max-height: calc(100dvh - 40px);
 
+    padding: 0;
+    border: 1px solid #E2E8F0;
+    border-radius: 18px;
 
+    background: #FFFFFF;
+    color: #334155;
 
-.btn-logout {
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    background-color: #1976d2;
-    color: white;
-    padding: 12px 24px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 24px 70px rgba(15, 23, 42, 0.20),
+        0 8px 20px rgba(15, 23, 42, 0.08);
+
+    overflow: auto;
+    overscroll-behavior: contain;
+
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+
+    transition:
+        opacity 220ms ease,
+        transform 220ms ease;
 }
 
+/* Native dialog backdrop */
+.delete-modal::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+/* Center the dialog */
+.delete-modal[open] {
+    display: block;
+    margin: auto;
+
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Prevent default form spacing */
+.delete-modal form {
+    margin: 0;
+}
+
+/* ========================================
+   MODAL HEADER
+======================================== */
+
+.delete-modal .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px;
+    background-color: #0B695D;
+    border-bottom: 1px solid #E9EEF2;
+}
+
+.delete-modal .modal-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.35px;
+}
+
+/* ========================================
+   CLOSE BUTTON
+======================================== */
+
+.delete-modal .close-modal-btn {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #F1F5F9;
+    color: #64748B;
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 180ms ease,
+        color 180ms ease;
+}
+
+.delete-modal .close-modal-btn:hover {
+    background: #FEE2E2;
+    color: #DC3545;
+}
+
+.delete-modal .close-modal-btn:focus-visible {
+    outline: 3px solid rgba(220, 53, 69, 0.25);
+    outline-offset: 2px;
+}
+
+/* ========================================
+   MODAL BODY
+======================================== */
+
+.delete-modal .modal-body {
+    padding: 24px;
+}
+
+.delete-modal .modal-body > p {
+    margin: 0;
+
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.75;
+}
+
+/* ========================================
+   PASSWORD FIELD
+======================================== */
+
+.delete-modal .info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    margin-top: 22px !important;
+}
+
+.delete-modal .info-group label {
+    color: #334155;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.delete-modal .require_onced-asterisk {
+    color: #DC3545;
+    font-weight: 700;
+}
+
+.delete-modal .info-group input[type="password"] {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 46px;
+
+    padding: 12px 14px;
+
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+
+    background: #F8FAFC;
+    color: #1E293B;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+}
+
+.delete-modal .info-group input[type="password"]::placeholder {
+    color: #94A3B8;
+}
+
+.delete-modal .info-group input[type="password"]:hover {
+    border-color: #94A3B8;
+}
+
+.delete-modal .info-group input[type="password"]:focus {
+    border-color: #0B695D;
+    background: #FFFFFF;
+
+    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.12);
+}
+
+.delete-modal .info-group input[type="password"]:user-invalid {
+    border-color: #DC3545;
+}
+
+/* ========================================
+   MODAL FOOTER
+======================================== */
+
+.delete-modal .modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    padding: 18px 24px;
+
+    background: #F8FAFC;
+    border-top: 1px solid #E9EEF2;
+}
+
+/* Shared button styling */
+.delete-modal .modal-footer button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 11px 18px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.delete-modal .modal-footer button:focus-visible {
+    outline: 3px solid rgba(11, 105, 93, 0.22);
+    outline-offset: 3px;
+}
+
+/* Cancel button */
+.delete-modal .btn-secondary {
+    border-color: #CBD5E1 !important;
+    background: #FFFFFF;
+    color: #475569;
+}
+
+.delete-modal .btn-secondary:hover {
+    border-color: #94A3B8 !important;
+    background: #F1F5F9;
+}
+
+/* Destructive action */
+.delete-modal .btn-danger {
+    background: #DC3545;
+    color: #FFFFFF;
+
+    box-shadow: 0 2px 5px rgba(220, 53, 69, 0.16);
+}
+
+.delete-modal .btn-danger:hover {
+    background: #BB2D3B;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.20);
+}
+
+.delete-modal .btn-danger:active {
+    background: #A71D2A;
+}
+
+.delete-modal .btn-danger:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ========================================
+   TOAST CONTAINER
+======================================== */
+
+.delete-modal .toast-container {
+    position: relative;
+    z-index: 2;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+======================================== */
+
+@media (max-width: 480px) {
+    .delete-modal {
+        width: calc(100% - 24px);
+        max-height: calc(100dvh - 24px);
+        border-radius: 14px;
+    }
+
+    .delete-modal .modal-header {
+        padding: 18px;
+    }
+
+    .delete-modal .modal-header h3 {
+        font-size: 16px;
+    }
+
+    .delete-modal .modal-body {
+        padding: 20px 18px;
+    }
+
+    .delete-modal .modal-footer {
+        padding: 16px 18px;
+    }
+
+    .delete-modal .modal-footer button {
+        flex: 1;
+        padding-inline: 12px;
+    }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .delete-modal,
+    .delete-modal .close-modal-btn,
+    .delete-modal .info-group input,
+    .delete-modal .modal-footer button {
+        transition: none;
+    }
+}
 /* =====================================================
    RESPONSIVE BREAKPOINTS
    Mobile: 767.98px and below
