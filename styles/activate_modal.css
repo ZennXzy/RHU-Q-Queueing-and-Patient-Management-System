@@ -1,0 +1,171 @@
+/* ==========================================
+   Account Activation Modal Styling
+   ========================================== */
+
+#activateModal {
+  margin: auto;
+  position: fixed;
+  inset: 0;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 90%;
+  background-color: #ffffff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease, overlay 0.25s ease allow-discrete, display 0.25s ease allow-discrete;
+}
+
+/* Smooth native open animation */
+#activateModal[open] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Fallback/Keyframe support for smoother entry */
+@keyframes activateModalOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#activateModal[open] {
+  animation: activateModalOpen 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Backdrop Styling */
+#activateModal::backdrop {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#activateModal[open]::backdrop {
+  opacity: 1;
+}
+
+.activate-modal-content {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.activate-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+}
+
+.activate-modal-title {
+  color: #0B695D;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.activate-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #64748b;
+  transition: color 0.2s ease;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.activate-close-btn:hover {
+  color: #0f172a;
+  background-color: #f1f5f9;
+}
+
+.activate-modal-desc {
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.activate-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activate-form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.activate-form-group input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  outline: none;
+  background-color: #fff;
+  color: #1e293b;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.activate-form-group input:focus {
+  border-color: #0B695D;
+  box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.15);
+}
+
+.activate-submit-btn {
+  background-color: #0B695D;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.activate-submit-btn:hover {
+  background-color: #095249;
+}
+
+.activate-submit-btn:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================
+   Mobile Responsive Adjustments
+   ========================================== */
+@media (max-width: 480px) {
+  #activateModal {
+    width: 95%;
+  }
+
+  .activate-modal-content {
+    padding: 20px;
+  }
+
+  .activate-modal-title {
+    font-size: 1.1rem;
+  }
+}

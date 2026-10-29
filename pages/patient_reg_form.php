@@ -10,6 +10,7 @@ require_once '../php/connection.php';
     <title>RHU-Q: Account Registration</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/patient_reg_form.css">
+    <link rel="stylesheet" href="../styles/activate_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/toast.js" defer></script>
