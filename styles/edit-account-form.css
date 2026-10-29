@@ -1,148 +1,424 @@
+
+/* ============================================
+   RHU-Q — MODERN EDIT ACCOUNT MODAL
+   ============================================ */
+
 #edit-account {
+    --edit-primary: #0B695D;
+    --edit-primary-hover: #08564C;
+    --edit-border: #E2E8F0;
+    --edit-text: #1E293B;
+    --edit-muted: #64748B;
+
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: none;
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 0 0 20px 0;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
+    inset: 0;
+
+    width: min(500px, calc(100vw - 32px));
+    max-width: 500px;
+    max-height: calc(100dvh - 32px);
+
+    margin: auto;
+    padding: 0;
+
+    border: 1px solid var(--edit-border);
+    border-radius: 16px;
+
+    background: #FFFFFF;
+    color: var(--edit-text);
+
+    box-shadow:
+        0 24px 70px rgba(15, 23, 42, 0.22),
+        0 8px 20px rgba(15, 23, 42, 0.08);
+
     overflow: hidden;
     outline: none;
 }
 
+/* HIDE WHEN CLOSED */
+#edit-account:not([open]) {
+    display: none;
+}
+
+/* OPEN STATE */
+#edit-account[open] {
+    display: block;
+    margin: auto;
+}
+
+/* BACKDROP */
 #edit-account::backdrop {
-    background-color: rgba(15, 23, 42, 0.55);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
+/* ============================================
+   MODAL CARD
+   ============================================ */
 
-.mainform::-webkit-scrollbar {
-  width: 5px;
-}
-.mainform::-webkit-scrollbar-thumb {
-  background-color: #20A59E;
-  border-radius: 4px;
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #0B695D;
-    padding-right: 24px;
-}
-
-.modal-header h2 {
-    margin: 0;
-    color: #ffffff;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.account-badge {
-    background: rgba(255, 255, 255, 0.2);
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-}
-
-.formcontainer {
+#edit-account .modal-card {
     display: flex;
     flex-direction: column;
-}
-
-.mainform {
-    margin-top:20px;
-    max-height: 380px;
-    overflow-y: auto;
-    padding: 0 24px;
-}
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: #334155;
-}
-
-.form-group input,
-.form-group select.service-type {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 0.9rem;
-    color: #0f172a;
-    background-color: #ffffff;
-    transition: all 0.2s ease;
+    min-width: 0;
+    max-height: calc(100dvh - 34px);
+    background: #FFFFFF;
 }
 
-.form-group input:focus,
-.form-group select.service-type:focus {
-    outline: none;
-    border-color: #0B695D;
-    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.15);
-}
+/* ============================================
+   MODAL HEADER
+   ============================================ */
 
-.field-hint {
-    display: block;
-    font-size: 0.75rem;
-    color: #64748b;
-    margin-top: 4px;
-}
-
-.form-actions {
+#edit-account .modal-header {
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
     gap: 12px;
-    padding: 16px 24px 0 24px;
-    border-top: 1px solid #f1f5f9;
+    padding: 22px 24px;
+
+    background: #FFFFFF;
+    border-bottom: 1px solid #E9EEF2;
 }
 
-.btn-submit {
-    background-color: #0B695D;
-    color: #ffffff;
-    border: none;
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.875rem;
+#edit-account .modal-header h2 {
+    margin: 0;
+
+    color: var(--edit-text);
+    font-size: 19px;
+    font-weight: 750;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+}
+
+/* ACCOUNT ID BADGE */
+#edit-account .account-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 12px;
+    border: 1px solid #CFE7E1;
+    border-radius: 999px;
+
+    background: #E8F5F1;
+    color: var(--edit-primary);
+
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* ============================================
+   FORM LAYOUT
+   ============================================ */
+
+#edit-account #edit-account-form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0;
+}
+
+#edit-account .formcontainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* SCROLLABLE FORM BODY */
+#edit-account .mainform {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    min-height: 0;
+    max-height: min(490px, calc(100dvh - 220px));
+
+    margin: 0;
+    padding: 24px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #B9D4CE transparent;
+}
+
+#edit-account .mainform::-webkit-scrollbar {
+    width: 6px;
+}
+
+#edit-account .mainform::-webkit-scrollbar-thumb {
+    background: #B9D4CE;
+    border-radius: 10px;
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+
+#edit-account .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    margin: 0;
+    min-width: 0;
+}
+
+#edit-account .form-group label {
+    display: block;
+    margin: 0;
+
+    color: #334155;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.5;
+}
+
+/* INPUTS AND SELECT */
+#edit-account .form-group input,
+#edit-account .form-group select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+
+    padding: 11px 14px;
+
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+
+    background: #F8FAFC;
+    color: var(--edit-text);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+
+    outline: none;
+    box-shadow: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* PLACEHOLDER */
+#edit-account .form-group input::placeholder {
+    color: #94A3B8;
+    opacity: 1;
+}
+
+/* HOVER */
+#edit-account .form-group input:hover,
+#edit-account .form-group select:hover {
+    border-color: #94A3B8;
+}
+
+/* FOCUS */
+#edit-account .form-group input:focus,
+#edit-account .form-group select:focus {
+    background: #FFFFFF;
+    border-color: var(--edit-primary);
+    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.12);
+}
+
+/* SELECT DROPDOWN */
+#edit-account .form-group select {
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+
+    padding-right: 38px;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
 }
 
-.btn-submit:hover {
-    background-color: #085249;
+/* FIELD HINT */
+#edit-account .field-hint {
+    display: block;
+    margin-top: 2px;
+
+    color: var(--edit-muted);
+    font-size: 11px;
+    line-height: 1.5;
 }
 
-.btn-cancel {
-    background-color: #f1f5f9;
+/* INVALID FIELDS */
+#edit-account .form-group input:user-invalid,
+#edit-account .form-group select:user-invalid {
+    border-color: #DC3545;
+}
+
+/* ============================================
+   FORM FOOTER
+   ============================================ */
+
+#edit-account .form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+
+    gap: 10px;
+    margin: 0;
+    padding: 18px 24px;
+
+    background: #F8FAFC;
+    border-top: 1px solid #E9EEF2;
+}
+
+/* SHARED BUTTON STYLE */
+#edit-account .form-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 43px;
+    padding: 11px 20px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* CANCEL BUTTON */
+#edit-account .btn-cancel {
+    background: #FFFFFF;
+    border-color: #CBD5E1;
     color: #475569;
-    border: 1px solid #cbd5e1;
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-weight: 500;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.btn-cancel:hover {
-    background-color: #fee2e2;
-    color: #dc2626;
-    border-color: #fca5a5;
+#edit-account .btn-cancel:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+}
+
+/* SAVE CHANGES BUTTON */
+#edit-account .btn-submit {
+    background: var(--edit-primary);
+    border-color: var(--edit-primary);
+    color: #FFFFFF;
+
+    box-shadow: 0 3px 8px rgba(11, 105, 93, 0.14);
+}
+
+#edit-account .btn-submit:hover {
+    background: var(--edit-primary-hover);
+    border-color: var(--edit-primary-hover);
+    box-shadow: 0 5px 12px rgba(11, 105, 93, 0.20);
+}
+
+/* DISABLED BUTTONS */
+#edit-account .form-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* KEYBOARD FOCUS */
+#edit-account .form-actions button:focus-visible {
+    outline: 3px solid rgba(11, 105, 93, 0.25);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 575.98px) {
+
+    #edit-account {
+        width: calc(100vw - 24px);
+        max-height: calc(100dvh - 24px);
+        border-radius: 14px;
+    }
+
+    #edit-account .modal-card {
+        max-height: calc(100dvh - 26px);
+    }
+
+    #edit-account .modal-header {
+        padding: 18px;
+    }
+
+    #edit-account .modal-header h2 {
+        font-size: 17px;
+    }
+
+    #edit-account .account-badge {
+        font-size: 10px;
+        padding: 5px 9px;
+    }
+
+    #edit-account .mainform {
+        gap: 16px;
+        padding: 20px 18px;
+        max-height: calc(100dvh - 190px);
+    }
+
+    #edit-account .form-actions {
+        padding: 16px 18px;
+        gap: 10px;
+    }
+
+    #edit-account .form-actions button {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 11px 12px;
+    }
+}
+
+/* ============================================
+   VERY SMALL DEVICES
+   ============================================ */
+
+@media (max-width: 360px) {
+
+    #edit-account .modal-header {
+        gap: 8px;
+    }
+
+    #edit-account .modal-header h2 {
+        font-size: 15px;
+    }
+
+    #edit-account .account-badge {
+        font-size: 9px;
+    }
+
+    #edit-account .mainform {
+        padding: 16px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #edit-account *,
+    #edit-account {
+        transition: none;
+    }
 }

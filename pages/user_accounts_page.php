@@ -17,6 +17,7 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/logout_modal.css">
     <link rel="stylesheet" href="../styles/edit-account-form.css">
+    <link rel="stylesheet" href="../styles/delete_account_modal.css">
 
 
     <script src="../js/submenu.js" defer></script>

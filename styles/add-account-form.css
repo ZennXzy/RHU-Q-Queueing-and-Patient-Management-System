@@ -1,121 +1,377 @@
-#add-account{
-  position: fixed;
-    top: 53%;
-    left: 51%;
-    border: none;
-    transform: translate(-50%, -50%);
-    background: #ffffff;
-    border-radius: 8px;
-    padding-bottom:15px;
-    height:100%;
-    max-height: 486px;
-    width:100%;
-    max-width: 385px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    z-index: 1001;
+
+/* ============================================
+   RHU-Q — MODERN ADD ACCOUNT MODAL
+   ============================================ */
+
+#add-account {
+    --add-primary: #0B695D;
+    --add-primary-hover: #08564C;
+    --add-border: #E2E8F0;
+    --add-text: #1E293B;
+    --add-muted: #64748B;
+
+    position: fixed;
+    inset: 0;
+
+    width: min(500px, calc(100vw - 32px));
+    max-width: 500px;
+    max-height: calc(100dvh - 32px);
+
+    margin: auto;
+    padding: 0;
+
+    border: 1px solid var(--add-border);
+    border-radius: 16px;
+
+    background: #FFFFFF;
+    color: var(--add-text);
+
+    box-shadow:
+        0 24px 70px rgba(15, 23, 42, 0.22),
+        0 8px 20px rgba(15, 23, 42, 0.08);
+
     overflow: hidden;
-    outline:none;
+    outline: none;
 }
 
-#add-account::backdrop {
-  background-color: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(4px);
+/* HIDE WHEN CLOSED */
+#add-account:not([open]) {
+    display: none;
 }
 
-.modal-card h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding:15px 30px 15px 30px;
-    color: white;
-    background-color:#0B695D;
-    font-size: 1.25rem;
-}
-
-.mainform{
-  border-radius: 20px;
-  margin-bottom: 10px;
-}
-
-.formcontainer{
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group {
-    margin-bottom: 15px;
-    padding-left:30px;
-    padding-right:30px;
-
-}
-
-.form-group label {
-    padding-left: 8px;
+/* OPEN STATE */
+#add-account[open] {
     display: block;
-    font-size: 0.85rem;
-    margin-bottom: 5px;
-    color: #333;
+    margin: auto;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 8px 10px;
-    border: 1px solid #0B695D;
-    border-radius: 4px;
-    box-sizing: border-box;
+/* BACKDROP */
+#add-account::backdrop {
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
-.form-group input:focus{
-  outline: none;
-  border-color: #0d9488;
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-}
+/* ============================================
+   MODAL CARD
+   ============================================ */
 
-.form-group .service-type{
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #0B695D;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.form-group .service-type select:focus{
-  outline: none;
-  border-color: #0d9488;
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-}
-
-.form-actions {
+#add-account .modal-card {
     display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+    max-height: calc(100dvh - 34px);
+
+    background: #FFFFFF;
+}
+
+/* ============================================
+   MODAL HEADER
+   ============================================ */
+
+#add-account .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    gap: 12px;
+    padding: 22px 24px;
+
+    background: #FFFFFF;
+    border-bottom: 1px solid #E9EEF2;
+}
+
+#add-account .modal-header h2 {
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+    color: var(--add-text);
+
+    font-size: 19px;
+    font-weight: 750;
+    line-height: 1.4;
+    letter-spacing: -0.4px;
+}
+
+/* ============================================
+   FORM LAYOUT
+   ============================================ */
+
+#add-account #add-account-form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0;
+}
+
+#add-account .formcontainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* SCROLLABLE FORM BODY */
+#add-account .mainform {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    min-height: 0;
+    max-height: min(490px, calc(100dvh - 220px));
+
+    margin: 0;
+    padding: 24px;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #B9D4CE transparent;
+}
+
+#add-account .mainform::-webkit-scrollbar {
+    width: 6px;
+}
+
+#add-account .mainform::-webkit-scrollbar-thumb {
+    background: #B9D4CE;
+    border-radius: 10px;
+}
+
+/* ============================================
+   FORM GROUPS
+   ============================================ */
+
+#add-account .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+
+    margin: 0;
+    padding: 0;
+    min-width: 0;
+}
+
+#add-account .form-group label {
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    color: #334155;
+    font-size: 12px;
+    font-weight: 650;
+    line-height: 1.5;
+}
+
+/* INPUTS */
+#add-account .form-group input {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+
+    padding: 11px 14px;
+
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+
+    background: #F8FAFC;
+    color: var(--add-text);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+
+    outline: none;
+    box-shadow: none;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* PLACEHOLDERS */
+#add-account .form-group input::placeholder {
+    color: #94A3B8;
+    opacity: 1;
+}
+
+/* INPUT HOVER */
+#add-account .form-group input:hover {
+    border-color: #94A3B8;
+}
+
+/* INPUT FOCUS */
+#add-account .form-group input:focus {
+    background: #FFFFFF;
+    border-color: var(--add-primary);
+    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.12);
+}
+
+/* INVALID INPUT */
+#add-account .form-group input:user-invalid {
+    border-color: #DC3545;
+}
+
+/* ============================================
+   FORM FOOTER
+   ============================================ */
+
+#add-account .form-actions {
+    display: flex;
+    align-items: center;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+
     gap: 10px;
-    padding-left:30px;
-    padding-right:30px;
+    margin: 0;
+    padding: 18px 24px;
+
+    background: #F8FAFC;
+    border-top: 1px solid #E9EEF2;
 }
 
-.btn-submit {
-    background-color: #0B695D;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+/* SHARED BUTTON STYLING */
+#add-account .form-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 43px;
+    padding: 11px 20px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+
     cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.btn-cancel {
-    background-color: #ccc;
-    color: #333;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    border: 1px solid #fff;
-    cursor: pointer;
+/* CANCEL BUTTON */
+#add-account .btn-cancel {
+    background: #FFFFFF;
+    border-color: #CBD5E1;
+    color: #475569;
 }
 
-.btn-submit:hover{
-  background-color: #20A59E;
+#add-account .btn-cancel:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
 }
-.btn-cancel:hover{
-  background-color: white;
-  color: red;
-  border: 1px solid red;
+
+/* ADD ACCOUNT BUTTON */
+#add-account .btn-submit {
+    background: var(--add-primary);
+    border-color: var(--add-primary);
+    color: #FFFFFF;
+
+    box-shadow: 0 3px 8px rgba(11, 105, 93, 0.14);
+}
+
+#add-account .btn-submit:hover {
+    background: var(--add-primary-hover);
+    border-color: var(--add-primary-hover);
+
+    box-shadow: 0 5px 12px rgba(11, 105, 93, 0.20);
+}
+
+/* DISABLED BUTTONS */
+#add-account .form-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* KEYBOARD FOCUS */
+#add-account .form-actions button:focus-visible {
+    outline: 3px solid rgba(11, 105, 93, 0.25);
+    outline-offset: 2px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+@media (max-width: 575.98px) {
+
+    #add-account {
+        width: calc(100vw - 24px);
+        max-height: calc(100dvh - 24px);
+        border-radius: 14px;
+    }
+
+    #add-account .modal-card {
+        max-height: calc(100dvh - 26px);
+    }
+
+    #add-account .modal-header {
+        padding: 18px;
+    }
+
+    #add-account .modal-header h2 {
+        font-size: 17px;
+    }
+
+    #add-account .mainform {
+        gap: 16px;
+        padding: 20px 18px;
+        max-height: calc(100dvh - 190px);
+    }
+
+    #add-account .form-actions {
+        padding: 16px 18px;
+        gap: 10px;
+    }
+
+    #add-account .form-actions button {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 11px 12px;
+    }
+}
+
+/* ============================================
+   VERY SMALL DEVICES
+   ============================================ */
+
+@media (max-width: 360px) {
+
+    #add-account .modal-header h2 {
+        font-size: 16px;
+    }
+
+    #add-account .mainform {
+        padding: 16px;
+    }
+
+    #add-account .form-actions {
+        padding: 14px 16px;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #add-account,
+    #add-account * {
+        transition: none;
+    }
 }
