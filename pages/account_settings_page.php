@@ -156,6 +156,7 @@ require_once '../php/connection.php';
                 <tr style="border-bottom: 2px solid #e2e8f0; background-color: #f8fafc;">
                   <th style="padding: 12px; font-weight: 600; color: #475569;">ID</th>
                   <th style="padding: 12px; font-weight: 600; color: #475569;">Service Name</th>
+                  <th style="padding: 12px; font-weight: 600; color: #475569;">Status</th>
                   <th style="padding: 12px; font-weight: 600; color: #475569;">Created At</th>
                   <?php if(($_SESSION['logged_role'] ?? '') === "Admin"){ ?>
                   <th style="padding: 12px; font-weight: 600; color: #475569; text-align: right;">Actions</th>

@@ -140,6 +140,7 @@ try {
             t.transaction_id,
             t.queue_code,
             s.service_name AS service_type,
+            t.service_snapshot,
             COALESCE(t.blood_pressure, 'N/A') AS blood_pressure,
             COALESCE(t.respiratory_rate, 'N/A') AS respiratory_rate,
             COALESCE(t.temperature, 'N/A') AS temperature,
