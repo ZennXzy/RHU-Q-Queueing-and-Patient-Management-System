@@ -11,7 +11,7 @@ require_once '../php/connection.php';
   <title>RHU-Q: Account Manager</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/account-settings.css">
-    <link rel="stylesheet" href="../styles/account-settings_2.css">
+    <link rel="stylesheet" href="../styles/account-settings-modal.css">
     <link rel="stylesheet" href="../styles/sidebar.css">
     <link rel="stylesheet" href="../styles/navbar.css">
     <link rel="stylesheet" href="../styles/toast.css">
