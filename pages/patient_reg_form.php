@@ -338,7 +338,6 @@ require_once '../php/connection.php';
         </form>
     </div>
 </dialog>
-
 <script>
     // Form logic toggle helper scripts
     function handleEmploymentChange() {

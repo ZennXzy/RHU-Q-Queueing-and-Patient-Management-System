@@ -23,9 +23,11 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     
     <link rel="stylesheet" href="../styles/login_page.css">
+    <link rel="stylesheet" href="../styles/activate_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
 
     <script src="../js/login-form.js" defer></script>
+    <script src="../js/reset-password.js" defer></script>
     <script src="../js/toast.js" defer></script>
 </head>
 <body>
@@ -94,6 +96,7 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
                 </div>
 
                 <button type="button" id="openTermsBtn" class="register-btn">Create Account</button>
+                <a href="#" id="openResetModalBtn" style="font-size: 13px; color: #0B695D; text-decoration: none; display: flex; justify-content: center; margin-top: 10px;">Forgot Password?</a>
             </div>
 
             <!-- Terms of Agreement Card (Hidden by Default) -->
@@ -117,7 +120,39 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
             </div>
         </main>
     </div>
-
+    <!-- Reset Password Modal -->
+    <dialog id="resetModal" class="activate-modal">
+        <div class="activate-modal-content">
+            <div class="activate-modal-header">
+                <h3 class="activate-modal-title">Reset Your Password</h3>
+                <button type="button" id="closeResetModalBtn" class="activate-close-btn">&times;</button>
+            </div>
+            <p class="activate-modal-desc">
+                Enter your Account Token, Date of Birth, and Mother's Maiden Name to verify your identity.
+            </p>
+            <form id="resetPasswordForm">
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    <div class="activate-form-group">
+                        <label>Account Token *</label>
+                        <input type="text" name="account_token" placeholder="6-digit token" required autocomplete="off">
+                    </div>
+                    <div class="activate-form-group">
+                        <label>Date of Birth *</label>
+                        <input type="date" name="birthdate" required>
+                    </div>
+                    <div class="activate-form-group">
+                        <label>Mother's Maiden Name *</label>
+                        <input type="text" name="mothers_name" placeholder="Mother's Full Maiden Name" required autocomplete="off">
+                    </div>
+                    <div class="activate-form-group">
+                        <label>New Password *</label>
+                        <input type="password" name="new_password" placeholder="Minimum 6 characters" required>
+                    </div>
+                    <button type="submit" class="activate-submit-btn">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loginCard = document.getElementById('loginCard');

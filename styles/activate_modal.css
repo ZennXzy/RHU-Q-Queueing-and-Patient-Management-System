@@ -154,6 +154,61 @@
 }
 
 /* ==========================================
+   Password Reset Modal Styling
+   ========================================== */
+
+#resetModal {
+  margin: auto;
+  position: fixed;
+  inset: 0;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  max-width: 450px;
+  width: 90%;
+  background-color: #ffffff;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.25s ease, transform 0.25s ease, overlay 0.25s ease allow-discrete, display 0.25s ease allow-discrete;
+}
+
+/* Smooth native open animation */
+#resetModal[open] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@keyframes resetModalOpen {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+#resetModal[open] {
+  animation: resetModalOpen 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Backdrop Styling */
+#resetModal::backdrop {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+#resetModal[open]::backdrop {
+  opacity: 1;
+}
+
+
+/* ==========================================
    Mobile Responsive Adjustments
    ========================================== */
 @media (max-width: 480px) {
