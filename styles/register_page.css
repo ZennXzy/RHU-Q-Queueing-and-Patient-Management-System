@@ -159,6 +159,46 @@ body, html {
 
 }
 
+
+/* Red required asterisk */
+.required-asterisk {
+    color: #DC3545 !important;
+    font-weight: 700;
+    margin-left: 3px;
+}
+
+/* Red pulsing animation */
+@keyframes requiredFieldPulse {
+    0%, 100% {
+        border-color: #DC3545;
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.15);
+    }
+
+    50% {
+        border-color: #DC3545;
+        box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.30);
+    }
+}
+
+/* Invalid input */
+.required-invalid {
+    border: 1px solid #DC3545 !important;
+    animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+/* Date of Birth wrapper */
+.date.required-invalid-group {
+    border: 1px solid #DC3545 !important;
+    animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+/* Invalid input focus */
+.required-invalid:focus {
+    border-color: #DC3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20) !important;
+}
+
+
 /* Row Level Layout Modules (Services, Insurance panels) */
 .row-section {
   display: flex;

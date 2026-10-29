@@ -23,6 +23,7 @@ require_once '../php/connection.php';
     <script src="../js/barangay-search.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/session-check.js" defer></script>
+    <script src="../js/required-field-validation.js" defer></script>
 </head>
 <body>
     <?php

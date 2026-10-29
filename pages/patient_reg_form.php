@@ -15,6 +15,9 @@ require_once '../php/connection.php';
     <script src="../js/toast.js" defer></script>
     <script src="../js/barangay-search.js" defer></script>
     <script src="../js/account-registration.js" defer></script>
+    <script src="../js/account-required-validation.js" defer></script>
+    <script src="../js/activate-account.js" defer></script>
+
 </head>
 <body>
   <div class="background-container">
@@ -37,6 +40,11 @@ require_once '../php/connection.php';
                     Back
                 </a>
                 <h2 class="page-title" id="pageTitle">Account Registration</h2>
+            </div>
+            <div>
+                <button type="button" id="openActivateModalBtn" class="clear-btn" style="background-color: #0B695D; color: white; padding: 8px 14px; font-size: 13px; border-radius: 6px; border: none; cursor: pointer; margin-left: auto;">
+                    Activate Existing Account
+                </button>
             </div>
 
             <!-- STEP 1: PATIENT INFORMATION CARDS -->
@@ -296,6 +304,39 @@ require_once '../php/connection.php';
     </div>
   </div>  
 </body>
+<!-- Account Activation Modal -->
+<dialog id="activateModal" style="padding: 0; border: none; border-radius: 10px; max-width: 450px; width: 100%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+    <div style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: #0B695D; margin: 0;">Claim / Activate Account</h3>
+            <button type="button" id="closeActivateModalBtn" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #666;">&times;</button>
+        </div>
+        <p style="font-size: 13px; color: #666; margin-bottom: 20px;">
+            If your record was already registered by clinic staff, enter your 6-digit Account Token and Date of Birth to set up your online credentials.
+        </p>
+        <form id="activateAccountForm">
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <label style="font-size: 12px; color: #555; font-weight: 600;">Account Token *</label>
+                    <input type="text" name="account_token" placeholder="6-digit token" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px; letter-spacing: 1px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #555; font-weight: 600;">Date of Birth *</label>
+                    <input type="date" name="birthdate" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #555; font-weight: 600;">Choose Username *</label>
+                    <input type="text" name="username" placeholder="Username" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: #555; font-weight: 600;">Choose Password *</label>
+                    <input type="password" name="password" placeholder="Password" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-top: 4px;">
+                </div>
+                <button type="submit" style="background-color: #0B695D; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px;">Activate Account Now</button>
+            </div>
+        </form>
+    </div>
+</dialog>
 
 <script>
     // Form logic toggle helper scripts

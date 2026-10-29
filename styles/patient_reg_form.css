@@ -54,6 +54,42 @@ body, html {
   border-radius: 4px;
 }
 
+
+/* Required select, radio, and fieldset borders */
+.input-container.required-invalid,
+.input-select.required-invalid,
+.fieldset-group.required-invalid,
+.date.required-invalid {
+    border: 1px solid #DC3545 !important;
+    animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+/* Red asterisk inside required fields */
+.required-marker {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    color: #DC3545;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Reserve space for the asterisk */
+.form-group > input[type="text"]:has(+ .required-marker),
+.input-select select:has(~ .required-marker) {
+    padding-right: 28px;
+}
+
+/* Invalid password field */
+input[type="password"].required-invalid {
+    border: 1px solid #DC3545 !important;
+    animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+
+
 /* Workspace Centering Setup */
 .workspace.centered-workspace {
   display: flex;
