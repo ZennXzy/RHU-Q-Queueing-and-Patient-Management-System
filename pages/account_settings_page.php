@@ -18,6 +18,8 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/edit-account-form.css">
     <link rel="stylesheet" href="../styles/logs_modal.css">
     <link rel="stylesheet" href="../styles/logout_modal.css">
+    <link rel="stylesheet" href="../styles/service-modal.css">
+    <link rel="stylesheet" href="../styles/delete-service-modal.css">
 
     <script src="../js/submenu.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
@@ -176,25 +178,200 @@ require_once '../php/connection.php';
       <?php }?>
     </div>
   </div>
+  <dialog id="serviceModal" class="service-modal" aria-labelledby="serviceModalTitle">
+      <!-- Modal Header -->
+      <div class="service-modal__header">
+          <div class="service-modal__header-info">
+              <div class="service-modal__icon">
+                  <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                  >
+                      <rect x="3" y="3" width="7" height="7" rx="1"/>
+                      <rect x="14" y="3" width="7" height="7" rx="1"/>
+                      <rect x="3" y="14" width="7" height="7" rx="1"/>
+                      <path d="M14 17.5h7M17.5 14v7"/>
+                  </svg>
+              </div>
+              <div class="service-modal__heading">
+                  <h2
+                      id="serviceModalTitle"
+                      class="service-modal__title"
+                  >
+                      Add New Service
+                  </h2>
+                  <p class="service-modal__subtitle">
+                      Manage services available in RHU-Q.
+                  </p>
+              </div>
+          </div>
+          <!-- Close Button -->
+          <button type="button" id="closeServiceModalBtn" class="service-modal__close" aria-label="Close service modal">
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+              >
+                  <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+          </button>
+      </div>
+      <!-- Modal Form -->
+      <form id="serviceForm" class="service-modal__form">
+          <!-- Hidden Service ID -->
+          <input type="hidden" id="serviceId" name="service_id">
+          <!-- Modal Body -->
+          <div class="service-modal__body">
+              <div class="service-modal__field">
+                  <label for="serviceNameInput" class="service-modal__label">
+                      Service Name
+                      <span class="service-modal__required">*</span>
+                  </label>
+                  <input type="text" id="serviceNameInput" name="service_name" class="service-modal__input" placeholder="e.g., General Consultation" autocomplete="off" maxlength="150" required>
+                  <p class="service-modal__hint">
+                      Enter a clear and descriptive service name.
+                  </p>
+              </div>
+          </div>
+          <!-- Modal Footer -->
+          <div class="service-modal__footer">
+              <button type="button" id="cancelServiceModalBtn" class="service-modal__cancel">
+                  Cancel
+              </button>
+              <button type="submit" id="saveServiceBtn" class="service-modal__submit">
+                  <span>Save Service</span>
+              </button>
+          </div>
+      </form>
+  </dialog>
 
-  <!-- Add/Edit Service Modal Dialog -->
-  <dialog id="serviceModal" class="logs-modal" style="max-width: 450px; width: 100%;">
-    <div class="logs-modal__header">
-        <h2 class="logs-modal__title" id="serviceModalTitle">Add New Service</h2>
-        <button type="button" class="logs-modal__close" id="closeServiceModalBtn">&times;</button>
-    </div>
-    <form id="serviceForm" style="padding: 20px;">
-        <input type="hidden" id="serviceId" name="service_id">
-        <div class="form-group" style="margin-bottom: 15px;">
-            <label for="serviceNameInput" style="display: block; margin-bottom: 5px; font-weight: 500; color: #334155;">Service Name</label>
-            <input type="text" id="serviceNameInput" name="service_name" class="form-control" placeholder="e.g., General Consultation" required style="width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+<dialog
+    id="deleteServiceModal"
+    class="delete-service-modal"
+    aria-labelledby="deleteServiceModalTitle"
+    aria-describedby="deleteServiceDescription"
+>
+    <!-- Header -->
+    <div class="delete-service-modal__header">
+
+        <div class="delete-service-modal__header-info">
+
+            <div class="delete-service-modal__icon">
+                <svg viewBox="0 0 24 24" width="22" height="22"
+                     fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 6h18"/>
+                    <path d="M8 6V4h8v2"/>
+                    <path d="M5 6l1 14h12l1-14"/>
+                    <path d="M10 10v6M14 10v6"/>
+                </svg>
+            </div>
+
+            <div>
+                <h2 id="deleteServiceModalTitle"
+                    class="delete-service-modal__title">
+                    Delete Service
+                </h2>
+
+                <p class="delete-service-modal__subtitle">
+                    Confirm service deletion
+                </p>
+            </div>
         </div>
-        <div class="custom-modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button type="button" class="btn btn-outline" id="cancelServiceModalBtn" style="padding: 8px 16px; border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; cursor: pointer;">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="saveServiceBtn" style="padding: 8px 16px; background: #0B695D; color: #fff; border: none; border-radius: 6px; cursor: pointer;">Save Service</button>
+
+        <button
+            type="button"
+            id="closeDeleteServiceModalBtn"
+            class="delete-service-modal__close"
+            aria-label="Close delete service modal"
+        >
+            &times;
+        </button>
+
+    </div>
+
+    <!-- Form -->
+    <form id="deleteServiceForm" class="delete-service-modal__form">
+
+        <input type="hidden"
+               id="deleteServiceId"
+               name="service_id">
+
+        <!-- Body -->
+        <div class="delete-service-modal__body">
+
+            <p id="deleteServiceDescription"
+               class="delete-service-modal__message">
+                Are you sure you want to delete this service?
+            </p>
+
+            <div class="delete-service-modal__service-info">
+                <span class="delete-service-modal__info-label">
+                    Selected Service
+                </span>
+
+                <strong id="deleteServiceName">
+                    —
+                </strong>
+            </div>
+
+            <div class="delete-service-modal__warning">
+                <svg viewBox="0 0 24 24" width="18" height="18"
+                     fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="m10.3 3.5-8.5 14.7A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.8L13.7 3.5a2 2 0 0 0-3.4 0Z"/>
+                    <path d="M12 9v4M12 17h.01"/>
+                </svg>
+
+                <span>
+                    This action cannot be undone. Please verify
+                    the service before proceeding.
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="delete-service-modal__footer">
+
+            <button type="button"
+                    id="cancelDeleteServiceBtn"
+                    class="delete-service-modal__cancel">
+                Cancel
+            </button>
+
+            <button type="submit"
+                    id="confirmDeleteServiceBtn"
+                    class="delete-service-modal__submit">
+                <svg viewBox="0 0 24 24" width="17" height="17"
+                     fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round"
+                     stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 6h18M8 6V4h8v2M5 6l1 14h12l1-14"/>
+                </svg>
+                <span>Delete Service</span>
+            </button>
+
         </div>
     </form>
-  </dialog>
+</dialog>
 
   <!-- backup/restore modal -->
    <dialog class="backupModal" id="backupModal">

@@ -1,0 +1,452 @@
+
+/* ==========================================================
+   RHU-Q — SERVICE MODAL
+   Independent CSS for #serviceModal only
+   ========================================================== */
+
+/* ------------------------------------------
+   1. MODAL CONTAINER
+   ------------------------------------------ */
+
+dialog#serviceModal.service-modal {
+    position: fixed;
+
+    inset: 0;
+    margin: auto;
+
+    width: min(460px, calc(100vw - 32px));
+    max-width: 460px;
+    max-height: calc(100dvh - 32px);
+
+    padding: 0;
+
+    background: #FFFFFF;
+    color: #1E293B;
+
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+
+    box-shadow:
+        0 24px 60px rgba(15, 23, 42, 0.20),
+        0 8px 24px rgba(15, 23, 42, 0.08);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+
+    box-sizing: border-box;
+}
+
+/* Keep native dialog visibility behavior */
+dialog#serviceModal:not([open]) {
+    display: none;
+}
+
+/* ------------------------------------------
+   2. BACKDROP
+   ------------------------------------------ */
+
+dialog#serviceModal::backdrop {
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* ------------------------------------------
+   3. HEADER
+   ------------------------------------------ */
+
+#serviceModal .service-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+    padding: 22px 24px;
+
+    background: #FFFFFF;
+    border-bottom: 1px solid #E9EEF2;
+}
+
+#serviceModal .service-modal__header-info {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    min-width: 0;
+    flex: 1;
+}
+
+/* Header Icon */
+#serviceModal .service-modal__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+
+    background: #E8F5F1;
+    color: #0B695D;
+
+    border: 1px solid #D4E9E3;
+    border-radius: 12px;
+}
+
+#serviceModal .service-modal__icon svg {
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+/* Header Text */
+#serviceModal .service-modal__heading {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    min-width: 0;
+}
+
+#serviceModal .service-modal__title {
+    margin: 0;
+    padding: 0;
+
+    color: #1E293B;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+}
+
+#serviceModal .service-modal__subtitle {
+    margin: 0;
+    padding: 0;
+
+    color: #64748B;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* ------------------------------------------
+   4. CLOSE BUTTON
+   ------------------------------------------ */
+
+#serviceModal .service-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 32px;
+    height: 32px;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+
+    color: #94A3B8;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+#serviceModal .service-modal__close:hover {
+    background: #F1F5F9;
+    color: #334155;
+}
+
+#serviceModal .service-modal__close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ------------------------------------------
+   5. FORM
+   ------------------------------------------ */
+
+#serviceModal .service-modal__form {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* ------------------------------------------
+   6. MODAL BODY
+   ------------------------------------------ */
+
+#serviceModal .service-modal__body {
+    display: block;
+
+    width: 100%;
+    padding: 26px 24px 30px;
+
+    background: #FFFFFF;
+}
+
+/* ------------------------------------------
+   7. FORM FIELD
+   ------------------------------------------ */
+
+#serviceModal .service-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+
+    width: 100%;
+    min-width: 0;
+}
+
+#serviceModal .service-modal__label {
+    display: block;
+
+    margin: 0;
+    padding: 0;
+
+    color: #334155;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.4;
+}
+
+/* Required asterisk */
+#serviceModal .service-modal__required {
+    color: #DC3545;
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* Service Name Input */
+#serviceModal .service-modal__input {
+    display: block;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+
+    padding: 11px 14px;
+
+    background: #F8FAFC;
+    color: #1E293B;
+
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+
+    box-sizing: border-box;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#serviceModal .service-modal__input::placeholder {
+    color: #94A3B8;
+    opacity: 1;
+}
+
+#serviceModal .service-modal__input:hover {
+    border-color: #94A3B8;
+}
+
+#serviceModal .service-modal__input:focus {
+    background: #FFFFFF;
+    border-color: #0B695D;
+    box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.12);
+}
+
+/* Hint Text */
+#serviceModal .service-modal__hint {
+    margin: 0;
+    padding: 0;
+
+    color: #94A3B8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+/* ------------------------------------------
+   8. FOOTER
+   ------------------------------------------ */
+
+#serviceModal .service-modal__footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    width: 100%;
+    margin: 0;
+    padding: 18px 24px;
+
+    background: #F8FAFC;
+    border-top: 1px solid #E9EEF2;
+}
+
+/* Shared Footer Buttons */
+#serviceModal .service-modal__footer button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    min-height: 43px;
+    padding: 11px 18px;
+
+    border: 1px solid transparent;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    line-height: 1.3;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Cancel Button */
+#serviceModal .service-modal__cancel {
+    background: #FFFFFF;
+    border-color: #CBD5E1;
+    color: #475569;
+}
+
+#serviceModal .service-modal__cancel:hover {
+    background: #F1F5F9;
+    border-color: #94A3B8;
+}
+
+/* Save Button */
+#serviceModal .service-modal__submit {
+    background: #0B695D;
+    border-color: #0B695D;
+    color: #FFFFFF;
+
+    box-shadow: 0 3px 8px rgba(11, 105, 93, 0.12);
+}
+
+#serviceModal .service-modal__submit:hover {
+    background: #08564C;
+    border-color: #08564C;
+}
+
+#serviceModal .service-modal__submit svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+}
+
+/* Disabled Save Button */
+#serviceModal .service-modal__submit:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* ------------------------------------------
+   9. KEYBOARD FOCUS
+   ------------------------------------------ */
+
+#serviceModal button:focus-visible,
+#serviceModal input:focus-visible {
+    outline: 3px solid rgba(11, 105, 93, 0.20);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+   10. MOBILE RESPONSIVE
+   ------------------------------------------ */
+
+@media (max-width: 575.98px) {
+
+    dialog#serviceModal.service-modal {
+        width: calc(100vw - 24px);
+        max-width: none;
+        max-height: calc(100dvh - 24px);
+
+        border-radius: 13px;
+    }
+
+    #serviceModal .service-modal__header {
+        padding: 18px;
+        gap: 10px;
+    }
+
+    #serviceModal .service-modal__icon {
+        flex-basis: 38px;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+    }
+
+    #serviceModal .service-modal__title {
+        font-size: 16px;
+    }
+
+    #serviceModal .service-modal__subtitle {
+        font-size: 11px;
+    }
+
+    #serviceModal .service-modal__body {
+        padding: 22px 18px;
+    }
+
+    #serviceModal .service-modal__input {
+        min-height: 46px;
+        font-size: 16px;
+    }
+
+    #serviceModal .service-modal__footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 10px;
+        padding: 16px 18px;
+    }
+
+    #serviceModal .service-modal__footer button {
+        width: 100%;
+        min-height: 45px;
+    }
+}
+
+/* ------------------------------------------
+   11. REDUCED MOTION
+   ------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #serviceModal .service-modal__input,
+    #serviceModal .service-modal__close,
+    #serviceModal .service-modal__footer button {
+        transition: none;
+    }
+}
