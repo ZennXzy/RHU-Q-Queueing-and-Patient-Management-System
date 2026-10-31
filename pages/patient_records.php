@@ -46,13 +46,19 @@ require_once '../php/connection.php';
       <div class="content-area">
         <h1 class="page-title">Patient Records</h1>
         <div class="topbar">
-          <!-- Search Bar -->
-          <div class="search-container">
-            <div class="search-icon">
-              <img src="../svg/search-icon.svg" alt="search-icon">
+            <div class="search-container">
+                <div class="search-icon">
+                    <img src="../svg/search-icon.svg" alt="">
+                </div>
+
+                <input
+                    type="text"
+                    id="patientSearchInput"
+                    placeholder="Search patients by name..."
+                    aria-label="Search patients by name"
+                    autocomplete="off"
+                >
             </div>
-            <input type="text" id="patientSearchInput" placeholder="Search by name">
-          </div>
         </div>
         <div class="table-card">
           <div class="patient-table">
@@ -68,8 +74,8 @@ require_once '../php/connection.php';
                   <th>Sex at Birth</th>
                   <th>Contact Number</th>
                   <th>PhilHealth Status</th>
-                  <th class="sortable" data-col="4" data-type="date">
-                    Date Registered <span class="sort-icon">⇅</span>
+                  <th class="sortable" data-col="5" data-type="date">
+                      Date Registered <span class="sort-icon">⇅</span>
                   </th>
                   <th>Actions</th>
                 </tr>
@@ -487,7 +493,7 @@ require_once '../php/connection.php';
       const sortableHeaders = document.querySelectorAll('th.sortable');
 
       // Track sort directions: 0 = Full Name, 1 = Age, 4 = Date Registered
-      const sortDirections = { 0: 'asc', 1: 'asc', 4: 'asc' };
+      const sortDirections = { 0: 'asc', 1: 'asc', 5: 'asc' };
 
       sortableHeaders.forEach(header => {
         header.style.cursor = 'pointer';
