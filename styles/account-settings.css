@@ -523,6 +523,10 @@ html {
     overflow-y: auto;
   }
 
+  .page-title{
+    padding-left: 40px;
+  }
+
   .workspace {
     display: block;
     height: auto;

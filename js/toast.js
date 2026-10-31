@@ -1,4 +1,166 @@
 
+const toastSoundSettings = {
+    enabled: true,
+    volume: 0.12
+};
+
+let toastAudioContext = null;
+
+// Initialize audio context
+function getToastAudioContext() {
+    const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) return null;
+
+    if (!toastAudioContext) {
+        toastAudioContext = new AudioContextClass();
+    }
+
+    return toastAudioContext;
+}
+
+// Play an individual synthesized tone
+function playToastTone(
+    frequency,
+    startTime,
+    duration,
+    waveform = "sine",
+    volume = 0.12
+) {
+    const context = getToastAudioContext();
+
+    if (!context || context.state !== "running") return;
+
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = waveform;
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        startTime
+    );
+
+    const level = Math.max(
+        0.001,
+        Math.min(volume, 0.5)
+    );
+
+    gain.gain.setValueAtTime(0.0001, startTime);
+
+    gain.gain.exponentialRampToValueAtTime(
+        level,
+        startTime + 0.015
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        startTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+
+    oscillator.start(startTime);
+    oscillator.stop(startTime + duration + 0.01);
+
+    oscillator.onended = () => {
+        oscillator.disconnect();
+        gain.disconnect();
+    };
+}
+
+// Play a sound based on toast type
+async function playToastSound(type = "info") {
+    if (!toastSoundSettings.enabled) return;
+
+    try {
+        const context = getToastAudioContext();
+        if (!context) return;
+
+        // Browsers may block audio before user interaction.
+        if (context.state === "suspended") {
+            await context.resume();
+        }
+
+        if (context.state !== "running") return;
+
+        const now = context.currentTime + 0.01;
+        const volume = toastSoundSettings.volume;
+
+        switch (type) {
+
+            case "success":
+                // Pleasant ascending chime
+                playToastTone(
+                    523.25, now, 0.17, "sine", volume
+                );
+                playToastTone(
+                    783.99, now + 0.13, 0.25, "sine", volume
+                );
+                break;
+
+            case "error":
+                // Descending alert
+                playToastTone(
+                    392, now, 0.17, "triangle", volume
+                );
+                playToastTone(
+                    261.63, now + 0.15, 0.28,
+                    "triangle", volume
+                );
+                break;
+
+            case "warning":
+                // Two attention pulses
+                playToastTone(
+                    440, now, 0.12, "triangle", volume
+                );
+                playToastTone(
+                    440, now + 0.19, 0.12,
+                    "triangle", volume
+                );
+                break;
+
+            case "info":
+            default:
+                // Soft single chime
+                playToastTone(
+                    659.25, now, 0.22, "sine", volume
+                );
+                break;
+        }
+
+    } catch (error) {
+        // Never interrupt a toast because audio is blocked.
+        console.debug("Toast audio unavailable:", error);
+    }
+}
+
+// Unlock audio after a user gesture.
+// Useful for toast notifications triggered by AJAX requests.
+function unlockToastAudio() {
+    const context = getToastAudioContext();
+
+    if (context && context.state === "suspended") {
+        context.resume().catch(() => {});
+    }
+}
+
+document.addEventListener(
+    "pointerdown",
+    unlockToastAudio,
+    { once: true }
+);
+
+document.addEventListener(
+    "keydown",
+    unlockToastAudio,
+    { once: true }
+);
+
+
+
 function showToast(message, type = "info") {
     const container = document.getElementById("toastContainer");
 
@@ -48,6 +210,7 @@ function showToast(message, type = "info") {
 
     const config = toastTypes[type];
     const duration = 4000;
+    playToastSound(type);
 
     // Create toast
     const toast = document.createElement("div");
