@@ -19,7 +19,6 @@ $currentPage = 'settings';
   
   <!-- Page Styles -->
   <link rel="stylesheet" href="../styles/account-settings.css">
-  <link rel="stylesheet" href="../styles/account-settings_2.css">
   <link rel="stylesheet" href="../styles/patient_sidebar.css">
   <link rel="stylesheet" href="../styles/toast.css">
     <link rel="stylesheet" href="../styles/logout_modal.css">
@@ -31,6 +30,7 @@ $currentPage = 'settings';
   <script src="../js/session-check.js" defer></script>
   <script src="../js/patient_sidebar.js" defer></script>
   <script src="../js/patient_notification.js" defer></script>
+  <script src="../patient-notification-sw.js" defer></script>
 
 </head>
 <body>
@@ -48,6 +48,12 @@ $currentPage = 'settings';
             <?php include '../pages/patient_sidebar.php'; ?>
             <h2 class="page-title">Account Settings</h2>
         </div>
+        <button
+            type="button"
+            id="enablePatientNotificationsBtn" onclick="enablePatientNotifications()"
+        >
+            Enable Notifications
+        </button>
       </header>
       <div class="account-card">  
         <div class="card-top-bar">

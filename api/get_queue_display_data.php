@@ -5,33 +5,38 @@ require_once '../php/connection.php';
 
 header('Content-Type: application/json');
 
-// Fetch active services where status = 'Active' from the services table
-$activeServices = [];
-$settingsQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active'");
+// Fetch active service IDs where status = 'Active' from the services table
+$activeServiceIds = [];
+$settingsQuery = $conn->query("SELECT service_id FROM services WHERE status = 'Active'");
 if ($settingsQuery) {
     while ($sRow = $settingsQuery->fetch_assoc()) {
-        $activeServices[] = $sRow['service_name'];
+        $activeServiceIds[] = intval($sRow['service_id']);
     }
 }
 
-// Fetch all services dynamically from the services table
-$DEPARTMENT_CONFIG = [];
+// Fetch all services dynamically with their IDs and names from the services table
+$servicesConfig = [];
 $allServicesQuery = $conn->query("SELECT service_id, service_name FROM services ORDER BY service_id ASC");
 if ($allServicesQuery) {
     while ($row = $allServicesQuery->fetch_assoc()) {
-        $DEPARTMENT_CONFIG[] = $row['service_name'];
+        $servicesConfig[] = [
+            'id' => intval($row['service_id']),
+            'name' => $row['service_name']
+        ];
     }
 }
 
 $responseData = [];
 
-foreach ($DEPARTMENT_CONFIG as $serviceName) {
-    $isVisible = in_array($serviceName, $activeServices);
+foreach ($servicesConfig as $service) {
+    $serviceId = $service['id'];
+    $serviceName = $service['name'];
+    $isVisible = in_array($serviceId, $activeServiceIds);
 
-    // Fetch In Progress queue
+    // Fetch In Progress queue using integer service_id
     $sqlActive = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'In Progress' ORDER BY created_at ASC";
     $stmtActive = $conn->prepare($sqlActive);
-    $stmtActive->bind_param("s", $serviceName);
+    $stmtActive->bind_param("i", $serviceId);
     $stmtActive->execute();
     $resActive = $stmtActive->get_result();
     $activeQueues = [];
@@ -40,10 +45,10 @@ foreach ($DEPARTMENT_CONFIG as $serviceName) {
     }
     $stmtActive->close();
 
-    // Fetch Waiting queue
+    // Fetch Waiting queue using integer service_id
     $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'Waiting' ORDER BY created_at ASC";
     $stmtWaiting = $conn->prepare($sqlWaiting);
-    $stmtWaiting->bind_param("s", $serviceName);
+    $stmtWaiting->bind_param("i", $serviceId);
     $stmtWaiting->execute();
     $resWaiting = $stmtWaiting->get_result();
     $waitingQueues = [];
@@ -52,10 +57,10 @@ foreach ($DEPARTMENT_CONFIG as $serviceName) {
     }
     $stmtWaiting->close();
 
-    // Fetch Avg Waiting Time
+    // Fetch Avg Waiting Time using integer service_id
     $sql = "SELECT service_duration FROM transactions WHERE service = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $serviceName);
+    $stmt->bind_param("i", $serviceId);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -70,6 +75,7 @@ foreach ($DEPARTMENT_CONFIG as $serviceName) {
     }
 
     $avgFormatted = "00:00:00";
+    $count = (int)$count;
     if ($count > 0) {
         $avgSeconds = (int) round($totalSeconds / $count);
         $avgFormatted = sprintf('%02d:%02d:%02d', floor($avgSeconds / 3600), floor(($avgSeconds % 3600) / 60), $avgSeconds % 60);

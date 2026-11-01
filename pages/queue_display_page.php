@@ -16,30 +16,31 @@ $COLOR_THEMES = [
     'dept-violet'
 ];
 
-// Fetch ALL services dynamically from the database
+// Fetch ALL services dynamically from the database (including service_id)
 $DEPARTMENT_CONFIG = [];
-$servicesQuery = $conn->query("SELECT service_name, status FROM services ORDER BY service_id ASC");
+$servicesQuery = $conn->query("SELECT service_id, service_name, status FROM services ORDER BY service_id ASC");
 if ($servicesQuery) {
     $i = 0;
     while ($row = $servicesQuery->fetch_assoc()) {
-        $sName = $row['service_name'];
-        // Assign a theme sequentially or cyclically so every service gets a clean readable color
+        $serviceId = intval($row['service_id']);
+        $serviceName = $row['service_name'];
         $themeClass = $COLOR_THEMES[$i % count($COLOR_THEMES)];
 
-        $DEPARTMENT_CONFIG[$sName] = [
-            'title' => strtoupper($sName),
+        $DEPARTMENT_CONFIG[$serviceId] = [
+            'name' => $serviceName,
+            'title' => strtoupper($serviceName),
             'themeClass' => $themeClass
         ];
         $i++;
     }
 }
 
-// Fetch active services configured in DB (where status = 'Active')
+// Fetch active service IDs configured in DB (where status = 'Active')
 $activeServices = [];
-$activeQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active'");
+$activeQuery = $conn->query("SELECT service_id FROM services WHERE status = 'Active'");
 if ($activeQuery) {
     while ($sRow = $activeQuery->fetch_assoc()) {
-        $activeServices[] = $sRow['service_name'];
+        $activeServices[] = intval($sRow['service_id']);
     }
 }
 ?>
@@ -112,27 +113,27 @@ if ($activeQuery) {
                 <p>Please select at least one service card from the display settings.</p>
             </div>
             
-            <?php foreach ($DEPARTMENT_CONFIG as $serviceName => $config): 
-                $isVisible = in_array($serviceName, $activeServices);
+            <?php foreach ($DEPARTMENT_CONFIG as $serviceId => $config): 
+                $isVisible = in_array($serviceId, $activeServices);
 
-                // Now serving
+                // Now serving (using integer "i" for service_id)
                 $sqlActive = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'In Progress' ORDER BY created_at ASC";
                 $stmtActive = $conn->prepare($sqlActive);
-                $stmtActive->bind_param("s", $serviceName);
+                $stmtActive->bind_param("i", $serviceId);
                 $stmtActive->execute();
                 $resActive = $stmtActive->get_result();
 
-                // Waiting
+                // Waiting (using integer "i" for service_id)
                 $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'Waiting' ORDER BY created_at ASC";
                 $stmtWaiting = $conn->prepare($sqlWaiting);
-                $stmtWaiting->bind_param("s", $serviceName);
+                $stmtWaiting->bind_param("i", $serviceId);
                 $stmtWaiting->execute();
                 $resWaiting = $stmtWaiting->get_result();
 
-                // Average waiting time (today)
+                // Average waiting time today (using integer "i" for service_id)
                 $sql = "SELECT service_duration FROM transactions WHERE service = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("s", $serviceName);
+                $stmt->bind_param("i", $serviceId);
                 $stmt->execute();
                 $result = $stmt->get_result();
 
@@ -156,7 +157,7 @@ if ($activeQuery) {
                 $stmt->close();
             ?>
 
-                <div class="dept-column" data-service="<?php echo htmlspecialchars($serviceName); ?>" style="display: <?php echo $isVisible ? 'flex' : 'none'; ?>;">
+                <div class="dept-column" data-service="<?php echo htmlspecialchars($config['name']); ?>" style="display: <?php echo $isVisible ? 'flex' : 'none'; ?>;">
                     <div class="queue-card <?php echo $config['themeClass']; ?>">
                         <!-- Header without icons -->
                         <div class="dept-title">
