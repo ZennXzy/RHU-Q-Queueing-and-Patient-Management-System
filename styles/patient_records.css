@@ -1,26 +1,4 @@
 
-/* ============================================================
-   RHU-Q | PATIENT RECORDS
-   Cleaned and Consolidated Stylesheet
-
-   Sections:
-   01. Global Layout
-   02. Search Bar
-   03. Patient Table
-   04. Table Action Buttons
-   05. Empty State
-   06. Patient Modals
-   07. Patient Information
-   08. Transaction History
-   09. Edit Form
-   10. Responsive Layout
-   ============================================================ */
-
-
-/* ============================================================
-   01. GLOBAL LAYOUT
-   ============================================================ */
-
 * {
     box-sizing: border-box;
     margin: 0;
