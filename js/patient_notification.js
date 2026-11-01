@@ -1,177 +1,191 @@
 
 document.addEventListener("DOMContentLoaded", () => {
+    const notificationToggle = document.getElementById("enablePatientNotificationsBtn");
+    const notificationStatusText = document.getElementById("notificationStatusText");
+    const storageKey = "rhuqPatientNotificationsEnabled";
+
+    let notificationsEnabled = localStorage.getItem(storageKey) === "true";
+    let notificationWorker = null;
     let lastKnownStatus = null;
     let lastQueueId = null;
-    let notificationWorker = null;
+    let isCheckingQueue = false;
+
+    const supported = "Notification" in window && "serviceWorker" in navigator && window.isSecureContext;
+
+    // --Toggle UI--
+    function updateToggleUI() {
+        const enabled = supported && notificationsEnabled && Notification.permission === "granted";
+
+        if (notificationToggle) {
+            notificationToggle.checked = enabled;
+            notificationToggle.disabled = !supported;
+        }
+
+        if (notificationStatusText) {
+            notificationStatusText.textContent = !supported
+                ? "Notifications unavailable"
+                : Notification.permission === "denied"
+                    ? "Blocked by browser settings"
+                    : enabled ? "Notifications enabled" : "Notifications disabled";
+        }
+    }
 
     // --Service Worker--
-
-    async function setupNotifications() {
-        if (!("Notification" in window)) {
-            console.warn("Notifications are not supported.");
-            return;
-        }
-
-        if (!("serviceWorker" in navigator)) {
-            console.warn("Service workers are not supported.");
-            return;
-        }
-
-        if (!window.isSecureContext) {
-            console.warn("Notifications require HTTPS or localhost.");
-            return;
-        }
+    async function registerNotificationWorker() {
+        if (!supported) return null;
+        if (notificationWorker) return notificationWorker;
 
         try {
-            notificationWorker = await navigator.serviceWorker.register(
-                "../patient-notification-sw.js"
-            );
-
-            console.log("Notification service worker registered.");
+            notificationWorker = await navigator.serviceWorker.register("../patient-notification-sw.js");
+            return notificationWorker;
         } catch (error) {
-            console.error("Service worker registration failed:", error);
+            console.error("Service worker error:", error);
+            return null;
         }
     }
 
-    // --Notification Permission--
+    // --Show Notification--
+    async function showQueueNotification(status, service) {
+        if (!notificationsEnabled || !supported || Notification.permission !== "granted") return false;
 
-    async function requestPatientNotificationPermission() {
-        if (!("Notification" in window)) {
-            return false;
-        }
+        const worker = await registerNotificationWorker();
+        if (!worker || !notificationsEnabled) return false;
 
-        if (Notification.permission === "granted") {
+        try {
+            await worker.showNotification("RHU-Q Queue Alert", {
+                body: `Your queue status for ${service} is now: ${status}!`,
+                icon: "../images/rhu_logo_topNav.png",
+                badge: "../images/rhu_logo_topNav.png",
+                tag: "rhuq-patient-queue",
+                renotify: true,
+                data: { url: window.location.href }
+            });
             return true;
-        }
-
-        if (Notification.permission === "denied") {
-            return false;
-        }
-
-        try {
-            const permission = await Notification.requestPermission();
-            return permission === "granted";
         } catch (error) {
-            console.error("Notification permission error:", error);
+            console.error("Notification error:", error);
             return false;
         }
     }
 
-    // --Device Notification--
-
-    async function fireDeviceNotification(statusText, serviceName) {
-        if (!("Notification" in window)) return;
-        if (Notification.permission !== "granted") return;
-
-        const title = "RHU-Q Queue Alert";
-        const options = {
-            body: `Your queue status for ${serviceName} is now: ${statusText}!`,
-            icon: "/images/rhu_logo_topNav.png",
-            badge: "/images/rhu_logo_topNav.png",
-            tag: "rhuq-patient-queue",
-            renotify: true,
-            data: {
-                url: window.location.href
-            }
-        };
+    // --Queue Checker--
+    async function checkQueueStatus(forceNotification = false) {
+        if (isCheckingQueue) return;
+        isCheckingQueue = true;
 
         try {
-            if ("serviceWorker" in navigator && window.isSecureContext) {
-                const registration =
-                    notificationWorker ||
-                    await navigator.serviceWorker.ready;
+            const response = await fetch("../php/patient_notification.php", {
+                method: "GET",
+                credentials: "same-origin",
+                cache: "no-store"
+            });
 
-                await registration.showNotification(title, options);
-                return;
-            }
-
-            // --Desktop Fallback--
-
-            if ("Notification" in window) {
-                new Notification(title, options);
-            }
-        } catch (error) {
-            console.error("Unable to show notification:", error);
-        }
-    }
-
-    // --Queue Status Checker--
-
-    async function checkPatientNotificationStatus() {
-        try {
-            const response = await fetch(
-                "../php/patient_notification.php",
-                {
-                    method: "GET",
-                    credentials: "same-origin",
-                    cache: "no-store",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest"
-                    }
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
             const data = await response.json();
 
-            if (
-                data.status !== "success" ||
-                !data.hasQueue ||
-                !data.queue
-            ) {
+            if (data.status !== "success" || !data.hasQueue || !data.queue) {
                 lastKnownStatus = null;
                 lastQueueId = null;
                 return;
             }
 
             const queue = data.queue;
-            const currentStatus = String(queue.status || "");
-            const currentQueueId = String(
-                queue.queue_id ??
-                queue.id ??
-                `${queue.service_name}:${queue.created_at}`
-            );
+            const status = String(queue.status || "");
+            const service = queue.service_name || "your service";
+            const queueId = String(queue.queue_id ?? queue.id ?? `${service}:${queue.created_at}`);
 
-            const isNewQueue = currentQueueId !== lastQueueId;
-            const hasStatusChanged =
-                lastKnownStatus !== currentStatus;
+            const isPriority = ["Next in Line", "Serving", "In Progress"].includes(status);
+            const hasChanged = queueId !== lastQueueId || status !== lastKnownStatus;
 
-            const isPriorityStatus =
-                currentStatus === "Next in Line" ||
-                currentStatus === "Serving" ||
-                currentStatus === "In Progress";
-
-            if (
-                isPriorityStatus &&
-                (isNewQueue || hasStatusChanged)
-            ) {
-                await fireDeviceNotification(
-                    currentStatus,
-                    queue.service_name || "your service"
-                );
+            if (notificationsEnabled && isPriority && (forceNotification || hasChanged)) {
+                await showQueueNotification(status, service);
             }
 
-            lastQueueId = currentQueueId;
-            lastKnownStatus = currentStatus;
-
+            lastQueueId = queueId;
+            lastKnownStatus = status;
         } catch (error) {
-            console.error("Patient notification poll error:", error);
+            console.error("Queue polling error:", error);
+        } finally {
+            isCheckingQueue = false;
         }
     }
 
+    // --Enable Notifications--
+    async function enableNotifications() {
+        if (!supported) {
+            updateToggleUI();
+            return;
+        }
+
+        try {
+            let permission = Notification.permission;
+            if (permission === "default") permission = await Notification.requestPermission();
+
+            if (permission !== "granted") {
+                notificationsEnabled = false;
+                localStorage.setItem(storageKey, "false");
+                updateToggleUI();
+                return;
+            }
+
+            const worker = await registerNotificationWorker();
+
+            if (!worker) {
+                notificationsEnabled = false;
+                localStorage.setItem(storageKey, "false");
+                updateToggleUI();
+                return;
+            }
+
+            notificationsEnabled = true;
+            localStorage.setItem(storageKey, "true");
+            updateToggleUI();
+            await checkQueueStatus(true);
+        } catch (error) {
+            console.error("Enable notification error:", error);
+            notificationsEnabled = false;
+            localStorage.setItem(storageKey, "false");
+            updateToggleUI();
+        }
+    }
+
+    // --Disable Notifications--
+    async function disableNotifications() {
+        notificationsEnabled = false;
+        localStorage.setItem(storageKey, "false");
+        updateToggleUI();
+
+        try {
+            const worker = notificationWorker || await navigator.serviceWorker.getRegistration();
+            if (!worker) return;
+
+            const notifications = await worker.getNotifications({ tag: "rhuq-patient-queue" });
+            notifications.forEach(notification => notification.close());
+        } catch (error) {
+            console.error("Disable notification error:", error);
+        }
+    }
+
+    // --Toggle Event--
+    if (notificationToggle) {
+        notificationToggle.addEventListener("change", async () => {
+            if (notificationToggle.checked) {
+                await enableNotifications();
+            } else {
+                await disableNotifications();
+            }
+        });
+    }
+
     // --Initialize--
+    updateToggleUI();
+    registerNotificationWorker();
+    checkQueueStatus();
 
-    setupNotifications();
+    setInterval(checkQueueStatus, 8000);
+    window.addEventListener("focus", updateToggleUI);
 
-    // Permission must be requested by a user action.
-    // Connect this function to an Enable Notifications button.
-    window.enablePatientNotifications =
-        requestPatientNotificationPermission;
-
-    checkPatientNotificationStatus();
-
-    setInterval(checkPatientNotificationStatus, 8000);
+    // --Public Functions--
+    window.enablePatientNotifications = enableNotifications;
+    window.disablePatientNotifications = disableNotifications;
 });

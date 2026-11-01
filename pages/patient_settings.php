@@ -48,13 +48,29 @@ $currentPage = 'settings';
             <?php include '../pages/patient_sidebar.php'; ?>
             <h2 class="page-title">Account Settings</h2>
         </div>
-        <button
-            type="button"
-            id="enablePatientNotificationsBtn" onclick="enablePatientNotifications()"
-        >
-            Enable Notifications
-        </button>
       </header>
+      <div class="notification-setting">
+          <div class="notification-setting-info">
+              <span class="notification-setting-title">
+                  Queue Notifications
+              </span>
+
+              <span class="notification-setting-status"
+                    id="notificationStatusText">
+                  Notifications disabled
+              </span>
+          </div>
+
+          <label class="notification-switch">
+              <input
+                  type="checkbox"
+                  id="enablePatientNotificationsBtn"
+                  aria-label="Enable queue notifications"
+              >
+
+              <span class="notification-slider"></span>
+          </label>
+      </div>
       <div class="account-card">  
         <div class="card-top-bar">
           <div class="account-header">

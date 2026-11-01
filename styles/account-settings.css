@@ -338,6 +338,113 @@ html {
     box-shadow: none;
 }
 
+/* --Notification Setting-- */
+
+.notification-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 420px;
+    padding: 16px 20px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+}
+
+.notification-setting-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-setting-title {
+    color: #1E293B;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.notification-setting-status {
+    color: #64748B;
+    font-size: 12px;
+}
+
+/* --Toggle Switch-- */
+
+.notification-switch {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+    width: 52px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.notification-switch input {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.notification-slider {
+    position: absolute;
+    inset: 0;
+
+    background: #CBD5E1;
+    border-radius: 30px;
+
+    transition: background 0.25s ease;
+}
+
+.notification-slider::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    bottom: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background: #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+
+    transition: transform 0.25s ease;
+}
+
+/* --Enabled State-- */
+
+.notification-switch input:checked + .notification-slider {
+    background: #0B695D;
+}
+
+.notification-switch input:checked + .notification-slider::before {
+    transform: translateX(22px);
+}
+
+.notification-switch input:focus-visible + .notification-slider {
+    outline: 3px solid rgba(11, 105, 93, 0.25);
+    outline-offset: 3px;
+}
+
+.notification-switch input:disabled + .notification-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* --Mobile-- */
+
+@media (max-width: 480px) {
+    .notification-setting {
+        padding: 14px 16px;
+    }
+}
+
 /* --------------------------------------------
    MOBILE RESPONSIVE
    -------------------------------------------- */
