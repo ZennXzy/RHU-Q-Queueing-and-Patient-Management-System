@@ -24,6 +24,7 @@ require_once '../php/connection.php';
     <script src="../js/logout.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/required-field-validation.js" defer></script>
+    <script src="../js/date-of-birth.js" defer></script>
 </head>
 <body>
     <?php
@@ -64,15 +65,13 @@ require_once '../php/connection.php';
 
                     <div class="form-group col-4">
                         <input type="text" name="address" id="address" placeholder="Search Address" autocomplete="off" require_onced>
-                    </div>
-
+                    </div>          
                     <div class="form-group col-3">
-                        <div class="date">
-                            <span style="font-size: 13px; color: #555;">Date of Birth:</span>
-                            <input type="date" id="date_of_birth" name="birthDate">
+                        <div class="date dob-container" id="dobContainer">
+                            <span class="dob-placeholder" id="dobPlaceholder">Select Date of Birth</span>
+                            <input type="date" id="date_of_birth" name="birthDate" autocomplete="Off">
                         </div>
                     </div>
-
                     <div class="form-group col-2">
                         <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                     </div>

@@ -52,19 +52,91 @@ body, html {
 }
 
 
-.form-group input[type="date"]{
-  color: #333;
-  border: none;
-}
-
-.date {
-  padding: 11px 14px;
+/* --Date of Birth-- */
+.form-group .dob-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 43px;
+  padding: 0 14px;
   border: 1px solid #0B695D;
   border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.content-area .dob-placeholder {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
   font-size: 14px;
-  color: #333;
+  color: #777;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-group .dob-container #date_of_birth {
+  position: relative;
+  display: block;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  border: none !important;
   outline: none;
-  height: 43px;
+  background: transparent;
+  font-size: 14px;
+  color: transparent;
+  opacity: 0;
+  cursor: text;
+  box-shadow: none !important;
+  animation: none !important;
+}
+
+.form-group .dob-container.active #date_of_birth {
+  color: #333;
+  opacity: 1;
+}
+
+.dob-container.active .dob-placeholder {
+  display: none;
+}
+
+/* --Native Calendar Icon-- */
+.form-group .dob-container #date_of_birth::-webkit-calendar-picker-indicator {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  cursor: pointer;
+}
+
+.dob-container:focus-within {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+/* --DOB Required Validation: Container Only-- */
+.form-group .dob-container.required-invalid-group,
+.form-group .dob-container:has(#date_of_birth.required-invalid) {
+  border: 1px solid #DC3545 !important;
+  animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+.form-group .dob-container #date_of_birth.required-invalid {
+  border: none !important;
+  box-shadow: none !important;
+  animation: none !important;
 }
 
 /* Form Card Containers */
@@ -186,11 +258,6 @@ body, html {
     animation: requiredFieldPulse 1s ease-in-out infinite;
 }
 
-/* Date of Birth wrapper */
-.date.required-invalid-group {
-    border: 1px solid #DC3545 !important;
-    animation: requiredFieldPulse 1s ease-in-out infinite;
-}
 
 /* Invalid input focus */
 .required-invalid:focus {
@@ -407,16 +474,21 @@ body, html {
     border: none;
   }
 
-  /* Date of birth */
-  .date {
+
+  /* --Date of Birth: Extra Large-- */
+  .form-group .dob-container {
     height: 78px;
-    padding: 18px 26px;
+    padding: 0 26px;
     border-width: 2px;
     border-radius: 10px;
-    font-size: 26px;
   }
 
-  .form-group input[type="date"] {
+  .content-area .dob-placeholder {
+    left: 26px;
+  }
+
+  .content-area .dob-placeholder,
+  .form-group .dob-container #date_of_birth {
     font-size: 26px;
   }
 
@@ -533,25 +605,6 @@ body, html {
     justify-content: flex-end;
   }
 
-  /* Date of Birth: label and field on one line; also styles the text-mode version */
-  .date {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  #date_of_birth {
-    flex: 1;
-    width: auto;
-    min-width: 0;
-    padding: 0;
-    border: none;
-    border-radius: 0;
-    background: transparent;
-    font-size: 14px;
-    color: #333;
-    box-shadow: none;
-  }
 }
 
 /* Mobile and large phones (767.98px and below): one field per row */
@@ -611,18 +664,17 @@ body, html {
     width: 100%;
   }
 
-  .date {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    height: auto;
-    min-height: 43px;
+  /* --Date of Birth: Mobile-- */
+  .form-group .dob-container {
+    min-height: 48px;
+    height: 48px;
   }
 
-  .date input[type="date"] {
-    flex: 1;
-    min-width: 0;
+  .content-area .dob-placeholder,
+  .form-group .dob-container #date_of_birth {
+    font-size: 16px;
   }
+
 
   .checkbox-row,
   .radio-row {
