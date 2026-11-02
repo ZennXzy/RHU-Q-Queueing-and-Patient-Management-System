@@ -1,131 +1,444 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const filterModal = document.getElementById('filter-records-modal');
-  const filterForm = document.getElementById('filter-records-form');
-  const openFilterBtn = document.getElementById('open-filter-button');
-  const closeFilterBtn = document.getElementById('closeFilterModal');
-  const resetFilterBtn = document.getElementById('resetFilterBtn');
-  const searchInput = document.getElementById('searchReports');
-  const exportBtn = document.getElementById('export-btn');
+  const $ = (id) => document.getElementById(id);
 
-  // Initial load
-  fetchReports();
+  const form = $("report-filters");
 
-  // Modal Triggers
-  if (openFilterBtn && filterModal) {
-    openFilterBtn.addEventListener('click', () => filterModal.showModal());
-  }
-  if (closeFilterBtn && filterModal) {
-    closeFilterBtn.addEventListener('click', () => filterModal.close());
-  }
+  let page = 1;
+  let total = 0;
+  let current = null;
+  let requestId = 0;
 
-  if (resetFilterBtn && filterForm) {
-    resetFilterBtn.addEventListener('click', () => {
-      filterForm.reset();
-      fetchReports();
+  const nf = new Intl.NumberFormat();
+
+  const params = () => {
+    return new URLSearchParams(new FormData(form));
+  };
+
+  const query = () => {
+    const p = params();
+
+    const search = $("searchReports").value.trim();
+
+    if (search) {
+      p.set("search", search);
+    }
+
+    if (current) {
+      p.set("service_label", current);
+    }
+
+    return p;
+  };
+
+  // API REQUEST
+  const api = async (action, p = new URLSearchParams()) => {
+    p.set("action", action);
+
+    const res = await fetch("../api/get_reports.php?" + p.toString(), {
+      credentials: "same-origin",
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.status !== "success") {
+      throw new Error(data.message || "Unable to load report");
+    }
+
+    return data.data;
+  };
+
+  const status = (msg) => {
+    $("report-status").textContent = msg;
+  };
+
+  // POPULATE FILTER OPTIONS
+  const fill = (id, rows, idKey = "value", labelKey = "value") => {
+    const select = $(id);
+
+    rows.forEach((r) => {
+      const option = document.createElement("option");
+
+      option.value = typeof r === "string" ? r : r[idKey];
+
+      option.textContent = typeof r === "string" ? r : r[labelKey];
+
+      select.appendChild(option);
+    });
+  };
+
+  async function loadOptions() {
+    const data = await api("options");
+
+    fill("filter-service", data.services, "id", "name");
+
+    fill("filter-barangay", data.barangays, "id", "name");
+
+    [
+      "gender",
+      "employment_status",
+      "civil_status",
+      "religion",
+      "phil_status",
+      "yakap_member",
+    ].forEach((key) => {
+      fill("filter-" + key, data[key]);
     });
   }
 
-  // Handle Search Input (Debounced)
-  let searchTimer;
-  if (searchInput) {
-    searchInput.addEventListener('input', () => {
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(() => {
-        fetchReports(new URLSearchParams(new FormData(filterForm)), searchInput.value);
-      }, 300);
-    });
-  }
+  // RENDER HORIZONTAL BAR CHART
+  function renderBars(id, rows, onClick = null, maxRows = 10) {
+    const el = $(id);
 
-  // Handle Filter Form Submission
-  if (filterForm) {
-    filterForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const formData = new FormData(filterForm);
-      
-      // FIX: Convert FormData to URLSearchParams so .toString() works correctly
-      const params = new URLSearchParams(formData);
-      
-      fetchReports(params, searchInput ? searchInput.value : '');
-      if (filterModal) filterModal.close();
-    });
-  }
+    el.replaceChildren();
 
-  // Fetch Reports Function via AJAX
-  async function fetchReports(filterParams = new URLSearchParams(), searchQuery = '') {
-    try {
-      if (searchQuery) filterParams.set('search', searchQuery);
+    if (!rows.length) {
+      el.textContent = "No matching records";
+      return;
+    }
 
-      const response = await fetch(`../api/get_reports.php?${filterParams.toString()}`);
-      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    const max = Math.max(...rows.map((r) => Number(r.visits)), 1);
 
-      const result = await response.json();
+    rows.slice(0, maxRows).forEach((r) => {
+      const item = document.createElement(onClick ? "button" : "div");
 
-      if (result.status === 'success') {
-        const tbody = document.getElementById('reports-table-body');
-        const statTotal = document.getElementById('stat-total-records');
+      item.className = "bar-item" + (onClick ? " clickable" : "");
 
-        if (tbody) tbody.innerHTML = result.html;
-        if (statTotal) statTotal.textContent = result.total;
-      } else {
-        if (typeof showToast === 'function') {
-          showToast(result.message || 'No records found.', 'info');
-        }
+      if (onClick) {
+        item.type = "button";
+
+        item.addEventListener("click", () => onClick(r));
       }
+
+      const line = document.createElement("div");
+      line.className = "bar-label";
+
+      const name = document.createElement("span");
+      name.textContent = r.label;
+
+      const count = document.createElement("span");
+
+      count.textContent =
+        nf.format(r.visits) +
+        " visits · " +
+        nf.format(r.patients) +
+        " patients";
+
+      line.append(name, count);
+
+      const track = document.createElement("div");
+      track.className = "bar-track";
+
+      const bar = document.createElement("div");
+      bar.className = "bar-fill";
+
+      bar.style.width = (Number(r.visits) / max) * 100 + "%";
+
+      track.append(bar);
+
+      item.append(line, track);
+
+      el.append(item);
+    });
+  }
+
+  // LOAD DASHBOARD STATISTICS
+  async function loadDashboard() {
+    const data = await api("dashboard", query());
+
+    $("kpi-visits").textContent = nf.format(data.kpi.visits);
+
+    $("kpi-patients").textContent = nf.format(data.kpi.patients);
+
+    $("kpi-barangays").textContent = nf.format(data.kpi.barangays);
+
+    $("kpi-service").textContent =
+      data.groups.services[0]?.label || "No records";
+
+    // SERVICE CHART
+    renderBars("service-chart", data.groups.services, (row) => {
+      current = row.label;
+
+      $("filter-service").value = "";
+
+      page = 1;
+
+      reload();
+
+      $("patient-records").scrollIntoView({
+        behavior: "smooth",
+      });
+    });
+
+    // BARANGAY CHART
+    renderBars("barangay-chart", data.groups.barangays, (row) => {
+      const option = Array.from($("filter-barangay").options).find(
+        (o) => o.textContent === row.label,
+      );
+
+      if (option) {
+        $("filter-barangay").value = option.value;
+
+        current = null;
+        page = 1;
+
+        reload();
+
+        $("patient-records").scrollIntoView({
+          behavior: "smooth",
+        });
+      }
+    });
+
+    // DEMOGRAPHIC CHART
+    const renderDemographics = () => {
+      const group = $("demographic-group").value;
+
+      renderBars("demographic-chart", data.groups[group] || []);
+    };
+
+    $("demographic-group").onchange = renderDemographics;
+
+    renderDemographics();
+
+    // MONTHLY ACTIVITY
+    const months = data.groups.months
+      .slice()
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .slice(-12);
+
+    renderBars("monthly-chart", months);
+  }
+
+  // LOAD MATCHING PATIENT VISITS
+  async function loadRecords() {
+    const p = query();
+
+    p.set("page", page);
+
+    const data = await api("patients", p);
+
+    total = data.total;
+
+    const tbody = $("reports-table-body");
+
+    tbody.replaceChildren();
+
+    if (!data.rows.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+
+      td.colSpan = 6;
+      td.textContent = "No matching records found.";
+
+      tr.append(td);
+      tbody.append(tr);
+    }
+
+    data.rows.forEach((record) => {
+      const tr = document.createElement("tr");
+
+      const values = [
+        record.transaction_date,
+        record.patient_name,
+        (record.age_at_visit ?? "—") + " / " + (record.gender || "—"),
+        record.service_name,
+        record.barangay,
+      ];
+
+      values.forEach((value) => {
+        const td = document.createElement("td");
+
+        td.textContent = value ?? "—";
+
+        tr.append(td);
+      });
+
+      const actionCell = document.createElement("td");
+
+      const button = document.createElement("button");
+
+      button.className = "details-btn";
+      button.textContent = "View";
+      button.type = "button";
+
+      button.addEventListener("click", () =>
+        showDetails(record.transaction_id),
+      );
+
+      actionCell.append(button);
+      tr.append(actionCell);
+
+      tbody.append(tr);
+    });
+
+    $("records-count").textContent =
+      nf.format(total) + " matching service visits";
+
+    $("page-label").textContent =
+      "Page " + page + " of " + Math.max(1, Math.ceil(total / 25));
+
+    $("prev-page").disabled = page <= 1;
+
+    $("next-page").disabled = page * 25 >= total;
+  }
+
+  // RELOAD DASHBOARD AND RECORDS
+  async function reload() {
+    const seq = ++requestId;
+
+    status("Loading reports…");
+
+    try {
+      await loadDashboard();
+
+      if (seq !== requestId) {
+        return;
+      }
+
+      await loadRecords();
+
+      if (seq !== requestId) {
+        return;
+      }
+
+      status(current ? "Selected service: " + current : "Filters applied");
     } catch (error) {
-      console.error('Error fetching reports:', error);
-      if (typeof showToast === 'function') {
-        showToast('An error occurred while loading reports.', 'error');
+      if (seq === requestId) {
+        status("Error: " + error.message);
+
+        console.error(error);
       }
     }
   }
 
-  // Export CSV Handler
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      const formData = new FormData(filterForm);
-      const params = new URLSearchParams(formData);
-      if (searchInput && searchInput.value) params.set('search', searchInput.value);
-      
-      window.location.href = `../api/export_reports.php?${params.toString()}`;
-    });
+  // VIEW TRANSACTION DETAILS
+  async function showDetails(id) {
+    try {
+      const data = await api("details", new URLSearchParams({ id }));
+
+      const record = data.record;
+
+      const container = $("recordDetailsContent");
+
+      container.replaceChildren();
+
+      const fields = [
+        ["Patient", "fullname"],
+        ["Service", "service_type"],
+        ["Transaction Date", "transaction_date"],
+        ["Queue Code", "queue_code"],
+        ["Barangay", "address"],
+        ["Gender", "gender"],
+        ["Blood Pressure", "blood_pressure"],
+        ["Respiratory Rate", "respiratory_rate"],
+        ["Temperature", "temperature"],
+        ["Pulse Rate", "pulse_rate"],
+        ["Weight", "weight"],
+        ["Height", "height"],
+        ["Diagnosis", "diagnosis"],
+        ["Remarks", "remarks"],
+      ];
+
+      fields.forEach(([label, key]) => {
+        const row = document.createElement("div");
+
+        row.className = "detail-row";
+
+        const heading = document.createElement("strong");
+
+        heading.textContent = label;
+
+        const value = document.createElement("span");
+
+        value.textContent = record[key] || "—";
+
+        row.append(heading, value);
+
+        container.append(row);
+      });
+
+      $("view-record-modal").showModal();
+    } catch (error) {
+      status("Unable to open record: " + error.message);
+    }
   }
 
-  // Delegate View Details Click
-  document.addEventListener('click', async (e) => {
-    const viewBtn = e.target.closest('.view-record-btn');
-    if (!viewBtn) return;
+  // APPLY FILTERS
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-    const recordId = viewBtn.dataset.id;
-    const viewModal = document.getElementById('view-record-modal');
-    const contentContainer = document.getElementById('recordDetailsContent');
+    current = null;
+    page = 1;
 
-    try {
-      const response = await fetch(`../api/get_reports.php?action=details&id=${recordId}`);
-      const result = await response.json();
+    reload();
+  });
 
-      if (result.status === 'success') {
-        const rec = result.record;
-        if (contentContainer) {
-          contentContainer.innerHTML = `
-            <p><strong>Patient Name:</strong> ${rec.fullname}</p>
-            <p><strong>Visit Date:</strong> ${rec.transaction_date}</p>
-            <p><strong>Age / Gender:</strong> ${rec.age} / ${rec.gender}</p>
-            <p><strong>Service Taken:</strong> ${rec.service_type || rec.service_snapshot || 'N/A'}</p>
-            <p><strong>Address:</strong> ${rec.address}</p>
-            <p><strong>Vital Signs:</strong><br>
-            <p>Blood Pressure: ${rec.blood_pressure || 'N/A'}</p>
-            <p>Temperature: ${rec.temperature || 'N/A'}</p>
-            <p>Respiratory Rate: ${rec.respiratory_rate || 'N/A'}</p>
-            <p>Pulse Rate: ${rec.pulse_rate || 'N/A'}</p>
-            <p>Weight: ${rec.weight || 'N/A'}</p>
-            <p>Height: ${rec.height || 'N/A'}</p>
-            <p><strong>Chief Complaint:</strong> ${rec.remarks || 'N/A'}</p>
-          `;
-        }
-        if (viewModal) viewModal.showModal();
-      }
-    } catch (err) {
-      console.error('Error fetching record details:', err);
+  // RESET FILTERS
+  $("reset-filters").addEventListener("click", () => {
+    form.reset();
+
+    $("searchReports").value = "";
+
+    current = null;
+    page = 1;
+
+    reload();
+  });
+
+  // SEARCH RECORDS
+  let debounce;
+
+  $("searchReports").addEventListener("input", () => {
+    clearTimeout(debounce);
+
+    debounce = setTimeout(() => {
+      page = 1;
+
+      reload();
+    }, 350);
+  });
+
+  // PAGINATION
+  $("prev-page").addEventListener("click", () => {
+    if (page > 1) {
+      page--;
+
+      loadRecords().catch((error) => status(error.message));
     }
   });
+
+  $("next-page").addEventListener("click", () => {
+    if (page * 25 < total) {
+      page++;
+
+      loadRecords().catch((error) => status(error.message));
+    }
+  });
+
+  // CLOSE DETAILS
+  $("close-record").addEventListener("click", () =>
+    $("view-record-modal").close(),
+  );
+
+  // CSV EXPORT
+  const exportCsv = (mode) => {
+    const p = query();
+
+    p.set("mode", mode);
+
+    window.location.href = "../php/export_reports.php?" + p.toString();
+  };
+
+  $("export-visits").addEventListener("click", () => exportCsv("visits"));
+
+  $("export-patients").addEventListener("click", () => exportCsv("patients"));
+
+  $("export-summary").addEventListener("click", () => exportCsv("summary"));
+
+  // INITIALIZE
+  loadOptions()
+    .then(reload)
+    .catch((error) => {
+      status("Initialization failed: " + error.message);
+    });
 });

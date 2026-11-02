@@ -32,11 +32,6 @@
   max-width:200px;
 }
 
-/* =====================================================
-   RESPONSIVE BREAKPOINTS
-   ===================================================== */
-
-/* Let the title shrink and truncate instead of pushing the user box off-screen */
 .top-navbar > div:first-child {
   min-width: 0;
 }

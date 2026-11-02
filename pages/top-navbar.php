@@ -5,7 +5,7 @@
         <h3>RHU-Q: Queuing and Patient Management System</h3>
     </div>
     <div class="rightNav">
-        <h3 style="font-size:20px;">
+        <h3 style="font-size:20px; margin:0px;">
             <?php
                 $username = $_SESSION['logged_name'];
                 echo '● '.ucfirst($username);

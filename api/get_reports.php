@@ -1,221 +1,79 @@
 <?php
-session_start();
-header('Content-Type: application/json');
-
-require_once '../php/connection.php';
 require_once '../api/check-private.php';
-
-// Ensure user is authorized for admin/reports
 authorizeRoles(['Admin']);
+require_once '../php/connection.php';
+require_once '../php/reports_common.php';
 
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
-    exit;
-}
-
-// Handle single record detail view request
-if (isset($_GET['action']) && $_GET['action'] === 'details' && isset($_GET['id'])) {
-    $record_id = intval($_GET['id']);
-    try {
-        $detailQuery = "
-            SELECT 
-                t.*,
-                TRIM(CONCAT(
-                    COALESCE(p.lastname, ''), ', ',
-                    COALESCE(p.firstname, ''), ' ', 
-                    COALESCE(p.middlename, ''), '.'
-                )) AS fullname,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.blood_pressure, ''), 'N/A'), ' (mmHg)')
-                )) AS blood_pressure,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.respiratory_rate, ''), 'N/A'), ' (bpm)')
-                )) AS respiratory_rate,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.temperature, ''), 'N/A'), ' (°C)')
-                )) AS temperature,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.pulse_rate, ''), 'N/A'), ' (bpm)')
-                )) AS pulse_rate,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.weight, ''), 'N/A'), ' (kg)')
-                )) AS weight,
-                TRIM(CONCAT(
-                    CONCAT(COALESCE(NULLIF(t.height, ''), 'N/A'), ' (cm)')
-                )) AS height,
-                t.service_snapshot,
-                p.gender,
-                b.barangay_address AS address,
-                s.service_name AS service_type,
-                p.age
-            FROM transactions t
-            LEFT JOIN patient_records p ON t.patient_id = p.patient_id
-            LEFT JOIN barangay b ON p.address = b.barangay_id
-            LEFT JOIN services s ON t.service = s.service_id
-            WHERE t.transaction_id = ?
-        ";
-        $stmt = $conn->prepare($detailQuery);
-        $stmt->bind_param("i", $record_id);
-        $stmt->execute();
-        $res = $stmt->get_result()->fetch_assoc();
-        $stmt->close();
-
-        if ($res) {
-            echo json_encode(['status' => 'success', 'record' => $res]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Record not found.']);
-        }
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-    exit;
-}
+header('Content-Type: application/json; charset=utf-8');
 
 try {
-    // Base dynamic query joining transactions with patient profiles
-    $where = ["1=1"];
-    $params = [];
-    $types = "";
-
-    // Search query (Concatenated Name or Queue Code)
-    if (!empty($_GET['search'])) {
-        $searchTerm = "%" . trim($_GET['search']) . "%";
-        $where[] = "(CONCAT(COALESCE(p.firstname, ''), ' ', COALESCE(p.lastname, '')) LIKE ? OR t.queue_code LIKE ?)";
-        $params[] = $searchTerm;
-        $params[] = $searchTerm;
-        $types .= "ss";
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        throw new InvalidArgumentException('GET required');
     }
 
-    // Date Range Filter (Flexible: allows from-only, to-only, or both)
-    if (!empty($_GET['date_from']) && !empty($_GET['date_to'])) {
-        $where[] = "DATE(t.transaction_date) BETWEEN ? AND ?";
-        $params[] = $_GET['date_from'];
-        $params[] = $_GET['date_to'];
-        $types .= "ss";
-    } elseif (!empty($_GET['date_from'])) {
-        $where[] = "DATE(t.transaction_date) >= ?";
-        $params[] = $_GET['date_from'];
-        $types .= "s";
-    } elseif (!empty($_GET['date_to'])) {
-        $where[] = "DATE(t.transaction_date) <= ?";
-        $params[] = $_GET['date_to'];
-        $types .= "s";
-    }
+    $action = (string)($_GET['action'] ?? 'dashboard');
 
-    // Age Range Filter
-    if (isset($_GET['age_min']) && $_GET['age_min'] !== '') {
-        $where[] = "p.age >= ?";
-        $params[] = intval($_GET['age_min']);
-        $types .= "i";
-    }
-    if (isset($_GET['age_max']) && $_GET['age_max'] !== '') {
-        $where[] = "p.age <= ?";
-        $params[] = intval($_GET['age_max']);
-        $types .= "i";
-    }
+    if ($action === 'options') {
+        // Fetch drop-down lookup choices
+        $data = report_select_options($conn);
+    } elseif ($action === 'details') {
+        // Fetch single transaction details view
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (!$id || $id < 1) {
+            throw new InvalidArgumentException('Invalid transaction ID');
+        }
 
-    // Service Taken Filter
-    if (!empty($_GET['service'])) {
-        $where[] = "t.service = ?";
-        $params[] = $_GET['service'];
-        $types .= "s";
-    }
+        $rows = report_run($conn, "SELECT t.*, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS fullname, p.gender, p.date_of_birth, p.age, b.barangay_address AS address, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_type FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address LEFT JOIN services s ON s.service_id = t.service WHERE t.transaction_id = ?", [$id], 'i');
 
-    // Gender Filter
-    if (!empty($_GET['gender'])) {
-        $where[] = "p.gender = ?";
-        $params[] = $_GET['gender'];
-        $types .= "s";
-    }
+        if (!$rows) {
+            throw new InvalidArgumentException('Record not found');
+        }
 
-    // Address Filter
-    if (!empty($_GET['address'])) {
-        $where[] = "p.address LIKE ?";
-        $params[] = "%" . trim($_GET['address']) . "%";
-        $types .= "s";
-    }
+        $data = ['record' => $rows[0]];
+    } else {
+        $f = report_filters();
 
-    $query = "
-        SELECT 
-            t.transaction_id,
-            t.queue_code,
-            s.service_name AS service_type,
-            t.service_snapshot,
-            COALESCE(t.blood_pressure, 'N/A') AS blood_pressure,
-            COALESCE(t.respiratory_rate, 'N/A') AS respiratory_rate,
-            COALESCE(t.temperature, 'N/A') AS temperature,
-            COALESCE(t.pulse_rate, 'N/A') AS pulse_rate,
-            COALESCE(t.weight, 'N/A') AS weight,
-            COALESCE(t.height, 'N/A') AS height,
-            COALESCE(t.diagnosis, 'None Recorded') AS diagnosis,
-            DATE_FORMAT(t.transaction_date, '%b %d, %Y %h:%i %p') AS formatted_date,
-            TRIM(CONCAT(
-                COALESCE(p.lastname, ''), ', ',
-                COALESCE(p.firstname, ''), ' ', 
-                COALESCE(p.middlename, ''), '.'
-            )) AS fullname,
-            COALESCE(p.age, 'N/A') AS age,
-            COALESCE(p.gender, 'N/A') AS gender,
-            COALESCE(b.barangay_address, 'N/A') AS address
-        FROM transactions t
-        LEFT JOIN patient_records p ON t.patient_id = p.patient_id
-        LEFT JOIN services s ON t.service = s.service_id
-        LEFT JOIN barangay b ON p.address = b.barangay_id
-        WHERE " . implode(" AND ", $where) . "
-        ORDER BY t.transaction_date DESC
-    ";
+        if ($action === 'dashboard') {
+            // Fetch analytical statistics and summary groups
+            $data = report_summary($conn, $f);
+        } elseif ($action === 'patients') {
+            // Fetch paginated list data
+            $page = max(1, min(100000, (int)($_GET['page'] ?? 1)));
+            $perPage = 25;
+            $params = [];
+            $types = '';
+            $where = report_where($f, $params, $types);
 
-    $stmt = $conn->prepare($query);
-    if (!empty($params)) {
-        $stmt->bind_param($types, ...$params);
-    }
-    $stmt->execute();
-    $result = $stmt->get_result();
+            $countRows = report_run($conn, 'SELECT COUNT(*) AS n ' . report_base() . ' WHERE ' . $where, $params, $types);
+            $count = (int)$countRows[0]['n'];
 
-    $reports = [];
-    $htmlRows = "";
-    $counter = 1;
-
-    while ($row = $result->fetch_assoc()) {
-        $reports[] = $row;
-        
-        // Build table row HTML for immediate frontend injection
-        $htmlRows .= "<tr>
-            <td style='text-align: center;'>{$counter}</td>
-            <td>{$row['formatted_date']}</td>
-            <td><strong>" . htmlspecialchars($row['fullname']) . "</strong><br><small style='color:#6b7280;'>Queue: {$row['queue_code']}</small></td>
-            <td style='text-align: center;'>" . htmlspecialchars($row['age']) . " / " . htmlspecialchars($row['gender']) . "</td>
-            <td>" . htmlspecialchars(
-                !empty($row['service_type'])
-                    ? $row['service_type']
-                    : $row['service_snapshot']
-            ) . "</td>
-            <td>" . htmlspecialchars($row['address']) . "</td>
-            <td style='text-align: center;'>
-                <button class='view-record-btn' data-id='{$row['transaction_id']}' title='View Details'>👁️</button>
-            </td>
-        </tr>";
-        $counter++;
-    }
-    $stmt->close();
-
-    if (empty($reports)) {
-        $htmlRows = "<tr><td colspan='7' style='text-align: center; padding: 20px; color: #6b7280;'>No records found matching your filters.</td></tr>";
+            $data = [
+                'rows' => report_rows($conn, $f, $perPage, ($page - 1) * $perPage),
+                'total' => $count,
+                'page' => $page,
+                'per_page' => $perPage
+            ];
+        } else {
+            throw new InvalidArgumentException('Unknown action');
+        }
     }
 
     echo json_encode([
         'status' => 'success',
-        'total' => count($reports),
-        'data' => $reports,
-        'html' => $htmlRows
-    ]);
+        'data' => $data
+    ], JSON_INVALID_UTF8_SUBSTITUTE);
 
-} catch (Exception $e) {
+} catch (InvalidArgumentException $e) {
+    http_response_code(400);
     echo json_encode([
         'status' => 'error',
         'message' => $e->getMessage()
     ]);
+} catch (Throwable $e) {
+    error_log('RHU reports: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Unable to load reports. Check server logs.'
+    ]);
 }
-
-$conn->close();
-?>
