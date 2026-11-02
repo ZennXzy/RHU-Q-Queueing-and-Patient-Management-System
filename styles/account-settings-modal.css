@@ -233,6 +233,10 @@
 
 /* Responsive adjustments */
 @media (max-width: 640px) {
+    .custom-modal-body{
+        max-height: 75vh;
+        overflow-y: auto;
+    }
     .format-grid {
         grid-template-columns: 1fr;
     }

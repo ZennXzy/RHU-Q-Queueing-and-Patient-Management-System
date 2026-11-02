@@ -900,7 +900,7 @@ dialog .modal-footer {
     }
 
     .patient-table {
-        max-height: max(320px, calc(100dvh - 340px));
+        max-height: max(320px, calc(100dvh - 307px));
     }
 
     .patient-table th,
@@ -1323,7 +1323,7 @@ dialog .modal-footer {
     }
 
     .patient-table {
-        max-height: max(500px, calc(100dvh - 600px));
+        max-height: max(500px, calc(100dvh - 449px));
     }
 
     .patient-table thead th {
