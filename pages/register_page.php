@@ -41,7 +41,7 @@ require_once '../php/connection.php';
             <h2 class="page-title">Patient Registration</h2>
             <h3 class="section-title">Personal Information</h3>
             <div class="white-card">
-                <div class="form-grid">    
+                <div class="form-grid">
                     <div class="form-group col-4">
                         <input type="text" name="lname" id="lname" placeholder="Last Name" autocomplete="off" require_onced>
                     </div>
@@ -65,7 +65,7 @@ require_once '../php/connection.php';
 
                     <div class="form-group col-4">
                         <input type="text" name="address" id="address" placeholder="Search Address" autocomplete="off" require_onced>
-                    </div>          
+                    </div>
                     <div class="form-group col-3">
                         <div class="date dob-container" id="dobContainer">
                             <span class="dob-placeholder" id="dobPlaceholder">Select Date of Birth</span>
@@ -75,10 +75,10 @@ require_once '../php/connection.php';
                     <div class="form-group col-2">
                         <input type="text" id="age_display" name="age" readonly placeholder="Age" title="Autofill Age">
                     </div>
-                    
+
                     <div class="form-group col-3 input-select">
                         <select name="religion" id="religion">
-                            <option disabled selected>Religion</option>
+                            <option value="" disabled selected>Religion</option>
                             <option value="Roman Catholicism">Roman Catholic</option>
                             <option value="Islam">Islam</option>
                             <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
@@ -87,7 +87,7 @@ require_once '../php/connection.php';
                             <option value="Other Groups">Other Groups</option>
                         </select>
                     </div>
-                    <div class="form-group col-4"> 
+                    <div class="form-group col-4">
                         <span style="font-size: 13px; color: #555;">Sex</span>
                         <div class="input-container" style="margin-top:10px; ">
                             <div class="checkbox-row" style="justify-content:space-evenly;">
@@ -97,7 +97,7 @@ require_once '../php/connection.php';
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-group col-3">
                         <span style="font-size: 13px; color: #555;">Contact Number</span>
                         <input type="text" name="contactnum" id="contactnum" placeholder="09-123-456-7890" style="margin-top:10px;" autocomplete="off">
@@ -112,7 +112,7 @@ require_once '../php/connection.php';
                         <!-- Radio Input Group -->
                         <div class="radio-row input-container" style="justify-content:space-evenly;">
                             <label class="radiobox-item">
-                                <input type="radio" name="employment_status" class="employment-status employed" value="Employed" onclick="handleEmploymentChange()"> Employed 
+                                <input type="radio" name="employment_status" class="employment-status employed" value="Employed" onclick="handleEmploymentChange()"> Employed
                             </label>
                             <label class="radiobox-item">
                                 <input type="radio" name="employment_status" class="employment-status self-employed" value="Self-Employed" onclick="handleEmploymentChange()"> Self-Employed
@@ -147,7 +147,7 @@ require_once '../php/connection.php';
             </div>
 
             <!-- FamilyInfo -->
-             <h3 class="section-title" style="margin-top: 35px;">Family Information</h3>
+            <h3 class="section-title" style="margin-top: 35px;">Family Information</h3>
             <div class="white-card">
 
                 <!-- Mother's Maiden Name -->
@@ -167,9 +167,9 @@ require_once '../php/connection.php';
                         <input type="text" name="mmname" id="mmname" placeholder="Middle Name" autocomplete="off">
                     </div>
                 </div>
-                
+
                 <!-- Father's Name -->
-                 <div class="row-section" style="margin-top: 20px">
+                <div class="row-section" style="margin-top: 20px">
                     <div class="row-title" style="font-size: 15px">
                         Father's Name
                     </div>
@@ -198,7 +198,7 @@ require_once '../php/connection.php';
                 </div>
 
                 <!-- Spouse Name -->
-                 <div id="spouseDiv" style="display:none;">
+                <div id="spouseDiv" style="display:none;">
                     <div class="row-section" style="margin-top: 20px">
                         <div class="row-title" style="font-size: 15px">
                             Spouse's Name
@@ -206,7 +206,7 @@ require_once '../php/connection.php';
                     </div>
                     <div class="form-grid">
                         <div class="form-group col-4">
-                            <input type="text" name="slname"  id="slname" placeholder="Last Name" autocomplete="off">
+                            <input type="text" name="slname" id="slname" placeholder="Last Name" autocomplete="off">
                         </div>
                         <div class="form-group col-3">
                             <input type="text" name="sfname" id="sfname" placeholder="First Name" autocomplete="off">
@@ -226,9 +226,8 @@ require_once '../php/connection.php';
                             </select>
                         </div>
                     </div>
-                 </div>
+                </div>
             </div>
-
 
             <div class="white-card">
                 <div class="form-grid">
@@ -241,7 +240,7 @@ require_once '../php/connection.php';
                                 <div class="checkbox-row" style=" justify-content:space-evenly;">
                                     <legend>PhilHealth Status</legend>
                                     <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="Member"> Member</label>
-                                    <label class="checkbox-item"><input type="radio" name="philStatusInput"  onclick="handlePhilHChange()" value="Dependent"> Dependent</label>
+                                    <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="Dependent"> Dependent</label>
                                     <label class="checkbox-item"><input type="radio" name="philStatusInput" onclick="handlePhilHChange()" value="Not Applicable">Not Applicable</label>
                                 </div>
                                 <div class="fieldset-group col-5 num-item" id="philNumDiv" style="border:none; display: none;">
@@ -253,7 +252,7 @@ require_once '../php/connection.php';
                                 <div class="fieldset-group col-5 princ-item" id="prinMemDiv" style="border:none; display: none;">
                                     <div>
                                         <legend>Principal Member</legend>
-                                        <input type="text"  id="prinMemInput" name="prinMember" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;" autocomplete="off">
+                                        <input type="text" id="prinMemInput" name="prinMember" class="inline-input-line" placeholder="Full Name" style="border: none; border-bottom: 1px solid #777; flex: 1;" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -267,8 +266,8 @@ require_once '../php/connection.php';
                             <div class="fieldset-group col-3" style="display: flex; flex-direction:column; gap: 8px; width: 100%;">
                                 <div class="checkbox-row" style="padding-left:6px;">
                                     <legend>Yakap Member</legend>
-                                    <label class="checkbox-item"><input type="radio" name="yakapmem"  value="Yes">Yes</label>
-                                    <label class="checkbox-item"><input type="radio" name="yakapmem"  value="No">No</label>
+                                    <label class="checkbox-item"><input type="radio" name="yakapmem" value="Yes">Yes</label>
+                                    <label class="checkbox-item"><input type="radio" name="yakapmem" value="No">No</label>
                                 </div>
                             </div>
                         </div>
@@ -303,8 +302,8 @@ require_once '../php/connection.php';
         } else if (employmentRadio.value === 'Self-Employed') {
             occupationDiv.style.display = 'none';
             businessDiv.style.display = 'block';
-            occupationInput.value = ''; // Clear occupation input
-        } else { // unemployed
+            occupationInput.value = '';
+        } else {
             occupationDiv.style.display = 'none';
             businessDiv.style.display = 'none';
             occupationInput.value = '';
@@ -344,7 +343,6 @@ require_once '../php/connection.php';
         document.getElementById('age_display').value = age >= 0 ? "Age: " + age : "";
     });
 
-
     // philhealth selector
     function handlePhilHChange() {
         const philNumDiv = document.getElementById('philNumDiv');
@@ -354,7 +352,7 @@ require_once '../php/connection.php';
 
         const philRadio = document.querySelector('input[name="philStatusInput"]:checked');
 
-        if(!philRadio) return;
+        if (!philRadio) return;
 
         if (philRadio.value === 'Member') {
             philNumDiv.style.display = 'block';
@@ -363,14 +361,13 @@ require_once '../php/connection.php';
         } else if (philRadio.value === 'Dependent') {
             philNumDiv.style.display = 'block';
             prinMemberDiv.style.display = 'block';
-        } else { // not applicable
+        } else {
             philNumDiv.style.display = 'none';
             prinMemberDiv.style.display = 'none';
-            philHNumInput.value = ''; 
-            prinMemInput.value = ''; 
+            philHNumInput.value = '';
+            prinMemInput.value = '';
         }
     }
-
 
     // civil status selector
     function handleCivilChange() {
@@ -381,7 +378,7 @@ require_once '../php/connection.php';
 
         const civilRadio = document.querySelector('input[name="civilStatus"]:checked');
 
-        if(!civilRadio) return;
+        if (!civilRadio) return;
 
         if (civilRadio.value === 'Married') {
             spouseDiv.style.display = 'block';
@@ -389,8 +386,7 @@ require_once '../php/connection.php';
         } else if (civilRadio.value === 'Widow') {
             spouseDiv.style.display = 'block';
             console.log("Widow is selected");
-
-        } else { // single
+        } else {
             spouseDiv.style.display = 'none';
             slname.value = '';
             sfname.value = '';
@@ -398,46 +394,5 @@ require_once '../php/connection.php';
             console.log("Single is selected");
         }
     }
-
-
-    // Desktop/Tablet (768px - 3439.98px): Date of Birth starts as plain text, becomes a date picker when tapped
-    (function () {
-        const dob = document.getElementById('date_of_birth');
-        if (!dob) return;
-        const tabletQuery = window.matchMedia('(min-width: 768px) and (max-width: 3439.98px)');
-
-        function showAsText() {
-            dob.type = 'text';
-            dob.placeholder = 'Select date';
-        }
-
-        function showAsDate() {
-            dob.type = 'date';
-            try { dob.showPicker(); } catch (e) { /* picker opens on next tap if unsupported */ }
-        }
-
-        function applyLayout() {
-            if (tabletQuery.matches) {
-                if (!dob.value) showAsText();
-            } else if (dob.type !== 'date') {
-                dob.type = 'date';
-            }
-        }
-
-        function activate() {
-            if (tabletQuery.matches && dob.type === 'text') showAsDate();
-        }
-
-        dob.addEventListener('focus', activate);
-        dob.addEventListener('click', activate);
-
-        // Reset button clears the form, so go back to the text look
-        dob.form.addEventListener('reset', function () {
-            setTimeout(applyLayout, 0);
-        });
-
-        tabletQuery.addEventListener('change', applyLayout);
-        applyLayout();
-    })();
 </script>
 </html>

@@ -32,7 +32,6 @@ body, html {
   position: relative;
 }
 
-
 /* 3. Right Content & Clinical Registration Form Layout */
 .content-area {
   flex: 1;
@@ -50,7 +49,6 @@ body, html {
   font-weight: 700;
   margin-bottom: 25px;
 }
-
 
 /* --Date of Birth-- */
 .form-group .dob-container {
@@ -179,13 +177,11 @@ body, html {
   outline: none;
 }
 
-
 .form-group input:focus{
   outline: none;
   border-color: #0d9488;
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
-
 
 /* Fieldset Floating Box Framework styling */
 .fieldset-group {
@@ -221,16 +217,13 @@ body, html {
   border-radius: 6px;
   padding: 11px 14px;
   color: #333;
-
 }
 
 .input-select select{
   border: none;
   outline:none;
   color: #333;
-
 }
-
 
 /* Red required asterisk */
 .required-asterisk {
@@ -258,13 +251,37 @@ body, html {
     animation: requiredFieldPulse 1s ease-in-out infinite;
 }
 
-
 /* Invalid input focus */
 .required-invalid:focus {
     border-color: #DC3545 !important;
     box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.20) !important;
 }
 
+/* --Required Field Validation: Targeted Containers-- */
+.form-group .input-container.required-invalid-group,
+.form-group .input-select.required-invalid-group,
+.fieldset-group .checkbox-row.required-invalid-group,
+.fieldset-group .radio-row.required-invalid-group,
+.form-group .dob-container.required-invalid-group {
+  border: 1px solid #DC3545 !important;
+  border-radius: 6px;
+  animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+/* --Conditional PhilHealth Inputs-- */
+#philHNumInput.required-invalid,
+#prinMemInput.required-invalid {
+  border: none !important;
+  border-bottom: 1px solid #DC3545 !important;
+  border-radius: 0;
+  animation: requiredFieldPulse 1s ease-in-out infinite;
+}
+
+/* --Avoid Pulsing Outer Layout Groups-- */
+.form-group.required-invalid-group,
+.fieldset-group.required-invalid-group {
+  animation: none;
+}
 
 /* Row Level Layout Modules (Services, Insurance panels) */
 .row-section {
@@ -318,7 +335,6 @@ body, html {
   cursor: pointer;
 }
 
-
 .radio-row {
   display: flex;
   gap: 20px;
@@ -327,7 +343,6 @@ body, html {
   color: #333;
   margin-top: 10px;
 }
-
 
 .radio-item {
   display: flex;
@@ -347,10 +362,9 @@ body, html {
 }
 
 .form-grid .col-3.button-group {
-    grid-column: 10 / -1; 
+    grid-column: 10 / -1;
     gap: 12px;
 }
-
 
 .button-group {
   display:flex;
@@ -406,7 +420,6 @@ body, html {
 .col-7 { grid-column: span 7; }
 .col-2 { grid-column: span 2; }
 .col-1 { grid-column: span 1; }
-
 
 /* =====================================================
    RESPONSIVE BREAKPOINTS
@@ -473,7 +486,6 @@ body, html {
     padding: 8px 0 0;
     border: none;
   }
-
 
   /* --Date of Birth: Extra Large-- */
   .form-group .dob-container {
@@ -604,7 +616,6 @@ body, html {
     grid-column: 8 / -1;
     justify-content: flex-end;
   }
-
 }
 
 /* Mobile and large phones (767.98px and below): one field per row */
@@ -674,7 +685,6 @@ body, html {
   .form-group .dob-container #date_of_birth {
     font-size: 16px;
   }
-
 
   .checkbox-row,
   .radio-row {

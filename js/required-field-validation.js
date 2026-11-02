@@ -1,344 +1,206 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("patientRegistrationForm");
-
     if (!form) return;
 
-    // Required text and select fields
+    // --Required Fields--
     const requiredFields = [
-        "lname",
-        "fname",
-        "address",
-        "date_of_birth",
-        "religion",
-        "mlname",
-        "mfname",
-        "flname",
-        "ffname"
+        "lname", "fname", "address", "date_of_birth", "religion",
+        "mlname", "mfname", "flname", "ffname"
     ];
 
-    // Required radio groups
     const requiredRadioGroups = [
-        "gender",
-        "employment_status",
-        "civilStatus",
-        "philStatusInput",
-        "yakapmem"
+        "gender", "employment_status", "civilStatus", "philStatusInput", "yakapmem"
     ];
 
-    // Add a red asterisk to a label or placeholder
-    function addRequiredAsterisk(element) {
-        if (!element) return;
+    const conditionalFields = ["slname", "sfname", "philHNumInput", "prinMemInput"];
+    const touched = new Set();
+    let submitted = false;
 
-        let label = null;
-
-        if (element.id === "date_of_birth") {
-            label = element.closest(".date")?.querySelector("span");
-        } else if (element.id === "religion") {
-            label = null;
-        } else {
-            const group = element.closest(".form-group");
-            label = group?.querySelector(":scope > span");
-        }
-
-        if (label && !label.querySelector(".required-asterisk")) {
-            const star = document.createElement("span");
-            star.className = "required-asterisk";
-            star.textContent = "*";
-            label.appendChild(star);
-        }
-
-        // For fields that use placeholders instead of visible labels
-        if (!label && element.placeholder) {
-            if (!element.dataset.originalPlaceholder) {
-                element.dataset.originalPlaceholder = element.placeholder;
-            }
-
-            if (!element.placeholder.startsWith("* ")) {
-                element.placeholder = "* " + element.dataset.originalPlaceholder;
-            }
-        }
+    // --Required Asterisks--
+    function addStar(label) {
+        if (!label || label.querySelector(".required-asterisk")) return;
+        const star = document.createElement("span");
+        star.className = "required-asterisk";
+        star.textContent = " *";
+        label.appendChild(star);
     }
 
-    // Add asterisks to required text fields
     requiredFields.forEach(id => {
         const field = document.getElementById(id);
-
-        if (field) {
-            addRequiredAsterisk(field);
-        }
-    });
-
-    // Add asterisks to family name placeholders
-    [
-        "mlname",
-        "mfname",
-        "flname",
-        "ffname"
-    ].forEach(id => {
-        const field = document.getElementById(id);
-
-        if (field && field.placeholder) {
-            if (!field.dataset.originalPlaceholder) {
-                field.dataset.originalPlaceholder = field.placeholder;
-            }
-
-            field.placeholder = "* " + field.dataset.originalPlaceholder;
-        }
-    });
-
-    // Add asterisks to group headings
-    const groupLabels = [
-        document.querySelector(".form-group:has(.gender-checkbox) > span"),
-        document.querySelector(".form-group:has(input[name='employment_status']) > span"),
-        document.querySelector(".form-group:has(input[name='civilStatus']) > span"),
-        document.querySelector("#philNumDiv")?.closest(".form-group")?.querySelector("legend"),
-        document.querySelector("#prinMemDiv")?.closest(".form-group")?.querySelector("legend")
-    ];
-
-    groupLabels.forEach(label => {
-        if (label && !label.querySelector(".required-asterisk")) {
-            const star = document.createElement("span");
-            star.className = "required-asterisk";
-            star.textContent = " *";
-            label.appendChild(star);
-        }
-    });
-
-    // Check whether an element is visible
-    function isVisible(element) {
-        return !!element &&
-            element.getClientRects().length > 0 &&
-            getComputedStyle(element).display !== "none";
-    }
-
-    // Apply or remove an error border
-    function setInvalid(element, invalid) {
-        if (!element) return;
-
-        element.classList.toggle("required-invalid", invalid);
-        element.setAttribute("aria-invalid", invalid ? "true" : "false");
-
-        const wrapper = element.closest(
-            ".form-group, .date, .input-container, .input-select, .fieldset-group"
-        );
-
-        if (wrapper) {
-            wrapper.classList.toggle("required-invalid-group", invalid);
-        }
-    }
-
-    // Validate text and select fields
-    function validateField(id) {
-        const field = document.getElementById(id);
-
-        if (!field || !isVisible(field)) return true;
-
-        const invalid = field.value.trim() === "";
-
-        setInvalid(field, invalid);
-
-        return !invalid;
-    }
-
-    // Validate radio groups
-    function validateRadioGroup(name) {
-        const radios = [
-            ...form.querySelectorAll(
-                `input[type="radio"][name="${name}"], input[type="checkbox"][name="${name}"]`
-            )
-        ];
-
-        if (radios.length === 0) return true;
-
-        const wrapper = radios[0].closest(
-            ".form-group, .fieldset-group, .input-container"
-        );
-
-        if (wrapper && !isVisible(wrapper)) return true;
-
-        const invalid = !radios.some(input => input.checked);
-
-        if (wrapper) {
-            wrapper.classList.toggle("required-invalid-group", invalid);
-        }
-
-        radios.forEach(input => {
-            input.setAttribute("aria-invalid", invalid ? "true" : "false");
-        });
-
-        return !invalid;
-    }
-
-    // Validate conditional fields
-    function validateConditionalFields() {
-        let valid = true;
-
-        // Spouse is required only for Married or Widow
-        const civilStatus = form.querySelector(
-            'input[name="civilStatus"]:checked'
-        )?.value;
-
-        const spouseRequired =
-            civilStatus === "Married" || civilStatus === "Widow";
-
-        ["slname", "sfname"].forEach(id => {
-            const field = document.getElementById(id);
-
-            if (!field) return;
-
-            if (spouseRequired && isVisible(field)) {
-                const invalid = field.value.trim() === "";
-
-                setInvalid(field, invalid);
-
-                if (invalid) valid = false;
-            } else {
-                setInvalid(field, false);
-            }
-        });
-
-        // PhilHealth number is required for Member and Dependent
-        const philStatus = form.querySelector(
-            'input[name="philStatusInput"]:checked'
-        )?.value;
-
-        const philNumber = document.getElementById("philHNumInput");
-        const principalMember = document.getElementById("prinMemInput");
-
-        if (philNumber) {
-            const required =
-                philStatus === "Member" || philStatus === "Dependent";
-
-            const invalid =
-                required &&
-                isVisible(philNumber) &&
-                philNumber.value.trim() === "";
-
-            setInvalid(philNumber, invalid);
-
-            if (invalid) valid = false;
-        }
-
-        // Principal member is required for Dependent
-        if (principalMember) {
-            const required = philStatus === "Dependent";
-
-            const invalid =
-                required &&
-                isVisible(principalMember) &&
-                principalMember.value.trim() === "";
-
-            setInvalid(principalMember, invalid);
-
-            if (invalid) valid = false;
-        }
-
-        return valid;
-    }
-
-    // Validate all required fields
-    function validateAll() {
-        let valid = true;
-
-        requiredFields.forEach(id => {
-            if (!validateField(id)) valid = false;
-        });
-
-        requiredRadioGroups.forEach(name => {
-            if (!validateRadioGroup(name)) valid = false;
-        });
-
-        if (!validateConditionalFields()) {
-            valid = false;
-        }
-
-        return valid;
-    }
-
-    // Validate while the user types
-    requiredFields.forEach(id => {
-        const field = document.getElementById(id);
-
         if (!field) return;
 
-        ["input", "change", "blur"].forEach(eventName => {
-            field.addEventListener(eventName, () => {
-                if (field.value.trim() !== "") {
-                    setInvalid(field, false);
-                } else if (form.dataset.submitted === "true") {
-                    validateField(id);
-                }
-            });
-        });
+        if (id === "date_of_birth") {
+            addStar(document.getElementById("dobPlaceholder"));
+        } else if (id !== "religion" && field.placeholder) {
+            if (!field.placeholder.startsWith("* ")) field.placeholder = "* " + field.placeholder;
+        }
     });
 
-    // Clear errors when a radio or checkbox is selected
+    ["gender", "employment_status", "civilStatus"].forEach(name => {
+        const input = form.querySelector(`[name="${name}"]`);
+        addStar(input?.closest(".form-group")?.querySelector(":scope > span"));
+    });
+
+    ["philStatusInput", "yakapmem"].forEach(name => {
+        const input = form.querySelector(`[name="${name}"]`);
+        addStar(input?.closest(".checkbox-row")?.querySelector("legend"));
+    });
+
+    addStar(document.querySelector("#philNumDiv legend"));
+    addStar(document.querySelector("#prinMemDiv legend"));
+
+    // --Visible Controls--
+    function isVisible(element) {
+        if (!element) return false;
+        return element.getClientRects().length > 0 && getComputedStyle(element).visibility !== "hidden";
+    }
+
+    function targetForField(field) {
+        if (field.id === "date_of_birth") return document.getElementById("dobContainer");
+        if (field.id === "religion") return field.closest(".input-select");
+        return field;
+    }
+
+    function setFieldInvalid(field, invalid) {
+        if (!field) return;
+        const target = targetForField(field);
+        if (target) target.classList.toggle("required-invalid", invalid && target === field);
+        if (target && target !== field) target.classList.toggle("required-invalid-group", invalid);
+        if (target !== field) field.classList.remove("required-invalid");
+        field.setAttribute("aria-invalid", String(invalid));
+    }
+
+    function groupTarget(name) {
+        const input = form.querySelector(`[name="${name}"]`);
+        if (!input) return null;
+        if (name === "gender" || name === "employment_status" || name === "civilStatus") {
+            return input.closest(".input-container");
+        }
+        return input.closest(".checkbox-row");
+    }
+
+    function validateField(id, show = true) {
+        const field = document.getElementById(id);
+        if (!field) return true;
+        const visible = id === "date_of_birth"
+            ? isVisible(document.getElementById("dobContainer"))
+            : isVisible(field);
+        if (!visible) {
+            setFieldInvalid(field, false);
+            return true;
+        }
+        const invalid = !String(field.value || "").trim();
+        setFieldInvalid(field, show && invalid);
+        return !invalid;
+    }
+
+    function validateRadioGroup(name, show = true) {
+        const inputs = [...form.querySelectorAll(`[name="${name}"]`)];
+        if (!inputs.length) return true;
+        const target = groupTarget(name);
+        if (!isVisible(target)) return true;
+        const invalid = !inputs.some(input => input.checked);
+        target.classList.toggle("required-invalid-group", show && invalid);
+        inputs.forEach(input => input.setAttribute("aria-invalid", String(show && invalid)));
+        return !invalid;
+    }
+
+    // --Conditional Requirements--
+    function isConditionalRequired(id) {
+        const civil = form.querySelector('input[name="civilStatus"]:checked')?.value;
+        const phil = form.querySelector('input[name="philStatusInput"]:checked')?.value;
+        if (id === "slname" || id === "sfname") return civil === "Married" || civil === "Widow";
+        if (id === "philHNumInput") return phil === "Member" || phil === "Dependent";
+        if (id === "prinMemInput") return phil === "Dependent";
+        return false;
+    }
+
+    function validateConditional(id, show = true) {
+        const field = document.getElementById(id);
+        if (!field) return true;
+        if (!isConditionalRequired(id) || !isVisible(field)) {
+            setFieldInvalid(field, false);
+            return true;
+        }
+        const invalid = !field.value.trim();
+        setFieldInvalid(field, show && invalid);
+        return !invalid;
+    }
+
+    // --Validate On Leaving An Empty Field--
+    [...requiredFields, ...conditionalFields].forEach(id => {
+        const field = document.getElementById(id);
+        if (!field) return;
+        const check = () => {
+            if (requiredFields.includes(id)) validateField(id, submitted || touched.has(id));
+            else validateConditional(id, submitted || touched.has(id));
+        };
+        field.addEventListener("blur", () => {
+            touched.add(id);
+            check();
+        });
+        field.addEventListener("input", check);
+        field.addEventListener("change", check);
+    });
+
+    // --Date Container Blur--
+    const dobContainer = document.getElementById("dobContainer");
+    dobContainer?.addEventListener("focusout", event => {
+        if (!dobContainer.contains(event.relatedTarget)) {
+            touched.add("date_of_birth");
+            validateField("date_of_birth");
+        }
+    });
+
+    // --Radio Groups--
     requiredRadioGroups.forEach(name => {
         form.querySelectorAll(`[name="${name}"]`).forEach(input => {
             input.addEventListener("change", () => {
+                touched.add(name);
                 validateRadioGroup(name);
-                validateConditionalFields();
+                conditionalFields.forEach(id => validateConditional(id, submitted || touched.has(id)));
             });
         });
     });
 
-    // Validate conditional fields as the user types
-    ["slname", "sfname", "philHNumInput", "prinMemInput"].forEach(id => {
-        const field = document.getElementById(id);
-
-        if (!field) return;
-
-        field.addEventListener("input", validateConditionalFields);
-        field.addEventListener("change", validateConditionalFields);
+    // --Radio Group Blur--
+    requiredRadioGroups.forEach(name => {
+        const target = groupTarget(name);
+        target?.addEventListener("focusout", event => {
+            if (!target.contains(event.relatedTarget)) {
+                touched.add(name);
+                validateRadioGroup(name);
+            }
+        });
     });
 
-    // Prevent submission if required fields are empty
+    // --Validate On Submit--
     form.addEventListener("submit", event => {
-        form.dataset.submitted = "true";
+        submitted = true;
+        let valid = true;
+        requiredFields.forEach(id => { if (!validateField(id)) valid = false; });
+        requiredRadioGroups.forEach(name => { if (!validateRadioGroup(name)) valid = false; });
+        conditionalFields.forEach(id => { if (!validateConditional(id)) valid = false; });
 
-        if (!validateAll()) {
+        if (!valid) {
             event.preventDefault();
-
-            const firstInvalid = form.querySelector(
-                ".required-invalid, .required-invalid-group"
-            );
-
-            if (firstInvalid) {
-                firstInvalid.scrollIntoView({
-                    behavior: "smooth",
-                    block: "center"
-                });
-
-                const focusTarget =
-                    firstInvalid.matches("input, select, textarea")
-                        ? firstInvalid
-                        : firstInvalid.querySelector(
-                            "input, select, textarea"
-                        );
-
-                if (focusTarget) {
-                    focusTarget.focus({ preventScroll: true });
-                }
+            const first = form.querySelector(".required-invalid, .required-invalid-group");
+            if (first) {
+                first.scrollIntoView({ behavior: "smooth", block: "center" });
             }
         }
     });
 
-    // Clear errors when Reset is clicked
+    // --Reset Validation--
     form.addEventListener("reset", () => {
-        form.dataset.submitted = "false";
-
-        setTimeout(() => {
-            form.querySelectorAll(
-                ".required-invalid, .required-invalid-group"
-            ).forEach(element => {
-                element.classList.remove(
-                    "required-invalid",
-                    "required-invalid-group"
-                );
-
-                element.setAttribute("aria-invalid", "false");
-            });
-        }, 0);
+        submitted = false;
+        touched.clear();
+        form.querySelectorAll(".required-invalid, .required-invalid-group").forEach(element => {
+            element.classList.remove("required-invalid", "required-invalid-group");
+        });
+        form.querySelectorAll('[aria-invalid="true"]').forEach(element => {
+            element.setAttribute("aria-invalid", "false");
+        });
     });
 });
