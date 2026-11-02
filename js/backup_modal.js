@@ -82,25 +82,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Form submission validation
-    if (backupForm) {
-        backupForm.addEventListener('submit', function (e) {
-            const anySelected = Array.from(tableCheckboxes).some(cb => cb.checked);
-            if (!anySelected) {
-                e.preventDefault();
-                alert('Please select at least one database table to back up.');
-                return;
+    const unifiedForm = document.getElementById('unifiedBackupForm');
+    if (unifiedForm) {
+        unifiedForm.addEventListener('submit', function (e) {
+            // Check if backup tab is active and validate tables
+            const backupSection = document.getElementById('backupSection');
+            if (backupSection && backupSection.style.display !== 'none') {
+                const anySelected = Array.from(tableCheckboxes).some(cb => cb.checked);
+                if (!anySelected) {
+                    e.preventDefault();
+                    alert('Please select at least one database table to back up.');
+                    return;
+                }
             }
 
-            const submitBtn = document.getElementById('btnSubmitBackup');
+            const submitBtn = document.getElementById('modalSubmitBtn');
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerText = 'Generating...';
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = 'Processing...';
 
+                // Re-enable button after download/action initiates
                 setTimeout(() => {
                     submitBtn.disabled = false;
-                    submitBtn.innerText = 'Generate Backup';
+                    submitBtn.innerText = originalText;
                     closeModal();
-                }, 2500);
+                }, 10000);
             }
         });
     }

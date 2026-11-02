@@ -26,7 +26,7 @@ require_once '../php/connection.php';
     <script src="../js/logout.js" defer></script>
     <script src="../js/toast.js" defer></script>
     <script src="../js/edit-account.js" defer></script>
-    <script src="../js/backup_modal.js" defer></script>
+    <script src="../js/backup_modal.js?v=2" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/logs-modal.js" defer></script>
     <script src="../js/services-manager.js" defer></script>
@@ -373,112 +373,103 @@ require_once '../php/connection.php';
     </form>
 </dialog>
 
-  <!-- backup/restore modal -->
-   <dialog class="backupModal" id="backupModal">
-    <!-- Modal Header -->
-    <div class="custom-modal-header">
-      <h5 class="custom-modal-title">DATABASE BACKUP</h5>
-      <button type="button" class="custom-modal-close" id="closeBackupModalBtn">&times;</button>
+<!-- backup/restore modal -->
+<dialog class="backupModal" id="backupModal">
+  <!-- Modal Header -->
+  <div class="custom-modal-header">
+    <h5 class="custom-modal-title" id="modalTitle">DATABASE BACKUP</h5>
+    <button type="button" class="custom-modal-close" id="closeBackupModalBtn">&times;</button>
+  </div>
+
+  <!-- Mode Switcher Tabs -->
+  <div class="modal-tabs" style="display: flex; border-bottom: 1px solid #e2e8f0; background: #f8fafc; padding: 0;">
+    <button type="button" class="modal-tab-btn active" id="tabBackupBtn" onclick="switchBackupTab('backup'); event.stopPropagation();" style="flex: 1; padding: 12px 20px; background: none; border: none; border-bottom: 2px solid #0B695D; font-weight: 600; color: #0B695D; cursor: pointer; text-align: center;">Backup Database</button>
+    
+    <button type="button" class="modal-tab-btn" id="tabRestoreBtn" onclick="switchBackupTab('restore'); event.stopPropagation();" style="flex: 1; padding: 12px 20px; background: none; border: none; border-bottom: 2px solid transparent; font-weight: 600; color: #64748b; cursor: pointer; text-align: center;">Restore / Import</button>
+  </div>
+
+  <!-- Single Unified Form -->
+  <form action="../php/backup.php" method="POST" id="unifiedBackupForm" class="backupForm" enctype="multipart/form-data">
+    
+    <!-- TAB 1: BACKUP BODY -->
+    <div id="backupSection" class="custom-modal-body">
+      <!-- Step 1: Backup Format Type -->
+      <div class="section-group">
+        <span class="section-label">1. Select Backup Type / Format</span>
+        <div class="format-grid">
+          <label class="format-card">
+            <input type="radio" name="backup_type" value="sql" checked>
+            <div class="format-card-content">
+              <strong>Full Database Backup</strong>
+              <span class="format-ext">.sql</span>
+              <small>Standard SQL database dump for full structural restores.</small>
+            </div>
+          </label>
+
+          <label class="format-card">
+            <input type="radio" name="backup_type" value="zip">
+            <div class="format-card-content">
+              <strong>Compressed Backup</strong>
+              <span class="format-ext">.zip</span>
+              <small>Gzipped archive for space-efficient storage.</small>
+            </div>
+          </label>
+
+          <label class="format-card">
+            <input type="radio" name="backup_type" value="csv">
+            <div class="format-card-content">
+              <strong>Data Export</strong>
+              <span class="format-ext">.csv</span>
+              <small>Export individual tables into raw CSV spreadsheets.</small>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <hr class="modal-divider">
+
+      <!-- Step 2: Table Selection -->
+      <div class="section-group">
+        <div class="table-header-row">
+          <span class="section-label">2. Select Tables to Backup</span>
+          <label class="checkbox-label select-all-label">
+            <input type="checkbox" id="selectAllTables" checked>
+            <span>Select All / Unselect</span>
+          </label>
+        </div>
+
+        <div class="table-grid">
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="admin_auth" checked><span>admin_auth</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="appointments" checked><span>appointments</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="logs" checked><span>logs</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="patient_auth" checked><span>patient_auth</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="patient_records" checked><span>patient_records</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="transactions" checked><span>transactions</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="services" checked><span>services</span></label>
+        </div>
+      </div>
     </div>
 
-    <!-- Modal Body / Form -->
-    <form action="../php/backup.php" method="POST" id="backupForm" class="backupForm">
-      <div class="custom-modal-body">
-        
-        <!-- Step 1: Backup Format Type -->
-        <div class="section-group">
-          <span class="section-label">1. Select Backup Type / Format</span>
-          <div class="format-grid">
-            
-            <label class="format-card">
-              <input type="radio" name="backup_type" value="sql" checked>
-              <div class="format-card-content">
-                <strong>Full Database Backup</strong>
-                <span class="format-ext">.sql</span>
-                <small>Standard SQL database dump for full structural restores.</small>
-              </div>
-            </label>
-
-            <label class="format-card">
-              <input type="radio" name="backup_type" value="zip">
-              <div class="format-card-content">
-                <strong>Compressed Backup</strong>
-                <span class="format-ext">.zip</span>
-                <small>Gzipped archive for space-efficient storage.</small>
-              </div>
-            </label>
-
-            <label class="format-card">
-              <input type="radio" name="backup_type" value="csv">
-              <div class="format-card-content">
-                <strong>Data Export</strong>
-                <span class="format-ext">.csv</span>
-                <small>Export individual tables into raw CSV spreadsheets.</small>
-              </div>
-            </label>
-
-          </div>
-        </div>
-
-        <hr class="modal-divider">
-
-        <!-- Step 2: Table Selection -->
-        <div class="section-group">
-          <div class="table-header-row">
-            <span class="section-label">2. Select Tables to Backup</span>
-            <label class="checkbox-label select-all-label">
-              <input type="checkbox" id="selectAllTables" checked>
-              <span>Select All / Unselect</span>
-            </label>
-          </div>
-
-          <div class="table-grid">
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="admin_auth" checked>
-              <span>admin_auth</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="appointments" checked>
-              <span>appointments</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="logs" checked>
-              <span>logs</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="patient_auth" checked>
-              <span>patient_auth</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="patient_records" checked>
-              <span>patient_records</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="transactions" checked>
-              <span>transactions</span>
-            </label>
-
-            <label class="checkbox-label">
-              <input type="checkbox" class="table-checkbox" name="tables[]" value="services" checked>
-              <span>services</span>
-            </label>
-          </div>
-        </div>
-
+    <!-- TAB 2: RESTORE BODY (Initially Hidden) -->
+    <div id="restoreSection" class="custom-modal-body" style="display: none; padding: 30px 20px;">
+      <div class="alert alert-warning" style="background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; font-size: 14px;">
+        <i class="fas fa-exclamation-triangle me-2"></i> <strong>Important:</strong> Restoring an SQL backup will replace current database records with the contents of the backup file. Ensure you have a recent backup before proceeding.
       </div>
 
-      <!-- Modal Footer -->
-      <div class="custom-modal-footer">
-        <button type="button" class="btn btn-outline" id="cancelBackupModalBtn">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="btnSubmitBackup">Generate Backup</button>
+      <div class="form-group">
+        <label for="sql_file" class="form-label" style="font-weight: 600; margin-bottom: 8px; display: block;">Select SQL Backup File (.sql)</label>
+        <input class="form-control" type="file" id="sql_file" name="sql_file" accept=".sql" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 100%;">
+        <small class="text-muted" style="display: block; margin-top: 6px; color: #64748b;">Only valid <code>.sql</code> files generated from RHU-Q are accepted.</small>
       </div>
-    </form>
-  </dialog>
+    </div>
+
+    <!-- Unified Modal Footer -->
+    <div class="custom-modal-footer">
+      <button type="button" class="btn btn-outline" id="cancelBackupModalBtn" onclick="document.getElementById('backupModal').close()">Cancel</button>
+      <button type="submit" class="btn btn-primary" id="modalSubmitBtn">Generate Backup</button>
+    </div>
+  </form>
+</dialog>
 
  <!-- Logs modal -->
 <dialog id="logsModal" class="logs-modal" aria-labelledby="logsTitle">
@@ -513,4 +504,58 @@ require_once '../php/connection.php';
     </div>
 </dialog>
 </body>
+<?php if ($_SESSION['logged_role'] === 'Admin'){ ?>
+<script>
+    function switchBackupTab(mode) {
+      const backupTab = document.getElementById('tabBackupBtn');
+      const restoreTab = document.getElementById('tabRestoreBtn');
+      const backupSection = document.getElementById('backupSection');
+      const restoreSection = document.getElementById('restoreSection');
+      const form = document.getElementById('unifiedBackupForm');
+      const modalTitle = document.getElementById('modalTitle');
+      const submitBtn = document.getElementById('modalSubmitBtn');
+
+      if (mode === 'backup') {
+        backupTab.style.borderBottomColor = '#0B695D';
+        backupTab.style.color = '#0B695D';
+        restoreTab.style.borderBottomColor = 'transparent';
+        restoreTab.style.color = '#64748b';
+
+        backupSection.style.display = 'block';
+        restoreSection.style.display = 'none';
+        
+        form.action = '../php/backup.php';
+        form.onsubmit = null; // No special warning needed for backups
+        modalTitle.textContent = 'DATABASE BACKUP';
+        submitBtn.textContent = 'Generate Backup';
+        submitBtn.style.backgroundColor = ''; // Use default theme color
+      } else {
+        restoreTab.style.borderBottomColor = '#0B695D';
+        restoreTab.style.color = '#0B695D';
+        backupTab.style.borderBottomColor = 'transparent';
+        backupTab.style.color = '#64748b';
+
+        restoreSection.style.display = 'block';
+        backupSection.style.display = 'none';
+
+        form.action = '../php/import_backup.php';
+        form.onsubmit = function(e) {
+          const fileInput = document.getElementById('sql_file');
+          
+          // Check if a file is actually selected
+          if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+            alert('Please select a valid .sql backup file to import.');
+            return false; // Stop form submission
+          }
+
+          // Only prompt confirmation if a file is present
+          return confirm('WARNING: Restoring a database backup will overwrite existing records. Do you wish to proceed?');
+        };
+        modalTitle.textContent = 'DATABASE RESTORE';
+        submitBtn.textContent = 'Import & Restore Database';
+        submitBtn.style.backgroundColor = '#dc2626'; // Red color for restore action
+      }
+    }
+  </script>
+<?php }?>
 </html>
