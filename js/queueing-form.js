@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const patient_search = document.getElementById('patient-search');
   const patient_id_input = document.getElementById('patient-id');
   const results_container = document.getElementById('patient-search-results');
+  const serviceSelect = document.getElementById('service-type');
 
   const success_modal = document.getElementById('queue-success-modal');
   const modalQueueCode = document.getElementById('modalQueueCode');
@@ -11,6 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalServiceName = document.getElementById('modalServiceName');
   const modalDateTime = document.getElementById('modalDateTime');
   const successCountdown = document.getElementById('successCountdown');
+
+  // Fetch and populate active services for the add-queue form dropdown
+  if (serviceSelect) {
+    fetch('../api/get_services.php?active_only=true')
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success' && data.services) {
+          serviceSelect.innerHTML = '<option value="" disabled selected>Select a service</option>';
+          const seenServices = new Set();
+          data.services.forEach(service => {
+            if (!seenServices.has(service.service_name)) {
+              seenServices.add(service.service_name);
+              const option = document.createElement('option');
+              option.value = service.service_name;
+              option.textContent = service.service_name;
+              serviceSelect.appendChild(option);
+            }
+          });
+        }
+      })
+      .catch(error => console.error('Error fetching services for queue form:', error));
+  }
 
   // 1. OPEN MODAL
   document.addEventListener('click', (e) => {

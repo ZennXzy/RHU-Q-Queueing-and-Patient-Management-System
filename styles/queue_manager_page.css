@@ -520,6 +520,41 @@ background-color:#F9FAFB;
     background-color: #e2e8f0;
 }
 
+/* Modern Waiting Card Header & Filter Select Styling */
+.waiting-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  margin-bottom: 12px;
+}
+
+.service-filter-select {
+  margin-bottom: 12px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #334155;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.service-filter-select:hover {
+  border-color: #94a3b8;
+  background-color: #ffffff;
+}
+
+.service-filter-select:focus {
+  border-color: #0B695D;
+  box-shadow: 0 0 0 3px rgba(11, 105, 93, 0.15);
+  background-color: #ffffff;
+}
+
 @media print {
     /* Hide everything on the page */
     body * {
@@ -555,6 +590,9 @@ background-color:#F9FAFB;
 }
 
 @media screen and (max-width: 600px) {
+  .service-filter-select{
+    width: 100%;
+  }
   .patient-row {
     flex-wrap: wrap;
     gap: 5px;

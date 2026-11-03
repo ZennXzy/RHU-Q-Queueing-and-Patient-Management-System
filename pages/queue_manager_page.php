@@ -55,6 +55,9 @@ $role = $_SESSION['logged_role'];
                 <div class="content-header">
                     <h1 class="page-title">Queue Manager</h1>
                 </div>
+                <select id="waiting-service-filter" class="service-filter-select" aria-label="Filter waiting queue by service">
+                    <option value="">All Services</option>
+                </select>
 
                 <!-- Current Patient Card -->
                 <div class="form-grid">
@@ -69,7 +72,9 @@ $role = $_SESSION['logged_role'];
                     <div class="split-grid">
                         
                         <div class="waiting-card">
-                            <h2 class="section-title">Waiting Queue</h2>
+                            <div class="section-title waiting-header-flex">
+                                <span>Waiting Queue</span>
+                            </div>
                             <?php
                                 $sql = "SELECT 
                                             q.queue_info_id, 
@@ -425,37 +430,4 @@ $role = $_SESSION['logged_role'];
         <button type="button" class="qinfo-btn" id="qiFooterCloseBtn">Close</button>
     </div>
 </dialog>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const msg = urlParams.get('msg');
-        const type = urlParams.get('type') || 'info';
-
-        if (msg) {
-            showToast(msg, type);
-
-            // Clean query parameters from the address bar
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-        }
-
-        // Fetch and populate services dynamically from the API
-        fetch('../api/get_services.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success' && data.services) {
-                    const serviceSelect = document.getElementById('service-type');
-                    if (serviceSelect) {
-                        data.services.forEach(service => {
-                            const option = document.createElement('option');
-                            option.value = service.service_name;
-                            option.textContent = service.service_name;
-                            serviceSelect.appendChild(option);
-                        });
-                    }
-                }
-            })
-            .catch(error => console.error('Error fetching services for queue form:', error));
-    });
-</script>
 </html>

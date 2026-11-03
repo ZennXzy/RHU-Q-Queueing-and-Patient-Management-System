@@ -3,7 +3,15 @@ header('Content-Type: application/json');
 require_once '../api/check-private.php';
 require_once '../php/connection.php';
 
-$query = "SELECT * FROM services ORDER BY service_name ASC";
+// Check if only active services are requested
+$activeOnly = isset($_GET['active_only']) && $_GET['active_only'] === 'true';
+
+if ($activeOnly) {
+    $query = "SELECT * FROM services WHERE status = 'Active' ORDER BY service_name ASC";
+} else {
+    $query = "SELECT * FROM services ORDER BY service_name ASC";
+}
+
 $result = $conn->query($query);
 
 $services = [];
