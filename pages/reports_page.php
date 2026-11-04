@@ -163,10 +163,10 @@ require '../php/connection.php';
                 <small>Completed transactions</small>
             </article>
 
-            <article class="kpi">
+            <article class="kpi clickable-kpi" id="kpi-patients-card" role="button" tabindex="0" title="Click to view unique patients list">
                 <span>Unique Patients</span>
                 <strong id="kpi-patients">—</strong>
-                <small>Distinct patients served</small>
+                <small>Distinct patients served (Click to view)</small>
             </article>
 
             <article class="kpi">
@@ -295,6 +295,61 @@ require '../php/connection.php';
             </div>
 
         </section>
+        <!-- FILTERED UNIQUE PATIENTS LIST -->
+        <section class="panel records-panel" id="unique-patients-panel">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Filtered Unique Patients</h2>
+                    <p class="hint" id="unique-patients-count">
+                        Distinct patients matching current filters
+                    </p>
+                </div>
+
+                <div class="records-actions">
+                    <input
+                        id="searchUniquePatients"
+                        type="search"
+                        placeholder="Search unique patient name, ID…"
+                        aria-label="Search unique patients"
+                    >
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Age / Gender</th>
+                            <th>Barangay</th>
+                            <th>Total Visits</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="unique-patients-table-body">
+                        <tr>
+                            <td colspan="6">Loading unique patients…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pager">
+                <button id="unique-prev-page" type="button" class="secondary-btn">
+                    Previous
+                </button>
+
+                <span id="unique-page-label">Page 1</span>
+
+                <button id="unique-next-page" type="button" class="secondary-btn">
+                    Next
+                </button>
+            </div>
+
+        </section>
 
         <p class="disclaimer">
             Statistics reflect recorded RHU transactions, not disease prevalence
@@ -314,6 +369,33 @@ require '../php/connection.php';
 
     <div id="recordDetailsContent"></div>
 </dialog>
+<!-- PATIENT TRANSACTION HISTORY MODAL -->
+<dialog id="patient-history-modal" class="record-dialog">
+    <div class="dialog-header">
+        <h2 id="patientHistoryModalTitle">Patient Transaction History</h2>
+        <button type="button" id="close-patient-history" aria-label="Close">×</button>
+    </div>
 
+    <div style="padding: 15px;">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Queue Code</th>
+                        <th>Service</th>
+                        <th>Barangay</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="patient-history-tbody">
+                    <tr>
+                        <td colspan="5">Loading patient transactions...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</dialog>
 </body>
 </html>

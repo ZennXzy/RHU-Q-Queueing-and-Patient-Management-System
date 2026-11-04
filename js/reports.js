@@ -7,6 +7,10 @@ document.addEventListener("DOMContentLoaded", () => {
   let total = 0;
   let current = null;
   let requestId = 0;
+  // Unique patients state variables
+  let uniquePage = 1;
+  let uniqueTotal = 0;
+  let activePatientId = null;
 
   const nf = new Intl.NumberFormat();
 
@@ -282,6 +286,137 @@ document.addEventListener("DOMContentLoaded", () => {
     $("next-page").disabled = page * 25 >= total;
   }
 
+  // LOAD UNIQUE PATIENTS LIST
+  async function loadUniquePatients() {
+    const p = query();
+    p.set("page", uniquePage);
+
+    const searchUnique = $("searchUniquePatients").value.trim();
+    if (searchUnique) {
+      p.set("unique_search", searchUnique);
+    }
+
+    const data = await api("unique_patients", p);
+    uniqueTotal = data.total;
+
+    const tbody = $("unique-patients-table-body");
+    tbody.replaceChildren();
+
+    if (!data.rows.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 6;
+      td.textContent = "No matching unique patients found.";
+      tr.append(td);
+      tbody.append(tr);
+      return;
+    }
+
+    data.rows.forEach((patient) => {
+      const tr = document.createElement("tr");
+
+      const values = [
+        patient.patient_id,
+        patient.patient_name,
+        (patient.current_age ?? "—") + " / " + (patient.gender || "—"),
+        patient.barangay,
+        nf.format(patient.total_visits) + " visits"
+      ];
+
+      values.forEach((value) => {
+        const td = document.createElement("td");
+        td.textContent = value ?? "—";
+        tr.append(td);
+      });
+
+      const actionCell = document.createElement("td");
+      const button = document.createElement("button");
+      button.className = "details-btn";
+      button.textContent = "View History";
+      button.type = "button";
+      button.addEventListener("click", () => showPatientHistory(patient.patient_id, patient.patient_name));
+
+      actionCell.append(button);
+      tr.append(actionCell);
+      tbody.append(tr);
+    });
+
+    $("unique-patients-count").textContent = nf.format(uniqueTotal) + " matching distinct patients";
+    $("unique-page-label").textContent = "Page " + uniquePage + " of " + Math.max(1, Math.ceil(uniqueTotal / 25));
+    $("unique-prev-page").disabled = uniquePage <= 1;
+    $("unique-next-page").disabled = uniquePage * 25 >= uniqueTotal;
+  }
+
+  // OPEN PATIENT TRANSACTION HISTORY MODAL
+  async function showPatientHistory(patientId, patientName) {
+    activePatientId = patientId;
+    $("patientHistoryModalTitle").textContent = "Transactions for: " + patientName;
+    const tbody = $("patient-history-tbody");
+    tbody.replaceChildren();
+
+    const loadingTr = document.createElement("tr");
+    const loadingTd = document.createElement("td");
+    loadingTd.colSpan = 5;
+    loadingTd.textContent = "Loading transaction history...";
+    loadingTr.append(loadingTd);
+    tbody.append(loadingTr);
+
+    $("patient-history-modal").showModal();
+
+    try {
+      const data = await api("patient_history", new URLSearchParams({ patient_id: patientId }));
+      tbody.replaceChildren();
+
+      if (!data.transactions.length) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.textContent = "No recorded transactions found.";
+        tr.append(td);
+        tbody.append(tr);
+        return;
+      }
+
+      data.transactions.forEach((tx) => {
+        const tr = document.createElement("tr");
+        const values = [
+          tx.transaction_date,
+          tx.queue_code || "—",
+          tx.service_name,
+          tx.barangay
+        ];
+
+        values.forEach((val) => {
+          const td = document.createElement("td");
+          td.textContent = val;
+          tr.append(td);
+        });
+
+        const actionTd = document.createElement("td");
+        const viewBtn = document.createElement("button");
+        viewBtn.className = "details-btn";
+        viewBtn.textContent = "Details";
+        viewBtn.type = "button";
+        viewBtn.addEventListener("click", () => {
+          $("patient-history-modal").close();
+          showDetails(tx.transaction_id);
+        });
+
+        actionTd.append(viewBtn);
+        tr.append(actionTd);
+        tbody.append(tr);
+      });
+    } catch (err) {
+      tbody.replaceChildren();
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 5;
+      td.textContent = "Error loading history: " + err.message;
+      tr.append(td);
+      tbody.append(tr);
+    }
+  }
+
   // RELOAD DASHBOARD AND RECORDS
   async function reload() {
     const seq = ++requestId;
@@ -296,6 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       await loadRecords();
+      await loadUniquePatients();
 
       if (seq !== requestId) {
         return;
@@ -366,24 +502,57 @@ document.addEventListener("DOMContentLoaded", () => {
   // APPLY FILTERS
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-
     current = null;
     page = 1;
-
+    uniquePage = 1; 
     reload();
   });
 
   // RESET FILTERS
   $("reset-filters").addEventListener("click", () => {
     form.reset();
-
     $("searchReports").value = "";
-
+    $("searchUniquePatients").value = ""; 
     current = null;
     page = 1;
-
+    uniquePage = 1; 
     reload();
   });
+
+  // UNIQUE PATIENTS CARD CLICK
+  $("kpi-patients-card").addEventListener("click", () => {
+    $("unique-patients-panel").scrollIntoView({ behavior: "smooth" });
+  });
+
+  // UNIQUE PATIENTS SEARCH INPUT
+  let uniqueDebounce;
+  $("searchUniquePatients").addEventListener("input", () => {
+    clearTimeout(uniqueDebounce);
+    uniqueDebounce = setTimeout(() => {
+      uniquePage = 1;
+      loadUniquePatients().catch((error) => status(error.message));
+    }, 350);
+  });
+
+  // UNIQUE PATIENTS PAGINATION
+  $("unique-prev-page").addEventListener("click", () => {
+    if (uniquePage > 1) {
+      uniquePage--;
+      loadUniquePatients().catch((error) => status(error.message));
+    }
+  });
+
+  $("unique-next-page").addEventListener("click", () => {
+    if (uniquePage * 25 < uniqueTotal) {
+      uniquePage++;
+      loadUniquePatients().catch((error) => status(error.message));
+    }
+  });
+
+  // CLOSE PATIENT HISTORY MODAL
+  $("close-patient-history").addEventListener("click", () =>
+    $("patient-history-modal").close()
+  );
 
   // SEARCH RECORDS
   let debounce;

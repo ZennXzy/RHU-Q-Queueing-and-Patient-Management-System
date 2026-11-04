@@ -53,6 +53,44 @@ try {
                 'page' => $page,
                 'per_page' => $perPage
             ];
+        } elseif ($action === 'unique_patients') {
+            // Fetch paginated unique patients matching current filters
+            $page = max(1, min(100000, (int)($_GET['page'] ?? 1)));
+            $perPage = 25;
+            $params = [];
+            $types = '';
+            $where = report_where($f, $params, $types);
+
+            // Subquery or grouped query for distinct patients matching the filter criteria
+            $countSql = "SELECT COUNT(DISTINCT t.patient_id) AS n " . report_base() . " WHERE $where";
+            $countRows = report_run($conn, $countSql, $params, $types);
+            $count = (int)($countRows[0]['n'] ?? 0);
+
+            $sql = "SELECT p.patient_id, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS current_age, p.gender, COALESCE(b.barangay_address, 'Unspecified') AS barangay, COUNT(t.transaction_id) AS total_visits " . report_base() . " WHERE $where GROUP BY p.patient_id, p.firstname, p.middlename, p.lastname, p.suffix, p.date_of_birth, p.gender, b.barangay_address ORDER BY max(t.transaction_date) DESC LIMIT ? OFFSET ?";
+            
+            $query_params = $params;
+            $query_types = $types . 'ii';
+            $query_params[] = $perPage;
+            $query_params[] = ($page - 1) * $perPage;
+
+            $rows = report_run($conn, $sql, $query_params, $query_types);
+
+            $data = [
+                'rows' => $rows,
+                'total' => $count,
+                'page' => $page,
+                'per_page' => $perPage
+            ];
+        } elseif ($action === 'patient_history') {
+            // Fetch all transactions for a specific patient ID
+            $patientId = filter_input(INPUT_GET, 'patient_id', FILTER_VALIDATE_INT);
+            if (!$patientId || $patientId < 1) {
+                throw new InvalidArgumentException('Invalid patient ID');
+            }
+
+            $rows = report_run($conn, "SELECT t.transaction_id, t.queue_code, t.transaction_date, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name, COALESCE(b.barangay_address, 'Unspecified') AS barangay FROM transactions t LEFT JOIN services s ON s.service_id = t.service LEFT JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address WHERE t.patient_id = ? ORDER BY t.transaction_date DESC", [$patientId], 'i');
+
+            $data = ['transactions' => $rows];
         } else {
             throw new InvalidArgumentException('Unknown action');
         }
