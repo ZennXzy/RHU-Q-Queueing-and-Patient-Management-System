@@ -26,7 +26,7 @@ if ($patient_id <= 0 || empty($service_name)) {
 $service_id = 0;
 
 if ($service_name === '') {
-    header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Please select a service') . '&type=error');
+    echo json_encode(['status' => 'error', 'message' => 'Please select a service.']);
     exit();
 } else {
     // Ensure the table and column names match your database schema
@@ -37,10 +37,9 @@ if ($service_name === '') {
     
     if ($serviceRes->num_rows === 0) {
         $serviceCheck->close();
-        header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Please select a valid service from the list.') . '&type=error');
+        echo json_encode(['status' => 'error', 'message' => 'Please select a valid service from the list.']);
         exit();
     } else {
-        // FIX: Fetch the row into an array first
         $row = $serviceRes->fetch_assoc();
         $service_id = $row['service_id'];
     }
@@ -48,6 +47,22 @@ if ($service_name === '') {
 }
 
 try {
+    $dupCheck = $conn->prepare("SELECT queue_code, status FROM queue_information WHERE patient_id = ? AND DATE(created_at) = CURDATE() AND status IN ('Waiting', 'In Progress') LIMIT 1");
+    $dupCheck->bind_param("i", $patient_id);
+    $dupCheck->execute();
+    $dupRes = $dupCheck->get_result();
+
+    if ($dupRes->num_rows > 0) {
+        $dupRow = $dupRes->fetch_assoc();
+        $dupCheck->close();
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Duplicate queue detected! This patient already has an active queue ticket (' . $dupRow['queue_code'] . ') with status: ' . $dupRow['status'] . '.'
+        ]);
+        exit();
+    }
+    $dupCheck->close();
+
     // 1. Fetch all services ordered by creation/ID to dynamically determine the prefix letter based on position
     $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
     $prefix = 'Z'; // Default fallback if not found
@@ -67,11 +82,11 @@ try {
     }
 
     // Get patient name for the response badge
-    $p_stmt =$conn->prepare("SELECT CONCAT(firstname, ' ', lastname, ' ', COALESCE(suffix, '')) AS fullname FROM patient_records WHERE patient_id = ?");
+    $p_stmt = $conn->prepare("SELECT CONCAT(firstname, ' ', lastname, ' ', COALESCE(suffix, '')) AS fullname FROM patient_records WHERE patient_id = ?");
     $p_stmt->bind_param("i", $patient_id);
     $p_stmt->execute();
     $p_res = $p_stmt->get_result();
-    $patient_name = ($p_row =$p_res->fetch_assoc()) ? trim($p_row['fullname']) : "Patient #{$patient_id}";
+    $patient_name = ($p_row = $p_res->fetch_assoc()) ? trim($p_row['fullname']) : "Patient #{$patient_id}";
     $p_stmt->close();
 
     // Select the TRUE numerical MAXIMUM for this prefix created today (CURDATE())
@@ -80,20 +95,20 @@ try {
                  WHERE queue_code LIKE CONCAT(?, '%') 
                    AND DATE(`created_at`) = CURDATE()";
 
-    $stmt_code =$conn->prepare($code_sql);
+    $stmt_code = $conn->prepare($code_sql);
     $stmt_code->bind_param("s", $prefix);
     $stmt_code->execute();
-    $code_result =$stmt_code->get_result();
+    $code_result = $stmt_code->get_result();
 
     $next_number = 1;
-    if ($row =$code_result->fetch_assoc()) {
+    if ($row = $code_result->fetch_assoc()) {
         if (!is_null($row['max_num'])) {
             $next_number = intval($row['max_num']) + 1;
         }     
     }
     $stmt_code->close();
 
-    $queue_code = sprintf("%s%03d", $prefix,$next_number);
+    $queue_code = sprintf("%s%03d", $prefix, $next_number);
     $initial_status = 'Waiting';
     $current_datetime = date('F j, Y, g:i A');
 
@@ -102,10 +117,11 @@ try {
                    (queue_code, patient_id, service_name, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
-    $stmt_insert =$conn->prepare($insert_sql);$stmt_insert->bind_param(
+    $stmt_insert = $conn->prepare($insert_sql);
+    $stmt_insert->bind_param(
         "siisssssssss", 
-        $queue_code, $patient_id,$service_id, $service_name, 
-        $blood_pressure,$respiratory_rate, $temperature,$pulse_rate, $weight,$height, $complaints,$initial_status
+        $queue_code, $patient_id, $service_id, $service_name, 
+        $blood_pressure, $respiratory_rate, $temperature, $pulse_rate, $weight, $height, $complaints, $initial_status
     );
 
     if ($stmt_insert->execute()) {

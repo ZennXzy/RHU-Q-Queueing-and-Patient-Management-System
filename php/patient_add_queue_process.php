@@ -54,6 +54,22 @@ if ($serviceRes->num_rows === 0) {
 $serviceCheck->close();
 
 try {
+    $dupCheck = $conn->prepare("SELECT queue_code, status FROM queue_information WHERE patient_id = ? AND DATE(created_at) = CURDATE() AND status IN ('Waiting', 'In Progress') LIMIT 1");
+    $dupCheck->bind_param("i", $patient_id);
+    $dupCheck->execute();
+    $dupRes = $dupCheck->get_result();
+
+    if ($dupRes->num_rows > 0) {
+        $dupRow = $dupRes->fetch_assoc();
+        $dupCheck->close();
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Duplicate queue detected! This patient already has an active queue ticket (' . $dupRow['queue_code'] . ') with status: ' . $dupRow['status'] . '.'
+        ]);
+        exit();
+    }
+    $dupCheck->close();
+
     // 1. Dynamically determine prefix letter based on service position (ORDER BY service_id ASC)
     $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
     $prefix = 'Z'; // Default fallback
