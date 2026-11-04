@@ -10,12 +10,21 @@ $currentPage = 'add_queue';
 $message     = $_GET['msg'] ?? '';
 $messageType = $_GET['type'] ?? '';
 
-// Fetch services dynamically from the database
+// Fetch all services for the dropdown select list
 $servicesList = [];
-$servicesQuery = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
+$servicesQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active' ORDER BY service_id ASC");
 if ($servicesQuery) {
     while ($row = $servicesQuery->fetch_assoc()) {
         $servicesList[] = $row['service_name'];
+    }
+}
+
+// Fetch only active services available today (status = 'Active')
+$activeServices = [];
+$activeQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active' ORDER BY service_id ASC");
+if ($activeQuery) {
+    while ($row = $activeQuery->fetch_assoc()) {
+        $activeServices[] = $row['service_name'];
     }
 }
 ?>
@@ -63,6 +72,24 @@ if ($servicesQuery) {
                 <!-- Section 1: Service Selection -->
                 <div class="form-card">
                     <h3 class="card-title">1. Select Health Service <span class="require_onced">*</span></h3>
+                    
+                    <!-- AVAILABLE SERVICES TODAY STATUS CARD -->
+                    <div class="active-services-card">
+                        <p class="active-services-title">
+                            <span style="display:inline-block; width:8px; height:8px; background-color:#16a34a; border-radius:50%;"></span>
+                            Services Available Today (Active):
+                        </p>
+                        <?php if (!empty($activeServices)): ?>
+                            <ul class="active-services-list">
+                                <?php foreach ($activeServices as $actSvc): ?>
+                                    <li><?= htmlspecialchars($actSvc); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="no-active-services">No services are currently marked as active today. Please check back later.</p>
+                        <?php endif; ?>
+                    </div>
+
                     <div class="form-group">
                         <select name="service" id="service" class="form-control" required>
                             <option value="" disabled selected>-- Choose Service --</option>
