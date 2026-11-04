@@ -7,6 +7,7 @@ require_once '../api/check-private.php';
 $type = isset($_GET['type']) && $_GET['type'] === 'patient' ? 'patient' : 'staff';
 $excluded = $_SESSION['logged_id'] ?? 0;
 $_SESSION['table_type'] = $type;
+
 if ($type === 'staff') {
     $table = "admin_auth";
     $query = "SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth WHERE id != ?";
