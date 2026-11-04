@@ -30,12 +30,12 @@ try {
         while ($row = $res->fetch_assoc()) {
             $appointment_id = $row['appointments_id'];
             $patient_id     = $row['patient_id'];
-            $patient_name   = !empty($row['patient_name']) ? htmlspecialchars($row['patient_name']) : 'Patient #' . $patient_id;
-            $contact        = !empty($row['contact_number']) ? htmlspecialchars($row['contact_number']) : 'N/A';
-            $service        = htmlspecialchars($row['service']);
-            $remarks        = !empty($row['remarks']) ? htmlspecialchars($row['remarks']) : 'No description provided.';
+            $patient_name   = !empty($row['patient_name']) ? htmlspecialchars((string)$row['patient_name']) : 'Patient #' . $patient_id;
+            $contact        = !empty($row['contact_number']) ? htmlspecialchars((string)$row['contact_number']) : 'N/A';
+            $service        = htmlspecialchars((string)$row['service']);
+            $remarks        = !empty($row['remarks']) ? htmlspecialchars((string)$row['remarks']) : 'No description provided.';
             $status         = $row['status'];
-            $decline_reason = !empty($row['note']) ? htmlspecialchars($row['note']) : 'No reason provided.';
+            $decline_reason = !empty($row['note']) ? htmlspecialchars((string)$row['note']) : 'No reason provided.';
             $formatted_date = date('M d, Y', strtotime($row['appointment_date']));
             ?>
             <div class="appointment-item <?= strtolower($status) ?>" data-id="<?= $appointment_id ?>">

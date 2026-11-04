@@ -6,7 +6,7 @@ require_once '../api/check-private.php';
 
 $type = isset($_GET['type']) && $_GET['type'] === 'patient' ? 'patient' : 'staff';
 $excluded = $_SESSION['logged_id'] ?? 0;
-
+$_SESSION['table_type'] = $type;
 if ($type === 'staff') {
     $table = "admin_auth";
     $query = "SELECT id, username, fullname, email, status, role, created_at, last_active FROM admin_auth WHERE id != ?";
@@ -56,26 +56,25 @@ if ($res && $res->num_rows > 0) {
     while ($row = $res->fetch_assoc()) {
         $statusClass = (strtolower($row['status']) === 'online') ? 'badge-online' : 'badge-offline';
         echo '<tr>';
-        echo '<td style="text-align: center;">#</td>';
-        echo '<td>' . htmlspecialchars($row['username']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['fullname']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['email']) . '</td>';
+        echo '<td>' . htmlspecialchars((string)$row['username']) . '</td>';
+        echo '<td>' . htmlspecialchars((string)$row['fullname']) . '</td>';
+        echo '<td>' . htmlspecialchars((string)$row['email']) . '</td>';
         echo '<td style="text-align: center;"><span class="badge ' . $statusClass . '">' . htmlspecialchars(ucfirst($row['status'])) . '</span></td>';
         if ($type === 'staff'){
-            echo '<td style="text-align: center;">' . htmlspecialchars($row['role']) . '</td>';
+            echo '<td style="text-align: center;">' . htmlspecialchars((string)$row['role']) . '</td>';
         } else {
-            echo '<td style="text-align: center;">' . htmlspecialchars($row['account_token']) . '</td>';
+            echo '<td style="text-align: center;">' . htmlspecialchars((string)$row['account_token']) . '</td>';
         }
-        echo '<td style="text-align: center;">' . htmlspecialchars($row['created_at']) . '</td>';
-        echo '<td style="text-align: center;">' . htmlspecialchars($row['last_active']) . '</td>';
+        echo '<td style="text-align: center;">' . htmlspecialchars((string)$row['created_at']) . '</td>';
+        echo '<td style="text-align: center;">' . htmlspecialchars((string)$row['last_active']) . '</td>';
         echo '<td>';
         echo '<div class="table-actions">';
         if ($type === 'staff'){
-            echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-            echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+            echo '<button class="edit-btn" data-id="' . htmlspecialchars((string)$row['id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+            echo '<button class="delete-btn" data-id="' . htmlspecialchars((string)$row['id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
         } else {
-            echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-            echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+            echo '<button class="edit-btn" data-id="' . htmlspecialchars((string)$row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+            echo '<button class="delete-btn" data-id="' . htmlspecialchars((string)$row['patient_auth_id']) . '" data-type="' . $type . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
         }
         echo '</div>';
         echo '</td>';

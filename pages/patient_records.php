@@ -86,20 +86,21 @@ require_once '../php/connection.php';
                 echo '<tbody id="patientTableBody" style="text-align:center;">';
                 if ($res && $res->num_rows > 0) {
                     while ($row = $res->fetch_assoc()) {
+                        $fullname = $row['lastname'] . ', ' . $row['firstname'] . ' ' . $row['middlename'] . ' ' . $row['suffix'];
                         echo '<tr>';
-                        echo '<td style="text-align:left;">' . htmlspecialchars($row['lastname']) . ', ' . htmlspecialchars($row['firstname']) . ' ' . htmlspecialchars($row['middlename']) . ' ' . htmlspecialchars($row['suffix']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['age']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['gender']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['contact_number']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['phil_status']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['date_registered']) . '</td>';
+                        echo '<td style="text-align:left;">' . htmlspecialchars($fullname). '</td>';
+                        echo '<td>' . htmlspecialchars((string)$row['age']) . '</td>';
+                        echo '<td>' . htmlspecialchars((string)$row['gender']) . '</td>';
+                        echo '<td>' . htmlspecialchars((string)$row['contact_number']) . '</td>';
+                        echo '<td>' . htmlspecialchars((string)$row['phil_status']) . '</td>';
+                        echo '<td>' . htmlspecialchars((string)$row['date_registered']) . '</td>';
 
                         // Action column
                         echo '<td>';
                         if (canManageRecords()) {
-                            echo '<button class="edit-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
-                            echo '<button class="view-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button>';
-                            echo '<button class="delete-btn" data-id="' . htmlspecialchars($row['patient_id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
+                            echo '<button class="edit-btn" data-id="' . htmlspecialchars((string)$row['patient_id']) . '"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>';
+                            echo '<button class="view-btn" data-id="' . htmlspecialchars((string)$row['patient_id']) . '"><img src="../svg/view-icon.svg" alt="view-icon"></button>';
+                            echo '<button class="delete-btn" data-id="' . htmlspecialchars((string)$row['patient_id']) . '"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>';
                         } else {
                             echo '<span class="text-muted" style="font-size: 0.85rem; color: #9ca3af;">Read Only</span>';
                         }

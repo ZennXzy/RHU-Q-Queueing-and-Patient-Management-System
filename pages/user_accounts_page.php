@@ -2,6 +2,7 @@
 require_once '../api/check-private.php';
 authorizeRoles(['Admin']);
 require_once '../php/connection.php';
+$type = $_SESSION['table_type'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,12 +76,15 @@ require_once '../php/connection.php';
             <table>
                 <thead>
                 <tr>
-                    <th style="text-align: center; border-top-left-radius:6px;">#</th>
                     <th>Username</th>
                     <th>Full Name</th>
                     <th>Email</th>
                     <th style="text-align: center;">Status</th>
+                    <?php if ($type === 'patient'){ ?>
                     <th style="text-align: center;">Token</th>
+                    <?php }else{ ?>
+                    <th style="text-align: center;">Role</th>
+                    <?php } ?>
                     <th style="text-align: center;">Created</th>
                     <th style="text-align: center;">Last Login</th>
                     <th style="text-align: center; border-top-right-radius:6px;">Actions</th>

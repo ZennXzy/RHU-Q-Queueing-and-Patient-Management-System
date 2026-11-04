@@ -53,13 +53,13 @@ try {
     while ($row = $result->fetch_assoc()) {
         $transactions[] = [
             'transaction_id'   => $row['transaction_id'] ?? null,
-            'queue_code'       => htmlspecialchars($row['queue_code']),
+            'queue_code'       => htmlspecialchars((string)$row['queue_code']),
             'service' => htmlspecialchars(
                 !empty($row['service']) ? $row['service'] : ($row['service_snapshot'] ?? 'N/A')
             ),
-            'remarks'          => htmlspecialchars($row['remarks']),
-            'server_name'      => htmlspecialchars($row['server_name']),
-            'service_duration' => htmlspecialchars($row['service_duration']),
+            'remarks'          => htmlspecialchars((string)$row['remarks']),
+            'server_name'      => htmlspecialchars((string)$row['server_name']),
+            'service_duration' => htmlspecialchars((string)$row['service_duration']),
             'transaction_date' => $row['transaction_date']
         ];
     }

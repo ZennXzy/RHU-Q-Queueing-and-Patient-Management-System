@@ -70,7 +70,7 @@
 /* Body */
 .custom-modal-body {
     padding: 24px;
-    max-height: 75vh;
+    max-height: 60vh;
     overflow-y: auto;
 }
 
@@ -234,7 +234,7 @@
 /* Responsive adjustments */
 @media (max-width: 640px) {
     .custom-modal-body{
-        max-height: 75vh;
+        max-height: 60vh;
         overflow-y: auto;
     }
     .format-grid {

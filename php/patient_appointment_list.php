@@ -24,10 +24,10 @@ try {
     if ($res && $res->num_rows > 0) {
         while ($row = $res->fetch_assoc()) {
             $appointment_id = $row['appointments_id'];
-            $service        = htmlspecialchars($row['service']);
-            $remarks        = !empty($row['remarks']) ? htmlspecialchars($row['remarks']) : 'No description provided.';
-            $status         = htmlspecialchars($row['status']);
-            $decline_reason = !empty($row['note']) ? htmlspecialchars($row['note']) : 'No reason provided.';
+            $service        = htmlspecialchars((string)$row['service']);
+            $remarks        = !empty($row['remarks']) ? htmlspecialchars((string)$row['remarks']) : 'No description provided.';
+            $status         = htmlspecialchars((string)$row['status']);
+            $decline_reason = !empty($row['note']) ? htmlspecialchars((string)$row['note']) : 'No reason provided.';
             $formatted_date = date('M d, Y', strtotime($row['appointment_date']));
             ?>
             <div class="appointment-item <?= strtolower($status) ?>" data-id="<?= $appointment_id ?>">
