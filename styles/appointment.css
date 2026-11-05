@@ -225,6 +225,75 @@ html {
   color: #1e293b;
 }
 
+.appointment-item.appointment-queued {
+    background-color: #F0FDF4;
+    border-color: #BBF7D0;
+}
+
+.appointment-queued-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 14px;
+    border-radius: 6px;
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #86EFAC;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: default;
+}
+
+.btn-complete:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.appointment-item.appointment-due {
+    position: relative;
+    background-color: #FFFBEB;
+    border: 2px solid #F59E0B;
+    animation: appointmentDuePulse 2.5s ease-in-out infinite;
+}
+
+.appointment-item.appointment-due:hover {
+    border-color: #D97706;
+}
+
+.appointment-due-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 9px;
+    border-radius: 20px;
+    background-color: #FEF3C7;
+    border: 1px solid #F59E0B;
+    color: #92400E;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+@keyframes appointmentDuePulse {
+    0%, 100% {
+        border-color: #F59E0B;
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+    }
+
+    50% {
+        border-color: #D97706;
+        box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.14);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .appointment-item.appointment-due {
+        animation: none;
+    }
+}
+
+
 .appointment-meta {
   display: flex;
   align-items: center;
@@ -540,9 +609,105 @@ html {
     font-weight: 600;
 }
 
+.status-tag.status-completed {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #86EFAC;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-tag.status-queued {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #86EFAC;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .action-button{
   justify-content: end;
 }
+
+.patient-queue-action {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-patient-queue {
+    background-color: #0B695D;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-patient-queue:hover:not(:disabled) {
+    background-color: #085249;
+}
+
+.btn-patient-queue:disabled {
+    background-color: #e2e8f0;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+
+.patient-appointment-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-patient-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+    border-radius: 6px;
+    padding: 9px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-patient-remove:hover:not(:disabled) {
+    background-color: #FECACA;
+    border-color: #F87171;
+}
+
+.btn-patient-remove:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.95); }

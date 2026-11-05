@@ -1,106 +1,124 @@
+
 document.addEventListener("DOMContentLoaded", () => {
-  const approvedContainer = document.getElementById("approvedAppointmentsList");
-  const approvedCountBadge = document.getElementById("approvedCount");
+    const approvedContainer = document.getElementById("approvedAppointmentsList");
+    const approvedCountBadge = document.getElementById("approvedCount");
+    let isLoading = false;
+    let isProcessing = false;
 
-  const loadApprovedAppointments = async () => {
-    try {
-      const response = await fetch("../php/approved_appointment_list.php");
-      if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+    const notify = (message, type) => {
+        if (typeof showToast === "function") showToast(message, type);
+        else if (type === "error") console.error(message);
+    };
 
-      const data = await response.json();
+    const loadApprovedAppointments = async () => {
+        if (!approvedContainer || isLoading || isProcessing) return;
+        isLoading = true;
 
-      if (data.status === "success") {
-        if (approvedContainer) approvedContainer.innerHTML = data.html;
-        if (approvedCountBadge) approvedCountBadge.textContent = data.total;
-      } else {
-        console.error("Error loading approved appointments:", data.message);
-      }
-    } catch (error) {
-      console.error("Fetch error for approved appointments:", error);
+        try {
+            const response = await fetch("../php/approved_appointment_list.php", {
+                credentials: "same-origin",
+                cache: "no-store"
+            });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const data = await response.json();
+            if (data.status !== "success") throw new Error(data.message || "Unable to load appointments.");
+
+            approvedContainer.innerHTML = data.html;
+            if (approvedCountBadge) approvedCountBadge.textContent = data.total;
+        } catch (error) {
+            console.error("Approved appointments error:", error);
+        } finally {
+            isLoading = false;
+        }
+    };
+
+    const addToQueue = async (patientId, service) => {
+        const payload = new URLSearchParams({
+            patient_id: patientId,
+            service_name: service
+        });
+
+        const response = await fetch("../php/add-to-queue.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            credentials: "same-origin",
+            body: payload.toString()
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        if (result.status !== "success") throw new Error(result.message || "Failed to add patient to queue.");
+        return result;
+    };
+
+    const updateAppointmentStatus = async (appointmentId) => {
+        const payload = new URLSearchParams({ appointment_id: appointmentId });
+
+        const response = await fetch("../php/remove_appointment.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            credentials: "same-origin",
+            body: payload.toString()
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        if (result.status !== "success") throw new Error(result.message || "Failed to update appointment status.");
+        return result;
+    };
+
+    if (approvedContainer) {
+        approvedContainer.addEventListener("click", async (event) => {
+            const button = event.target.closest(".btn-complete");
+            if (!button || button.disabled || isProcessing) return;
+
+            const appointmentId = button.dataset.id;
+            const patientId = button.dataset.patientId;
+            const service = button.dataset.service;
+
+            if (!appointmentId || !patientId || !service) {
+                notify("Missing appointment information.", "error");
+                return;
+            }
+
+            isProcessing = true;
+            button.disabled = true;
+
+            try {
+                await addToQueue(patientId, service);
+
+                try {
+                    await updateAppointmentStatus(appointmentId);
+                    notify("Patient added to queue successfully.", "success");
+                } catch (error) {
+                    console.error("Appointment status update error:", error);
+                    notify("Patient added to queue, but appointment status was not updated. Verify the queue before retrying.", "error");
+                }
+            } catch (error) {
+                console.error("Add to queue error:", error);
+                notify(error.message || "Failed to add patient to queue.", "error");
+            } finally {
+                isProcessing = false;
+                if (button.isConnected) button.disabled = false;
+                await loadApprovedAppointments();
+
+                if (typeof window.refreshAppointmentNotification === "function") {
+                    window.refreshAppointmentNotification();
+                }
+            }
+        });
     }
-  };
 
-  // Event handler delegation for Add to Queue button and Options menu
-  if (approvedContainer) {
-    approvedContainer.addEventListener("click", async (e) => {
-      const completeBtn = e.target.closest(".btn-complete");
+    loadApprovedAppointments();
 
-      if (completeBtn) {
-        const appointmentId = completeBtn.dataset.id;
-        const patientId = completeBtn.dataset.patientId;
-        const service = completeBtn.dataset.service;
+    setInterval(() => {
+        if (!document.hidden) loadApprovedAppointments();
+    }, 3000);
 
-        await addToQueueAction({patientId, service });
-        await deleteAppointment({appointmentId});
-      }
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) loadApprovedAppointments();
     });
-  }
 
-  // Function to process adding patient to queue
-  const addToQueueAction = async ({patientId, service }) => {
-    try {
-      const payload = new URLSearchParams({
-        patient_id: patientId,
-        service_name: service
-      });
-
-      const response = await fetch("../php/add-to-queue.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: payload.toString()
-      });
-
-      const result = await response.json();
-
-      if (result.status === "success") {
-        if (typeof showToast === "function") {
-          showToast(result.message || "Added to queue successfully.", "success");
-        }
-        loadApprovedAppointments(); // Refresh approved list
-      } else {
-        if (typeof showToast === "function") {
-          showToast("Error: " + (result.message || "Failed to add to queue."), "error");
-        }
-      }
-    } catch (err) {
-      console.error("Queue processing error:", err);
-      if (typeof showToast === "function") {
-        showToast("An error occurred while contacting the server.", "error");
-      }
-    }
-  };
-
-  const deleteAppointment = async ({appointmentId}) => {
-    try {
-      const payload = new URLSearchParams({
-        appointment_id: appointmentId,
-      });
-
-      const response = await fetch("../php/remove_appointment.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: payload.toString()
-      });
-
-      const result = await response.json();
-      loadApprovedAppointments();
-
-      if (result.status === "error") {
-        if (typeof showToast === "function") {
-          showToast(result.message || "Failed to remove appointment from database", "error");
-        }
-      }
-    } catch (err) {
-      console.error("Queue processing error:", err);
-      if (typeof showToast === "function") {
-        showToast("An error occurred while contacting the server.", "error");
-      }
-    }
-  };
-
-  // Initial fetch
-  loadApprovedAppointments();
-
-  // Expose reload function globally
-  window.reloadApprovedAppointments = loadApprovedAppointments;
+    window.reloadApprovedAppointments = loadApprovedAppointments;
 });

@@ -1,4 +1,5 @@
 <?php
+require_once '../api/check-private.php';
 require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
@@ -73,18 +74,35 @@ $role = $_SESSION['logged_role'];
             </div>
             <span class="menu-text">Queue Display</span>
         </a>  <?php }?>
+        <a href="../pages/appointment_page.php"
+        class="menu-item"
+        id="sidebarAppointmentLink">
+            <div class="menu-content">
+                <div class="menu-icon">
+                    <img
+                        src="../svg/reminder-appointment.svg"
+                        alt="appointment-icon"
+                    >
+                </div>
+                <span class="menu-text">Appointment</span>
+                <div
+                    class="indicator"
+                    id="appointmentDueIndicator"
+                    hidden
+                >
+                    <span
+                        class="dot-notification"
+                        id="appointmentDueDot"
+                    ></span>
+                </div>
+                <span
+                    class="appointment-sidebar-count"
+                    id="appointmentDueCount"
+                    hidden
+                >0</span>
+            </div>
+        </a>
 
-      <a href="../pages/appointment_page.php" class="menu-item">
-          <div class="menu-content">
-              <div class="menu-icon">
-                  <img src="../svg/reminder-appointment.svg" alt="appointment-icon">
-              </div>
-              <span class="menu-text">Appointment</span>
-              <div class="indicator active">
-                  <span class="dot-notification"></span>
-              </div>
-          </div>
-      </a>
       <?php if($role === 'Admin'){?>
       <a href="../pages/reports_page.php" class="menu-item">
           <div class="menu-content">
@@ -204,4 +222,103 @@ $role = $_SESSION['logged_role'];
             if (e.matches) setSidebarOpen(false);
         });
     });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const appointmentLink = document.getElementById(
+        'sidebarAppointmentLink'
+    );
+
+    const indicator = document.getElementById(
+        'appointmentDueIndicator'
+    );
+
+    const countBadge = document.getElementById(
+        'appointmentDueCount'
+    );
+
+    if (!appointmentLink || !indicator || !countBadge) {
+        return;
+    }
+
+    let checking = false;
+
+    async function checkDueAppointments() {
+
+        if (checking) return;
+
+        checking = true;
+
+        try {
+            const response = await fetch(
+                '../php/approved_appointment_list.php',
+                {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+            const data = await response.json();
+
+            if (
+                data.status !== 'success' ||
+                !Number.isFinite(Number(data.due_count))
+            ) {
+                throw new Error('Invalid appointment response');
+            }
+
+            const dueCount = Math.max(
+                0,
+                Number(data.due_count)
+            );
+
+            const hasDue = dueCount > 0;
+
+            appointmentLink.classList.toggle(
+                'appointment-has-due',
+                hasDue
+            );
+
+            indicator.hidden = !hasDue;
+            countBadge.hidden = !hasDue;
+
+            countBadge.textContent = dueCount > 99
+                ? '99+'
+                : String(dueCount);
+
+            appointmentLink.title = hasDue
+                ? `${dueCount} appointment(s) due`
+                : 'Appointment';
+
+        } catch (error) {
+            console.error(
+                'Appointment notification check failed:',
+                error
+            );
+        } finally {
+            checking = false;
+        }
+    }
+
+    window.refreshAppointmentNotification =
+        checkDueAppointments;
+
+    checkDueAppointments();
+
+    setInterval(checkDueAppointments, 3000);
+
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            checkDueAppointments();
+        }
+    });
+
+});
 </script>
