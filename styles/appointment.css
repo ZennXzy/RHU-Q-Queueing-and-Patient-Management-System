@@ -708,6 +708,15 @@ html {
     cursor: not-allowed;
 }
 
+.search-empty-state {
+    width: 100%;
+    padding: 28px 12px;
+    text-align: center;
+    color: #94A3B8;
+    font-size: 13px;
+    font-weight: 400;
+}
+
 
 @keyframes fadeIn {
     from { opacity: 0; transform: scale(0.95); }

@@ -137,7 +137,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial load
   loadPendingAppointments();
-  
+
+  // Auto-refresh every 3 seconds
+  setInterval(() => {
+    if (!document.hidden) {
+        loadPendingAppointments();
+    }
+  }, 3000);
+
   // Expose reload function globally
   window.reloadPendingAppointments = loadPendingAppointments;
 });

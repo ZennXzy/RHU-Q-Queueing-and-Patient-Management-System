@@ -22,6 +22,7 @@ $role = $_SESSION['logged_role'];
     <script src="../js/pending-appointment-list.js" defer></script>
     <script src="../js/approved-appointment-list.js" defer></script>
     <script src="../js/session-check.js" defer></script>
+    <script src="../js/appointment-search.js" defer></script>
 </head>
 <body>
     <?php include '../pages/top-navbar.php'; ?>
@@ -37,7 +38,12 @@ $role = $_SESSION['logged_role'];
                     <div class="search-icon">
                         <img src="../svg/search-icon.svg" alt="search-icon">
                     </div>
-                    <input type="text" placeholder="Search by name">
+                    <input
+                        type="search"
+                        id="appointmentSearch"
+                        placeholder="Search by patient name..."
+                        autocomplete="off"
+                    >
                 </div>
             </div>
 
