@@ -12,10 +12,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     e.preventDefault();
 
-    const queueInfoId = completeBtn.getAttribute("data-queue-id");
-    const patientName = completeBtn.getAttribute("data-patient-name");
-    const queueCode   = completeBtn.getAttribute("data-queue-code");
-    const service     = completeBtn.getAttribute("data-service");
+    // Fallback lookups to support both naming conventions (data-queue-id vs data-id, etc.)
+    const queueInfoId = completeBtn.getAttribute("data-queue-id") || completeBtn.getAttribute("data-id");
+    const patientName = completeBtn.getAttribute("data-patient-name") || completeBtn.getAttribute("data-name");
+    const queueCode   = completeBtn.getAttribute("data-queue-code") || completeBtn.getAttribute("data-code");
+    const service     = completeBtn.getAttribute("data-service") || completeBtn.getAttribute("data-servicename");
 
     if (!queueInfoId || !patientName) {
       if (typeof showToast === "function") showToast("Missing record details.", "error");
@@ -24,21 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Populate UI elements
     document.getElementById("completePatientName").textContent = patientName;
-    document.getElementById("serviceName").textContent = service;
+    document.getElementById("serviceName").textContent = service || "--";
     document.getElementById("completeQueueCodeBadge").textContent = `QUEUE: #${queueCode || "0000"}`;
 
     // Populate hidden form inputs
     document.getElementById("completeQueueId").value = queueInfoId;
     document.getElementById("completePatientNameInput").value = patientName;
-    document.getElementById("completeQueueCodeInput").value = queueCode;
-    document.getElementById("completeServiceInput").value = service;
+    document.getElementById("completeQueueCodeInput").value = queueCode || "";
+    document.getElementById("completeServiceInput").value = service || "";
 
     // Reset form controls
     document.getElementById("completeRemarks").value = "";
     if (toggleAppointment) toggleAppointment.checked = false;
     if (appointmentContainer) appointmentContainer.classList.add("hidden");
     if (appointmentDate) {
-      appointmentDate.require_onced = false;
       appointmentDate.value = "";
     }
 
@@ -49,10 +49,8 @@ document.addEventListener("DOMContentLoaded", () => {
     toggleAppointment.addEventListener("change", (e) => {
       if (e.target.checked) {
         appointmentContainer.classList.remove("hidden");
-        appointmentDate.require_onced = true;
       } else {
         appointmentContainer.classList.add("hidden");
-        appointmentDate.require_onced = false;
         appointmentDate.value = "";
       }
     });
@@ -85,12 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const submitBtn = completeForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
 
-      // FormData now includes all inputs automatically via input 'name' attributes
       const formData = new FormData(completeForm);
-
-      for (const [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
       
       try {
         const response = await fetch("../php/complete-queue.php", {
@@ -109,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (typeof reloadInProgressTable === "function") reloadInProgressTable();
           if (typeof reloadTotalRecord === "function") reloadTotalRecord();
+          setTimeout(() => window.location.reload(), 1000);
         } else {
           if (typeof showToast === "function") {
             showToast("Error: " + (result.message || "Failed to complete transaction."), "error");

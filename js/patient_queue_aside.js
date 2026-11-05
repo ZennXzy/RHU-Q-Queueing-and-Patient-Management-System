@@ -20,6 +20,54 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toggleBtn) toggleBtn.addEventListener('click', togglePanel);
     if (closeBtn) closeBtn.addEventListener('click', togglePanel);
 
+    // Delegate click handler for cancel queue button to survive 3-second re-renders
+    if (queueBody) {
+        queueBody.addEventListener('click', async (e) => {
+            const deleteBtn = e.target.closest('.btn-delete-queue');
+            if (!deleteBtn) return;
+
+            if (!confirm('Are you sure you want to cancel this queue request?')) {
+                return;
+            }
+
+            const queueId = deleteBtn.getAttribute('data-id');
+            deleteBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append('queue_id', queueId);
+
+                const delResponse = await fetch('../php/patient_delete_queue.php', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const delResult = await delResponse.json();
+
+                if (delResult.status === 'success') {
+                    if (typeof showToast === 'function') {
+                        showToast(delResult.message, 'success');
+                    }
+                    fetchPatientQueue();
+                } else {
+                    if (typeof showToast === 'function') {
+                        showToast(delResult.message || 'Failed to cancel queue.', 'error');
+                    } else {
+                        alert(delResult.message || 'Failed to cancel queue.');
+                    }
+                    deleteBtn.disabled = false;
+                }
+            } catch (err) {
+                console.error('Error cancelling queue:', err);
+                alert('Server error while cancelling queue.');
+                deleteBtn.disabled = false;
+            }
+        });
+    }
+
     // 2. Fetch Active Queue Data Asynchronously
     const fetchPatientQueue = async () => {
         try {
@@ -37,17 +85,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     const q = data.queue;
                     var statusClass = q.status.toLowerCase();
                     if (q.status === 'In Progress'){
-                        statusClass = 'serving'
+                        statusClass = 'serving';
                     }
+
+                    const statusLower = q.status.toLowerCase();
+                    const canCancel = statusLower === 'waiting' || statusLower === 'pending';
 
                     // Render queue info with delete button aligned to the status row
                     queueBody.innerHTML = `
-                        <div class="queue-info-card">
+                        <div class="queue-info-card ${statusLower === 'pending' ? 'pending-queue-card' : ''}">
                             <div class="queue-header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                 <div class="queue-status-badge ${statusClass}">
                                     ${escapeHtml(q.status)}
                                 </div>
-                                ${q.status.toLowerCase() === 'waiting' ? `
+                                ${canCancel ? `
                                     <button class="btn-delete-queue" data-id="${escapeHtml(String(q.id))}" title="Cancel Queue Request" style="background-color: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s;">
                                         Cancel Queue
                                     </button>
@@ -102,49 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
 
-                    // Attach click handler for the newly rendered delete button
-                    const deleteBtn = queueBody.querySelector('.btn-delete-queue');
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', async () => {
-                            if (!confirm('Are you sure you want to cancel this queue request?')) {
-                                return;
-                            }
-
-                            const queueId = deleteBtn.getAttribute('data-id');
-                            try {
-                                const formData = new FormData();
-                                formData.append('queue_id', queueId);
-
-                                const delResponse = await fetch('../php/patient_delete_queue.php', {
-                                    method: 'POST',
-                                    body: formData,
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    }
-                                });
-
-                                const delResult = await delResponse.json();
-
-                                if (delResult.status === 'success') {
-                                    if (typeof showToast === 'function') {
-                                        showToast(delResult.message, 'success');
-                                    }
-                                    // Refresh the aside content back to "no active queue"
-                                    fetchPatientQueue();
-                                } else {
-                                    if (typeof showToast === 'function') {
-                                        showToast(delResult.message || 'Failed to cancel queue.', 'error');
-                                    } else {
-                                        alert(delResult.message || 'Failed to cancel queue.');
-                                    }
-                                }
-                            } catch (err) {
-                                console.error('Error cancelling queue:', err);
-                                alert('Server error while cancelling queue.');
-                            }
-                        });
-                    }
-
                 } else {
                     queueBody.innerHTML = `
                         <div class="no-active-queue">
@@ -164,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Helper function to prevent XSS output rendering vulnerabilities
     function escapeHtml(str) {
-        return str.replace(/&/g, "&amp;")
+        return String(str || '').replace(/&/g, "&amp;")
                   .replace(/</g, "&lt;")
                   .replace(/>/g, "&gt;")
                   .replace(/"/g, "&quot;")
@@ -173,4 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trigger fetch on load
     fetchPatientQueue();
+
+    // Auto-poll queue status every 3 seconds
+    setInterval(fetchPatientQueue, 3000);
 });
