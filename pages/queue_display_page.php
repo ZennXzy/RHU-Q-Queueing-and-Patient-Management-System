@@ -61,6 +61,7 @@ if ($activeQuery) {
 
     <script src="../js/logout.js" defer></script>
     <script src="../js/patient_notification.js" defer></script>
+    <script src="../js/queue-display.js" defer></script>
 
     <style>
         /* Modern Medical Theme Palette (No Icons, High Contrast, Crisp Typography) */
@@ -116,21 +117,21 @@ if ($activeQuery) {
             <?php foreach ($DEPARTMENT_CONFIG as $serviceId => $config): 
                 $isVisible = in_array($serviceId, $activeServices);
 
-                // Now serving (using integer "i" for service_id)
+                // Now serving
                 $sqlActive = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'In Progress' ORDER BY created_at ASC";
                 $stmtActive = $conn->prepare($sqlActive);
                 $stmtActive->bind_param("i", $serviceId);
                 $stmtActive->execute();
                 $resActive = $stmtActive->get_result();
 
-                // Waiting (using integer "i" for service_id)
+                // Waiting
                 $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'Waiting' ORDER BY created_at ASC";
                 $stmtWaiting = $conn->prepare($sqlWaiting);
                 $stmtWaiting->bind_param("i", $serviceId);
                 $stmtWaiting->execute();
                 $resWaiting = $stmtWaiting->get_result();
 
-                // Average waiting time today (using integer "i" for service_id)
+                // Average waiting time today
                 $sql = "SELECT service_duration FROM transactions WHERE service = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $serviceId);
@@ -201,64 +202,5 @@ if ($activeQuery) {
             <?php endforeach; ?>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            async function fetchLiveQueueData() {
-                try {
-                    const response = await fetch('../api/get_queue_display_data.php');
-                    const result = await response.json();
-
-                    if (result.status === 'success' && Array.isArray(result.data)) {
-                        let visibleCount = 0;
-
-                        result.data.forEach(item => {
-                            const col = document.querySelector(`.dept-column[data-service="${CSS.escape(item.service)}"]`);
-                            if (!col) return;
-
-                            if (item.isVisible) {
-                                col.style.display = 'flex';
-                                visibleCount++;
-                            } else {
-                                col.style.display = 'none';
-                            }
-
-                            const servingList = col.querySelector('.serving-list');
-                            if (servingList) {
-                                servingList.innerHTML = item.active.length > 0
-                                    ? item.active.map(code => `<div class="ticket-box">${escapeHtml(code)}</div>`).join('')
-                                    : `<div class="no-queue">No Queue</div>`;
-                            }
-
-                            const waitingList = col.querySelector('.waiting-list');
-                            if (waitingList) {
-                                waitingList.innerHTML = item.waiting.length > 0
-                                    ? item.waiting.map(code => `<div class="ticket-box is-waiting">${escapeHtml(code)}</div>`).join('')
-                                    : `<div class="no-queue">No Waiting`;
-                            }
-
-                            const avgVal = col.querySelector('.avg-time-val');
-                            if (avgVal) {
-                                avgVal.textContent = item.avgTime;
-                            }
-                        });
-
-                        const noServicesMsg = document.getElementById('no-services-msg');
-                        if (noServicesMsg) {
-                            noServicesMsg.style.display = (visibleCount === 0) ? 'flex' : 'none';
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error auto-refreshing queue cards:', error);
-                }
-            }
-
-            function escapeHtml(str) {
-                return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-            }
-
-            setInterval(fetchLiveQueueData, 3000);
-        });
-    </script>
 </body>
 </html>

@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Manila');
 if (!canManageRecords()) {
     echo json_encode([
         'status'  => 'error',
-        'message' => 'Unauthorized action. require_onced privileges missing.'
+        'message' => 'Unauthorized action. Admin privileges missing.'
     ]);
     exit();
 }
