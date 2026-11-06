@@ -27,12 +27,11 @@ if ($queue_info_id <= 0 || $patient_name === '' || $service === '') {
 try {
     $conn->begin_transaction();
 
-    $stmt = $conn->prepare("SELECT patient_id, queue_code, service_snapshot, accepted_at, status FROM queue_information WHERE queue_info_id = ? FOR UPDATE");
+    $stmt = $conn->prepare("SELECT * FROM queue_information WHERE queue_info_id = ? FOR UPDATE");
     if (!$stmt) throw new Exception($conn->error);
     $stmt->bind_param("i", $queue_info_id);
     $stmt->execute();
     $queue = $stmt->get_result()->fetch_assoc();
-    $stmt->close();
 
     if (!$queue) throw new Exception('Queue record not found.');
     if ($queue['status'] === 'Completed') throw new Exception('This queue has already been completed.');
@@ -41,6 +40,16 @@ try {
     $patient_id = (int)$queue['patient_id'];
     $queue_code = $queue['queue_code'];
     $queue_service = trim((string)$queue['service_snapshot']);
+
+    $blood_pressure = trim((string)$queue['blood_pressure']);
+    $respiratory_rate = trim((string)$queue['respiratory_rate']);
+    $temperature = trim((string)$queue['temperature']);
+    $pulse_rate = trim((string)$queue['pulse_rate']);
+    $weight = trim((string)$queue['weight']);
+    $height = trim((string)$queue['height']);
+    $diagnosis = trim((string)$queue['diagnosis']);
+    $stmt->close();
+
 
     $stmt = $conn->prepare("SELECT contact_number FROM patient_records WHERE patient_id = ? LIMIT 1");
     if (!$stmt) throw new Exception($conn->error);
@@ -83,12 +92,12 @@ try {
     $service_duration = $interval->format('%a days, %h hours, %i minutes');
 
     $insertSql = "INSERT INTO transactions
-        (patient_id, queue_code, service, service_snapshot, remarks, server_name, service_duration, transaction_date)
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())";
+        (patient_id, queue_code, service, service_snapshot,blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, server_name, service_duration, transaction_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($insertSql);
     if (!$stmt) throw new Exception($conn->error);
-    $stmt->bind_param("isissis", $patient_id, $queue_code, $service_id, $service, $remarks, $server_name, $service_duration);
+    $stmt->bind_param("isisssssssssis", $patient_id, $queue_code, $service_id, $service, $blood_pressure, $respiratory_rate, $temperature, $pulse_rate, $weight, $height, $diagnosis, $remarks, $server_name, $service_duration);
 
     if (!$stmt->execute()) throw new Exception('Failed to save completed transaction.');
     $stmt->close();

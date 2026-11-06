@@ -88,7 +88,7 @@ try {
                 throw new InvalidArgumentException('Invalid patient ID');
             }
 
-            $rows = report_run($conn, "SELECT t.transaction_id, t.queue_code, t.transaction_date, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name, COALESCE(b.barangay_address, 'Unspecified') AS barangay FROM transactions t LEFT JOIN services s ON s.service_id = t.service LEFT JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address WHERE t.patient_id = ? ORDER BY t.transaction_date DESC", [$patientId], 'i');
+            $rows = report_run($conn, "SELECT t.*,t.transaction_id, t.queue_code, t.transaction_date, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name, COALESCE(b.barangay_address, 'Unspecified') AS barangay FROM transactions t LEFT JOIN services s ON s.service_id = t.service LEFT JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address WHERE t.patient_id = ? ORDER BY t.transaction_date DESC", [$patientId], 'i');
 
             $data = ['transactions' => $rows];
         } else {

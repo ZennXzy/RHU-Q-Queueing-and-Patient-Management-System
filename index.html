@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Prevent InfinityFree / Browser Caching -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -116,12 +115,22 @@
             Taking too long? <a href="../pages/login_page.php">Click here to continue</a>
         </div>
     </div>
-
-    <script>
-        // Redirect precisely after 3 seconds (3000ms)
-        setTimeout(() => {
-            window.location.href = "../rhu_q/pages/login_page.php";
-        }, 3000);
-    </script>
 </body>
+<script>
+    // Generate a unique URL to avoid reusing a cached login response
+    const loginUrl = new URL(
+        'pages/login_page.php',
+        window.location.href
+    );
+
+    loginUrl.searchParams.set('v', Date.now().toString());
+
+    // Update fallback link
+    document.getElementById('fallbackLogin').href = loginUrl.href;
+
+    // Redirect after 3 seconds
+    setTimeout(() => {
+        window.location.replace(loginUrl.href);
+    }, 3000);
+</script>
 </html>

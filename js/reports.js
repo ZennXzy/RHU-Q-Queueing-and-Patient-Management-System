@@ -459,38 +459,48 @@ document.addEventListener("DOMContentLoaded", () => {
       container.replaceChildren();
 
       const fields = [
-        ["Patient", "fullname"],
-        ["Service", "service_type"],
-        ["Transaction Date", "transaction_date"],
-        ["Queue Code", "queue_code"],
-        ["Barangay", "address"],
-        ["Gender", "gender"],
-        ["Blood Pressure", "blood_pressure"],
-        ["Respiratory Rate", "respiratory_rate"],
-        ["Temperature", "temperature"],
-        ["Pulse Rate", "pulse_rate"],
-        ["Weight", "weight"],
-        ["Height", "height"],
-        ["Diagnosis", "diagnosis"],
-        ["Remarks", "remarks"],
+          ["Patient", "fullname"],
+          ["Service", "service_type"],
+          ["Transaction Date", "transaction_date"],
+          ["Queue Code", "queue_code"],
+          ["Barangay", "address"],
+          ["Gender", "gender"],
+          ["Blood Pressure", "blood_pressure"],
+          ["Respiratory Rate", "respiratory_rate"],
+          ["Temperature", "temperature"],
+          ["Pulse Rate", "pulse_rate"],
+          ["Weight", "weight"],
+          ["Height", "height"],
+          ["Diagnosis", "diagnosis"],
+          ["Remarks", "remarks"],
       ];
 
       fields.forEach(([label, key]) => {
-        const row = document.createElement("div");
+          const row = document.createElement("div");
+          row.className = "detail-row";
 
-        row.className = "detail-row";
+          const heading = document.createElement("strong");
+          heading.textContent = label;
 
-        const heading = document.createElement("strong");
+          const value = document.createElement("span");
+          
+          // Get the raw value from the record, default to "—" if empty
+          let valText = record[key] !== undefined && record[key] !== null && record[key] !== "" ? record[key] : "—";
 
-        heading.textContent = label;
+          // Concat units based on the label string
+          if (valText !== "—") {
+              if (label === 'Blood Pressure') valText += " (mmHg)";
+              else if (label === 'Respiratory Rate') valText += " (cpm)";
+              else if (label === 'Temperature') valText += " (°C)";
+              else if (label === 'Pulse Rate') valText += " (bpm)";
+              else if (label === 'Weight') valText += " (kg)";
+              else if (label === 'Height') valText += " (cm)";
+          }
 
-        const value = document.createElement("span");
+          value.textContent = valText;
 
-        value.textContent = record[key] || "—";
-
-        row.append(heading, value);
-
-        container.append(row);
+          row.append(heading, value);
+          container.append(row);
       });
 
       $("view-record-modal").showModal();
