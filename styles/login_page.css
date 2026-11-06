@@ -438,11 +438,138 @@ body {
     transform: none;
   }
 }
+/* Privacy Policy Modal Styling & Centering */
+.policy-modal {
+    border: none;
+    background: transparent; /* Let the backdrop handle the dimming */
+    padding: 16px;
+    max-width: 650px;
+    width: 95%;
+    max-height: 90vh;
+    box-sizing: border-box;
+    
+    /* Use flexbox centering on the dialog element itself */
+    display: none; /* Controlled by .showModal() */
+    flex-direction: column;
+    margin: auto;
+    position: fixed;
+    inset: 0;
+    overflow: visible;
+    z-index: 1000;
+    
+    animation: modalFadeIn 0.3s ease-out;
+}
 
-/* ---------- Desktop / Tablet and up (768px+): fade that ends near the middle of the login card ----------
-   Change --fade-start / --fade-end to move it. The login card's middle sits at about 3/4 of the
-   screen width, so 75% makes the teal disappear right around the middle of the card.
-   Not used on mobile. */
+/* When the dialog is open using showModal() */
+.policy-modal[open] {
+    display: flex;
+}
+
+.policy-modal::backdrop {
+    background: rgba(11, 105, 93, 0.4);
+    backdrop-filter: blur(2px);
+}
+
+.policy-modal .activate-modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    max-height: 85vh;
+    overflow: hidden;
+}
+
+.policy-modal .activate-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+.policy-modal .activate-modal-title {
+    color: var(--teal-700);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.policy-modal .activate-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.policy-modal .activate-close-btn:hover {
+    color: var(--ink);
+}
+
+.policy-modal .activate-modal-desc {
+    max-height: 50vh;
+    overflow-y: auto;
+    text-align: left;
+    line-height: 1.6;
+    padding-right: 8px;
+    font-size: 13.5px;
+    color: var(--body);
+}
+
+/* Custom Scrollbar for Modal Content */
+.policy-modal .activate-modal-desc::-webkit-scrollbar {
+    width: 6px;
+}
+
+.policy-modal .activate-modal-desc::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.policy-modal .activate-modal-desc::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.policy-modal .activate-modal-desc::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Modal footer close button */
+.policy-modal .btn-secondary {
+    padding: 8px 18px;
+    background: var(--teal-700);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    margin-top: 15px;
+    align-self: flex-end;
+    flex-shrink: 0;
+}
+
+.policy-modal .btn-secondary:hover {
+    background: var(--teal-800);
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @media (min-width: 768px) {
   .background-container {
     --fade-start: 36%;   /* teal is solid up to here */
@@ -494,6 +621,7 @@ body {
     display: none;
   }
 }
+
 
 /* ---------- Mobile (767.98px and below): hero banner, form card overlaps it ---------- */
 @media (max-width: 767.98px) {

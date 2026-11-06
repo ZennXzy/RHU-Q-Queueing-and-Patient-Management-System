@@ -112,6 +112,12 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
                         <li>Unauthorized use of another patient's identity or false appointments is strictly prohibited.</li>
                     </ul>
                 </div>
+                <div style="margin: 15px 0; display: flex; align-items: center; gap: 8px; font-size: 14px;">
+                    <input type="checkbox" id="privacyPolicyCheck" style="width: 16px; height: 16px; cursor: pointer;">
+                    <label for="privacyPolicyCheck" style="cursor: pointer; color: #334155;">
+                        I agree and read the <a href="#" id="openPrivacyPolicyModal" style="color: #0B695D; text-decoration: underline; font-weight: 600;">Privacy Policy</a>
+                    </label>
+                </div>
 
                 <div class="terms-actions">
                     <button type="button" id="cancelTermsBtn" class="btn-cancel">Cancel</button>
@@ -153,6 +159,84 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
             </form>
         </div>
     </dialog>
+    <!-- Privacy Policy Modal -->
+    <dialog id="privacyPolicyModal" class="policy-modal activate-modal">
+        <div class="activate-modal-content" style="max-width: 650px; width: 95%;">
+            <div class="activate-modal-header">
+                <h3 class="activate-modal-title">Data Privacy Policy</h3>
+                <button type="button" id="closePrivacyModalBtn" class="activate-close-btn">&times;</button>
+            </div>
+            
+            <div class="activate-modal-desc" style="max-height: 450px; overflow-y: auto; text-align: left; line-height: 1.6; padding-right: 5px; font-size: 13.5px; color: #334155;">
+                <p style="font-weight: bold; margin-bottom: 10px;">ODIONGAN RURAL HEALTH UNIT (RHU)</p>
+                
+                <p>The Rural Health Unit of Odiongan is committed to protecting and respecting your privacy in compliance with Republic Act No. 10173, also known as the Data Privacy Act of 2012 (DPA), and its Implementing Rules and Regulations.</p>
+                
+                <p style="margin-top: 8px;">This Privacy Policy explains how we collect, use, store, disclose, and dispose of your personal and sensitive personal information when you avail yourself of our healthcare services, visit our facility, or interact with our staff.</p>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">1. Information We Collect</h4>
+                <p>To provide appropriate medical care, public health interventions, and administrative processing, the RHU collects the following personal and sensitive personal information:</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li><strong>Personal Information:</strong> Full name, date of birth, age, sex, civil status, home address, contact numbers, email address, and name of next of kin or emergency contact.</li>
+                    <li><strong>Sensitive Personal Information:</strong> Medical history, vital signs, physical or mental health conditions, clinical diagnoses, laboratory and diagnostic test results, medications, and PhilHealth or social security numbers.</li>
+                    <li><strong>Government-Issued Identification:</strong> Valid IDs presented during registration or admission.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">2. Purpose and Methods of Processing</h4>
+                <p>The RHU processes your data based on lawful grounds under Sections 12 and 13 of the Data Privacy Act, primarily to fulfill our mandate as a local government healthcare provider. Your information is used for:</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li><strong>Medical Consultation and Treatment:</strong> Creation, retrieval, and updating of your patient records to deliver medical, dental, maternal, and child health care.</li>
+                    <li><strong>Public Health Monitoring:</strong> Reporting communicable diseases and health data to the Department of Health (DOH) or the Provincial Health Office as mandated by law.</li>
+                    <li><strong>Special Programs:</strong> Enrollment and management under specialized programs such as TB-DOTS, Animal Bite Treatment, and immunization schedules.</li>
+                    <li><strong>PhilHealth and Financial Claims:</strong> Processing medical billing, PhilHealth claims, or local government financial assistance.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">3. Data Storage and Retention</h4>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li><strong>Storage:</strong> All patient records, queue transactions, and user data are securely stored in a centralized relational database hosted on our secure web server. Access is restricted through encrypted credentials, role-based user authentication, and secure database connections.</li>
+                    <li><strong>Retention:</strong> Your digital medical records and transaction history are retained in accordance with Department of Health (DOH) guidelines on medical record retention and applicable local government policies. Once the retention period expires, records are permanently deleted or purged from the database using secure digital sanitization methods.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">4. Data Disclosure and Sharing</h4>
+                <p>The RHU will not disclose your personal or sensitive health information to third parties without your explicit consent, except in the following circumstances authorized by law:</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>When necessary to protect your life, health, or security during an emergency.</li>
+                    <li>When mandated by public health reporting laws or submitted electronically to authorized oversight agencies like the Department of Health (DOH) or PhilHealth.</li>
+                    <li>Upon valid order of a court or legal authority.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">5. Security Measures</h4>
+                <p>The RHU implements strict organizational, physical, and technical safeguards within our web application and server environment to protect your data from unauthorized access, alteration, or disclosure:</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li><strong>Organizational:</strong> Only authorized health personnel (Administrators, Doctors, and Staff) assigned with specific system roles are granted access to patient records and queue dashboards.</li>
+                    <li><strong>Physical:</strong> Server hardware and database environments are hosted in secure, access-controlled data centers managed by our hosting provider.</li>
+                    <li><strong>Technical:</strong> We utilize secure encrypted connections (HTTPS), password hashing, session validation, and strict role-based access controls to safeguard data transmissions and user accounts.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">6. Your Rights as a Data Subject</h4>
+                <p>Under the Data Privacy Act of 2012, you are entitled to the following rights regarding your personal information:</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li><strong>Right to be Informed:</strong> The right to know if your data is being processed and why.</li>
+                    <li><strong>Right to Access:</strong> The right to request reasonable access to your medical records or a copy of your personal data.</li>
+                    <li><strong>Right to Rectification:</strong> The right to dispute any inaccuracy or error in your data and have it corrected.</li>
+                    <li><strong>Right to Object/Erasure:</strong> The right to object to processing or request the suspension/withdrawal of your data, subject to legal and public health retention mandates.</li>
+                    <li><strong>Right to File a Complaint:</strong> The right to file a complaint with our Data Protection Officer or the National Privacy Commission (NPC) if your privacy rights have been violated.</li>
+                </ul>
+
+                <h4 style="color: #0B695D; margin-top: 15px; margin-bottom: 5px;">7. Contact Information</h4>
+                <p>For any questions, clarifications, or requests regarding this Privacy Policy or your data privacy rights, you may contact our Data Protection Officer (DPO):</p>
+                <ul style="margin-left: 20px; margin-top: 5px; list-style-type: none; padding-left: 0;">
+                    <li><strong>Office:</strong> Rural Health Unit, J.P. Laurel St., Brgy. Tabing Dagat, Odiongan, Romblon</li>
+                    <li><strong>Email:</strong> [rhu.email@municipality.gov.ph]</li>
+                    <li><strong>Phone Number:</strong> [Insert Phone Number]</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 20px; text-align: right;">
+                <button type="button" id="closePolicyBtn" class="btn-secondary" style="padding: 8px 18px; background: #0B695D; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600;">Close</button>
+            </div>
+        </div>
+    </dialog>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const loginCard = document.getElementById('loginCard');
@@ -161,11 +245,24 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
         const openTermsBtn = document.getElementById('openTermsBtn');
         const cancelTermsBtn = document.getElementById('cancelTermsBtn');
 
+        // Checkbox and Proceed button elements
+        const privacyCheckbox = document.getElementById('privacyPolicyCheck');
+        const acceptTermsBtn = document.getElementById('acceptTermsBtn');
+
+        // Privacy Policy Modal Elements
+        const privacyPolicyModal = document.getElementById('privacyPolicyModal');
+        const openPrivacyPolicyModal = document.getElementById('openPrivacyPolicyModal');
+        const closePrivacyModalBtn = document.getElementById('closePrivacyModalBtn');
+        const closePolicyBtn = document.getElementById('closePolicyBtn');
+
         // Show Terms Card, Hide Login Card
         if (openTermsBtn) {
             openTermsBtn.addEventListener('click', function () {
                 loginCard.style.display = 'none';
                 termsCard.style.display = 'flex';
+                // Reset checkbox state when opening card
+                if (privacyCheckbox) privacyCheckbox.checked = false;
+                updateProceedButtonState();
             });
         }
 
@@ -174,6 +271,47 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
             cancelTermsBtn.addEventListener('click', function () {
                 termsCard.style.display = 'none';
                 loginCard.style.display = 'block';
+            });
+        }
+
+        // Manage button active/disabled state based on checkbox
+        function updateProceedButtonState() {
+            if (!privacyCheckbox || !acceptTermsBtn) return;
+            
+            if (privacyCheckbox.checked) {
+                acceptTermsBtn.removeAttribute('disabled');
+                acceptTermsBtn.style.pointerEvents = 'auto';
+            } else {
+                acceptTermsBtn.setAttribute('disabled', 'true');
+                acceptTermsBtn.style.pointerEvents = 'none';
+            }
+        }
+
+        if (privacyCheckbox) {
+            privacyCheckbox.addEventListener('change', updateProceedButtonState);
+        }
+
+        // Open Privacy Policy Modal
+        if (openPrivacyPolicyModal) {
+            openPrivacyPolicyModal.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (privacyPolicyModal) privacyPolicyModal.showModal();
+            });
+        }
+
+        // Close Privacy Policy Modal handlers
+        if (closePrivacyModalBtn) {
+            closePrivacyModalBtn.addEventListener('click', () => privacyPolicyModal.close());
+        }
+        if (closePolicyBtn) {
+            closePolicyBtn.addEventListener('click', () => privacyPolicyModal.close());
+        }
+        if (privacyPolicyModal) {
+            privacyPolicyModal.addEventListener('click', (e) => {
+                const rect = privacyPolicyModal.getBoundingClientRect();
+                if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+                    privacyPolicyModal.close();
+                }
             });
         }
 
