@@ -148,11 +148,6 @@ body {
     cursor: pointer;
 }
 
-
-/* ============================================================
-   03. PATIENT TABLE
-   ============================================================ */
-
 .table-card {
     min-width: 0;
     min-height: 0;
@@ -290,10 +285,6 @@ body {
 }
 
 
-/* ============================================================
-   04. TABLE ACTION BUTTONS
-   ============================================================ */
-
 .patient-table .edit-btn,
 .patient-table .view-btn,
 .patient-table .delete-btn {
@@ -380,10 +371,6 @@ body {
 }
 
 
-/* ============================================================
-   05. EMPTY TABLE STATE
-   ============================================================ */
-
 .empty-table-placeholder {
     padding: 40px 20px !important;
     background: #FAFAFA;
@@ -413,12 +400,6 @@ body {
     color: #94A3B8;
     font-size: 13px;
 }
-
-
-/* ============================================================
-   06. PATIENT MODALS
-   Original appearance retained
-   ============================================================ */
 
 #patientModal,
 #edit-patient,
@@ -601,11 +582,6 @@ dialog .modal-footer {
     flex-shrink: 0;
 }
 
-
-/* ============================================================
-   07. PATIENT INFORMATION
-   ============================================================ */
-
 .patient-profile-grid,
 .edit-patient-profile-grid {
     height: auto;
@@ -684,11 +660,6 @@ dialog .modal-footer {
 .info-group[style*="display: none"] {
     display: none !important;
 }
-
-
-/* ============================================================
-   08. TRANSACTION HISTORY
-   ============================================================ */
 
 .transactions-container {
     width: 100%;
@@ -778,11 +749,6 @@ dialog .modal-footer {
     font-size: 14px;
     text-align: center;
 }
-
-
-/* ============================================================
-   09. EDIT FORM AND MODAL BUTTONS
-   ============================================================ */
 
 .require_onced-asterisk {
     margin-left: 2px;
@@ -880,11 +846,135 @@ dialog .modal-footer {
 .btn-danger:hover {
     background: #DC2626;
 }
+/* Patient Filter Modal Styling & Centering */
+#patientFilterModal {
+    border: none;
+    background: #FFFFFF;
+    padding: 0;
+    max-width: 600px;
+    width: 95%;
+    max-height: 90vh;
+    box-sizing: border-box;
+    
+    display: none;
+    flex-direction: column;
+    margin: auto;
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 1000;
+    
+    border-radius: 12px;
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    outline: none;
+    
+    animation: modalFadeIn 0.3s ease-out;
+}
 
+#patientFilterModal[open] {
+    display: flex;
+}
 
-/* ============================================================
-   10. RESPONSIVE LAYOUT
-   ============================================================ */
+#patientFilterModal::backdrop {
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(4px);
+}
+
+/* Inherit consistent dark teal header layout */
+#patientFilterModal .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+
+    padding: 20px 24px 16px;
+
+    background: #0B695D;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+#patientFilterModal .header-title h2 {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+#patientFilterModal .close-modal-btn {
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+
+    color: #FFFFFF;
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+    outline: none;
+
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+#patientFilterModal .close-modal-btn:hover {
+    color: #FF4D4F;
+    transform: scale(1.2);
+}
+
+#patientFilterModal .modal-body {
+    flex: 1;
+    min-height: 0;
+    background: #ffffff;
+    padding: 20px 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+    text-align: left;
+    line-height: 1.5;
+}
+
+#patientFilterModal .modal-footer {
+    background: #ffffff;
+    padding: 15px 24px 20px;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Scrollbar styling for modal body */
+#patientFilterModal .modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+#patientFilterModal .modal-body::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+#patientFilterModal .modal-body::-webkit-scrollbar-thumb {
+    background: #20A59E;
+    border-radius: 4px;
+}
+
+#patientFilterModal .modal-body::-webkit-scrollbar-thumb:hover {
+    background: #0D9488;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* Desktop and tablets */
 

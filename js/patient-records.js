@@ -4,8 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.getElementById("patientTableBody");
   const sortableHeaders = document.querySelectorAll("th.sortable");
   
+  // Filter and Export elements
+  const filterModal = document.getElementById('patientFilterModal');
+  const openModalBtn = document.getElementById('openPatientFilterModal');
+  const closeModalBtn = document.getElementById('closePatientFilterModal');
+  const cancelModalBtn = document.getElementById('cancelPatientFilterBtn');
+  const resetFiltersBtn = document.getElementById('resetPatientFilters');
+  const filterForm = document.getElementById('patientFilterForm');
+  const exportCsvBtn = document.getElementById('exportPatientCsvBtn');
 
-  const sortDirections = { 0: "asc", 1: "asc", 4: "asc" };
+  const sortDirections = { 0: "asc", 1: "asc", 5: "asc" };
   const getVal = (obj, keys, defaultVal = "") => {
     for (const key of keys) {
       if (
@@ -41,6 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // Quick Main Table Search Bar
   function filterTable(searchTerm) {
     if (!tableBody) return;
     const term = searchTerm.toLowerCase();
@@ -65,8 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
         emptyRow = document.createElement("tr");
         emptyRow.className = "search-empty-row";
         emptyRow.innerHTML = `
-          <td colspan="6" style="padding: 20px; text-align: center; color: #666;">
-            No matching patient records found for "<strong>${searchTerm}</strong>".
+          <td colspan="7" style="padding: 20px; text-align: center; color: #666;">
+            No matching patient records found for "<strong>${escapeHtml(searchTerm)}</strong>".
           </td>
         `;
         tableBody.appendChild(emptyRow);
@@ -85,6 +94,236 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  // --- Advanced Filter Modal Controls ---
+  if (openModalBtn && filterModal) {
+    openModalBtn.addEventListener('click', () => {
+        filterModal.showModal();
+    });
+  }
+
+  const closeFilterModal = () => {
+      if (filterModal) filterModal.close();
+  };
+
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeFilterModal);
+  if (cancelModalBtn) cancelModalBtn.addEventListener('click', closeFilterModal);
+
+  if (filterModal) {
+      filterModal.addEventListener('click', (e) => {
+          const rect = filterModal.getBoundingClientRect();
+          if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+              closeFilterModal();
+          }
+      });
+  }
+
+  // Helper safety function to prevent XSS injection in dynamic rows
+  function escapeHtml(str) {
+      return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+  }
+
+  // Apply Advanced Multi-Column Filter Form submission via API fetch
+  if (filterForm) {
+      filterForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const gender = document.getElementById('filterGender') ? document.getElementById('filterGender').value : '';
+          const address = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
+          const ageMin = document.getElementById('filterAgeMin') ? document.getElementById('filterAgeMin').value : '';
+          const ageMax = document.getElementById('filterAgeMax') ? document.getElementById('filterAgeMax').value : '';
+          const employment = document.getElementById('filterEmployment') ? document.getElementById('filterEmployment').value : '';
+          const civilStatus = document.getElementById('filterCivilStatus') ? document.getElementById('filterCivilStatus').value : '';
+          const religion = document.getElementById('filterReligion') ? document.getElementById('filterReligion').value : '';
+          const philStatus = document.getElementById('filterPhilStatus') ? document.getElementById('filterPhilStatus').value : '';
+          const yakap = document.getElementById('filterYakap') ? document.getElementById('filterYakap').value : '';
+          const dateFrom = document.getElementById('filterDateFrom') ? document.getElementById('filterDateFrom').value : '';
+          const dateTo = document.getElementById('filterDateTo') ? document.getElementById('filterDateTo').value : '';
+
+          const params = new URLSearchParams({
+              action: 'filter',
+              gender,
+              address,
+              age_min: ageMin,
+              age_max: ageMax,
+              employment_status: employment,
+              civil_status: civilStatus,
+              religion,
+              phil_status: philStatus,
+              yakap_member: yakap,
+              date_from: dateFrom,
+              date_to: dateTo
+          });
+
+          try {
+              const response = await fetch(`../api/get_patients.php?${params.toString()}`);
+              if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+              const result = await response.json();
+
+              if (result.status === 'success') {
+                  const patients = result.patients;
+                  tableBody.innerHTML = '';
+
+                  if (patients.length > 0) {
+                      patients.forEach(row => {
+                          const fullname = `${row.lastname}, ${row.firstname} ${row.middlename || ''} ${row.suffix || ''}`.trim();
+                          
+                          const tr = document.createElement('tr');
+                          tr.style.textAlign = 'center';
+                          tr.innerHTML = `
+                              <td style="text-align:left;">${escapeHtml(fullname)}</td>
+                              <td>${escapeHtml(String(row.age || ''))}</td>
+                              <td>${escapeHtml(String(row.gender || ''))}</td>
+                              <td>${escapeHtml(String(row.contact_number || ''))}</td>
+                              <td>${escapeHtml(String(row.phil_status || ''))}</td>
+                              <td>${escapeHtml(String(row.date_registered || ''))}</td>
+                              <td>
+                                  <button class="edit-btn" data-id="${row.patient_id}"><img src="../svg/edit-icon.svg" alt="edit-icon"></button>
+                                  <button class="view-btn" data-id="${row.patient_id}"><img src="../svg/view-icon.svg" alt="view-icon"></button>
+                                  <button class="delete-btn" data-id="${row.patient_id}"><img src="../svg/delete-icon.svg" alt="delete-icon"></button>
+                              </td>
+                          `;
+                          tableBody.appendChild(tr);
+                      });
+                  } else {
+                      tableBody.innerHTML = `
+                        <tr>
+                          <td colspan="7" class="empty-table-placeholder">
+                            <div class="empty-state">
+                              <p class="empty-title">No Patient Records Found</p>
+                              <p class="search-empty-row">Try adjusting your filter criteria.</p>
+                            </div>
+                          </td>
+                        </tr>
+                      `;
+                  }
+
+                  closeFilterModal();
+                  if (typeof showToast === 'function') {
+                      showToast(`Filter applied: Showing ${patients.length} matching records.`, 'success');
+                  }
+              } else {
+                  if (typeof showToast === 'function') showToast('Error filtering records.', 'error');
+              }
+          } catch (error) {
+              console.error('Filter request failed:', error);
+              if (typeof showToast === 'function') showToast('Failed to connect to server.', 'error');
+          }
+      });
+  }
+
+  // Reset Filters
+  if (resetFiltersBtn) {
+      resetFiltersBtn.addEventListener('click', () => {
+          filterForm.reset();
+          window.location.reload(); 
+      });
+  }
+
+  // --- Export Full Database CSV Feature ---
+  if (exportCsvBtn) {
+      exportCsvBtn.addEventListener('click', async () => {
+          try {
+              // Fetch all records with filter criteria applied (or all if no filter)
+              const gender = document.getElementById('filterGender') ? document.getElementById('filterGender').value : '';
+              const address = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
+              const ageMin = document.getElementById('filterAgeMin') ? document.getElementById('filterAgeMin').value : '';
+              const ageMax = document.getElementById('filterAgeMax') ? document.getElementById('filterAgeMax').value : '';
+              const employment = document.getElementById('filterEmployment') ? document.getElementById('filterEmployment').value : '';
+              const civilStatus = document.getElementById('filterCivilStatus') ? document.getElementById('filterCivilStatus').value : '';
+              const religion = document.getElementById('filterReligion') ? document.getElementById('filterReligion').value : '';
+              const philStatus = document.getElementById('filterPhilStatus') ? document.getElementById('filterPhilStatus').value : '';
+              const yakap = document.getElementById('filterYakap') ? document.getElementById('filterYakap').value : '';
+              const dateFrom = document.getElementById('filterDateFrom') ? document.getElementById('filterDateFrom').value : '';
+              const dateTo = document.getElementById('filterDateTo') ? document.getElementById('filterDateTo').value : '';
+
+              const params = new URLSearchParams({
+                  action: 'filter',
+                  gender,
+                  address,
+                  age_min: ageMin,
+                  age_max: ageMax,
+                  employment_status: employment,
+                  civil_status: civilStatus,
+                  religion,
+                  phil_status: philStatus,
+                  yakap_member: yakap,
+                  date_from: dateFrom,
+                  date_to: dateTo
+              });
+
+              const response = await fetch(`../api/get_patients.php?${params.toString()}`);
+              if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+              const result = await response.json();
+
+              if (result.status === 'success' && result.patients.length > 0) {
+                  const patients = result.patients;
+
+                  // Define CSV Headers mapping to database columns
+                  let csvContent = "data:text/csv;charset=utf-8,";
+                  csvContent += "Patient ID,First Name,Middle Name,Last Name,Suffix,Age,Gender,Birth Date,Civil Status,Religion,Contact Number,Email,Address,Mothers Name,Fathers Name,Spouses Name,Employment Status,Occupation,Business Name,PhilHealth Status,PhilHealth Number,Principal Member,Yakap Member,Date Registered\r\n";
+
+                  patients.forEach(p => {
+                      const rowData = [
+                          p.patient_id || '',
+                          p.firstname || '',
+                          p.middlename || '',
+                          p.lastname || '',
+                          p.suffix || '',
+                          p.age || '',
+                          p.gender || '',
+                          p.date_of_birth || '',
+                          p.civil_status || '',
+                          p.religion || '',
+                          p.contact_number || 'Unknown',
+                          p.email || 'Unknown',
+                          p.address || '',
+                          p.mothers_name || '',
+                          p.fathers_name || '',
+                          p.spouses_name || 'Not Applicable',
+                          p.employment_status || '',
+                          p.occupation || 'Not Applicable',
+                          p.business_name || 'Not Applicable',
+                          p.phil_status || '',
+                          p.phil_number || 'Not Applicable',
+                          p.principal_member || 'Not Applicable',
+                          p.yakap_member || '',
+                          p.date_registered || ''
+                      ];
+
+                      // Escape fields for CSV format safety
+                      const formattedRow = rowData.map(val => `"${String(val).replace(/"/g, '""')}"`).join(",");
+                      csvContent += formattedRow + "\r\n";
+                  });
+
+                  const encodedUri = encodeURI(csvContent);
+                  const link = document.createElement("a");
+                  link.setAttribute("href", encodedUri);
+                  link.setAttribute("download", `all_patient_records_${new Date().toISOString().slice(0,10)}.csv`);
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+
+                  if (typeof showToast === 'function') {
+                      showToast(`Successfully exported ${patients.length} complete records to CSV.`, 'success');
+                  }
+              } else {
+                  if (typeof showToast === 'function') showToast('No patient records available to export.', 'error');
+              }
+          } catch (error) {
+              console.error('CSV Export failed:', error);
+              if (typeof showToast === 'function') showToast('Failed to export CSV.', 'error');
+          }
+      });
+  }
+
+  // Sortable Table Headers
   sortableHeaders.forEach((header) => {
     header.style.cursor = "pointer";
 
@@ -139,6 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Patient Details View Modal Loader
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".view-btn");
     
@@ -147,7 +387,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const patientId = btn.dataset.id;
     if (!modal) return;
 
-    // Set patient ID for transaction view tab handler
     if (typeof window.setModalPatientId === "function") {
       window.setModalPatientId(patientId);
     }

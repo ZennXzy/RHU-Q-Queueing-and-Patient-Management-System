@@ -2,6 +2,7 @@
 require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff']);
 require_once '../php/connection.php';
+$role = $_SESSION['logged_role'];
 ?>
 <!doctype html>
 <html lang="en">
@@ -50,7 +51,6 @@ require_once '../php/connection.php';
                 <div class="search-icon">
                     <img src="../svg/search-icon.svg" alt="">
                 </div>
-
                 <input
                     type="text"
                     id="patientSearchInput"
@@ -59,6 +59,16 @@ require_once '../php/connection.php';
                     autocomplete="off"
                 >
             </div>
+            <?php if($role === 'Admin'){ ?>
+            <div class="topbar-actions" style="display: flex; gap: 10px;">
+                <button type="button" id="openPatientFilterModal" class="secondary-btn" style="display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: #fff; border: 1.5px solid #d9e2e7; border-radius: 10px; font-weight: 600; cursor: pointer; color: #334155;">
+                    Filter Records
+                </button>
+                <button type="button" id="exportPatientCsvBtn" class="primary-btn" style="display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: #0B695D; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; color: #fff;">
+                    Export CSV
+                </button>
+            </div>
+            <?php }?>
         </div>
         <div class="table-card">
           <div class="patient-table">
@@ -483,72 +493,135 @@ require_once '../php/connection.php';
               </div>
             </form>
           </dialog>
+          <!-- Patient Filter Modal -->
+          <dialog id="patientFilterModal" class="patient-modal" style="max-width: 600px; width: 95%;">
+            <div class="modal-header">
+              <div class="header-title">
+                <h2>Filter Patient Records</h2>
+              </div>
+              <button type="button" id="closePatientFilterModal" class="close-modal-btn" aria-label="Close">&times;</button>
+            </div>
+            
+            <form id="patientFilterForm">
+              <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; max-height: 65vh; overflow-y: auto; padding-right: 5px;">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Gender Filter -->
+                  <div class="info-group">
+                    <label for="filterGender" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Gender</label>
+                    <select id="filterGender" name="gender" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All Genders</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <!-- Barangay / Address Filter -->
+                  <div class="info-group">
+                    <label for="filterAddress" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Address / Barangay</label>
+                    <input type="text" id="address" name="filterAddress" placeholder="Search barangay..." autocomplete="off" style="width: 100%; height: 40px; padding: 0 12px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Age From -->
+                  <div class="info-group">
+                    <label for="filterAgeMin" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Age From</label>
+                    <input type="number" id="filterAgeMin" name="age_min" min="0" max="120" placeholder="0" style="width: 100%; height: 40px; padding: 0 12px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                  <!-- Age To -->
+                  <div class="info-group">
+                    <label for="filterAgeMax" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Age To</label>
+                    <input type="number" id="filterAgeMax" name="age_max" min="0" max="120" placeholder="120" style="width: 100%; height: 40px; padding: 0 12px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Employment Status -->
+                  <div class="info-group">
+                    <label for="filterEmployment" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Employment Status</label>
+                    <select id="filterEmployment" name="employment_status" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All Statuses</option>
+                      <option value="Employed">Employed</option>
+                      <option value="Unemployed">Unemployed</option>
+                      <option value="Self-Employed">Self-Employed</option>
+                    </select>
+                  </div>
+                  <!-- Civil Status -->
+                  <div class="info-group">
+                    <label for="filterCivilStatus" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Civil Status</label>
+                    <select id="filterCivilStatus" name="civil_status" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All Statuses</option>
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                      <option value="Widowed">Widowed</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Religion -->
+                  <div class="info-group">
+                    <label for="filterReligion" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Religion</label>
+                    <select id="filterReligion" name="religion" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All Religions</option>
+                      <option value="Roman Catholicism">Roman Catholic</option>
+                      <option value="Islam">Islam</option>
+                      <option value="Protestant and Evangelical Groups">Protestant and Evangelical Groups</option>
+                      <option value="Iglesia ni Cristo">Iglesia ni Cristo (INC)</option>
+                      <option value="Philippine Independent Church (Aglipayan)">Philippine Independent Church (Aglipayan)</option>
+                      <option value="Other Groups">Other Groups</option>
+                    </select>
+                  </div>
+                  <!-- PhilHealth Status -->
+                  <div class="info-group">
+                    <label for="filterPhilStatus" style="font-weight: 600; font-size: 0.85rem; color: #334155;">PhilHealth Status</label>
+                    <select id="filterPhilStatus" name="phil_status" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All Statuses</option>
+                      <option value="Member">Member</option>
+                      <option value="Dependent">Dependent</option>
+                      <option value="Not Applicable">Not Applicable</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Yakap Membership Status -->
+                  <div class="info-group">
+                    <label for="filterYakap" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Yakap Membership</label>
+                    <select id="filterYakap" name="yakap_member" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                      <option value="">All</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                  <!-- Date Registered From -->
+                  <div class="info-group">
+                    <label for="filterDateFrom" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Date Registered From</label>
+                    <input type="date" id="filterDateFrom" name="date_from" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                  <!-- Date Registered To -->
+                  <div class="info-group">
+                    <label for="filterDateTo" style="font-weight: 600; font-size: 0.85rem; color: #334155;">Date Registered To</label>
+                    <input type="date" id="filterDateTo" name="date_to" style="width: 100%; height: 40px; padding: 0 10px; border: 1.5px solid #d9e2e7; border-radius: 8px; font-size: 0.9rem;">
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #e2e8f0;">
+                <button type="button" id="resetPatientFilters" class="text-btn" style="background: none; border: none; color: #64748b; cursor: pointer; font-weight: 600;">Reset Filters</button>
+                <div style="display: flex; gap: 10px;">
+                  <button type="button" class="btn-secondary" id="cancelPatientFilterBtn" style="padding: 8px 16px; border-radius: 8px; border: 1.5px solid #d9e2e7; background: #fff; cursor: pointer;">Cancel</button>
+                  <button type="submit" class="btn-primary" style="padding: 8px 16px; border-radius: 8px; background: #0B695D; color: #fff; border: none; cursor: pointer;">Apply Filter</button>
+                </div>
+              </div>
+            </form>
+          </dialog>
         </div>
       </div>
     </div>
   </body>
-  <!-- sort function -->
-   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const tableBody = document.getElementById('patientTableBody');
-      const sortableHeaders = document.querySelectorAll('th.sortable');
-
-      // Track sort directions: 0 = Full Name, 1 = Age, 4 = Date Registered
-      const sortDirections = { 0: 'asc', 1: 'asc', 5: 'asc' };
-
-      sortableHeaders.forEach(header => {
-        header.style.cursor = 'pointer';
-
-        header.addEventListener('click', () => {
-          const colIndex = parseInt(header.dataset.col, 10);
-          const dataType = header.dataset.type;
-          const currentDir = sortDirections[colIndex];
-          const isAscending = currentDir === 'asc';
-
-          // Reset all sort icons
-          sortableHeaders.forEach(h => {
-            const icon = h.querySelector('.sort-icon');
-            if (icon) icon.textContent = '⇅';
-          });
-
-          // Update active icon arrow
-          const icon = header.querySelector('.sort-icon');
-          if (icon) icon.textContent = isAscending ? '▲' : '▼';
-
-          // Get table rows (excluding empty state placeholders)
-          const rows = Array.from(tableBody.querySelectorAll('tr')).filter(
-            row => !row.querySelector('.empty-table-placeholder') && !row.classList.contains('search-empty-row')
-          );
-
-          rows.sort((rowA, rowB) => {
-            const cellA = rowA.children[colIndex].textContent.trim();
-            const cellB = rowB.children[colIndex].textContent.trim();
-
-            let valA, valB;
-
-            if (dataType === 'number') {
-              valA = parseFloat(cellA) || 0;
-              valB = parseFloat(cellB) || 0;
-            } else if (dataType === 'date') {
-              valA = new Date(cellA).getTime() || 0;
-              valB = new Date(cellB).getTime() || 0;
-            } else {
-              valA = cellA.toLowerCase();
-              valB = cellB.toLowerCase();
-            }
-
-            if (valA < valB) return isAscending ? -1 : 1;
-            if (valA > valB) return isAscending ? 1 : -1;
-            return 0;
-          });
-
-          // Toggle direction state for next click
-          sortDirections[colIndex] = isAscending ? 'desc' : 'asc';
-
-          // Re-append rows in new order
-          rows.forEach(row => tableBody.appendChild(row));
-        });
-      });
-    });
-   </script>
 </html>
