@@ -24,6 +24,7 @@ require '../php/connection.php';
   <!-- Script Modules -->
   <script src="../js/submenu.js" defer></script>
   <script src="../js/dot-indicator.js" defer></script>
+  <script src="../js/session-check.js" defer></script>
   <script src="../js/logout.js" defer></script>
   <script src="../js/dashboard.js" defer></script>
 </head>

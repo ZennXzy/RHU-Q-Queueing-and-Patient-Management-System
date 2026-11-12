@@ -1,210 +1,363 @@
+
 <?php
+// --Session--
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Set the correct local timezone so date('H:i') matches your local time
 date_default_timezone_set('Asia/Manila');
 
-require '../php/connection.php';
+// --Dependencies--
+require_once __DIR__ . '/../php/connection.php';
+require_once __DIR__ . '/../php/session-owner.php';
 
-// 1. Check if user is authenticated
-if (!isset($_SESSION['logged_id'])) {
-    if (isset($_GET['ajax_check'])) {
-        header('Content-Type: application/json');
-        echo json_encode(['status' => 'unauthenticated']);
+// --Configuration--
+const ENABLE_CLOSING_TIME_LOGOUT = true;
+const CLOSING_TIME = '23:59';
+
+$isAjax = isset($_GET['ajax_check']);
+
+// --Response Helper--
+function sessionResponse(
+    string $status,
+    string $message = 'Session Expired',
+    int $code = 401,
+    ?string $reason = null
+): void {
+    global $isAjax;
+
+    if ($isAjax) {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        http_response_code($code);
+
+        $response = [
+            'status' => $status,
+            'message' => $message
+        ];
+
+        if ($reason !== null) {
+            $response['reason'] = $reason;
+        }
+
+        echo json_encode($response);
         exit();
     }
-    $role = $_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'Patient';
-    $username = $_SESSION['logged_name'] ?? null;
-    $patientId = $_SESSION['patient_id'] ?? null;
 
-    if ($username || $patientId) {
-        switch (strtolower($role)) {
-            case 'admin':
-            case 'doctor/staff':
-                // Update admin / staff account status
-                $stmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE username = ?");
-                $stmt->bind_param("s", $username);
-                $stmt->execute();
-                $stmt->close();
-                $logMessage = $username."(Admin) session expired";
-                break;
-
-            case 'patient':
-            default:
-                // Update patient status in patients table
-                if ($patientId) {
-                    $stmt = $conn->prepare("UPDATE patient_auth SET status = 'Offline' WHERE patient_id = ?");
-                    $stmt->bind_param("i", $patientId);
-                }
-                $stmt->execute();
-                $stmt->close();
-                $logMessage = $username."(Patient) session expired";
-                break;
-        }
-        
-        $insertLog = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
-        if ($insertLog) {
-            $insertLog->bind_param("s", $logMessage);
-            $insertLog->execute();
-            $insertLog->close();
-        }
+    if ($status === 'active') {
+        return;
     }
 
-    // Clear session cookies and destroy active session
-    if (ini_get("session.use_cookies")) {
+    // Do not redirect on temporary server errors.
+    if ($code >= 500) {
+        http_response_code($code);
+        exit('Session verification temporarily unavailable.');
+    }
+
+    $params = http_build_query([
+        'msg' => $message,
+        'type' => 'error'
+    ]);
+
+    header('Location: ../pages/login_page.php?' . $params);
+    exit();
+}
+
+// --Clear Current Session--
+function clearCurrentSession(): void {
+    $_SESSION = [];
+
+    if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
+
         setcookie(
             session_name(),
             '',
-            time() - 42000,
-            $params["path"],
-            $params["domain"],
-            $params["secure"],
-            $params["httponly"]
+            [
+                'expires' => time() - 42000,
+                'path' => $params['path'],
+                'domain' => $params['domain'],
+                'secure' => $params['secure'],
+                'httponly' => $params['httponly'],
+                'samesite' => $params['samesite'] ?? 'Lax'
+            ]
         );
     }
 
-    session_unset();
     session_destroy();
-
-    header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
-    
-    exit();
 }
 
-$user_id   = $_SESSION['logged_id'];
-$user_type = strtolower($_SESSION['user_type'] ?? $_SESSION['logged_role'] ?? 'patient');
+// --Validate Session--
+$userId = filter_var(
+    $_SESSION['logged_id'] ?? null,
+    FILTER_VALIDATE_INT,
+    ['options' => ['min_range' => 1]]
+);
 
-// 2. Specific Time Auto-Logout Check
-$currentHourMin = date('H:i'); // Now correctly matches local time
-if ($user_type !== 'admin') { 
-    $cutoffTime = '23:59'; // Set your target closing time (24-hour format)
-    if ($currentHourMin >= $cutoffTime) {
-        // Update user status to 'Offline' in database
-        if ($user_type === 'patient') {
-            $updateStmt = $conn->prepare("UPDATE patient_auth SET status = 'Offline' WHERE patient_auth_id = ?");
-        } else {
-            $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
-        }
-        $updateStmt->bind_param("i", $user_id);
-        $updateStmt->execute();
-        $updateStmt->close();
+$username = $_SESSION['logged_name'] ?? null;
 
-        // Clear session and destroy
-        session_unset();
-        session_destroy();
+$userType = strtolower(
+    trim((string) ($_SESSION['user_type'] ?? ''))
+);
 
-        if (isset($_GET['ajax_check'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'logged_out', 'reason' => 'Clinic closed']);
-            exit();
-        }
+$ownershipToken = $_SESSION['ownership_token'] ?? null;
 
-        header('Location: ../pages/login_page.php?msg=' . urlencode('System closed for the day. Logged out.') . '&type=error');
-        exit();
-    }
-}  else if ($user_type == 'admin'){
-    $cutoffTime = '23:59'; // Set your target closing time (24-hour format)
-    if ($currentHourMin >= $cutoffTime) {
-        // Update user status to 'Offline' in database
-        $updateStmt = $conn->prepare("UPDATE admin_auth SET status = 'Offline' WHERE id = ?");
-        $updateStmt->bind_param("i", $user_id);
-        $updateStmt->execute();
-        $updateStmt->close();
+if (
+    !$userId ||
+    !is_string($username) ||
+    trim($username) === '' ||
+    !in_array($userType, ['admin', 'patient'], true) ||
+    !is_string($ownershipToken) ||
+    !preg_match('/^[a-f0-9]{64}$/D', $ownershipToken)
+) {
+    clearCurrentSession();
 
-        // Clear session and destroy
-        session_unset();
-        session_destroy();
-
-        if (isset($_GET['ajax_check'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'logged_out', 'reason' => 'Clinic closed']);
-            exit();
-        }
-
-        header('Location: ../pages/login_page.php?msg=' . urlencode('System closed for the day. Logged out.') . '&type=error');
-        exit();
-    }
+    sessionResponse(
+        'unauthenticated',
+        'Session Expired'
+    );
 }
 
-// 3. Check active database status for all users
-if ($user_type === 'patient') {
-    $stmt = $conn->prepare("SELECT status, username FROM patient_auth WHERE patient_auth_id = ?");
+// --Database Timezone--
+if (!$conn->query("SET time_zone = '+08:00'")) {
+    error_log('Session timezone error: ' . $conn->error);
+
+    sessionResponse(
+        'error',
+        'Session verification temporarily unavailable.',
+        503
+    );
+}
+
+// --Account Table--
+if ($userType === 'patient') {
+    $table = 'patient_auth';
+    $idColumn = 'patient_auth_id';
 } else {
-    $stmt = $conn->prepare("SELECT status, username FROM admin_auth WHERE id = ?");
+    $table = 'admin_auth';
+    $idColumn = 'id';
 }
 
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$res = $stmt->get_result();
+// --Verification State--
+$verification = 'error';
+$verificationMessage = 'Session verification unavailable.';
+$verificationCode = 503;
+$verificationReason = null;
 
-if ($row = $res->fetch_assoc()) {
-    if (strtolower($row['status']) !== 'online') {
-        session_unset();
-        session_destroy();
+// --Verify Ownership--
+try {
+    rhuOwnerWithLock(
+        $userType,
+        $userId,
+        function ($record, $path) use (
+            $conn,
+            $table,
+            $idColumn,
+            $userId,
+            $username,
+            $ownershipToken,
+            &$verification,
+            &$verificationMessage,
+            &$verificationCode,
+            &$verificationReason
+        ) {
+            // --Ownership Record--
+            if ($record === null) {
+                $verification = 'unauthenticated';
+                $verificationMessage = 'Session ownership not found.';
+                $verificationCode = 401;
+                return;
+            }
 
-        if (isset($_GET['ajax_check'])) {
-            header('Content-Type: application/json');
-            echo json_encode(['status' => 'logged_out']);
-            exit();
+            // --Current Session Owner--
+            if (!rhuOwnerMatches($record, $ownershipToken)) {
+                $verification = 'logged_out';
+                $verificationMessage =
+                    'This session has been replaced.';
+                $verificationCode = 401;
+                return;
+            }
+
+            // --Database Account--
+            $sql = "
+                SELECT status
+                FROM {$table}
+                WHERE {$idColumn} = ?
+                  AND username = ?
+                LIMIT 1
+            ";
+
+            $stmt = $conn->prepare($sql);
+
+            if (!$stmt) {
+                throw new RuntimeException(
+                    'Unable to prepare account verification.'
+                );
+            }
+
+            $stmt->bind_param('is', $userId, $username);
+
+            if (!$stmt->execute()) {
+                $error = $stmt->error;
+                $stmt->close();
+                throw new RuntimeException($error);
+            }
+
+            $account = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            // --Missing Account--
+            if (!$account) {
+                $verification = 'unauthenticated';
+                $verificationMessage = 'Account no longer exists.';
+                $verificationCode = 401;
+                return;
+            }
+
+            // --Offline Account--
+            if (
+                strcasecmp(
+                    trim((string) ($account['status'] ?? '')),
+                    'Online'
+                ) !== 0
+            ) {
+                $verification = 'logged_out';
+                $verificationMessage = 'Account is no longer online.';
+                $verificationCode = 401;
+                return;
+            }
+
+            // --Closing Time--
+            if (
+                ENABLE_CLOSING_TIME_LOGOUT &&
+                date('H:i') >= CLOSING_TIME
+            ) {
+                // This update and ownership removal are
+                // serialized against other operations
+                // using the same account lock.
+
+                $updateSql = "
+                    UPDATE {$table}
+                    SET status = 'Offline'
+                    WHERE {$idColumn} = ?
+                      AND username = ?
+                      AND status = 'Online'
+                ";
+
+                $updateStmt = $conn->prepare($updateSql);
+
+                if (!$updateStmt) {
+                    throw new RuntimeException(
+                        'Unable to prepare closing-time logout.'
+                    );
+                }
+
+                $updateStmt->bind_param(
+                    'is',
+                    $userId,
+                    $username
+                );
+
+                if (!$updateStmt->execute()) {
+                    $error = $updateStmt->error;
+                    $updateStmt->close();
+                    throw new RuntimeException($error);
+                }
+
+                $updateStmt->close();
+
+                // --Remove Current Ownership--
+                rhuOwnerRemoveLocked(
+                    $path,
+                    $record,
+                    $ownershipToken
+                );
+
+                $verification = 'logged_out';
+                $verificationMessage =
+                    'System closed for the day. Logged out.';
+                $verificationCode = 401;
+                $verificationReason = 'Clinic closed';
+                return;
+            }
+
+            // --Authorized Session--
+            $verification = 'active';
+            $verificationMessage = 'Session active.';
+            $verificationCode = 200;
         }
+    );
 
-        header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
-        exit();
-    }
-} else {
-    session_unset();
-    session_destroy();
-    
-    if (isset($_GET['ajax_check'])) {
-        header('Content-Type: application/json');
-        echo json_encode(['status' => 'logged_out']);
-        exit();
-    }
-    
-    header('Location: ../pages/login_page.php?msg=' . urlencode('Session Expired') . '&type=error');
-    exit();
-}
-$stmt->close();
+} catch (Throwable $error) {
+    error_log(
+        '[RHU-Q Session Check] ' . $error->getMessage()
+    );
 
-// 4. Handle AJAX background heartbeat check from session-check.js
-if (isset($_GET['ajax_check'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['status' => 'active']);
-    exit();
+    sessionResponse(
+        'error',
+        'Session verification temporarily unavailable.',
+        503
+    );
 }
 
-// 5. Role Authorization Function used across pages
-function authorizeRoles(array $allowedRoles) {
+// --Handle Invalid Session--
+if ($verification !== 'active') {
+    if ($verificationCode === 401) {
+        clearCurrentSession();
+    }
+
+    sessionResponse(
+        $verification,
+        $verificationMessage,
+        $verificationCode,
+        $verificationReason
+    );
+}
+
+// --AJAX Session Check--
+if ($isAjax) {
+    sessionResponse(
+        'active',
+        'Session active.',
+        200
+    );
+}
+
+// --Role Authorization--
+function authorizeRoles(array $allowedRoles): void {
     $userRole = $_SESSION['logged_role'] ?? '';
 
+    // --Admin Access--
     if ($userRole === 'Admin') {
         return;
     }
 
-    if (!in_array($userRole, $allowedRoles, true)) {
-        if ($userRole === 'Display') {
-            header('Location: ../pages/queue_display_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
-            exit();
-        }
-        if ($userRole === 'Doctor/Staff') {
-            header('Location: ../pages/queue_manager_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
-            exit();
-        } 
-        if ($userRole === 'Patient') {
-            header('Location: ../pages/patient_dashboard.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
-            exit();
-        }
-        
-        header('Location: ../pages/login_page.php?msg=' . urlencode('Unauthorized access.') . '&type=error');
-        exit();
+    // --Allowed Role--
+    if (in_array($userRole, $allowedRoles, true)) {
+        return;
     }
+
+    // --Unauthorized Redirect--
+    $redirects = [
+        'Display' => '../pages/queue_display_page.php',
+        'Doctor/Staff' => '../pages/queue_manager_page.php',
+        'Patient' => '../pages/queue_display_page.php'
+    ];
+
+    $destination = $redirects[$userRole]
+        ?? '../pages/login_page.php';
+
+    $params = http_build_query([
+        'msg' => 'Unauthorized access.',
+        'type' => 'error'
+    ]);
+
+    header('Location: ' . $destination . '?' . $params);
+    exit();
 }
 
+// --Record Management Permission--
 function canManageRecords(): bool {
-    $role = $_SESSION['logged_role'] ?? '';
-    return $role === 'Admin';
+    return ($_SESSION['logged_role'] ?? '') === 'Admin';
 }
 ?>

@@ -143,6 +143,7 @@ $role = $_SESSION['logged_role'];
       <form action="../php/logout.php" method="post" class="menu-item logout-item" id="logoutForm" style="transform: rotate(180deg);">
           <div class="menu-content">
               <div class="menu-icon">
+                
                   <button type="submit" name="logout" style="border:none; background:none;">
                       <img src="../svg/logout-icon.svg" alt="logout-icon">
                   </button>
