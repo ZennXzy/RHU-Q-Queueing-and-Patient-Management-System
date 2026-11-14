@@ -1,125 +1,319 @@
+
 <?php
 session_start();
-header('Content-Type: application/json');
+
+header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store, no-cache, must-revalidate');
 
 require_once '../php/connection.php';
 require_once '../api/check-private.php';
-date_default_timezone_set('Asia/Manila');
-authorizeRoles(['Admin','Doctor/Staff']);
 
-// Date range inputs (defaults to current month or all-time if blank)
-$dateFrom = $_GET['date_from'] ?? date('Y-m-01');
-$dateTo = $_GET['date_to'] ?? date('Y-m-d');
-$currentDate = date('Y-m-d');
+date_default_timezone_set('Asia/Manila');
+
+authorizeRoles(['Admin', 'Doctor/Staff']);
 
 try {
-    // --- 1. TOP TILES (Total Patient is overall, Waiting/InProgress/Completed are for CURRENT DAY) ---
-    $totalPatients = $conn->query("SELECT COUNT(*) AS c FROM patient_records")->fetch_assoc()['c'] ?? 0;
-    
-    $waiting = $conn->query("SELECT COUNT(*) AS c FROM queue_information WHERE (status = 'Waiting' OR status = 'Waiting') AND DATE(created_at) = '$currentDate'")->fetch_assoc()['c'] ?? 0;
-    
-    $inProgress = $conn->query("SELECT COUNT(*) AS c FROM queue_information WHERE (status = 'In Progress' OR status = 'In Progress') AND DATE(created_at) = '$currentDate'")->fetch_assoc()['c'] ?? 0;
-    
-    $completed = $conn->query("SELECT COUNT(*) AS c FROM queue_information WHERE (status = 'Completed' OR status = 'Completed') AND DATE(created_at) = '$currentDate'")->fetch_assoc()['c'] ?? 0;
 
-    // --- 2. REGISTRATION TREND (Line Graph) ---
-    $regTrendQuery = $conn->query("
-        SELECT DATE(date_registered) as reg_date, COUNT(*) as cnt 
-        FROM patient_records 
-        WHERE DATE(date_registered) BETWEEN '$dateFrom' AND '$dateTo'
-        GROUP BY DATE(date_registered)
-        ORDER BY reg_date ASC
-    ");
-    $regLabels = []; $regData = [];
-    while($row = $regTrendQuery->fetch_assoc()) {
-        $regLabels[] = $row['reg_date'];
-        $regData[] = intval($row['cnt']);
-    }
+    function getCount($conn, $sql) {
+        $result = $conn->query($sql);
 
-    // --- 3. QUEUE TREND (Line Graph) ---
-    $queueTrendQuery = $conn->query("
-        SELECT DATE(transaction_date) as t_date, COUNT(*) as cnt 
-        FROM transactions 
-        WHERE DATE(transaction_date) BETWEEN '$dateFrom' AND '$dateTo'
-        GROUP BY DATE(transaction_date)
-        ORDER BY t_date ASC
-    ");
-    $queueLabels = []; $queueData = [];
-    while($row = $queueTrendQuery->fetch_assoc()) {
-        $queueLabels[] = $row['t_date'];
-        $queueData[] = intval($row['cnt']);
-    }
-
-    // --- 4. AGE DISTRIBUTION (Bar Graph) ---
-    // Grouping ages: 0-12, 13-19, 20-35, 36-59, 60+
-    $ageGroups = ['0-12' => 0, '13-19' => 0, '20-35' => 0, '36-59' => 0, '60+' => 0];
-    $ageQuery = $conn->query("SELECT age FROM patient_records WHERE age IS NOT NULL");
-    while($row = $ageQuery->fetch_assoc()) {
-        $age = intval($row['age']);
-        if ($age <= 12) $ageGroups['0-12']++;
-        elseif ($age <= 19) $ageGroups['13-19']++;
-        elseif ($age <= 35) $ageGroups['20-35']++;
-        elseif ($age <= 59) $ageGroups['36-59']++;
-        else $ageGroups['60+']++;
-    }
-
-    // --- 5. CIVIL STATUS (Pie Chart) ---
-    $civilQuery = $conn->query("SELECT civil_status, COUNT(*) as cnt FROM patient_records GROUP BY civil_status");
-    $civilData = [];
-    while($row = $civilQuery->fetch_assoc()) {
-        $status = $row['civil_status'] ?: 'Not Specified';
-        $civilData[$status] = intval($row['cnt']);
-    }
-
-    // --- 6. GENDER DISTRIBUTION (Pie Chart) ---
-    $genderQuery = $conn->query("SELECT gender, COUNT(*) as cnt FROM patient_records GROUP BY gender");
-    $genderData = [];
-    while($row = $genderQuery->fetch_assoc()) {
-        $gender = $row['gender'] ?: 'Not Specified';
-        $genderData[$gender] = intval($row['cnt']);
-    }
-
-    // --- 7. SERVICE DISTRIBUTION (Horizontal Bar Graph) ---
-    $serviceQuery = $conn->query("SELECT service_snapshot, COUNT(*) AS cnt FROM transactions GROUP BY service_snapshot");
-    $serviceLabels = []; $serviceCounts = [];
-    while($row = $serviceQuery->fetch_assoc()) {
-        $serviceLabels[] = $row['service_snapshot'] ?: 'General';
-        $serviceCounts[] = intval($row['cnt']);
-    }
-
-    // --- 8. EMPLOYMENT STATUS (Pie Chart: Employed, Self-Employed, Unemployed) ---
-    $empQuery = $conn->query("SELECT employment_status, COUNT(*) as cnt FROM patient_records GROUP BY employment_status");
-    $empData = ['Employed' => 0, 'Self-Employed' => 0, 'Unemployed' => 0];
-    while($row = $empQuery->fetch_assoc()) {
-        $status = ucfirst(strtolower(trim($row['employment_status'] ?? '')));
-        if (array_key_exists($status, $empData)) {
-            $empData[$status] = intval($row['cnt']);
-        } else {
-            $empData['Unemployed'] += intval($row['cnt']);
+        if (!$result) {
+            throw new Exception($conn->error);
         }
+
+        return (int)($result->fetch_assoc()['c'] ?? 0);
+    }
+
+    function getDistribution($conn, $column) {
+        $allowed = [
+            'civil_status',
+            'gender',
+            'employment_status',
+            'phil_status',
+            'yakap_member'
+        ];
+
+        if (!in_array($column, $allowed, true)) {
+            throw new Exception('Invalid distribution column.');
+        }
+
+        $sql = "
+            SELECT
+                COALESCE(
+                    NULLIF(TRIM(`$column`), ''),
+                    'Not Specified'
+                ) AS label,
+                COUNT(*) AS cnt
+            FROM patient_records
+            GROUP BY label
+            ORDER BY cnt DESC, label ASC
+        ";
+
+        $result = $conn->query($sql);
+
+        if (!$result) {
+            throw new Exception($conn->error);
+        }
+
+        $distribution = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $distribution[$row['label']] =
+                (int)$row['cnt'];
+        }
+
+        return [
+            'labels' => array_keys($distribution),
+            'data' => array_values($distribution)
+        ];
+    }
+
+    function getTableColumns($conn, $table) {
+        // Only use known application tables.
+        if (!in_array($table, ['transactions', 'services'], true)) {
+            throw new Exception('Invalid table.');
+        }
+
+        $columns = [];
+
+        $result = $conn->query("SHOW COLUMNS FROM `$table`");
+
+        if (!$result) {
+            throw new Exception($conn->error);
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            $columns[] = $row['Field'];
+        }
+
+        return $columns;
+    }
+
+    $totalPatients = getCount(
+        $conn,
+        "SELECT COUNT(*) AS c FROM patient_records"
+    );
+
+    $waiting = getCount(
+        $conn,
+        "SELECT COUNT(*) AS c
+         FROM queue_information
+         WHERE status = 'Waiting'
+         AND created_at >= CURDATE()
+         AND created_at < CURDATE() + INTERVAL 1 DAY"
+    );
+
+    $inProgress = getCount(
+        $conn,
+        "SELECT COUNT(*) AS c
+         FROM queue_information
+         WHERE status = 'In Progress'
+         AND created_at >= CURDATE()
+         AND created_at < CURDATE() + INTERVAL 1 DAY"
+    );
+
+    $completed = getCount(
+        $conn,
+        "SELECT COUNT(*) AS c
+         FROM queue_information
+         WHERE status = 'Completed'
+         AND created_at >= CURDATE()
+         AND created_at < CURDATE() + INTERVAL 1 DAY"
+    );
+
+    $ageGroups = [
+        '0-12' => 0,
+        '13-19' => 0,
+        '20-35' => 0,
+        '36-59' => 0,
+        '60+' => 0,
+        'Not Specified' => 0
+    ];
+
+    $ageQuery = $conn->query(
+        "SELECT age FROM patient_records"
+    );
+
+    if (!$ageQuery) {
+        throw new Exception($conn->error);
+    }
+
+    while ($row = $ageQuery->fetch_assoc()) {
+
+        if (
+            $row['age'] === null ||
+            $row['age'] === '' ||
+            !is_numeric($row['age']) ||
+            (int)$row['age'] < 0
+        ) {
+            $ageGroups['Not Specified']++;
+            continue;
+        }
+
+        $age = (int)$row['age'];
+
+        if ($age <= 12) {
+            $ageGroups['0-12']++;
+        } elseif ($age <= 19) {
+            $ageGroups['13-19']++;
+        } elseif ($age <= 35) {
+            $ageGroups['20-35']++;
+        } elseif ($age <= 59) {
+            $ageGroups['36-59']++;
+        } else {
+            $ageGroups['60+']++;
+        }
+    }
+
+    if ($ageGroups['Not Specified'] === 0) {
+        unset($ageGroups['Not Specified']);
+    }
+
+    $civilData = getDistribution(
+        $conn,
+        'civil_status'
+    );
+
+    $genderData = getDistribution(
+        $conn,
+        'gender'
+    );
+
+    $employmentData = getDistribution(
+        $conn,
+        'employment_status'
+    );
+
+    $philhealthData = getDistribution(
+        $conn,
+        'phil_status'
+    );
+
+    $yakapData = getDistribution(
+        $conn,
+        'yakap_member'
+    );
+
+
+    $transactionColumns = getTableColumns(
+        $conn,
+        'transactions'
+    );
+
+    $serviceColumns = getTableColumns(
+        $conn,
+        'services'
+    );
+
+    if (
+        !in_array('service_id', $serviceColumns, true) ||
+        !in_array('service_name', $serviceColumns, true)
+    ) {
+        throw new Exception(
+            'Expected services.service_id and services.service_name columns.'
+        );
+    }
+
+    // Find the service reference used by transactions.
+    $serviceReference = 'service';
+
+    // Snapshot fallback for deleted services.
+    $hasSnapshot = in_array(
+        'service_snapshot',
+        $transactionColumns,
+        true
+    );
+
+    if ($serviceReference !== null) {
+
+        $snapshotExpression = $hasSnapshot
+            ? "NULLIF(TRIM(t.service_snapshot), '')"
+            : "NULL";
+
+        $serviceSQL = "
+            SELECT
+                COALESCE(
+                    NULLIF(TRIM(s.service_name), ''),
+                    $snapshotExpression,
+                    'Unknown Service'
+                ) AS service_label,
+                COUNT(*) AS cnt
+            FROM transactions AS t
+            LEFT JOIN services AS s
+                ON t.`$serviceReference` = s.service_id
+            GROUP BY service_label
+            ORDER BY cnt DESC, service_label ASC
+        ";
+
+    } elseif ($hasSnapshot) {
+
+        // Compatibility fallback for older transaction schemas.
+        $serviceSQL = "
+            SELECT
+                COALESCE(
+                    NULLIF(TRIM(service_snapshot), ''),
+                    'Unknown Service'
+                ) AS service_label,
+                COUNT(*) AS cnt
+            FROM transactions
+            GROUP BY service_label
+            ORDER BY cnt DESC, service_label ASC
+        ";
+
+    } else {
+
+        throw new Exception(
+            'No service reference or snapshot found in transactions.'
+        );
+    }
+
+    $serviceQuery = $conn->query($serviceSQL);
+
+    if (!$serviceQuery) {
+        throw new Exception($conn->error);
+    }
+
+    $serviceLabels = [];
+    $serviceCounts = [];
+
+    while ($row = $serviceQuery->fetch_assoc()) {
+        $serviceLabels[] = $row['service_label'];
+        $serviceCounts[] = (int)$row['cnt'];
     }
 
     echo json_encode([
         'status' => 'success',
+
         'tiles' => [
             'total_patients' => $totalPatients,
             'waiting' => $waiting,
             'in_progress' => $inProgress,
             'completed' => $completed
         ],
-        'charts' => [
-            'registration_trend' => ['labels' => $regLabels, 'data' => $regData],
-            'queue_trend' => ['labels' => $queueLabels, 'data' => $queueData],
-            'age_distribution' => ['labels' => array_keys($ageGroups), 'data' => array_values($ageGroups)],
-            'civil_status' => ['labels' => array_keys($civilData), 'data' => array_values($civilData)],
-            'gender' => ['labels' => array_keys($genderData), 'data' => array_values($genderData)],
-            'service' => ['labels' => $serviceLabels, 'data' => $serviceCounts],
-            'employment' => ['labels' => array_keys($empData), 'data' => array_values($empData)]
-        ]
-    ]);
 
-} catch (Exception $e) {
-    echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        'charts' => [
+            'age_distribution' => [
+                'labels' => array_keys($ageGroups),
+                'data' => array_values($ageGroups)
+            ],
+            'civil_status' => $civilData,
+            'gender' => $genderData,
+            'employment' => $employmentData,
+            'philhealth' => $philhealthData,
+            'yakap' => $yakapData,
+            'service' => [
+                'labels' => $serviceLabels,
+                'data' => $serviceCounts
+            ]
+        ]
+    ], JSON_UNESCAPED_UNICODE);
+} catch (Throwable $e) {
+    error_log('Dashboard API error: ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Unable to load dashboard statistics.'
+    ]);
 }
 $conn->close();
 ?>
