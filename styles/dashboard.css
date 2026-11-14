@@ -19,6 +19,19 @@ body, html {
   width: 8px;
 }
 
+.content-card{
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  min-width: 0;
+}
+
+.tile-icon img {
+    height: 26px;
+    width: auto;
+}
+
 .content-area::-webkit-scrollbar-thumb {
   background-color: #20A59E;
   border-radius: 4px;
@@ -83,16 +96,55 @@ body, html {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   border: 1px solid #e5e7eb;
 }
+.tile-blue {
+  border-left: 5px solid #3b82f6;
+  background-color: #f0f7ff;
+}
 
-.tile-blue { border-left: 5px solid #3b82f6; background-color: #f0f7ff; }
-.tile-orange { border-left: 5px solid #f59e0b; background-color: #fef3c7; }
-.tile-lightblue { border-left: 5px solid #6366f1; background-color: #e0e7ff; }
-.tile-green { border-left: 5px solid #10b981; background-color: #ecfdf5; }
+.tile-orange {
+  border-left: 5px solid #f59e0b;
+  background-color: #fef3c7;
+}
 
-.tile-label { font-size: 0.85rem; color: #4b5563; font-weight: 500; }
-.tile-value { font-size: 1.8rem; font-weight: 700; color: #1f2937; margin: 4px 0 0 0; }
-.tile-icon { font-size: 2rem; }
+.tile-orange img{
+  filter: invert(65%) sepia(52%) saturate(1897%) hue-rotate(-2deg) brightness(99%) contrast(94%);
+}
 
+.tile-lightblue {
+  border-left: 5px solid #6366f1;
+  background-color: #e0e7ff;
+}
+
+
+.tile-lightblue img{
+  filter: invert(48%) sepia(44%) saturate(5825%) hue-rotate(222deg) brightness(95%) contrast(99%);
+}
+
+.tile-green {
+  border-left: 5px solid #10b981;
+  background-color: #ecfdf5;
+}
+
+.tile-green img{
+  filter: invert(52%) sepia(97%) saturate(388%) hue-rotate(109deg) brightness(92%) contrast(92%);
+}
+
+.tile-label {
+  font-size: 0.85rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.tile-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 4px 0 0 0;
+}
+
+.tile-icon {
+  font-size: 2rem;
+}
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
@@ -400,7 +452,7 @@ body, html {
     gap: 32px;
     margin-bottom: 36px;
   }
-
+  
   .content-card h3 {
     font-size: 1.6rem;
   }
