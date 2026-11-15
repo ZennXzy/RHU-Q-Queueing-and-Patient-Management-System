@@ -23,7 +23,7 @@ try {
             throw new InvalidArgumentException('Invalid transaction ID');
         }
 
-        $rows = report_run($conn, "SELECT t.*, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS fullname, p.gender, p.date_of_birth, p.age, b.barangay_address AS address, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_type FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address LEFT JOIN services s ON s.service_id = t.service WHERE t.transaction_id = ?", [$id], 'i');
+        $rows = report_run($conn, "SELECT t.*, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS fullname, p.gender, p.date_of_birth, p.age, b.barangay_name AS address, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_type FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service WHERE t.transaction_id = ?", [$id], 'i');
 
         if (!$rows) {
             throw new InvalidArgumentException('Record not found');
@@ -66,7 +66,7 @@ try {
             $countRows = report_run($conn, $countSql, $params, $types);
             $count = (int)($countRows[0]['n'] ?? 0);
 
-            $sql = "SELECT p.patient_id, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS current_age, p.gender, COALESCE(b.barangay_address, 'Unspecified') AS barangay, COUNT(t.transaction_id) AS total_visits " . report_base() . " WHERE $where GROUP BY p.patient_id, p.firstname, p.middlename, p.lastname, p.suffix, p.date_of_birth, p.gender, b.barangay_address ORDER BY max(t.transaction_date) DESC LIMIT ? OFFSET ?";
+            $sql = "SELECT p.patient_id, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS current_age, p.gender, COALESCE(b.barangay_name, 'Unspecified') AS barangay, COUNT(t.transaction_id) AS total_visits " . report_base() . " WHERE $where GROUP BY p.patient_id, p.firstname, p.middlename, p.lastname, p.suffix, p.date_of_birth, p.gender, b.barangay_name ORDER BY max(t.transaction_date) DESC LIMIT ? OFFSET ?";
             
             $query_params = $params;
             $query_types = $types . 'ii';
@@ -88,7 +88,7 @@ try {
                 throw new InvalidArgumentException('Invalid patient ID');
             }
 
-            $rows = report_run($conn, "SELECT t.*,t.transaction_id, t.queue_code, t.transaction_date, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name, COALESCE(b.barangay_address, 'Unspecified') AS barangay FROM transactions t LEFT JOIN services s ON s.service_id = t.service LEFT JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address WHERE t.patient_id = ? ORDER BY t.transaction_date DESC", [$patientId], 'i');
+            $rows = report_run($conn, "SELECT t.*,t.transaction_id, t.queue_code, t.transaction_date, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name, COALESCE(b.barangay_name, 'Unspecified') AS barangay FROM transactions t LEFT JOIN services s ON s.service_id = t.service LEFT JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id WHERE t.patient_id = ? ORDER BY t.transaction_date DESC", [$patientId], 'i');
 
             $data = ['transactions' => $rows];
         } else {

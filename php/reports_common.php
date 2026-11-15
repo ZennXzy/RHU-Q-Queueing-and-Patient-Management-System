@@ -1,7 +1,4 @@
 <?php
-header('Content-Type: application/json');
-require_once '../php/connection.php';
-require_once '../api/check-private.php';
 date_default_timezone_set('Asia/Manila');
 
 // Validate and sanitize incoming filter parameters
@@ -61,7 +58,7 @@ function report_where(array $f, array &$params, string &$types): string {
         $types .= 's';
     }
 
-    foreach (['service' => 't.service', 'barangay' => 'p.address'] as $key => $column) {
+    foreach (['service' => 't.service', 'barangay' => 'p.barangay_id'] as $key => $column) {
         if ($f[$key] !== '') {
             $w[] = "$column = ?";
             $params[] = (int)$f[$key];
@@ -113,16 +110,16 @@ function report_where(array $f, array &$params, string &$types): string {
     return implode(' AND ', $w);
 }
 
-// Reusable SQL base join structure
+// Reusable SQL base join structure (Updated to p.barangay_id and b.barangay_name)
 function report_base(): string {
-    return 'FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.address LEFT JOIN services s ON s.service_id = t.service';
+    return 'FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service';
 }
 
 // Execute parameterized query safely
 function report_run(mysqli $conn, string $sql, array $params = [], string $types = ''): array {
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
-        throw new RuntimeException('Database query preparation failed');
+        throw new RuntimeException('Database query preparation failed: ' . $conn->error);
     }
 
     if ($params) {
@@ -130,7 +127,7 @@ function report_run(mysqli $conn, string $sql, array $params = [], string $types
     }
 
     if (!$stmt->execute()) {
-        throw new RuntimeException('Database query execution failed');
+        throw new RuntimeException('Database query execution failed: ' . $stmt->error);
     }
 
     $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -142,7 +139,7 @@ function report_run(mysqli $conn, string $sql, array $params = [], string $types
 function report_select_options(mysqli $conn): array {
     $data = [
         'services' => report_run($conn, 'SELECT service_id AS id, service_name AS name FROM services ORDER BY service_name'),
-        'barangays' => report_run($conn, 'SELECT barangay_id AS id, barangay_address AS name FROM barangay ORDER BY barangay_address')
+        'barangays' => report_run($conn, 'SELECT barangay_id AS id, barangay_name AS name FROM barangay ORDER BY barangay_name')
     ];
 
     foreach (['gender', 'employment_status', 'civil_status', 'religion', 'phil_status', 'yakap_member'] as $column) {
@@ -159,7 +156,7 @@ function report_rows(mysqli $conn, array $f, int $limit = 25, int $offset = 0): 
     $types = '';
     $where = report_where($f, $params, $types);
 
-    $sql = "SELECT t.transaction_id, t.patient_id, t.queue_code, t.transaction_date, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, DATE(t.transaction_date)) AS age_at_visit, p.gender, p.employment_status, p.civil_status, p.phil_status, p.yakap_member, COALESCE(b.barangay_address, 'Unspecified') AS barangay, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name " . report_base() . " WHERE $where ORDER BY t.transaction_date DESC, t.transaction_id DESC";
+    $sql = "SELECT t.transaction_id, t.patient_id, t.queue_code, t.transaction_date, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, DATE(t.transaction_date)) AS age_at_visit, p.gender, p.employment_status, p.civil_status, p.phil_status, p.yakap_member, COALESCE(b.barangay_name, 'Unspecified') AS barangay, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_name " . report_base() . " WHERE $where ORDER BY t.transaction_date DESC, t.transaction_id DESC";
 
     if ($limit > 0) {
         $sql .= ' LIMIT ? OFFSET ?';
@@ -178,11 +175,11 @@ function report_summary(mysqli $conn, array $f): array {
     $where = report_where($f, $params, $types);
     $base = report_base();
 
-    $kpi = report_run($conn, "SELECT COUNT(*) AS visits, COUNT(DISTINCT t.patient_id) AS patients, COUNT(DISTINCT p.address) AS barangays FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN services s ON s.service_id = t.service WHERE $where", $params, $types)[0];
+    $kpi = report_run($conn, "SELECT COUNT(*) AS visits, COUNT(DISTINCT t.patient_id) AS patients, COUNT(DISTINCT p.barangay_id) AS barangays FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN services s ON s.service_id = t.service WHERE $where", $params, $types)[0];
 
     $groupings = [
         'services' => "COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service')",
-        'barangays' => "COALESCE(b.barangay_address, 'Unspecified')",
+        'barangays' => "COALESCE(b.barangay_name, 'Unspecified')",
         'gender' => "COALESCE(NULLIF(p.gender, ''), 'Unspecified')",
         'employment' => "COALESCE(NULLIF(p.employment_status, ''), 'Unspecified')",
         'civil' => "COALESCE(NULLIF(p.civil_status, ''), 'Unspecified')",
