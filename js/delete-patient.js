@@ -23,17 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function reloadPatientTable() {
-    fetch('../php/patient_table.php')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('patientTableBody').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Error loading table:', error);
-        });   
-  }
-
   if (deleteForm) {
     deleteForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -51,7 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.status === 'success') {
           deleteModal.close();
           showToast('Record Deleted Successfully.','success');
-          reloadPatientTable();
         } else {
           deleteModal.close();
           showToast('Incorrect password or deletion failed.','error');

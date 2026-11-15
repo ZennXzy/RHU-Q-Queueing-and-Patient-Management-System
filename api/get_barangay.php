@@ -2,13 +2,13 @@
 header('Content-Type: application/json');
 require_once '../php/connection.php';
 
-$query = "SELECT barangay_address FROM barangay ORDER BY barangay_address ASC";
+$query = "SELECT barangay_name FROM barangay ORDER BY barangay_name ASC";
 $result = $conn->query($query);
 
 $barangays = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $barangays[] = $row['barangay_address'];
+        $barangays[] = $row['barangay_name'];
     }
 }
 

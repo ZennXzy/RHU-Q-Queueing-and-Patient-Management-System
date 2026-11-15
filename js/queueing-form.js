@@ -35,66 +35,70 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => console.error('Error fetching services for queue form:', error));
   }
 
-  // 1. OPEN MODAL
-  document.addEventListener('click', (e) => {
-    const add_queue_button = e.target.closest('.add-queue-button');
-    if (!add_queue_button) return;
+  // 1. OPEN MODAL (Only attach if button/modal exists)
+  if (queue_form_modal && queue_form) {
+    document.addEventListener('click', (e) => {
+      const add_queue_button = e.target.closest('.add-queue-button');
+      if (!add_queue_button) return;
 
-    // Reset fields on open
-    queue_form.reset();
-    patient_id_input.value = '';
-    patient_search.value = '';
-    results_container.style.display = 'none';
+      // Reset fields on open
+      queue_form.reset();
+      if (patient_id_input) patient_id_input.value = '';
+      if (patient_search) patient_search.value = '';
+      if (results_container) results_container.style.display = 'none';
 
-    if (queue_form_modal && typeof queue_form_modal.showModal === 'function') {
-      queue_form_modal.showModal();
-    }
-  });
-
-  // 2. LIVE SEARCH PATIENT INPUT
-  let debounceTimer;
-  patient_search.addEventListener('input', (e) => {
-    const query = e.target.value.trim();
-    patient_id_input.value = '';
-
-    if (query.length < 1) {
-      results_container.style.display = 'none';
-      results_container.innerHTML = '';
-      return;
-    }
-
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-      try {
-        const response = await fetch(`../php/queue-form-search-patients.php?query=${encodeURIComponent(query)}`);
-        const patients = await response.json();
-
-        results_container.innerHTML = '';
-
-        if (patients.length > 0) {
-          patients.forEach(patient => {
-            const item = document.createElement('div');
-            item.className = 'search-result-item';
-            item.textContent = `${patient.name} (ID: ${patient.id})`;
-
-            item.addEventListener('click', () => {
-              patient_search.value = patient.name;
-              patient_id_input.value = patient.id;
-              results_container.style.display = 'none';
-            });
-
-            results_container.appendChild(item);
-          });
-        } else {
-          results_container.innerHTML = '<div class="search-no-result">No patient found</div>';
-        }
-
-        results_container.style.display = 'block';
-      } catch (error) {
-        console.error('Error fetching search results:', error);
+      if (typeof queue_form_modal.showModal === 'function') {
+        queue_form_modal.showModal();
       }
-    }, 250);
-  });
+    });
+  }
+
+  // 2. LIVE SEARCH PATIENT INPUT (Only attach if element exists)
+  if (patient_search && results_container) {
+    let debounceTimer;
+    patient_search.addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      if (patient_id_input) patient_id_input.value = '';
+
+      if (query.length < 1) {
+        results_container.style.display = 'none';
+        results_container.innerHTML = '';
+        return;
+      }
+
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(async () => {
+        try {
+          const response = await fetch(`../php/queue-form-search-patients.php?query=${encodeURIComponent(query)}`);
+          const patients = await response.json();
+
+          results_container.innerHTML = '';
+
+          if (patients.length > 0) {
+            patients.forEach(patient => {
+              const item = document.createElement('div');
+              item.className = 'search-result-item';
+              item.textContent = `${patient.name} (ID: ${patient.id})`;
+
+              item.addEventListener('click', () => {
+                patient_search.value = patient.name;
+                if (patient_id_input) patient_id_input.value = patient.id;
+                results_container.style.display = 'none';
+              });
+
+              results_container.appendChild(item);
+            });
+          } else {
+            results_container.innerHTML = '<div class="search-no-result">No patient found</div>';
+          }
+
+          results_container.style.display = 'block';
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+        }
+      }, 250);
+    });
+  }
 
   // Close modal when clicking on backdrop
   if (queue_form_modal) {
@@ -116,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     queue_form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      if (!patient_id_input.value) {
+      if (patient_id_input && !patient_id_input.value) {
         showToast('Please select a valid patient from the search list.', 'error');
         return;
       }
@@ -132,36 +136,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await response.json();
 
         if (result.status === 'success') {
-          queue_form_modal.close();
+          if (queue_form_modal) queue_form_modal.close();
           
-          // Populate success modal fields
-          modalQueueCode.textContent = result.queue_code || '';
-          modalPatientName.textContent = result.patient_name || '';
-          modalServiceName.textContent = result.service_name || '';
-          modalDateTime.textContent = result.datetime || '';
+          if (modalQueueCode) modalQueueCode.textContent = result.queue_code || '';
+          if (modalPatientName) modalPatientName.textContent = result.patient_name || '';
+          if (modalServiceName) modalServiceName.textContent = result.service_name || '';
+          if (modalDateTime) modalDateTime.textContent = result.datetime || '';
 
-          // Open 5-second auto-close modal
           if (success_modal && typeof success_modal.showModal === 'function') {
-            // 1. Populate the hidden receipt template
-            document.getElementById('printQueueCode').textContent = result.queue_code;
-            document.getElementById('printPatientName').textContent = result.patient_name;
-            document.getElementById('printServiceName').textContent = result.service_name;
-            document.getElementById('printDateTime').textContent = result.datetime;
+            const pCode = document.getElementById('printQueueCode');
+            const pName = document.getElementById('printPatientName');
+            const pServ = document.getElementById('printServiceName');
+            const pDate = document.getElementById('printDateTime');
 
-            // 2. Automatically trigger the thermal print dialog
+            if (pCode) pCode.textContent = result.queue_code;
+            if (pName) pName.textContent = result.patient_name;
+            if (pServ) pServ.textContent = result.service_name;
+            if (pDate) pDate.textContent = result.datetime;
+
             window.print();
             success_modal.showModal();
             let secondsLeft = 5;
-            successCountdown.textContent = secondsLeft;
+            if (successCountdown) successCountdown.textContent = secondsLeft;
 
             const countdownInterval = setInterval(() => {
               secondsLeft--;
-              successCountdown.textContent = secondsLeft;
+              if (successCountdown) successCountdown.textContent = secondsLeft;
 
               if (secondsLeft <= 0) {
                 clearInterval(countdownInterval);
                 success_modal.close();
-                window.location.reload(); // Refresh to reflect updated queue list
+                window.location.reload();
               }
             }, 1000);
           } else {

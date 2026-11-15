@@ -156,7 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     function generateUniqueAccountToken($conn) {
         do {
             $token = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $stmt = $conn->prepare("SELECT patient_id FROM patient_records WHERE account_token = ? LIMIT 1");
+            $stmt = $conn->prepare("SELECT patient_auth_id FROM patient_auth WHERE account_token = ? LIMIT 1");
             $stmt->bind_param('s', $token);
             $stmt->execute();
             $res = $stmt->get_result();
@@ -203,11 +203,11 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
     try {
         // 1. Insert into patient_records
         $sql = "INSERT INTO patient_records (
-            firstname, lastname, middlename, suffix, address, age, gender, 
-            date_of_birth, contact_number, email, account_token, employment_status, occupation, 
+            firstname, lastname, middlename, suffix, barangay_id, gender, 
+            date_of_birth, contact_number, email, employment_status, occupation, 
             business_name, civil_status, religion, mothers_name, fathers_name, 
             spouses_name, phil_status, phil_number, principal_member, yakap_member
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $insertstmt = $conn->prepare($sql);
 
@@ -215,10 +215,9 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST' && isset($_POST['register'])){
             throw new Exception("Database Prepare Failed: " . $conn->error);
         }
         
-        $insertstmt->bind_param("ssssiisssssssssssssssss", 
-            $firstname, $lastname, $middlename, $suffix, $address_id, 
-            $age, 
-            $gender, $birthDate, $contactnum, $emailContact, $accountToken, 
+        $insertstmt->bind_param("ssssissssssssssssssss", 
+            $firstname, $lastname, $middlename, $suffix, $address_id,
+            $gender, $birthDate, $contactnum, $emailContact, 
             $employmentStatus, $occupation, $business, $civilStatus, 
             $religion, $mFullName, $fFullName, $sFullName, 
             $philStatus, $philNum, $prinMem, $yakapmem

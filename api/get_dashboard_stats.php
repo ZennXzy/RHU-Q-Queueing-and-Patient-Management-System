@@ -15,11 +15,9 @@ try {
 
     function getCount($conn, $sql) {
         $result = $conn->query($sql);
-
         if (!$result) {
             throw new Exception($conn->error);
         }
-
         return (int)($result->fetch_assoc()['c'] ?? 0);
     }
 
@@ -49,16 +47,13 @@ try {
         ";
 
         $result = $conn->query($sql);
-
         if (!$result) {
             throw new Exception($conn->error);
         }
 
         $distribution = [];
-
         while ($row = $result->fetch_assoc()) {
-            $distribution[$row['label']] =
-                (int)$row['cnt'];
+            $distribution[$row['label']] = (int)$row['cnt'];
         }
 
         return [
@@ -67,31 +62,7 @@ try {
         ];
     }
 
-    function getTableColumns($conn, $table) {
-        // Only use known application tables.
-        if (!in_array($table, ['transactions', 'services'], true)) {
-            throw new Exception('Invalid table.');
-        }
-
-        $columns = [];
-
-        $result = $conn->query("SHOW COLUMNS FROM `$table`");
-
-        if (!$result) {
-            throw new Exception($conn->error);
-        }
-
-        while ($row = $result->fetch_assoc()) {
-            $columns[] = $row['Field'];
-        }
-
-        return $columns;
-    }
-
-    $totalPatients = getCount(
-        $conn,
-        "SELECT COUNT(*) AS c FROM patient_records"
-    );
+    $totalPatients = getCount($conn, "SELECT COUNT(*) AS c FROM patient_records");
 
     $waiting = getCount(
         $conn,
@@ -129,7 +100,6 @@ try {
         'Not Specified' => 0
     ];
 
-    // Calculate age dynamically using TIMESTAMPDIFF from date_of_birth
     $ageQuery = $conn->query(
         "SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age FROM patient_records"
     );
@@ -139,7 +109,6 @@ try {
     }
 
     while ($row = $ageQuery->fetch_assoc()) {
-
         if (
             $row['age'] === null ||
             $row['age'] === '' ||
@@ -169,106 +138,26 @@ try {
         unset($ageGroups['Not Specified']);
     }
 
-    $civilData = getDistribution(
-        $conn,
-        'civil_status'
-    );
+    $civilData = getDistribution($conn, 'civil_status');
+    $genderData = getDistribution($conn, 'gender');
+    $employmentData = getDistribution($conn, 'employment_status');
+    $philhealthData = getDistribution($conn, 'phil_status');
+    $yakapData = getDistribution($conn, 'yakap_member');
 
-    $genderData = getDistribution(
-        $conn,
-        'gender'
-    );
-
-    $employmentData = getDistribution(
-        $conn,
-        'employment_status'
-    );
-
-    $philhealthData = getDistribution(
-        $conn,
-        'phil_status'
-    );
-
-    $yakapData = getDistribution(
-        $conn,
-        'yakap_member'
-    );
-
-
-    $transactionColumns = getTableColumns(
-        $conn,
-        'transactions'
-    );
-
-    $serviceColumns = getTableColumns(
-        $conn,
-        'services'
-    );
-
-    if (
-        !in_array('service_id', $serviceColumns, true) ||
-        !in_array('service_name', $serviceColumns, true)
-    ) {
-        throw new Exception(
-            'Expected services.service_id and services.service_name columns.'
-        );
-    }
-
-    // Find the service reference used by transactions.
-    $serviceReference = 'service';
-
-    // Snapshot fallback for deleted services.
-    $hasSnapshot = in_array(
-        'service_snapshot',
-        $transactionColumns,
-        true
-    );
-
-    if ($serviceReference !== null) {
-
-        $snapshotExpression = $hasSnapshot
-            ? "NULLIF(TRIM(t.service_snapshot), '')"
-            : "NULL";
-
-        $serviceSQL = "
-            SELECT
-                COALESCE(
-                    NULLIF(TRIM(s.service_name), ''),
-                    $snapshotExpression,
-                    'Unknown Service'
-                ) AS service_label,
-                COUNT(*) AS cnt
-            FROM transactions AS t
-            LEFT JOIN services AS s
-                ON t.`$serviceReference` = s.service_id
-            GROUP BY service_label
-            ORDER BY cnt DESC, service_label ASC
-        ";
-
-    } elseif ($hasSnapshot) {
-
-        // Compatibility fallback for older transaction schemas.
-        $serviceSQL = "
-            SELECT
-                COALESCE(
-                    NULLIF(TRIM(service_snapshot), ''),
-                    'Unknown Service'
-                ) AS service_label,
-                COUNT(*) AS cnt
-            FROM transactions
-            GROUP BY service_label
-            ORDER BY cnt DESC, service_label ASC
-        ";
-
-    } else {
-
-        throw new Exception(
-            'No service reference or snapshot found in transactions.'
-        );
-    }
+    // Safe service distribution query with fallback
+    $serviceSQL = "
+        SELECT
+            COALESCE(
+                NULLIF(TRIM(t.service_snapshot), ''),
+                'Unknown Service'
+            ) AS service_label,
+            COUNT(*) AS cnt
+        FROM transactions AS t
+        GROUP BY service_label
+        ORDER BY cnt DESC, service_label ASC
+    ";
 
     $serviceQuery = $conn->query($serviceSQL);
-
     if (!$serviceQuery) {
         throw new Exception($conn->error);
     }
@@ -283,14 +172,12 @@ try {
 
     echo json_encode([
         'status' => 'success',
-
         'tiles' => [
             'total_patients' => $totalPatients,
             'waiting' => $waiting,
             'in_progress' => $inProgress,
             'completed' => $completed
         ],
-
         'charts' => [
             'age_distribution' => [
                 'labels' => array_keys($ageGroups),
@@ -307,12 +194,13 @@ try {
             ]
         ]
     ], JSON_UNESCAPED_UNICODE);
+
 } catch (Throwable $e) {
     error_log('Dashboard API error: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'status' => 'error',
-        'message' => 'Unable to load dashboard statistics.'
+        'message' => 'Unable to load dashboard statistics: ' . $e->getMessage()
     ]);
 }
 $conn->close();

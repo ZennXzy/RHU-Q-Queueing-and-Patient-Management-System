@@ -235,7 +235,7 @@ if ($action === 'final_register') {
         $draft = $_SESSION['patient_draft'];
 
         // 1. Insert into patient_records including account_token
-        $sql = "INSERT INTO patient_records (firstname, lastname, middlename, suffix, address, age, gender, 
+        $sql = "INSERT INTO patient_records (firstname, lastname, middlename, suffix, barangay_id, age, gender, 
             date_of_birth, contact_number, email, employment_status, occupation, 
             business_name, civil_status, religion, mothers_name, fathers_name, 
             spouses_name, phil_status, phil_number, principal_member, yakap_member
@@ -248,7 +248,7 @@ if ($action === 'final_register') {
 
         $formattedEmail = ($email === '') ? NULL : $email;
         $set_token = $draft['account_token'];
-        $insertstmt->bind_param("sssssissssssssssssssss", 
+        $insertstmt->bind_param("ssssiissssssssssssssss", 
             $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
             $draft['age'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $formattedEmail,
             $draft['employmentStatus'], $draft['occupation'], $draft['business'], $draft['civilStatus'], 

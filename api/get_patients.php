@@ -24,10 +24,10 @@ if ($action === 'details') {
 
     $stmt = $conn->prepare("SELECT p.*,
                             TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age,
-                            p.address AS barangay_id,
-                            TRIM(b.barangay_address) AS address
+                            p.barangay_id AS barangay_id,
+                            TRIM(b.barangay_name) AS address
                             FROM patient_records p
-                            JOIN barangay b ON p.address = b.barangay_id
+                            JOIN barangay b ON p.barangay_id = b.barangay_id
                             WHERE p.patient_id = ?");
     $stmt->bind_param("i", $patient_id);
     $stmt->execute();
@@ -58,10 +58,10 @@ if ($action === 'filter') {
     // Dynamically calculate age in SQL query
     $sql = "SELECT p.*, 
                    TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age,
-                   p.address AS barangay_id,
-                   TRIM(b.barangay_address) AS address
+                   p.barangay_id AS barangay_id,
+                   TRIM(b.barangay_name) AS address
             FROM patient_records p
-            LEFT JOIN barangay b ON p.address = b.barangay_id
+            LEFT JOIN barangay b ON p.barangay_id = b.barangay_id
             WHERE 1=1";
 
     $params = [];
@@ -74,7 +74,7 @@ if ($action === 'filter') {
     }
 
     if ($address !== '') {
-        $sql .= " AND b.barangay_address LIKE ?";
+        $sql .= " AND b.barangay_name LIKE ?";
         $params[] = "%" . $address . "%";
         $types .= "s";
     }
