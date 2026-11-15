@@ -23,6 +23,8 @@ if ($action === 'details') {
     }
 
     $stmt = $conn->prepare("SELECT p.*,
+                            TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age,
+                            p.address AS barangay_id,
                             TRIM(b.barangay_address) AS address
                             FROM patient_records p
                             JOIN barangay b ON p.address = b.barangay_id
@@ -39,7 +41,7 @@ if ($action === 'details') {
     exit;
 }
 
-// --- 2. FILTER & FULL EXPORT ACTION (Selects ALL columns) ---
+// --- 2. FILTER & FULL EXPORT ACTION ---
 if ($action === 'filter') {
     $gender            = trim($_GET['gender'] ?? '');
     $address           = trim($_GET['address'] ?? '');
@@ -53,8 +55,10 @@ if ($action === 'filter') {
     $date_from         = trim($_GET['date_from'] ?? '');
     $date_to           = trim($_GET['date_to'] ?? '');
 
-    // Select ALL columns (p.*) so CSV export and table rendering have full data
+    // Dynamically calculate age in SQL query
     $sql = "SELECT p.*, 
+                   TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age,
+                   p.address AS barangay_id,
                    TRIM(b.barangay_address) AS address
             FROM patient_records p
             LEFT JOIN barangay b ON p.address = b.barangay_id
@@ -76,13 +80,13 @@ if ($action === 'filter') {
     }
 
     if ($age_min !== null) {
-        $sql .= " AND p.age >= ?";
+        $sql .= " AND TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) >= ?";
         $params[] = $age_min;
         $types .= "i";
     }
 
     if ($age_max !== null) {
-        $sql .= " AND p.age <= ?";
+        $sql .= " AND TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) <= ?";
         $params[] = $age_max;
         $types .= "i";
     }

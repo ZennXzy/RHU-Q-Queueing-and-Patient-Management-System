@@ -117,7 +117,7 @@ try {
 
     $stmt_insert = $conn->prepare($insert_sql);
     $stmt_insert->bind_param(
-        "siisssssssss", 
+        "siissididdss", 
         $queue_code, 
         $patient_id, 
         $service_id, 

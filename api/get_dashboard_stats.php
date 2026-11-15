@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -130,8 +129,9 @@ try {
         'Not Specified' => 0
     ];
 
+    // Calculate age dynamically using TIMESTAMPDIFF from date_of_birth
     $ageQuery = $conn->query(
-        "SELECT age FROM patient_records"
+        "SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age FROM patient_records"
     );
 
     if (!$ageQuery) {

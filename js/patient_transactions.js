@@ -25,6 +25,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Helper function to format raw seconds into readable hours/minutes/seconds
+  function formatDuration(secondsVal) {
+    const totalSeconds = parseInt(secondsVal, 10);
+    if (isNaN(totalSeconds) || totalSeconds <= 0) return escapeHtml(secondsVal);
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let parts = [];
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || hours > 0) parts.push(`${minutes}m`);
+    parts.push(`${seconds}s`);
+
+    return parts.join(" ");
+  }
+
   function renderTransactions(items) {
     if (!transactionsList) return;
 
@@ -39,6 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
     transactionsList.innerHTML = items
       .map((item) => {
         const statusClass = cleanStatusClass(item.status);
+        const formattedDuration = item.service_duration && item.service_duration !== "N/A" 
+          ? formatDuration(item.service_duration) 
+          : "";
 
         return `
           <div class="transaction-item">
@@ -52,8 +72,8 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="item-right">
               ${
-                item.service_duration && item.service_duration !== "N/A"
-                  ? `<div class="duration-tag">${escapeHtml(item.service_duration)}</div>`
+                formattedDuration
+                  ? `<div class="duration-tag">${formattedDuration}</div>`
                   : ""
               }
             </div>

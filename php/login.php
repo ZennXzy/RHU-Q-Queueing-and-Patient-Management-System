@@ -91,10 +91,6 @@ if (!$user) {
         SELECT
             patient_auth_id AS id,
             username,
-            lastname,
-            firstname,
-            middlename,
-            suffix,
             password_hash,
             status,
             role,
@@ -291,9 +287,6 @@ try {
                     $loginRecovered = true;
                 }
 
-                // --Update Account Status--
-                // This runs while holding both the
-                // account file lock and DB row lock.
                 $updateSql = "
                     UPDATE {$table}
                     SET status = 'Online',
@@ -490,7 +483,7 @@ session_write_close();
 
 // --Redirect--
 if ($userType === 'patient') {
-    $redirect = '../pages/queue_display_page.php';
+    $redirect = '../pages/launch_page.php';
 } else {
     $redirect = '../pages/launch_page.php';
 }

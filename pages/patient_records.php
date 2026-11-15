@@ -91,7 +91,7 @@ $role = $_SESSION['logged_role'];
                 </tr>
               </thead>
               <?php
-                $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, age, gender, contact_number, phil_status, date_registered FROM patient_records ORDER BY firstname ASC");
+                $res = $conn->query("SELECT patient_id, firstname, lastname, middlename, suffix, gender, contact_number, phil_status, date_registered, TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age FROM patient_records ORDER BY firstname ASC");
 
                 echo '<tbody id="patientTableBody" style="text-align:center;">';
                 if ($res && $res->num_rows > 0) {
@@ -372,10 +372,6 @@ $role = $_SESSION['logged_role'];
                     <div class="info-group">
                       <label for="editAddress">Address <span class="require_onced-asterisk">*</span></label>
                       <input type="text" id="editAddress" name="editAddress" placeholder="Full Address" autocomplete="off">
-                    </div>
-                    <div class="info-group">
-                      <label for="editDateRegistered">Date Registered</label>
-                      <input type="date" id="editDateRegistered" name="editDateRegistered">
                     </div>
                   </div>
 

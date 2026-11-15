@@ -229,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (exportCsvBtn) {
       exportCsvBtn.addEventListener('click', async () => {
           try {
-              // Fetch all records with filter criteria applied (or all if no filter)
               const gender = document.getElementById('filterGender') ? document.getElementById('filterGender').value : '';
               const address = document.getElementById('address') ? document.getElementById('address').value.trim() : '';
               const ageMin = document.getElementById('filterAgeMin') ? document.getElementById('filterAgeMin').value : '';
@@ -265,7 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
               if (result.status === 'success' && result.patients.length > 0) {
                   const patients = result.patients;
 
-                  // Define CSV Headers mapping to database columns
                   let csvContent = "data:text/csv;charset=utf-8,";
                   csvContent += "Patient ID,First Name,Middle Name,Last Name,Suffix,Age,Gender,Birth Date,Civil Status,Religion,Contact Number,Email,Address,Mothers Name,Fathers Name,Spouses Name,Employment Status,Occupation,Business Name,PhilHealth Status,PhilHealth Number,Principal Member,Yakap Member,Date Registered\r\n";
 
@@ -297,7 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
                           p.date_registered || ''
                       ];
 
-                      // Escape fields for CSV format safety
                       const formattedRow = rowData.map(val => `"${String(val).replace(/"/g, '""')}"`).join(",");
                       csvContent += formattedRow + "\r\n";
                   });
@@ -415,6 +412,8 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         const rawBirthDate = getVal(p, ["date_of_birth"], "");
+        
+        // Use age returned directly from backend (calculated via TIMESTAMPDIFF) or calculate as fallback
         let calculatedAge = getVal(p, ["age"], null);
 
         if (

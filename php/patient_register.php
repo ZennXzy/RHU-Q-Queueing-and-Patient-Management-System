@@ -31,9 +31,6 @@ function generateUniqueAccountToken($conn) {
 
 $action = $_POST['action'] ?? '';
 
-// -------------------------------------------------------------
-// ACTION 1: Check Duplication, Generate Token & Save Draft Session
-// -------------------------------------------------------------
 if ($action === 'check_and_draft') {
 
     $firstname = trim($_POST['fname'] ?? '');
@@ -197,9 +194,6 @@ if ($action === 'check_and_draft') {
     exit();
 }
 
-// -------------------------------------------------------------
-// ACTION 2: Save Patient Details with Token & Register Credentials
-// -------------------------------------------------------------
 if ($action === 'final_register') {
 
     if (!isset($_SESSION['patient_draft'])) {
@@ -241,12 +235,11 @@ if ($action === 'final_register') {
         $draft = $_SESSION['patient_draft'];
 
         // 1. Insert into patient_records including account_token
-        $sql = "INSERT INTO patient_records (
-            account_token, firstname, lastname, middlename, suffix, address, age, gender, 
+        $sql = "INSERT INTO patient_records (firstname, lastname, middlename, suffix, address, age, gender, 
             date_of_birth, contact_number, email, employment_status, occupation, 
             business_name, civil_status, religion, mothers_name, fathers_name, 
             spouses_name, phil_status, phil_number, principal_member, yakap_member
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $insertstmt = $conn->prepare($sql);
         if (!$insertstmt) {
@@ -255,8 +248,8 @@ if ($action === 'final_register') {
 
         $formattedEmail = ($email === '') ? NULL : $email;
         $set_token = $draft['account_token'];
-        $insertstmt->bind_param("isssssissssssssssssssss", 
-            $draft['account_token'], $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
+        $insertstmt->bind_param("sssssissssssssssssssss", 
+            $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
             $draft['age'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $formattedEmail,
             $draft['employmentStatus'], $draft['occupation'], $draft['business'], $draft['civilStatus'], 
             $draft['religion'], $draft['mothers_name'], $draft['fathers_name'], $draft['spouses_name'], 
@@ -278,8 +271,8 @@ if ($action === 'final_register') {
         $status = "Offline";
         $role = "Patient";
 
-        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash, lastname, firstname, middlename, suffix, email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $authStmt->bind_param('issiiiiiiss', $registered_patient_id, $username, $hashed_password, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $registered_patient_id, $set_token, $status, $role);
+        $authStmt = $conn->prepare("INSERT INTO patient_auth (patient_id, username, password_hash,  email, account_token, status, role) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $authStmt->bind_param('ississs', $registered_patient_id, $username, $hashed_password, $registered_patient_id, $set_token, $status, $role);
         
         if (!$authStmt->execute()) {
             throw new Exception("Failed to save patient account: " . $authStmt->error);
