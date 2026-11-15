@@ -200,7 +200,7 @@ html {
 /* Responsive Adjustments */
 @media (max-width: 768px) {
   .content-area {
-    padding: 20px 16px;
+    padding: 40px;
   }
 
   .top-bar {
