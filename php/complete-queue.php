@@ -44,22 +44,19 @@ try {
     $accepted_at = $queue['accepted_at'];
 
     // 2. CREATE CURRENT TIME VARIABLE & CALCULATE DURATION
-    $currentTime = date('Y-m-d H:i:s'); // Current time variable
+    $currentTime = date('Y-m-d H:i:s');
     
     $start = new DateTime($accepted_at ?: $currentTime);
     $end = new DateTime($currentTime);
     
-    // Total elapsed seconds (ideal if your service_duration column is INT)
     $totalSeconds = max(0, $end->getTimestamp() - $start->getTimestamp());
-
-    // Optional formatted string (if your column is VARCHAR)
     $interval = $start->diff($end);
     $service_duration_str = ($interval->days > 0 ? $interval->format('%a days, ') : '') . $interval->format('%h hours, %i minutes, %s seconds');
 
-    // 3. Update Queue Information using our $currentTime variable
+    // 3. Update Queue Information Status
     $stmt = $conn->prepare("UPDATE queue_information SET status = 'Completed', service_duration = ? WHERE queue_info_id = ?");
     if (!$stmt) throw new Exception($conn->error);
-    $stmt->bind_param("si", $service_duration_str, $queue_info_id); // or bind $totalSeconds if column is INT
+    $stmt->bind_param("si", $service_duration_str, $queue_info_id);
 
     if (!$stmt->execute() || $stmt->affected_rows !== 1) {
         throw new Exception('Failed to update queue completion status.');
@@ -87,12 +84,12 @@ try {
 
     // 4. Insert into Transactions
     $insertSql = "INSERT INTO transactions
-        (patient_id, queue_code, service, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, server_name, service_duration, transaction_date)
+        (patient_id, queue_code, service, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, staff_id, service_duration, transaction_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($insertSql);
     if (!$stmt) throw new Exception($conn->error);
-    $stmt->bind_param("isissididdsssi", 
+    $stmt->bind_param("isissididdssii", 
         $patient_id, $queue_code, $service_id, $service, 
         $queue['blood_pressure'], $queue['respiratory_rate'], $queue['temperature'], $queue['pulse_rate'], 
         $queue['weight'], $queue['height'], $remarks, $queue['diagnosis'], $server_name, $service_duration_str
@@ -101,13 +98,73 @@ try {
     if (!$stmt->execute()) throw new Exception('Failed to save completed transaction.');
     $stmt->close();
 
+    // 5. RESTORED: Complete Linked Appointment if it exists
+    $completedAppointmentId = null;
+    if ($queue_service !== '') {
+        $stmt = $conn->prepare("SELECT appointments_id FROM appointments WHERE patient_id = ? AND service = ? AND status = 'Queued' FOR UPDATE");
+        if (!$stmt) throw new Exception($conn->error);
+        $stmt->bind_param("is", $patient_id, $queue_service);
+        $stmt->execute();
+        $matches = $stmt->get_result();
+
+        if ($matches->num_rows > 1) {
+            $stmt->close();
+            throw new Exception('Multiple queued appointments match this patient and service. Please verify the records.');
+        }
+
+        if ($matches->num_rows === 1) {
+            $completedAppointmentId = (int)$matches->fetch_assoc()['appointments_id'];
+        }
+        $stmt->close();
+
+        if ($completedAppointmentId !== null) {
+            $stmt = $conn->prepare("UPDATE appointments SET status = 'Completed' WHERE appointments_id = ? AND status = 'Queued'");
+            if (!$stmt) throw new Exception($conn->error);
+            $stmt->bind_param("i", $completedAppointmentId);
+
+            if (!$stmt->execute() || $stmt->affected_rows !== 1) {
+                throw new Exception('Failed to complete linked appointment.');
+            }
+            $stmt->close();
+        }
+    }
+
+    // 6. RESTORED: Create New Follow-up Appointment if requested
+    if ($appointment === 1 && $appointment_date !== '') {
+        $appointment_status = 'Approved';
+
+        $appointmentSql = "INSERT INTO appointments
+            (patient_id, service, remarks, staff_id, status, appointment_date, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())";
+
+        $stmt = $conn->prepare($appointmentSql);
+        if (!$stmt) throw new Exception($conn->error);
+        $stmt->bind_param(
+            "ississ",
+            $patient_id, $service, $remarks,
+            $server_name, $appointment_status, $appointment_date
+        );
+
+        if (!$stmt->execute()) throw new Exception('Failed to create follow-up appointment.');
+        $stmt->close();
+
+        $logMessage = ($_SESSION['logged_name'] ?? 'Staff') . ' added an Appointment.';
+        $stmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
+        if ($stmt) {
+            $stmt->bind_param("s", $logMessage);
+            $stmt->execute();
+            $stmt->close();
+        }
+    }
+
     // Commit transaction
     $conn->commit();
 
     echo json_encode([
         'status' => 'success',
         'message' => 'Transaction completed successfully.',
-        'duration_seconds' => $totalSeconds
+        'duration_seconds' => $totalSeconds,
+        'completed_appointment_id' => $completedAppointmentId
     ]);
 
 } catch (Throwable $e) {

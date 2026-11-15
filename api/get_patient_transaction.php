@@ -34,11 +34,11 @@ try {
             t.service_snapshot,
             s.service_name AS service,
             COALESCE(t.remarks, 'None') AS remarks,
-            COALESCE(a.fullname, 'N/A') AS server_name,
+            COALESCE(a.fullname, 'N/A') AS staff_id,
             COALESCE(t.service_duration, 'N/A') AS service_duration,
             DATE_FORMAT(t.transaction_date, '%b %d, %Y %h:%i %p') AS transaction_date
         FROM transactions t
-        LEFT JOIN admin_auth a ON t.server_name = a.id
+        LEFT JOIN admin_auth a ON t.staff_id = a.id
         LEFT JOIN services s ON t.service = s.service_id
         WHERE t.patient_id = ?
         ORDER BY t.transaction_date DESC
@@ -58,7 +58,7 @@ try {
                 !empty($row['service']) ? $row['service'] : ($row['service_snapshot'] ?? 'N/A')
             ),
             'remarks'          => htmlspecialchars((string)$row['remarks']),
-            'server_name'      => htmlspecialchars((string)$row['server_name']),
+            'staff_id'      => htmlspecialchars((string)$row['staff_id']),
             'service_duration' => htmlspecialchars((string)$row['service_duration']),
             'transaction_date' => $row['transaction_date']
         ];

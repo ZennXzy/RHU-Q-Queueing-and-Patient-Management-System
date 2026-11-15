@@ -85,7 +85,7 @@ async function loadPatientTransactions(patientId) {
             </div>
             <div class="tx-field">
               <label>Server / Attendant</label>
-              <span>${escapeHtml(tx.server_name)}</span>
+              <span>${escapeHtml(tx.staff_id)}</span>
             </div>
             <div class="tx-field">
               <label>Service Duration</label>
