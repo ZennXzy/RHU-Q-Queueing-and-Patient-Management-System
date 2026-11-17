@@ -34,10 +34,9 @@ try {
         $f = report_filters();
 
         if ($action === 'dashboard') {
-            // Fetch analytical statistics and summary groups
             $data = report_summary($conn, $f);
+            
         } elseif ($action === 'patients') {
-            // Fetch paginated list data
             $page = max(1, min(100000, (int)($_GET['page'] ?? 1)));
             $perPage = 25;
             $params = [];
@@ -54,22 +53,34 @@ try {
                 'per_page' => $perPage
             ];
         } elseif ($action === 'unique_patients') {
-            // Fetch paginated unique patients matching current filters
             $page = max(1, min(100000, (int)($_GET['page'] ?? 1)));
             $perPage = 25;
-            $params = [];
-            $types = '';
-            $where = report_where($f, $params, $types);
+            
+            $base_params = [];
+            $base_types = '';
+            $where = report_where($f, $base_params, $base_types);
 
-            // Subquery or grouped query for distinct patients matching the filter criteria
-            $countSql = "SELECT COUNT(DISTINCT t.patient_id) AS n " . report_base() . " WHERE $where";
-            $countRows = report_run($conn, $countSql, $params, $types);
+            $uniqueSearch = trim((string)($_GET['unique_search'] ?? ''));
+            $count_params = $base_params;
+            $count_types = $base_types;
+            $uniqueWhere = $where;
+
+            if ($uniqueSearch !== '') {
+                $uniqueWhere .= " AND (CONCAT_WS(' ', p.firstname, p.lastname, p.middlename) LIKE ? OR CAST(p.patient_id AS CHAR) LIKE ?)";
+                $q = '%' . $uniqueSearch . '%';
+                $count_params[] = $q;
+                $count_params[] = $q;
+                $count_types .= 'ss';
+            }
+
+            $countSql = "SELECT COUNT(DISTINCT t.patient_id) AS n " . report_base() . " WHERE $uniqueWhere";
+            $countRows = report_run($conn, $countSql, $count_params, $count_types);
             $count = (int)($countRows[0]['n'] ?? 0);
 
-            $sql = "SELECT p.patient_id, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS current_age, p.gender, COALESCE(b.barangay_name, 'Unspecified') AS barangay, COUNT(t.transaction_id) AS total_visits " . report_base() . " WHERE $where GROUP BY p.patient_id, p.firstname, p.middlename, p.lastname, p.suffix, p.date_of_birth, p.gender, b.barangay_name ORDER BY max(t.transaction_date) DESC LIMIT ? OFFSET ?";
+            $sql = "SELECT p.patient_id, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS patient_name, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS current_age, p.gender, COALESCE(b.barangay_name, 'Unspecified') AS barangay, COUNT(t.transaction_id) AS total_visits " . report_base() . " WHERE $uniqueWhere GROUP BY p.patient_id, p.firstname, p.middlename, p.lastname, p.suffix, p.date_of_birth, p.gender, b.barangay_name ORDER BY max(t.transaction_date) DESC LIMIT ? OFFSET ?";
             
-            $query_params = $params;
-            $query_types = $types . 'ii';
+            $query_params = $count_params;
+            $query_types = $count_types . 'ii';
             $query_params[] = $perPage;
             $query_params[] = ($page - 1) * $perPage;
 
