@@ -215,7 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
 
-    // Merge nested options instead of replacing plugins.
     const finalOptions = {
       ...baseOptions,
       ...extraOptions,
@@ -257,7 +256,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadDashboardData() {
     try {
-      const response = await fetch("../api/get_dashboard_stats.php", {
+      const dateFrom = document.getElementById("dateFrom")?.value || "";
+      const dateTo = document.getElementById("dateTo")?.value || "";
+
+      const params = new URLSearchParams();
+      if (dateFrom) params.append("date_from", dateFrom);
+      if (dateTo) params.append("date_to", dateTo);
+
+      const url = `../api/get_dashboard_stats.php${params.toString() ? "?" + params.toString() : ""}`;
+
+      const response = await fetch(url, {
         cache: "no-store",
       });
 
@@ -301,7 +309,6 @@ document.addEventListener("DOMContentLoaded", () => {
         charts.age_distribution,
         "age",
       );
-
       updateChartMetrics("ageDistributionMetrics", charts.age_distribution);
 
       // CIVIL STATUS
@@ -310,11 +317,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "doughnut",
         charts.civil_status,
         "civil",
-        {
-          cutout: "48%",
-        },
+        { cutout: "48%" },
       );
-
       updateChartMetrics("civilStatusMetrics", charts.civil_status);
 
       // GENDER DISTRIBUTION
@@ -323,11 +327,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "doughnut",
         charts.gender,
         "gender",
-        {
-          cutout: "48%",
-        },
+        { cutout: "48%" },
       );
-
       updateChartMetrics("genderDistributionMetrics", charts.gender);
 
       // EMPLOYMENT STATUS
@@ -336,11 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
         "doughnut",
         charts.employment,
         "employment",
-        {
-          cutout: "48%",
-        },
+        { cutout: "48%" },
       );
-
       updateChartMetrics("employmentStatusMetrics", charts.employment);
 
       // SERVICE DISTRIBUTION
@@ -354,31 +352,38 @@ document.addEventListener("DOMContentLoaded", () => {
           scales: {
             x: {
               beginAtZero: true,
-              grid: {
-                color: "#F1F5F9",
-              },
-              ticks: {
-                precision: 0,
-                color: "#64748B",
-              },
+              grid: { color: "#F1F5F9" },
+              ticks: { precision: 0, color: "#64748B" },
             },
             y: {
-              grid: {
-                display: false,
-              },
-              ticks: {
-                autoSkip: false,
-                color: "#475569",
-              },
+              grid: { display: false },
+              ticks: { autoSkip: false, color: "#475569" },
             },
           },
         },
       );
-
       updateChartMetrics("serviceDistributionMetrics", charts.service);
     } catch (error) {
       console.error("Dashboard loading error:", error);
     }
+  }
+
+  // Event Listeners for Filter Form
+  const filterForm = document.getElementById("dashboardFilterForm");
+  if (filterForm) {
+    filterForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      loadDashboardData();
+    });
+  }
+
+  const resetFilterBtn = document.getElementById("resetDashboardFilter");
+  if (resetFilterBtn) {
+    resetFilterBtn.addEventListener("click", () => {
+      if (document.getElementById("dateFrom")) document.getElementById("dateFrom").value = "";
+      if (document.getElementById("dateTo")) document.getElementById("dateTo").value = "";
+      loadDashboardData();
+    });
   }
 
   loadDashboardData();

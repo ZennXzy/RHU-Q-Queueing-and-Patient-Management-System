@@ -12,16 +12,28 @@ date_default_timezone_set('Asia/Manila');
 authorizeRoles(['Admin', 'Doctor/Staff']);
 
 try {
+    $dateFrom = trim($_GET['date_from'] ?? '');
+    $dateTo = trim($_GET['date_to'] ?? '');
 
-    function getCount($conn, $sql) {
-        $result = $conn->query($sql);
+    function getCount($conn, $sql, $params = [], $types = '') {
+        if ($params) {
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) throw new Exception($conn->error);
+            $stmt->bind_param($types, ...$params);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } else {
+            $result = $conn->query($sql);
+        }
+
         if (!$result) {
             throw new Exception($conn->error);
         }
+
         return (int)($result->fetch_assoc()['c'] ?? 0);
     }
 
-    function getDistribution($conn, $column) {
+    function getDistribution($conn, $column, $dateFrom, $dateTo) {
         $allowed = [
             'civil_status',
             'gender',
@@ -34,19 +46,41 @@ try {
             throw new Exception('Invalid distribution column.');
         }
 
-        $sql = "
-            SELECT
-                COALESCE(
-                    NULLIF(TRIM(`$column`), ''),
-                    'Not Specified'
-                ) AS label,
-                COUNT(*) AS cnt
-            FROM patient_records
-            GROUP BY label
-            ORDER BY cnt DESC, label ASC
-        ";
+        if ($dateFrom !== '' && $dateTo !== '') {
+            $sql = "
+                SELECT
+                    COALESCE(
+                        NULLIF(TRIM(p.`$column`), ''),
+                        'Not Specified'
+                    ) AS label,
+                    COUNT(DISTINCT p.patient_id) AS cnt
+                FROM patient_records p
+                JOIN transactions t ON t.patient_id = p.patient_id
+                WHERE t.transaction_date >= ? AND t.transaction_date < DATE_ADD(?, INTERVAL 1 DAY)
+                GROUP BY label
+                ORDER BY cnt DESC, label ASC
+            ";
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) throw new Exception($conn->error);
+            $fromDateStr = $dateFrom . ' 00:00:00';
+            $stmt->bind_param("ss", $fromDateStr, $dateTo);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        } else {
+            $sql = "
+                SELECT
+                    COALESCE(
+                        NULLIF(TRIM(`$column`), ''),
+                        'Not Specified'
+                    ) AS label,
+                    COUNT(*) AS cnt
+                FROM patient_records
+                GROUP BY label
+                ORDER BY cnt DESC, label ASC
+            ";
+            $result = $conn->query($sql);
+        }
 
-        $result = $conn->query($sql);
         if (!$result) {
             throw new Exception($conn->error);
         }
@@ -62,7 +96,17 @@ try {
         ];
     }
 
-    $totalPatients = getCount($conn, "SELECT COUNT(*) AS c FROM patient_records");
+    // Total Patients: if filtered, count unique patients with transactions in range, else all registered patients
+    if ($dateFrom !== '' && $dateTo !== '') {
+        $totalPatients = getCount(
+            $conn,
+            "SELECT COUNT(DISTINCT t.patient_id) AS c FROM transactions t WHERE t.transaction_date >= ? AND t.transaction_date < DATE_ADD(?, INTERVAL 1 DAY)",
+            [$dateFrom . ' 00:00:00', $dateTo],
+            'ss'
+        );
+    } else {
+        $totalPatients = getCount($conn, "SELECT COUNT(*) AS c FROM patient_records");
+    }
 
     $waiting = getCount(
         $conn,
@@ -82,14 +126,27 @@ try {
          AND created_at < CURDATE() + INTERVAL 1 DAY"
     );
 
-    $completed = getCount(
-        $conn,
-        "SELECT COUNT(*) AS c
-         FROM queue_information
-         WHERE status = 'Completed'
-         AND created_at >= CURDATE()
-         AND created_at < CURDATE() + INTERVAL 1 DAY"
-    );
+    if ($dateFrom !== '' && $dateTo !== '') {
+        $completed = getCount(
+            $conn,
+            "SELECT COUNT(*) AS c
+             FROM queue_information
+             WHERE status = 'Completed'
+             AND DATE(created_at) >= ?
+             AND DATE(created_at) <= ?",
+            [$dateFrom, $dateTo],
+            'ss'
+        );
+    } else {
+        $completed = getCount(
+            $conn,
+            "SELECT COUNT(*) AS c
+             FROM queue_information
+             WHERE status = 'Completed'
+             AND created_at >= CURDATE()
+             AND created_at < CURDATE() + INTERVAL 1 DAY"
+        );
+    }
 
     $ageGroups = [
         '0-12' => 0,
@@ -100,9 +157,16 @@ try {
         'Not Specified' => 0
     ];
 
-    $ageQuery = $conn->query(
-        "SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age FROM patient_records"
-    );
+    if ($dateFrom !== '' && $dateTo !== '') {
+        $ageSql = "SELECT DISTINCT p.patient_id, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age FROM patient_records p JOIN transactions t ON t.patient_id = p.patient_id WHERE t.transaction_date >= ? AND t.transaction_date < DATE_ADD(?, INTERVAL 1 DAY)";
+        $stmt = $conn->prepare($ageSql);
+        $fromDateStr = $dateFrom . ' 00:00:00';
+        $stmt->bind_param("ss", $fromDateStr, $dateTo);
+        $stmt->execute();
+        $ageQuery = $stmt->get_result();
+    } else {
+        $ageQuery = $conn->query("SELECT TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age FROM patient_records");
+    }
 
     if (!$ageQuery) {
         throw new Exception($conn->error);
@@ -138,13 +202,28 @@ try {
         unset($ageGroups['Not Specified']);
     }
 
-    $civilData = getDistribution($conn, 'civil_status');
-    $genderData = getDistribution($conn, 'gender');
-    $employmentData = getDistribution($conn, 'employment_status');
-    $philhealthData = getDistribution($conn, 'phil_status');
-    $yakapData = getDistribution($conn, 'yakap_member');
+    $civilData = getDistribution($conn, 'civil_status', $dateFrom, $dateTo);
+    $genderData = getDistribution($conn, 'gender', $dateFrom, $dateTo);
+    $employmentData = getDistribution($conn, 'employment_status', $dateFrom, $dateTo);
+    $philhealthData = getDistribution($conn, 'phil_status', $dateFrom, $dateTo);
+    $yakapData = getDistribution($conn, 'yakap_member', $dateFrom, $dateTo);
 
-    // Safe service distribution query with fallback
+    // Service Distribution
+    $serviceWhere = "WHERE 1=1";
+    $serviceParams = [];
+    $serviceTypes = "";
+
+    if ($dateFrom !== '') {
+        $serviceWhere .= " AND t.transaction_date >= ?";
+        $serviceParams[] = $dateFrom . ' 00:00:00';
+        $serviceTypes .= 's';
+    }
+    if ($dateTo !== '') {
+        $serviceWhere .= " AND t.transaction_date < DATE_ADD(?, INTERVAL 1 DAY)";
+        $serviceParams[] = $dateTo;
+        $serviceTypes .= 's';
+    }
+
     $serviceSQL = "
         SELECT
             COALESCE(
@@ -153,11 +232,19 @@ try {
             ) AS service_label,
             COUNT(*) AS cnt
         FROM transactions AS t
+        $serviceWhere
         GROUP BY service_label
         ORDER BY cnt DESC, service_label ASC
     ";
 
-    $serviceQuery = $conn->query($serviceSQL);
+    $stmt = $conn->prepare($serviceSQL);
+    if (!$stmt) throw new Exception($conn->error);
+    if ($serviceParams) {
+        $stmt->bind_param($serviceTypes, ...$serviceParams);
+    }
+    $stmt->execute();
+    $serviceQuery = $stmt->get_result();
+
     if (!$serviceQuery) {
         throw new Exception($conn->error);
     }

@@ -9,16 +9,12 @@ if ($_SERVER["REQUEST_METHOD"] !== 'POST') {
     exit();
 }
 
-/**
- * Generates a cryptographically secure, unique 6-digit account token
- */
 function generateUniqueAccountToken($conn) {
     do {
-        // Securely generate a number between 000000 and 999999
         $token = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         
         // Check uniqueness against database
-        $stmt = $conn->prepare("SELECT patient_id FROM patient_records WHERE account_token = ? LIMIT 1");
+        $stmt = $conn->prepare("SELECT patient_id FROM patient_auth WHERE account_token = ? LIMIT 1");
         $stmt->bind_param('s', $token);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -38,10 +34,7 @@ if ($action === 'check_and_draft') {
     $middlename = trim($_POST['mname'] ?? '');
     $suffix     = trim($_POST['sname'] ?? '');
     $address    = trim($_POST['address'] ?? '');
-
     $rawAge = $_POST['age'] ?? '';
-    $age    = (int) preg_replace('/\D/', '', $rawAge);
-
     $gender           = trim($_POST['gender'] ?? '');
     $birthDate        = trim($_POST['birthDate'] ?? '');
     $contactnum       = trim($_POST['contactnum'] ?? '');
@@ -50,7 +43,6 @@ if ($action === 'check_and_draft') {
     $business         = trim($_POST['business'] ?? '');
     $civilStatus      = trim($_POST['civilStatus'] ?? '');
     $religion         = trim($_POST['religion'] ?? '');
-    
     // Family Info
     $mfname = trim($_POST['mfname'] ?? '');
     $mmname = trim($_POST['mmname'] ?? '');
@@ -133,8 +125,7 @@ if ($action === 'check_and_draft') {
         header('Location: ../pages/patient_reg_form.php?msg=' . urlencode('Please provide the address') . '&type=error');
         exit();
     } else {
-        // Ensure the table and column names match your database schema
-        $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_address = ? LIMIT 1");
+        $barangayCheck = $conn->prepare("SELECT barangay_id FROM barangay WHERE barangay_name = ? LIMIT 1");
         $barangayCheck->bind_param("s", $address);
         $barangayCheck->execute();
         $barangayRes = $barangayCheck->get_result();
@@ -144,7 +135,6 @@ if ($action === 'check_and_draft') {
             header('Location: ../pages/patient_records.php?msg=' . urlencode('Please select a valid barangay from the list.') . '&type=error');
             exit();
         } else {
-            // FIX: Fetch the row into an array first
             $row = $barangayRes->fetch_assoc();
             $address_id = $row['barangay_id'];
         }
@@ -153,7 +143,6 @@ if ($action === 'check_and_draft') {
 
 
 
-    // Generate token if not already in session (ensures token stays unchangeable)
     if (empty($_SESSION['patient_draft']['account_token'])) {
         $accountToken = generateUniqueAccountToken($conn);
     } else {
@@ -210,7 +199,7 @@ if ($action === 'final_register') {
         exit();
     }
 
-    // Check unique username (and unique non-empty email)
+    // 1. Check unique username and email in patient_auth
     if ($email !== '') {
         $userCheck = $conn->prepare("SELECT patient_auth_id FROM patient_auth WHERE username = ? OR email = ? LIMIT 1");
         $userCheck->bind_param('ss', $username, $email);
@@ -228,6 +217,21 @@ if ($action === 'final_register') {
     }
     $userCheck->close();
 
+    // 2. Check unique username in admin_auth to prevent collisions with admin usernames
+    $adminCheck = $conn->prepare("SELECT 1 FROM admin_auth WHERE username = ? LIMIT 1");
+    if ($adminCheck) {
+        $adminCheck->bind_param('s', $username);
+        $adminCheck->execute();
+        $adminRes = $adminCheck->get_result();
+
+        if ($adminRes && $adminRes->num_rows > 0) {
+            $adminCheck->close();
+            echo json_encode(['status' => 'error', 'message' => 'Username is already taken.']);
+            exit();
+        }
+        $adminCheck->close();
+    }
+
     // Transaction
     $conn->begin_transaction();
     $set_token = NULL;
@@ -235,11 +239,11 @@ if ($action === 'final_register') {
         $draft = $_SESSION['patient_draft'];
 
         // 1. Insert into patient_records including account_token
-        $sql = "INSERT INTO patient_records (firstname, lastname, middlename, suffix, barangay_id, age, gender, 
+        $sql = "INSERT INTO patient_records (firstname, lastname, middlename, suffix, barangay_id, gender, 
             date_of_birth, contact_number, email, employment_status, occupation, 
             business_name, civil_status, religion, mothers_name, fathers_name, 
             spouses_name, phil_status, phil_number, principal_member, yakap_member
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         $insertstmt = $conn->prepare($sql);
         if (!$insertstmt) {
@@ -248,9 +252,8 @@ if ($action === 'final_register') {
 
         $formattedEmail = ($email === '') ? NULL : $email;
         $set_token = $draft['account_token'];
-        $insertstmt->bind_param("ssssiissssssssssssssss", 
-            $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], 
-            $draft['age'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $formattedEmail,
+        $insertstmt->bind_param("ssssissssssssssssssss", 
+            $draft['firstname'], $draft['lastname'], $draft['middlename'], $draft['suffix'], $draft['address'], $draft['gender'], $draft['birthDate'], $draft['contactnum'], $formattedEmail,
             $draft['employmentStatus'], $draft['occupation'], $draft['business'], $draft['civilStatus'], 
             $draft['religion'], $draft['mothers_name'], $draft['fathers_name'], $draft['spouses_name'], 
             $draft['philStatus'], $draft['philNum'], $draft['prinMem'], $draft['yakapmem']
@@ -263,7 +266,6 @@ if ($action === 'final_register') {
         $registered_patient_id = $conn->insert_id;
         $insertstmt->close();
 
-        // 2. Hash Password & Insert into patient_auth
         $options = ["cost" => 12];
         $hashed_password = password_hash($password, PASSWORD_BCRYPT, $options);
 

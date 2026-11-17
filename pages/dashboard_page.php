@@ -24,7 +24,7 @@ require_once '../php/connection.php';
     <script src="../js/dot-indicator.js" defer></script>
     <script src="../js/session-check.js" defer></script>
     <script src="../js/logout.js" defer></script>
-    <script src="../js/dashboard.js?v=<?= filemtime(__DIR__ . '/../js/dashboard.js') ?>" defer></script>
+    <script src="../js/dashboard.js" defer></script>
 </head>
 
 <body>
@@ -38,7 +38,22 @@ require_once '../php/connection.php';
             <div class="dashboard-header-bar">
                 <h1 class="page-title">Dashboard & Analytics</h1>
             </div>
-
+            <div class="filter-bar" style="background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <form id="dashboardFilterForm" style="display: flex; align-items: center; gap: 15px; width: 100%; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="dateFrom" style="font-weight: 500; font-size: 14px; color: #374151;">From:</label>
+                        <input type="date" id="dateFrom" name="date_from" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="dateTo" style="font-weight: 500; font-size: 14px; color: #374151;">To:</label>
+                        <input type="date" id="dateTo" name="date_to" style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;">
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-left: auto;">
+                        <button type="submit" style="padding: 8px 16px; background: #0D9488; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">Apply Filter</button>
+                        <button type="button" id="resetDashboardFilter" style="padding: 8px 16px; background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; font-weight: 500;">Reset</button>
+                    </div>
+                </form>
+            </div>
             <!-- OVERVIEW METRICS -->
             <div class="dashboard-tiles">
 
