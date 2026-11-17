@@ -23,7 +23,7 @@ try {
             throw new InvalidArgumentException('Invalid transaction ID');
         }
 
-        $rows = report_run($conn, "SELECT t.*, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS fullname, p.gender, p.date_of_birth, p.age, b.barangay_name AS address, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_type FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service WHERE t.transaction_id = ?", [$id], 'i');
+        $rows = report_run($conn, "SELECT t.*, CONCAT_WS(' ', p.firstname, p.middlename, p.lastname, p.suffix) AS fullname, p.gender, p.date_of_birth, TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()) AS age, b.barangay_name AS address, COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service') AS service_type FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service WHERE t.transaction_id = ?", [$id], 'i');
 
         if (!$rows) {
             throw new InvalidArgumentException('Record not found');
