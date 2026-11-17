@@ -102,74 +102,72 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
                 <button type="button" class="btn btn-text" id="stopBtn">Stop countdown</button>
             </div>
         </section>
-        <?php include '../pages/footer.php'; ?>
     </main>
-
-    <script>
-        (function () {
-            const TOTAL_MS  = <?= REDIRECT_SECONDS ?> * 1000;
-            const RETURN_URL = <?= json_encode($returnUrl) ?>;
-            const RETURN_LABEL = <?= json_encode($returnLabel) ?>;
-
-            const ring      = document.getElementById('ringProgress');
-            const secondsEl = document.getElementById('secondsLeft');
-            const unitEl    = document.getElementById('secondsUnit');
-            const textEl    = document.getElementById('countdownText');
-            const stopBtn   = document.getElementById('stopBtn');
-            const backBtn   = document.getElementById('backBtn');
-
-            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const CIRC = 2 * Math.PI * 54;
-            ring.style.strokeDasharray = CIRC;
-
-            const start = Date.now();
-            let rafId = null;
-            let redirectTimer = null;
-            let stopped = false;
-
-            function render() {
-                const remaining = Math.max(0, TOTAL_MS - (Date.now() - start));
-                const secs = Math.ceil(remaining / 1000);
-
-                secondsEl.textContent = secs;
-                unitEl.textContent = secs === 1 ? 'second' : 'seconds';
-
-                // Smooth ring, or one step per second if the person prefers less motion
-                const progress = reduceMotion ? secs / (TOTAL_MS / 1000) : remaining / TOTAL_MS;
-                ring.style.strokeDashoffset = CIRC * (1 - progress);
-
-                if (!stopped && remaining > 0) {
-                    rafId = requestAnimationFrame(render);
-                }
-            }
-
-            function goBackToApp() {
-                window.location.replace(RETURN_URL);
-            }
-
-            function stopCountdown() {
-                stopped = true;
-                clearTimeout(redirectTimer);
-                cancelAnimationFrame(rafId);
-                ring.style.strokeDashoffset = 0;
-                document.querySelector('.ring').classList.add('paused');
-                textEl.textContent = 'Countdown stopped. Use a button below when you are ready.';
-                stopBtn.hidden = true;
-            }
-
-            redirectTimer = setTimeout(goBackToApp, TOTAL_MS);
-            render();
-
-            stopBtn.addEventListener('click', stopCountdown);
-
-            backBtn.addEventListener('click', function () {
-                if (window.history.length > 1) {
-                    window.history.back();
-                } else {
-                    goBackToApp();
-                }
-            });
-        })();
-    </script>
 </body>
+<script>
+    (function () {
+        const TOTAL_MS  = <?= REDIRECT_SECONDS ?> * 1000;
+        const RETURN_URL = <?= json_encode($returnUrl) ?>;
+        const RETURN_LABEL = <?= json_encode($returnLabel) ?>;
+
+        const ring      = document.getElementById('ringProgress');
+        const secondsEl = document.getElementById('secondsLeft');
+        const unitEl    = document.getElementById('secondsUnit');
+        const textEl    = document.getElementById('countdownText');
+        const stopBtn   = document.getElementById('stopBtn');
+        const backBtn   = document.getElementById('backBtn');
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const CIRC = 2 * Math.PI * 54;
+        ring.style.strokeDasharray = CIRC;
+
+        const start = Date.now();
+        let rafId = null;
+        let redirectTimer = null;
+        let stopped = false;
+
+        function render() {
+            const remaining = Math.max(0, TOTAL_MS - (Date.now() - start));
+            const secs = Math.ceil(remaining / 1000);
+
+            secondsEl.textContent = secs;
+            unitEl.textContent = secs === 1 ? 'second' : 'seconds';
+
+            // Smooth ring, or one step per second if the person prefers less motion
+            const progress = reduceMotion ? secs / (TOTAL_MS / 1000) : remaining / TOTAL_MS;
+            ring.style.strokeDashoffset = CIRC * (1 - progress);
+
+            if (!stopped && remaining > 0) {
+                rafId = requestAnimationFrame(render);
+            }
+        }
+
+        function goBackToApp() {
+            window.location.replace(RETURN_URL);
+        }
+
+        function stopCountdown() {
+            stopped = true;
+            clearTimeout(redirectTimer);
+            cancelAnimationFrame(rafId);
+            ring.style.strokeDashoffset = 0;
+            document.querySelector('.ring').classList.add('paused');
+            textEl.textContent = 'Countdown stopped. Use a button below when you are ready.';
+            stopBtn.hidden = true;
+        }
+
+        redirectTimer = setTimeout(goBackToApp, TOTAL_MS);
+        render();
+
+        stopBtn.addEventListener('click', stopCountdown);
+
+        backBtn.addEventListener('click', function () {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                goBackToApp();
+            }
+        });
+    })();
+</script>
 </html>
