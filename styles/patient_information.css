@@ -10,8 +10,6 @@ html {
   height: 100%;
   width: 100%;
   background-color: #F9FAFB;
-  background-repeat: repeat;
-  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   cursor: default;

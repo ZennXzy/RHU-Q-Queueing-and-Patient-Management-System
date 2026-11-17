@@ -617,6 +617,7 @@ $role = $_SESSION['logged_role'];
             </form>
           </dialog>
         </div>
+        <?php include '../pages/footer.php'; ?>
       </div>
     </div>
   </body>

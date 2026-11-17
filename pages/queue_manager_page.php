@@ -195,6 +195,7 @@ $role = $_SESSION['logged_role'];
                     </div>
                 </div>    
             </div>
+            <?php include '../pages/footer.php'; ?>
         </div>
     </div>
     <!-- Hidden Receipt Template for Thermal Printer -->

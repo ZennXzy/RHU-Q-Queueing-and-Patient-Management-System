@@ -1,4 +1,4 @@
-<!-- Hamburger / Toggle Button (Always visible on top bar/header) -->
+<link rel="stylesheet" href="../styles/footer.css">
 <button <?php if($currentPage === 'queue_display'){ ?> style="color: #e6f0ee;"<?php }?> type="button" id="sidebarToggleBtn" class="sidebar-toggle-btn" aria-label="Toggle Sidebar">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="3" y1="12" x2="21" y2="12"></line>

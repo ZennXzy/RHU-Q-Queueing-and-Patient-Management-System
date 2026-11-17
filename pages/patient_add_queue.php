@@ -1,16 +1,12 @@
 <?php
-// Note: Session checking and role authorization can stay here or be handled in the external processor, 
-// but keeping session checks here ensures security before rendering the view.
 require_once '../api/check-private.php';
 authorizeRoles(['Patient']);
 require_once '../php/connection.php';
 
 $currentPage = 'add_queue';
-// Retrieve flash messages if passed from redirect
 $message     = $_GET['msg'] ?? '';
 $messageType = $_GET['type'] ?? '';
 
-// Fetch all services for the dropdown select list
 $servicesList = [];
 $servicesQuery = $conn->query("SELECT service_name FROM services WHERE status = 'Active' ORDER BY service_id ASC");
 if ($servicesQuery) {
@@ -154,6 +150,7 @@ if ($activeQuery) {
                 </div>
             </form>
         </div>
+        <?php include '../pages/footer.php'; ?>
     </main>
 </body>
 </html>

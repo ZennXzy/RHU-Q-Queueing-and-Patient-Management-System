@@ -1,4 +1,3 @@
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -43,7 +42,7 @@ body {
     overflow-y: auto;
 }
 
-.content-area > * {
+.content-area>* {
     flex-shrink: 0;
 }
 
@@ -65,10 +64,6 @@ body {
 }
 
 
-/* ============================================================
-   02. SEARCH BAR
-   ============================================================ */
-
 .content-area .topbar {
     display: flex;
     align-items: center;
@@ -82,19 +77,14 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-
     width: 100%;
     max-width: 450px;
     min-height: 48px;
-
     padding: 0 16px;
-
     background: #FFFFFF;
     border: 1px solid #DCE5E8;
     border-radius: 11px;
-
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
-
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
@@ -845,6 +835,7 @@ dialog .modal-footer {
 .btn-danger:hover {
     background: #DC2626;
 }
+
 /* Patient Filter Modal Styling & Centering */
 #patientFilterModal {
     border: none;
@@ -854,7 +845,7 @@ dialog .modal-footer {
     width: 95%;
     max-height: 90vh;
     box-sizing: border-box;
-    
+
     display: none;
     flex-direction: column;
     margin: auto;
@@ -862,13 +853,13 @@ dialog .modal-footer {
     inset: 0;
     overflow: hidden;
     z-index: 1000;
-    
+
     border-radius: 12px;
     box-shadow:
         0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 8px 10px -6px rgba(0, 0, 0, 0.1);
     outline: none;
-    
+
     animation: modalFadeIn 0.3s ease-out;
 }
 
@@ -969,6 +960,7 @@ dialog .modal-footer {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -1329,9 +1321,7 @@ dialog .modal-footer {
     }
 
     #edit-patient .modal-footer {
-        padding-bottom: calc(
-            16px + env(safe-area-inset-bottom, 0px)
-        );
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
     }
 }
 
@@ -1573,8 +1563,6 @@ dialog .modal-footer {
         border-radius: 12px;
     }
 }
-
-/* Accessibility */
 
 @media (prefers-reduced-motion: reduce) {
 

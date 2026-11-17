@@ -309,7 +309,7 @@ require_once '../php/connection.php';
                     </div>
                 </div>
             </div>
-
+            <?php include '../pages/footer.php'; ?>
         </form>
     </div>
   </div>  

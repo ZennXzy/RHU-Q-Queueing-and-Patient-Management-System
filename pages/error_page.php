@@ -7,7 +7,6 @@ const REDIRECT_SECONDS = 5;
 
 $LOGIN_PAGE = '../index.html';
 
-// Where each role lands after an error: [path from project root, label shown on the page]
 $ROLE_HOME = [
     'Admin'        => ['pages/dashboard_page.php',  'Dashboard'],
     'Doctor/Staff' => ['pages/dashboard_page.php',  'Dashboard'],
@@ -15,8 +14,6 @@ $ROLE_HOME = [
     'Display'      => ['pages/queue_display_page.php',  'Queue Display'],
 ];
 
-/* ------------------------- Error messages ------------------------- */
-// title = what happened, message = what to do about it
 $ERRORS = [
     400 => ['Request could not be understood',  'The link or form data was not valid. Go back and try again.'],
     401 => ['Please sign in',                   'Your session has ended or you are not signed in yet. Sign in to continue.'],
@@ -31,15 +28,12 @@ $ERRORS = [
     504 => ['Server took too long to respond',  'The server did not answer in time. Try again in a moment.'],
 ];
 
-/* ------------------------- Work out the error code ------------------------- */
 $code = (int)($_GET['code'] ?? ($_SERVER['REDIRECT_STATUS'] ?? 404));
 if (!isset($ERRORS[$code])) {
     $code = 404;
 }
 [$title, $message] = $ERRORS[$code];
 
-// Absolute base path of the project (works even when Apache shows this page for a
-// URL in a different folder, because SCRIPT_NAME is always this file).
 $base = rtrim(str_replace('\\', '/', dirname(dirname($_SERVER['SCRIPT_NAME'] ?? ''))), '/');
 
 $role   = $_SESSION['logged_role'] ?? '';
@@ -54,7 +48,6 @@ if ($code === 401 || $target === null) {
 }
 // The target is decided on the server only; it is never read from the URL.
 
-/* ------------------------- Headers ------------------------- */
 if (!headers_sent()) {
     http_response_code($code);
     header('Cache-Control: no-store');
@@ -109,6 +102,7 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
                 <button type="button" class="btn btn-text" id="stopBtn">Stop countdown</button>
             </div>
         </section>
+        <?php include '../pages/footer.php'; ?>
     </main>
 
     <script>

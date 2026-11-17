@@ -128,6 +128,7 @@ if ($activeQuery) {
                 </div>
 
             </div>
+            <?php include '../pages/footer.php'; ?>
         </div>
     </div>
 </body>

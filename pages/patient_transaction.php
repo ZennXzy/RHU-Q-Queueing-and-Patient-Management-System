@@ -58,6 +58,7 @@ $currentPage = 'transactions';
             </div>
           </div>
         </div>
+        <?php include '../pages/footer.php'; ?>
       </div>
     </div>
   </body>

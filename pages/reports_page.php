@@ -356,7 +356,7 @@ require '../php/connection.php';
             or verified community coverage. Review population denominators and
             data completeness before planning outreach.
         </p>
-
+      <?php include '../pages/footer.php'; ?>
     </main>
 </div>
 

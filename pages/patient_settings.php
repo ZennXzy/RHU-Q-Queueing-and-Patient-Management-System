@@ -134,6 +134,7 @@ $currentPage = 'settings';
           </div>
         </form>
       </div>
+      <?php include '../pages/footer.php'; ?>
     </main>
   </div>
 

@@ -280,6 +280,7 @@ require_once '../php/connection.php';
                     <button type="submit" class="submit-btn" name="register">Register</button>
                 </div>
             </div>
+        <?php include '../pages/footer.php'; ?>
         </form>
     </div>
 </body>

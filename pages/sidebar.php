@@ -3,7 +3,7 @@ require_once '../api/check-private.php';
 require_once '../php/connection.php';
 $role = $_SESSION['logged_role'];
 ?>
-
+<link rel="stylesheet" href="../styles/footer.css">
 <!-- Mobile/Tablet toggle (hidden on desktop via CSS) -->
 <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mainSidebar">
   <span class="bar"></span>

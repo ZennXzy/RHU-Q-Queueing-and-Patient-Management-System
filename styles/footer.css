@@ -1,0 +1,41 @@
+.app-aside-footer {
+    margin-top: 1.2rem;
+    padding: 1.25rem 1.5rem;
+    padding-bottom: 0rem;
+    background-color: transparent; 
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.app-aside-footer .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.app-aside-footer .footer-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.app-aside-footer .separator {
+    color: #d1d5db;
+}
+
+.app-aside-footer .privacy-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.app-aside-footer .privacy-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}

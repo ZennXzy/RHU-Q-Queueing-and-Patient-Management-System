@@ -91,7 +91,8 @@ require_once '../php/connection.php';
             </table>
             </div>
         </div>
-        </div>
+      <?php include '../pages/footer.php'; ?>
+    </div>
   </div>
 </body>
 <dialog id="add-account" class="add-account">

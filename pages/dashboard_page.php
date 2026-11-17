@@ -225,7 +225,7 @@ require_once '../php/connection.php';
 
                 </div>
             </section>
-
+            <?php include '../pages/footer.php'; ?>
         </div>
     </div>
 </body>

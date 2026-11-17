@@ -180,6 +180,7 @@ $currentPatientId = $_SESSION['patient_id'] ?? $_SESSION['logged_id'] ?? 0;
             </div>
           </form>
         </div>
+        <?php include '../pages/footer.php'; ?>
       </div>
     </div>
   </body>

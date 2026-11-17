@@ -38,7 +38,6 @@ if ($servicesQuery) {
   </head>
   <body>
     <div class="workspace">
-
       <!-- Main Content Area -->
       <div class="content-area">
         <?php include '../pages/patient_queue_aside.php'; ?>
@@ -64,6 +63,7 @@ if ($servicesQuery) {
             <!-- Dynamic content loaded via JS -->
           </div>
         </div>
+        <?php include '../pages/footer.php'; ?>
       </div>
     </div>
 

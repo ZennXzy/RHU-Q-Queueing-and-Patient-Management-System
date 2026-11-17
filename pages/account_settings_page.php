@@ -176,6 +176,7 @@ require_once '../php/connection.php';
         </div>
       </div>
       <?php }?>
+      <?php include '../pages/footer.php'; ?>
     </div>
   </div>
   <dialog id="serviceModal" class="service-modal" aria-labelledby="serviceModalTitle">

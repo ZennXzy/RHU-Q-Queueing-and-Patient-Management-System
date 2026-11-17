@@ -64,6 +64,7 @@ $role = $_SESSION['logged_role'];
                     <div class="appointments-list" id="approvedAppointmentsList"></div>
                 </div>
             </div>
+            <?php include '../pages/footer.php'; ?>
         </div>
     </div>
 
