@@ -112,7 +112,7 @@ function report_where(array $f, array &$params, string &$types): string {
 
 // Reusable SQL base join structure (Updated to p.barangay_id and b.barangay_name)
 function report_base(): string {
-    return 'FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service';
+    return 'FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN barangay b ON b.barangay_id = p.barangay_id LEFT JOIN services s ON s.service_id = t.service_id';
 }
 
 // Execute parameterized query safely
@@ -175,7 +175,7 @@ function report_summary(mysqli $conn, array $f): array {
     $where = report_where($f, $params, $types);
     $base = report_base();
 
-    $kpi = report_run($conn, "SELECT COUNT(*) AS visits, COUNT(DISTINCT t.patient_id) AS patients, COUNT(DISTINCT p.barangay_id) AS barangays FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN services s ON s.service_id = t.service WHERE $where", $params, $types)[0];
+    $kpi = report_run($conn, "SELECT COUNT(*) AS visits, COUNT(DISTINCT t.patient_id) AS patients, COUNT(DISTINCT p.barangay_id) AS barangays FROM transactions t JOIN patient_records p ON p.patient_id = t.patient_id LEFT JOIN services s ON s.service_id = t.service_id WHERE $where", $params, $types)[0];
 
     $groupings = [
         'services' => "COALESCE(NULLIF(t.service_snapshot, ''), s.service_name, 'Unknown service')",
