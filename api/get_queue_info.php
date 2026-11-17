@@ -31,7 +31,7 @@ try {
                 p.suffix
             FROM queue_information q
             INNER JOIN patient_records p ON q.patient_id = p.patient_id
-            LEFT JOIN services s ON q.service_name = s.service_id
+            LEFT JOIN services s ON q.service_id = s.service_id
             WHERE q.queue_info_id = ?";
 
     $stmt = $conn->prepare($sql);

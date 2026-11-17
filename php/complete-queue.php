@@ -26,7 +26,7 @@ if ($queue_info_id <= 0 || $patient_name === '' || $service === '') {
 try {
     $conn->begin_transaction();
 
-    // 1. Fetch queue record and verify status
+    // Fetch queue record and verify status
     $stmt = $conn->prepare("SELECT * FROM queue_information WHERE queue_info_id = ? FOR UPDATE");
     if (!$stmt) throw new Exception($conn->error);
     $stmt->bind_param("i", $queue_info_id);
@@ -43,7 +43,7 @@ try {
     $queue_service = trim((string)$queue['service_snapshot']);
     $accepted_at = $queue['accepted_at'];
 
-    // 2. CREATE CURRENT TIME VARIABLE & CALCULATE DURATION
+    // CREATE CURRENT TIME VARIABLE & CALCULATE DURATION
     $currentTime = date('Y-m-d H:i:s');
     
     $start = new DateTime($accepted_at ?: $currentTime);
@@ -82,9 +82,9 @@ try {
     if (!$serviceRow) throw new Exception('Please select a valid service.');
     $service_id = (int)$serviceRow['service_id'];
 
-    // 4. Insert into Transactions
+    // Insert into Transactions
     $insertSql = "INSERT INTO transactions
-        (patient_id, queue_code, service, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, staff_id, service_duration, transaction_date)
+        (patient_id, queue_code, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, staff_id, service_duration, transaction_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($insertSql);
@@ -98,7 +98,7 @@ try {
     if (!$stmt->execute()) throw new Exception('Failed to save completed transaction.');
     $stmt->close();
 
-    // 5. RESTORED: Complete Linked Appointment if it exists
+    // Complete Linked Appointment if it exists
     $completedAppointmentId = null;
     if ($queue_service !== '') {
         $stmt = $conn->prepare("SELECT appointments_id FROM appointments WHERE patient_id = ? AND service = ? AND status = 'Queued' FOR UPDATE");

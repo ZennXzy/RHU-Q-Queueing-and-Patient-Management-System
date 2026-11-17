@@ -112,7 +112,7 @@ try {
 
     // 3. Insert queue record matching the admin schema (with service_id as service_name and service_snapshot)
     $insert_sql = "INSERT INTO queue_information 
-                   (queue_code, patient_id, service_name, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
+                   (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert = $conn->prepare($insert_sql);

@@ -13,15 +13,15 @@ if (!$patient_id) {
     exit();
 }
 
-// SQL query joins the services table since q.service_name now holds the integer service_id
+// SQL query joins the services table since q.service_id now holds the integer service_id
 $stmt = $conn->prepare("
     SELECT q.*, s.service_name as resolved_service_name,
            (SELECT COUNT(*) FROM queue_information q2 
             WHERE q2.status = 'Waiting' 
-              AND q2.service_name = q.service_name
+              AND q2.service_id = q.service_id
               AND q2.created_at < q.created_at) as position_ahead
     FROM queue_information q 
-    LEFT JOIN services s ON q.service_name = s.service_id
+    LEFT JOIN services s ON q.service_id = s.service_id
     WHERE q.patient_id = ? AND q.status IN ('Waiting', 'In Progress') 
     ORDER BY q.created_at DESC 
     LIMIT 1

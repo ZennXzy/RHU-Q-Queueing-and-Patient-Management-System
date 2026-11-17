@@ -29,7 +29,6 @@ if ($service_name === '') {
     echo json_encode(['status' => 'error', 'message' => 'Please select a service.']);
     exit();
 } else {
-    // Ensure the table and column names match your database schema
     $serviceCheck = $conn->prepare("SELECT service_id FROM services WHERE service_name = ? LIMIT 1");
     $serviceCheck->bind_param("s", $service_name);
     $serviceCheck->execute();
@@ -63,7 +62,6 @@ try {
     }
     $dupCheck->close();
 
-    // 1. Fetch all services ordered by creation/ID to dynamically determine the prefix letter based on position
     $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
     $prefix = 'Z'; // Default fallback if not found
     $index = 0;
@@ -71,9 +69,8 @@ try {
     if ($services_res && $services_res->num_rows > 0) {
         while ($row = $services_res->fetch_assoc()) {
             if (strcasecmp($row['service_name'], $service_name) === 0) {
-                // Map index 0->A, 1->B, 2->C, etc. (up to 26 letters)
                 if ($index < 26) {
-                    $prefix = chr(65 + $index); // 65 is ASCII for 'A'
+                    $prefix = chr(65 + $index);
                 }
                 break;
             }
@@ -114,7 +111,7 @@ try {
 
     // Insert queue record with vital signs and complaints
     $insert_sql = "INSERT INTO queue_information 
-                   (queue_code, patient_id, service_name, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
+                   (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert = $conn->prepare($insert_sql);

@@ -34,7 +34,7 @@ foreach ($servicesConfig as $service) {
     $isVisible = in_array($serviceId, $activeServiceIds);
 
     // Fetch In Progress queue using integer service_id
-    $sqlActive = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'In Progress' ORDER BY created_at ASC";
+    $sqlActive = "SELECT queue_code FROM queue_information WHERE service_id = ? AND status = 'In Progress' ORDER BY created_at ASC";
     $stmtActive = $conn->prepare($sqlActive);
     $stmtActive->bind_param("i", $serviceId);
     $stmtActive->execute();
@@ -46,7 +46,7 @@ foreach ($servicesConfig as $service) {
     $stmtActive->close();
 
     // Fetch Waiting queue using integer service_id
-    $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_name = ? AND status = 'Waiting' ORDER BY created_at ASC";
+    $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_id = ? AND status = 'Waiting' ORDER BY created_at ASC";
     $stmtWaiting = $conn->prepare($sqlWaiting);
     $stmtWaiting->bind_param("i", $serviceId);
     $stmtWaiting->execute();
@@ -58,7 +58,7 @@ foreach ($servicesConfig as $service) {
     $stmtWaiting->close();
 
     // Fetch Avg Waiting Time using integer service_id
-    $sql = "SELECT service_duration FROM transactions WHERE service = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
+    $sql = "SELECT service_duration FROM transactions WHERE service_id = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $serviceId);
     $stmt->execute();
