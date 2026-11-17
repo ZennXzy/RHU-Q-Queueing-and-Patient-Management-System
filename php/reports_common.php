@@ -58,7 +58,7 @@ function report_where(array $f, array &$params, string &$types): string {
         $types .= 's';
     }
 
-    foreach (['service' => 't.service', 'barangay' => 'p.barangay_id'] as $key => $column) {
+    foreach (['service' => 't.service_id', 'barangay' => 'p.barangay_id'] as $key => $column) {
         if ($f[$key] !== '') {
             $w[] = "$column = ?";
             $params[] = (int)$f[$key];
