@@ -39,7 +39,7 @@ try {
             DATE_FORMAT(t.transaction_date, '%b %d, %Y %h:%i %p') AS transaction_date
         FROM transactions t
         LEFT JOIN admin_auth a ON t.staff_id = a.id
-        LEFT JOIN services s ON t.service = s.service_id
+        LEFT JOIN services s ON t.service_id = s.service_id
         WHERE t.patient_id = ?
         ORDER BY t.transaction_date DESC
     ";
