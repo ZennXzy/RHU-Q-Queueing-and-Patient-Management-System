@@ -70,7 +70,6 @@ try {
     }
     $dupCheck->close();
 
-    // 1. Dynamically determine prefix letter based on service position (ORDER BY service_id ASC)
     $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
     $prefix = 'Z'; // Default fallback
     $index = 0;
@@ -87,7 +86,6 @@ try {
         }
     }
 
-    // 2. Select the TRUE numerical MAXIMUM for this prefix created today (CURDATE())
     $code_sql = "SELECT MAX(CAST(SUBSTRING(queue_code, 2) AS UNSIGNED)) AS max_num 
                  FROM queue_information 
                  WHERE queue_code LIKE CONCAT(?, '%') 
@@ -106,13 +104,11 @@ try {
     }
     $stmt_code->close();
 
-    // Format new code (e.g., A001, B002)
     $queue_code = sprintf("%s%03d", $prefix, $next_number);
     $initial_status = 'Waiting';
 
-    // 3. Insert queue record matching the admin schema (with service_id as service_name and service_snapshot)
     $insert_sql = "INSERT INTO queue_information 
-                   (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, diagnosis, status, `created_at`) 
+                   (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, chief_complaint, status, `created_at`) 
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt_insert = $conn->prepare($insert_sql);

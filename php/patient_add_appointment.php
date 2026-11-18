@@ -61,7 +61,7 @@ if (strtotime($appointment_date) < strtotime(date('Y-m-d'))) {
 
 try {
     // 5. Insert new appointment record into database with 'Pending' status
-    $sql = "INSERT INTO appointments (patient_id, service, remarks, appointment_date, status, created_at) 
+    $sql = "INSERT INTO appointments (patient_id, service, note, appointment_date, status, created_at) 
             VALUES (?, ?, ?, ?, 'Pending', NOW())";
 
     $stmt = $conn->prepare($sql);

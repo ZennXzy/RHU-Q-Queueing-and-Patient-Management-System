@@ -24,7 +24,7 @@ try {
                 q.pulse_rate, 
                 q.weight, 
                 q.height, 
-                q.diagnosis, 
+                q.chief_complaint, 
                 q.created_at,
                 p.firstname, 
                 p.lastname,
@@ -59,7 +59,7 @@ try {
                 'pulse_rate' => $row['pulse_rate'],
                 'weight' => $row['weight'],
                 'height' => $row['height'],
-                'complaints' => $row['diagnosis']
+                'complaints' => $row['chief_complaint']
             ]
         ]);
     } else {

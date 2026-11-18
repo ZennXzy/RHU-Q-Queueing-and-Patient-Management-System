@@ -84,7 +84,7 @@ try {
 
     // Insert into Transactions
     $insertSql = "INSERT INTO transactions
-        (patient_id, queue_code, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, diagnosis, staff_id, service_duration, transaction_date)
+        (patient_id, queue_code, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, remarks, chief_complaint, staff_id, service_duration, transaction_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($insertSql);
@@ -92,7 +92,7 @@ try {
     $stmt->bind_param("isissididdssii", 
         $patient_id, $queue_code, $service_id, $service, 
         $queue['blood_pressure'], $queue['respiratory_rate'], $queue['temperature'], $queue['pulse_rate'], 
-        $queue['weight'], $queue['height'], $remarks, $queue['diagnosis'], $server_name, $service_duration_str
+        $queue['weight'], $queue['height'], $remarks, $queue['chief_complaint'], $server_name, $service_duration_str
     );
 
     if (!$stmt->execute()) throw new Exception('Failed to save completed transaction.');

@@ -471,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
           ["Pulse Rate", "pulse_rate"],
           ["Weight", "weight"],
           ["Height", "height"],
-          ["Diagnosis", "diagnosis"],
+          ["Chief Complaint", "chief_complaint"],
           ["Remarks", "remarks"],
       ];
 

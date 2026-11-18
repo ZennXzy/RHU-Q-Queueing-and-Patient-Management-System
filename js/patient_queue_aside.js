@@ -145,10 +145,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             </div>
 
-                            ${q.diagnosis ? `
+                            ${q.chief_complaint ? `
                             <div class="queue-detail-item description">
                                 <span class="label">Notes:</span>
-                                <span class="value">${escapeHtml(q.diagnosis)}</span>
+                                <span class="value">${escapeHtml(q.chief_complaint)}</span>
                             </div>` : ''}
                         </div>
                     `;

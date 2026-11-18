@@ -421,7 +421,7 @@ $role = $_SESSION['logged_role'];
             </section>
 
             <section>
-                <h3 class="qinfo-section-title">Diagnosis</h3>
+                <h3 class="qinfo-section-title">Chief Complaint</h3>
                 <p class="qinfo-diagnosis" id="qiDiagnosis">--</p>
             </section>
         </div>
