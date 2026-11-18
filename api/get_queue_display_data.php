@@ -1,87 +1,139 @@
+
 <?php
 require_once 'check-private.php';
-authorizeRoles(['Doctor/Staff', 'Display','Patient']);
+authorizeRoles(['Doctor/Staff', 'Display', 'Patient']);
 require_once '../php/connection.php';
 
-header('Content-Type: application/json');
+date_default_timezone_set('Asia/Manila');
+header('Content-Type: application/json; charset=utf-8');
 
-// Fetch active service IDs where status = 'Active' from the services table
+// --Active Services--
 $activeServiceIds = [];
-$settingsQuery = $conn->query("SELECT service_id FROM services WHERE status = 'Active'");
+$settingsQuery = $conn->query("
+    SELECT service_id
+    FROM services
+    WHERE status = 'Active'
+");
+
 if ($settingsQuery) {
-    while ($sRow = $settingsQuery->fetch_assoc()) {
-        $activeServiceIds[] = intval($sRow['service_id']);
+    while ($row = $settingsQuery->fetch_assoc()) {
+        $activeServiceIds[] = (int)$row['service_id'];
     }
 }
 
-// Fetch all services dynamically with their IDs and names from the services table
+// --Service Configuration--
 $servicesConfig = [];
-$allServicesQuery = $conn->query("SELECT service_id, service_name FROM services ORDER BY service_id ASC");
+$allServicesQuery = $conn->query("
+    SELECT service_id, service_name
+    FROM services
+    ORDER BY service_id ASC
+");
+
 if ($allServicesQuery) {
     while ($row = $allServicesQuery->fetch_assoc()) {
         $servicesConfig[] = [
-            'id' => intval($row['service_id']),
+            'id' => (int)$row['service_id'],
             'name' => $row['service_name']
         ];
     }
 }
 
+// --Format Duration--
+function formatWaitingTime($seconds) {
+    $seconds = max(0, (int)round($seconds));
+
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
+    $remainingSeconds = $seconds % 60;
+
+    return sprintf(
+        '%02d:%02d:%02d',
+        $hours,
+        $minutes,
+        $remainingSeconds
+    );
+}
+
+// --Retrieve Queue Data--
 $responseData = [];
 
 foreach ($servicesConfig as $service) {
     $serviceId = $service['id'];
     $serviceName = $service['name'];
-    $isVisible = in_array($serviceId, $activeServiceIds);
 
-    // Fetch In Progress queue using integer service_id
-    $sqlActive = "SELECT queue_code FROM queue_information WHERE service_id = ? AND status = 'In Progress' ORDER BY created_at ASC";
+    $isVisible = in_array(
+        $serviceId,
+        $activeServiceIds,
+        true
+    );
+
+    // --In Progress Queue--
+    $sqlActive = "
+        SELECT queue_code
+        FROM queue_information
+        WHERE service_id = ?
+          AND status = 'In Progress'
+        ORDER BY created_at ASC
+    ";
+
     $stmtActive = $conn->prepare($sqlActive);
     $stmtActive->bind_param("i", $serviceId);
     $stmtActive->execute();
+
     $resActive = $stmtActive->get_result();
     $activeQueues = [];
+
     while ($row = $resActive->fetch_assoc()) {
         $activeQueues[] = $row['queue_code'];
     }
+
     $stmtActive->close();
 
-    // Fetch Waiting queue using integer service_id
-    $sqlWaiting = "SELECT queue_code FROM queue_information WHERE service_id = ? AND status = 'Waiting' ORDER BY created_at ASC";
+    // --Waiting Queue--
+    $sqlWaiting = "
+        SELECT queue_code
+        FROM queue_information
+        WHERE service_id = ?
+          AND status = 'Waiting'
+        ORDER BY created_at ASC
+    ";
+
     $stmtWaiting = $conn->prepare($sqlWaiting);
     $stmtWaiting->bind_param("i", $serviceId);
     $stmtWaiting->execute();
+
     $resWaiting = $stmtWaiting->get_result();
     $waitingQueues = [];
+
     while ($row = $resWaiting->fetch_assoc()) {
         $waitingQueues[] = $row['queue_code'];
     }
+
     $stmtWaiting->close();
 
-    // Fetch Avg Waiting Time using integer service_id
-    $sql = "SELECT service_duration FROM transactions WHERE service_id = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $serviceId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // --Average Waiting Time Today--
+    $sqlAverage = "
+        SELECT AVG(service_duration) AS average_seconds
+        FROM transactions
+        WHERE service_id = ?
+        AND transaction_date >= CURDATE()
+        AND transaction_date < CURDATE() + INTERVAL 1 DAY
+        AND service_duration IS NOT NULL
+    ";
 
-    $totalSeconds = 0;
-    $count = 0;
-    while ($row = $result->fetch_assoc()) {
-        preg_match_all('/\d+/', $row['service_duration'], $matches);
-        if (!empty($matches[0]) && count($matches[0]) >= 3) {
-            $totalSeconds += ((int)$matches[0][0] * 86400) + ((int)$matches[0][1] * 3600) + ((int)$matches[0][2] * 60);
-            $count++;
-        }
-    }
+    $stmtAverage = $conn->prepare($sqlAverage);
+    $stmtAverage->bind_param("i", $serviceId);
+    $stmtAverage->execute();
 
-    $avgFormatted = "00:00:00";
-    $count = (int)$count;
-    if ($count > 0) {
-        $avgSeconds = (int) round($totalSeconds / $count);
-        $avgFormatted = sprintf('%02d:%02d:%02d', floor($avgSeconds / 3600), floor(($avgSeconds % 3600) / 60), $avgSeconds % 60);
-    }
-    $stmt->close();
+    $averageResult = $stmtAverage->get_result();
+    $averageRow = $averageResult->fetch_assoc();
 
+    $averageSeconds = $averageRow['average_seconds'] ?? 0;
+    $avgFormatted = formatWaitingTime($averageSeconds);
+
+    $stmtAverage->close();
+
+    // --Response Data--
     $responseData[] = [
         'service' => $serviceName,
         'isVisible' => $isVisible,
@@ -91,5 +143,11 @@ foreach ($servicesConfig as $service) {
     ];
 }
 
-echo json_encode(['status' => 'success', 'data' => $responseData]);
-exit();
+echo json_encode([
+    'status' => 'success',
+    'data' => $responseData
+]);
+
+$conn->close();
+exit;
+?>

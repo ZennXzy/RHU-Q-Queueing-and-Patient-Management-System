@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql310.infinityfree.com
--- Generation Time: Nov 18, 2026 at 07:35 AM
+-- Generation Time: Nov 18, 2026 at 03:10 PM
 -- Server version: 11.4.13-MariaDB
 -- PHP Version: 7.2.22
 
@@ -53,12 +53,15 @@ CREATE TABLE `appointments` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 CREATE TABLE `barangay` (
   `barangay_id` int(11) NOT NULL,
   `barangay_name` varchar(250) NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `logs`
+--
 
 CREATE TABLE `logs` (
   `log_id` int(11) NOT NULL,
@@ -67,10 +70,6 @@ CREATE TABLE `logs` (
   `log_message` varchar(200) NOT NULL,
   `log_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `patient_auth`
---
 
 CREATE TABLE `patient_auth` (
   `patient_auth_id` int(11) NOT NULL,
@@ -85,9 +84,6 @@ CREATE TABLE `patient_auth` (
   `last_active` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `patient_auth`
---
 CREATE TABLE `patient_records` (
   `patient_id` int(11) NOT NULL,
   `firstname` varchar(50) NOT NULL,
@@ -131,7 +127,7 @@ CREATE TABLE `queue_information` (
   `staff_id` int(11) DEFAULT NULL,
   `status` varchar(100) NOT NULL,
   `accepted_at` timestamp NULL DEFAULT NULL,
-  `service_duration` timestamp NULL DEFAULT NULL,
+  `service_duration` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -157,7 +153,7 @@ CREATE TABLE `transactions` (
   `chief_complaint` text NOT NULL,
   `remarks` text DEFAULT NULL,
   `staff_id` int(11) NOT NULL,
-  `service_duration` varchar(100) NOT NULL,
+  `service_duration` int(11) NOT NULL,
   `transaction_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -249,13 +245,13 @@ ALTER TABLE `admin_auth`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `appointments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `appointments_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=917;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=950;
 
 --
 -- AUTO_INCREMENT for table `patient_auth`
@@ -273,7 +269,7 @@ ALTER TABLE `patient_records`
 -- AUTO_INCREMENT for table `queue_information`
 --
 ALTER TABLE `queue_information`
-  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
+  MODIFY `queue_info_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=287;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -285,7 +281,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=117;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- Constraints for dumped tables

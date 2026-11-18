@@ -3,10 +3,13 @@ session_start();
 require_once '../api/check-private.php';
 authorizeRoles(['Doctor/Staff', 'Display', 'Patient']);
 require_once '../php/connection.php';
+
+date_default_timezone_set('Asia/Manila');
+
 $role = $_SESSION['logged_role'];
 $currentPage = 'queue_display';
 
-// Professional medical color themes with guaranteed high-contrast dark text/accents
+// Color Themes
 $COLOR_THEMES = [
     'dept-teal',
     'dept-blue',
@@ -16,13 +19,25 @@ $COLOR_THEMES = [
     'dept-violet'
 ];
 
-// Fetch ALL services dynamically from the database (including service_id)
+// Format Waiting Time
+function formatWaitingTime($seconds) {
+    $seconds = max(0, (int)round($seconds));
+    return sprintf(
+        '%02d:%02d:%02d',
+        floor($seconds / 3600),
+        floor(($seconds % 3600) / 60),
+        $seconds % 60
+    );
+}
+
+// Department Configuration
 $DEPARTMENT_CONFIG = [];
 $servicesQuery = $conn->query("SELECT service_id, service_name, status FROM services ORDER BY service_id ASC");
+
 if ($servicesQuery) {
     $i = 0;
     while ($row = $servicesQuery->fetch_assoc()) {
-        $serviceId = intval($row['service_id']);
+        $serviceId = (int)$row['service_id'];
         $serviceName = $row['service_name'];
         $themeClass = $COLOR_THEMES[$i % count($COLOR_THEMES)];
 
@@ -35,12 +50,13 @@ if ($servicesQuery) {
     }
 }
 
-// Fetch active service IDs configured in DB (where status = 'Active')
+// Active Services
 $activeServices = [];
 $activeQuery = $conn->query("SELECT service_id FROM services WHERE status = 'Active'");
+
 if ($activeQuery) {
-    while ($sRow = $activeQuery->fetch_assoc()) {
-        $activeServices[] = intval($sRow['service_id']);
+    while ($row = $activeQuery->fetch_assoc()) {
+        $activeServices[] = (int)$row['service_id'];
     }
 }
 ?>
@@ -52,26 +68,44 @@ if ($activeQuery) {
     <title>RHU-Q: Queue Display</title>
     <link rel="icon" href="../images/rhu_logo_topNav.png" type="image/png">
     <link rel="stylesheet" href="../styles/queue_display.css">
-    <?php
-        if ($role === 'Patient'){
-        echo '<link rel="stylesheet" href="../styles/patient_sidebar.css">';
-        echo '<script src="../js/patient_sidebar.js" defer></script>';
-        }
-    ?>
+
+    <?php if ($role === 'Patient'): ?>
+        <link rel="stylesheet" href="../styles/patient_sidebar.css">
+        <script src="../js/patient_sidebar.js" defer></script>
+    <?php endif; ?>
 
     <script src="../js/logout.js" defer></script>
     <script src="../js/patient_notification.js" defer></script>
     <script src="../js/queue-display.js" defer></script>
 
     <style>
-        /* Modern Medical Theme Palette (No Icons, High Contrast, Crisp Typography) */
-        .queue-card.dept-teal { border-top: 5px solid #0d9488; background: #f0fdfa; }
-        .queue-card.dept-blue { border-top: 5px solid #2563eb; background: #eff6ff; }
-        .queue-card.dept-emerald { border-top: 5px solid #059669; background: #ecfdf5; }
-        .queue-card.dept-indigo { border-top: 5px solid #4f46e5; background: #eef2ff; }
-        .queue-card.dept-cyan { border-top: 5px solid #0891b2; background: #ecfeff; }
-        .queue-card.dept-violet { border-top: 5px solid #7c3aed; background: #f5f3ff; }
+        /* Medical Themes */
+        .queue-card.dept-teal {
+            border-top: 5px solid #0d9488;
+            background: #f0fdfa;
+        }
+        .queue-card.dept-blue {
+            border-top: 5px solid #2563eb;
+            background: #eff6ff;
+        }
+        .queue-card.dept-emerald {
+            border-top: 5px solid #059669;
+            background: #ecfdf5;
+        }
+        .queue-card.dept-indigo {
+            border-top: 5px solid #4f46e5;
+            background: #eef2ff;
+        }
+        .queue-card.dept-cyan {
+            border-top: 5px solid #0891b2;
+            background: #ecfeff;
+        }
+        .queue-card.dept-violet {
+            border-top: 5px solid #7c3aed;
+            background: #f5f3ff;
+        }
 
+        /* Department Title */
         .dept-column .dept-title {
             font-size: 1.1rem;
             font-weight: 700;
@@ -89,35 +123,37 @@ if ($activeQuery) {
 <body>
     <div class="page-container">
         <?php
-            if ($role == 'Patient'){
-                include '../pages/patient_queue_aside.php';
-            }
+        if ($role === 'Patient') {
+            include '../pages/patient_queue_aside.php';
+        }
         ?>
-        <div class="top-brand" >
+
+        <div class="top-brand">
             <div class="rhu_logo_topNav">
                 <?php
-                    if ($role == 'Patient'){
-                        include '../pages/patient_sidebar.php';
-                    }
+                if ($role === 'Patient') {
+                    include '../pages/patient_sidebar.php';
+                }
                 ?>
                 <img src="../images/rhu_logo_topNav.png" alt="rhu_logo">
-            </div> 
+            </div>
             <div style="text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">
                 RHU-Q: Queuing and Patient Management System
             </div>
         </div>
 
         <h1 class="page-title">Queue Display</h1>
+
         <div class="display-card grid-dynamic">
             <div id="no-services-msg" class="no-services-message" style="display: <?php echo empty($activeServices) ? 'flex' : 'none'; ?>;">
                 <h3>No Selected Services</h3>
                 <p>Please select at least one service card from the display settings.</p>
             </div>
-            
-            <?php foreach ($DEPARTMENT_CONFIG as $serviceId => $config): 
-                $isVisible = in_array($serviceId, $activeServices);
 
-                // Now serving
+            <?php foreach ($DEPARTMENT_CONFIG as $serviceId => $config):
+                $isVisible = in_array($serviceId, $activeServices, true);
+
+                // Now Serving
                 $sqlActive = "SELECT queue_code FROM queue_information WHERE service_id = ? AND status = 'In Progress' ORDER BY created_at ASC";
                 $stmtActive = $conn->prepare($sqlActive);
                 $stmtActive->bind_param("i", $serviceId);
@@ -131,47 +167,41 @@ if ($activeQuery) {
                 $stmtWaiting->execute();
                 $resWaiting = $stmtWaiting->get_result();
 
-                // Average waiting time today
-                $sql = "SELECT service_duration FROM transactions WHERE service_id = ? AND DATE(transaction_date) = CURDATE() AND service_duration IS NOT NULL";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $serviceId);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                // Average Waiting Time Today
+                $sqlAverage = "
+                    SELECT AVG(service_duration) AS average_seconds
+                    FROM transactions
+                    WHERE service_id = ?
+                      AND transaction_date >= CURDATE()
+                      AND transaction_date < CURDATE() + INTERVAL 1 DAY
+                      AND service_duration IS NOT NULL
+                ";
+                $stmtAverage = $conn->prepare($sqlAverage);
+                $stmtAverage->bind_param("i", $serviceId);
+                $stmtAverage->execute();
+                $averageResult = $stmtAverage->get_result();
+                $averageRow = $averageResult->fetch_assoc();
 
-                $totalSeconds = 0;
-                $count = 0;
-                while ($row = $result->fetch_assoc()) {
-                    preg_match_all('/\d+/', $row['service_duration'], $matches);
-                    if (!empty($matches[0]) && count($matches[0]) >= 3) {
-                        $totalSeconds += ((int)$matches[0][0] * 86400) + ((int)$matches[0][1] * 3600) + ((int)$matches[0][2] * 60);
-                        $count++;
-                    }
-                }
-
-                $avgFormatted = "00:00:00";
-                if ($count > 0) {
-                    $avgSeconds = (int) round($totalSeconds / $count);
-                    $avgFormatted = sprintf('%02d:%02d:%02d', floor($avgSeconds / 3600), floor(($avgSeconds % 3600) / 60), $avgSeconds % 60);
-                }
-                $stmtActive->close();
-                $stmtWaiting->close();
-                $stmt->close();
+                $averageSeconds = $averageRow['average_seconds'] ?? 0;
+                $avgFormatted = formatWaitingTime($averageSeconds);
+                $stmtAverage->close();
             ?>
-
                 <div class="dept-column" data-service="<?php echo htmlspecialchars($config['name']); ?>" style="display: <?php echo $isVisible ? 'flex' : 'none'; ?>;">
                     <div class="queue-card <?php echo $config['themeClass']; ?>">
-                        <!-- Header without icons -->
+                        <!-- Department Header -->
                         <div class="dept-title">
                             <?php echo htmlspecialchars($config['title']); ?>
                         </div>
 
-                        <!-- LEFT: Waiting -->
+                        <!-- Waiting Queue -->
                         <div class="queue-col queue-col-waiting">
                             <div class="queue-col-header">Waiting</div>
                             <div class="ticket-box-container waiting-list">
                                 <?php if ($resWaiting && $resWaiting->num_rows > 0): ?>
                                     <?php while ($waitingRow = $resWaiting->fetch_assoc()): ?>
-                                        <div class="ticket-box is-waiting"><?php echo htmlspecialchars($waitingRow['queue_code']); ?></div>
+                                        <div class="ticket-box is-waiting">
+                                            <?php echo htmlspecialchars($waitingRow['queue_code']); ?>
+                                        </div>
                                     <?php endwhile; ?>
                                 <?php else: ?>
                                     <div class="no-queue">No Waiting</div>
@@ -179,13 +209,15 @@ if ($activeQuery) {
                             </div>
                         </div>
 
-                        <!-- RIGHT: Now Serving -->
+                        <!-- Now Serving Queue -->
                         <div class="queue-col queue-col-serving">
                             <div class="queue-col-header">Now Serving</div>
                             <div class="ticket-box-container serving-list">
                                 <?php if ($resActive && $resActive->num_rows > 0): ?>
                                     <?php while ($activeRow = $resActive->fetch_assoc()): ?>
-                                        <div class="ticket-box"><?php echo htmlspecialchars($activeRow['queue_code']); ?></div>
+                                        <div class="ticket-box">
+                                            <?php echo htmlspecialchars($activeRow['queue_code']); ?>
+                                        </div>
                                     <?php endwhile; ?>
                                 <?php else: ?>
                                     <div class="no-queue">No Queue</div>
@@ -193,13 +225,18 @@ if ($activeQuery) {
                             </div>
                         </div>
 
+                        <!-- Average Waiting Time -->
                         <div class="time-stat">
                             <div class="label">Average Waiting Time</div>
                             <div class="value avg-time-val"><?php echo $avgFormatted; ?></div>
                         </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php
+                $stmtActive->close();
+                $stmtWaiting->close();
+            endforeach;
+            ?>
         </div>
     </div>
 </body>
