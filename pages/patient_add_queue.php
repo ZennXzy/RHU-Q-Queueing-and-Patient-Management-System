@@ -53,7 +53,7 @@ if ($activeQuery) {
             <div class="top-bar-left">
                 <!-- Include Patient Sidebar -->
                 <?php include '../pages/patient_sidebar.php'; ?>
-                <h2>Request Queue Ticket</h2>
+                <h2>Add Queue Ticket</h2>
             </div>
         </header>
 

@@ -175,17 +175,6 @@ try {
 
     $conn->commit();
 
-    $logMessage = "Updated his/her information.";
-    $userId = $_SESSION['logged_id'] ?? null;
-    $userType = 'Patient';
-
-    $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
-    if ($logstmt) {
-        $logstmt->bind_param("iss", $userId, $userType, $logMessage);
-        $logstmt->execute();
-        $logstmt->close();
-    }
-
     echo json_encode([
         'status'  => 'success',
         'message' => 'Your information has been updated successfully.'

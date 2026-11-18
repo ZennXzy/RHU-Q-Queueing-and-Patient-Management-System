@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     queueBody.innerHTML = `
                         <div class="no-active-queue">
-                            <p>You have no active queue request at the moment.</p>
-                            <a href="../pages/patient_add_queue.php" class="btn-request-queue">Request a Queue</a>
+                            <p>You have no active queue at the moment.</p>
+                            <a href="../pages/patient_add_queue.php" class="btn-request-queue">Add a Queue</a>
                         </div>
                     `;
                 }

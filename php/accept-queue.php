@@ -28,17 +28,17 @@ try {
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {
-            echo json_encode([
-                $logMessage = 'Accepted the queue for (Queue ID: '.$queue_info_id.')';
-                $userId = $_SESSION['logged_id'] ?? null;
-                $userType = $_SESSION['logged_role'] ?? 'Staff';
+            $logMessage = 'Accepted the queue for (Queue ID: '.$queue_info_id.')';
+            $userId = $_SESSION['logged_id'] ?? null;
+            $userType = $_SESSION['logged_role'] ?? 'Staff';
 
-                $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
-                if ($logstmt) {
-                    $logstmt->bind_param("iss", $userId, $userType, $logMessage);
-                    $logstmt->execute();
-                    $logstmt->close();
-                }
+            $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+            if ($logstmt) {
+                $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+                $logstmt->execute();
+                $logstmt->close();
+            }
+            echo json_encode([
                 'status' => 'success',
                 'message' => 'Patient status updated to In Progress.'
             ]);
