@@ -11,7 +11,7 @@
     } else if ($userRole === 'Patient') {
         $targetPage = '../pages/queue_display_page.php';
     } else {
-        $targetPage = '../pages/dashboard_page.php'; // Default for Admin / Staff
+        $targetPage = '../pages/dashboard_page.php';
     }
 ?>
 <!DOCTYPE html>

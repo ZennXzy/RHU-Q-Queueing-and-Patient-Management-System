@@ -274,8 +274,7 @@ if ($logoutResult === 'error') {
 if ($logoutResult === 'success') {
     try {
         $roleType = ucfirst($userType);
-        $logMessage = $username . ' (' . $roleType . ') logged out successfully.';
-
+        $logMessage = 'Logged out.';
         $logStmt = $conn->prepare("
             INSERT INTO logs (user_id, user_type, log_message)
             VALUES (?, ?, ?)

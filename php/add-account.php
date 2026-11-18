@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once '../php/connection.php';
+require_once '../api/check-private.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
@@ -12,7 +13,7 @@ $fullname = isset($_POST['fullname']) ? trim($_POST['fullname']) : '';
 $email    = isset($_POST['email']) ? trim($_POST['email']) : '';
 $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 $status   = "Offline";
-$role     = "Doctor/staff";
+$role     = "Doctor/Staff";
 
 // 1. Validation checks
 if (empty($username) || empty($fullname) || empty($email) || empty($password)) {
