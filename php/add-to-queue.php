@@ -107,18 +107,19 @@ try {
 
     $queue_code = sprintf("%s%03d", $prefix, $next_number);
     $initial_status = 'Waiting';
+    
     $current_datetime = date('F j, Y, g:i A');
-
+    $transaction_date = date('Y-m-d H:i:s');
     // Insert queue record with vital signs and complaints
     $insert_sql = "INSERT INTO queue_information 
                    (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, chief_complaint, status, `created_at`) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt_insert = $conn->prepare($insert_sql);
     $stmt_insert->bind_param(
-        "siissididdss", 
+        "siissididdsss", 
         $queue_code, $patient_id, $service_id, $service_name, 
-        $blood_pressure, $respiratory_rate, $temperature, $pulse_rate, $weight, $height, $complaints, $initial_status
+        $blood_pressure, $respiratory_rate, $temperature, $pulse_rate, $weight, $height, $complaints, $initial_status, $transaction_date
     );
 
     if ($stmt_insert->execute()) {

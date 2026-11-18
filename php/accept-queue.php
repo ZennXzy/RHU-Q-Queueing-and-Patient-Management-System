@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 date_default_timezone_set('Asia/Manila');
+
 $queue_info_id = isset($_POST['queue_info_id']) ? intval($_POST['queue_info_id']) : 0;
 
 if ($queue_info_id <= 0) {
@@ -23,8 +24,9 @@ if ($queue_info_id <= 0) {
 
 try {
     // Update status to 'In Progress' and timestamp the acceptance event
-    $stmt = $conn->prepare("UPDATE queue_information SET status = 'In Progress', accepted_at = NOW() WHERE queue_info_id = ?");
-    $stmt->bind_param("i", $queue_info_id);
+    $transaction_date = date('Y-m-d H:i:s');
+    $stmt = $conn->prepare("UPDATE queue_information SET status = 'In Progress', accepted_at = ? WHERE queue_info_id = ?");
+    $stmt->bind_param("si",$transaction_date, $queue_info_id);
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {

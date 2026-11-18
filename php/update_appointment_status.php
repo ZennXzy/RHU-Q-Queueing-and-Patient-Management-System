@@ -74,13 +74,13 @@ try {
         exit();
     }
     $checkStmt->close();
-
+    $transaction_date = date('Y-m-d H:i:s');
     // Prepare update query
     $updateStmt = $conn->prepare("
         UPDATE appointments 
         SET status = ?, 
             note = ?, 
-            updated_at = NOW() 
+            updated_at = ? 
         WHERE appointments_id = ?
     ");
 
@@ -88,7 +88,7 @@ try {
         throw new Exception("Database prepare error: " . $conn->error);
     }
 
-    $updateStmt->bind_param("ssi", $newStatus, $declineReason, $appointmentId);
+    $updateStmt->bind_param("sssi", $newStatus, $declineReason, $transaction_date, $appointmentId);
 
     if ($updateStmt->execute()) {
         $updateStmt->close();

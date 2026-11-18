@@ -60,9 +60,9 @@ if (strtotime($appointment_date) < strtotime(date('Y-m-d'))) {
 }
 
 try {
-    // 5. Insert new appointment record into database with 'Pending' status
+    $transaction_date = date('Y-m-d H:i:s');
     $sql = "INSERT INTO appointments (patient_id, service, remarks, appointment_date, status, created_at) 
-            VALUES (?, ?, ?, ?, 'Pending', NOW())";
+            VALUES (?, ?, ?, ?, 'Pending', ?)";
 
     $stmt = $conn->prepare($sql);
     
@@ -70,7 +70,7 @@ try {
         throw new Exception("Failed to prepare statement: " . $conn->error);
     }
 
-    $stmt->bind_param("isss", $patient_id, $service, $remarks, $appointment_date);
+    $stmt->bind_param("issss", $patient_id, $service, $remarks, $appointment_date, $transaction_date);
 
     if ($stmt->execute()) {
         $new_appointment_id = $stmt->insert_id;

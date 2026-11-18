@@ -106,14 +106,14 @@ try {
 
     $queue_code = sprintf("%s%03d", $prefix, $next_number);
     $initial_status = 'Waiting';
-
+    $transaction_date = date('Y-m-d H:i:s');
     $insert_sql = "INSERT INTO queue_information 
                    (queue_code, patient_id, service_id, service_snapshot, blood_pressure, respiratory_rate, temperature, pulse_rate, weight, height, chief_complaint, status, `created_at`) 
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt_insert = $conn->prepare($insert_sql);
     $stmt_insert->bind_param(
-        "siissididdss", 
+        "siissididdsss", 
         $queue_code, 
         $patient_id, 
         $service_id, 
@@ -125,7 +125,8 @@ try {
         $weight, 
         $height, 
         $description, 
-        $initial_status
+        $initial_status,
+        $transaction_date
     );
 
     if ($stmt_insert->execute()) {

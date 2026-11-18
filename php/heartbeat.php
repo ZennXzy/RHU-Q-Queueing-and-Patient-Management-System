@@ -210,18 +210,11 @@ try {
                 return;
             }
 
-            // --Check Ownership Expiration--
-            // A matching owner is not rejected solely
-            // because last_seen is old. Staleness is
-            // evaluated during controlled login recovery.
-            //
-            // A separate inactivity policy must enforce
-            // any required absolute session timeout.
-
             // --Update Database Heartbeat--
+            $transaction_date = date('Y-m-d H:i:s');
             $sql = "
                 UPDATE {$table}
-                SET last_active = NOW()
+                SET last_active = ?
                 WHERE {$idColumn} = ?
                   AND username = ?
                   AND status = 'Online'
@@ -236,7 +229,8 @@ try {
             }
 
             $stmt->bind_param(
-                'is',
+                'sis',
+                $transaction_date,
                 $userId,
                 $username
             );
@@ -252,9 +246,6 @@ try {
 
             $stmt->close();
 
-            // --Verify Account Status--
-            // affected_rows can be zero if the timestamp
-            // did not change within the same second.
             $checkSql = "
                 SELECT status
                 FROM {$table}

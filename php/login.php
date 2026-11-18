@@ -234,10 +234,11 @@ try {
                 }
 
                 // --Update Account Status--
+                $transaction_date = date('Y-m-d H:i:s');
                 $updateSql = "
                     UPDATE {$table}
                     SET status = 'Online',
-                        last_active = NOW()
+                        last_active = ?
                     WHERE {$idColumn} = ?
                       AND username = ?
                 ";
@@ -248,7 +249,7 @@ try {
                     throw new RuntimeException('Unable to prepare login update.');
                 }
 
-                $updateStmt->bind_param('is', $userId, $username);
+                $updateStmt->bind_param('sis', $transaction_date, $userId, $username);
 
                 if (!$updateStmt->execute()) {
                     $error = $updateStmt->error;

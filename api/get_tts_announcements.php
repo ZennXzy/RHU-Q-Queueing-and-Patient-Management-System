@@ -14,16 +14,41 @@ try {
         $_SESSION['announced_queues'] = [];
     }
 
-    // Fetch newly accepted queues within the last 10 seconds
-    $ttsQuery = "SELECT qi.queue_info_id, qi.queue_code, qi.service_snapshot, 
-                        TRIM(CONCAT(pr.firstname, ' ', COALESCE(CONCAT(pr.middlename, ' '), ''), pr.lastname)) AS fullname
-                 FROM queue_information qi
-                 LEFT JOIN patient_records pr ON qi.patient_id = pr.patient_id
-                 WHERE qi.status = 'In Progress' 
-                   AND qi.accepted_at >= (NOW() - INTERVAL 10 SECOND)
-                 ORDER BY qi.accepted_at ASC";
+    // --Fetch Recent Queues--
+    $currentTime = date('Y-m-d H:i:s');
 
-    $ttsResult = $conn->query($ttsQuery);
+    $ttsQuery = "
+        SELECT
+            qi.queue_info_id,
+            qi.queue_code,
+            qi.service_snapshot,
+            TRIM(
+                CONCAT(
+                    pr.firstname,
+                    ' ',
+                    COALESCE(CONCAT(pr.middlename, ' '), ''),
+                    pr.lastname
+                )
+            ) AS fullname
+        FROM queue_information qi
+        LEFT JOIN patient_records pr
+            ON qi.patient_id = pr.patient_id
+        WHERE qi.status = 'In Progress'
+        AND qi.accepted_at BETWEEN
+            (? - INTERVAL 60 SECOND) AND ?
+        ORDER BY qi.accepted_at ASC
+    ";
+
+    $stmt = $conn->prepare($ttsQuery);
+
+    if (!$stmt) {
+        throw new Exception($conn->error);
+    }
+
+    $stmt->bind_param("ss", $currentTime, $currentTime);
+    $stmt->execute();
+
+    $ttsResult = $stmt->get_result();
 
     if ($ttsResult && $ttsResult->num_rows > 0) {
         $apiKeys = ['', '']; 

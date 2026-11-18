@@ -99,7 +99,7 @@ try {
     }
 
     $service_id = (int)$serviceRow['service_id'];
-
+    $transaction_date = date('Y-m-d H:i:s');
     // Save Completed Transaction
     $insertSql = "
         INSERT INTO transactions (
@@ -107,14 +107,14 @@ try {
             blood_pressure, respiratory_rate, temperature, pulse_rate,
             weight, height, remarks, chief_complaint, staff_id,
             service_duration, transaction_date
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ";
     $stmt = $conn->prepare($insertSql);
     if (!$stmt) throw new Exception($conn->error);
 
     $staff_id = (int)$server_name;
     $stmt->bind_param(
-        "isissididdssii",
+        "isissididdssiis",
         $patient_id,
         $queue_code,
         $service_id,
@@ -128,7 +128,8 @@ try {
         $remarks,
         $queue['chief_complaint'],
         $staff_id,
-        $service_duration
+        $service_duration,
+        $transaction_date
     );
 
     if (!$stmt->execute()) {
@@ -168,16 +169,17 @@ try {
     }
 
     // Create Follow-up Appointment
+    $transaction_date = date('Y-m-d H:i:s');
     if ($appointment === 1 && $appointment_date !== '') {
         $appointment_status = 'Approved';
         $appointmentSql = "
             INSERT INTO appointments (
                 patient_id, service, remarks, staff_id, status, appointment_date, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, NOW())
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
         ";
         $stmt = $conn->prepare($appointmentSql);
         if (!$stmt) throw new Exception($conn->error);
-        $stmt->bind_param("ississ", $patient_id, $service, $remarks, $staff_id, $appointment_status, $appointment_date);
+        $stmt->bind_param("ississs", $patient_id, $service, $remarks, $staff_id, $appointment_status, $appointment_date, $transaction_date);
         if (!$stmt->execute()) {
             throw new Exception('Failed to create follow-up appointment.');
         }
