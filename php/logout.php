@@ -273,7 +273,7 @@ if ($logoutResult === 'error') {
 // Audit failures must never prevent a completed logout.
 if ($logoutResult === 'success') {
     try {
-        $roleType = ucfirst($userType);
+        $roleType = $_SESSION['logged_role'];
         $logMessage = 'Logged out.';
         $logStmt = $conn->prepare("
             INSERT INTO logs (user_id, user_type, log_message)

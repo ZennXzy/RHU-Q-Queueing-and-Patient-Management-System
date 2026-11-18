@@ -373,7 +373,7 @@ $message = $loginRecovered
 
 // --Login Audit Logging--
 try {
-    $roleType = ucfirst($userType);
+    $roleType = $_SESSION['logged_role'];
 
     $insertLog = $conn->prepare("
         INSERT INTO logs (
