@@ -447,6 +447,7 @@ require_once '../php/connection.php';
           <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="patient_records" checked><span>patient_records</span></label>
           <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="transactions" checked><span>transactions</span></label>
           <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="services" checked><span>services</span></label>
+          <label class="checkbox-label"><input type="checkbox" class="table-checkbox" name="tables[]" value="barangay" checked><span>barangay</span></label>
         </div>
       </div>
     </div>

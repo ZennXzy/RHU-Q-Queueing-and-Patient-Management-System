@@ -16,7 +16,17 @@ if (empty($selected_tables)) {
     die("Error: No tables selected for backup.");
 }
 
-$allowed_tables = ['admin_auth', 'appointments', 'logs', 'patient_auth', 'patient_records', 'transactions'];$tables = array_intersect($selected_tables,$allowed_tables);
+$allowed_tables = [
+    'admin_auth', 
+    'appointments', 
+    'logs', 
+    'patient_auth', 
+    'patient_records', 
+    'transactions', 
+    'services', 
+    'barangay'
+];
+$tables = array_intersect($selected_tables,$allowed_tables);
 
 if (empty($tables)) {
     die("Error: Invalid table selection.");
