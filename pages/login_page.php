@@ -148,7 +148,7 @@ if (isset($_SESSION['logged_id']) || isset($_SESSION['patient_id'])) {
                     </div>
                     <div class="activate-form-group">
                         <label>Mother's Maiden Name *</label>
-                        <input type="text" name="mothers_name" placeholder="Mother's Full Maiden Name" required autocomplete="off">
+                        <input type="text" name="mothers_name" placeholder="Mother's Full Maiden Name" required autocomplete="off" title="Enter lastname firstname middlename">
                     </div>
                     <div class="activate-form-group">
                         <label>New Password *</label>
