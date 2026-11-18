@@ -27,7 +27,7 @@ if ($action === 'details') {
                             p.barangay_id AS barangay_id,
                             TRIM(b.barangay_name) AS address
                             FROM patient_records p
-                            JOIN barangay b ON p.barangay_id = b.barangay_id
+                            LEFT JOIN barangay b ON p.barangay_id = b.barangay_id
                             WHERE p.patient_id = ?");
     $stmt->bind_param("i", $patient_id);
     $stmt->execute();

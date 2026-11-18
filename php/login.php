@@ -72,13 +72,13 @@ if (!$user) {
     $stmt = $conn->prepare("
         SELECT
             patient_auth_id AS id,
+            patient_id,
             username,
             password_hash,
             status,
             role,
             account_token,
-            last_active,
-            patient_id,
+            last_active
         FROM patient_auth
         WHERE username = ?
         LIMIT 1

@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const gender = getVal(p, ["gender"], "-");
       const civilStatus = getVal(p, ["civil_status"], "-");
 
-      setText("infoAgeGender", `${calculatedAge && calculatedAge !== 0 ? calculatedAge : "-"} / ${gender}`);
+      const displayAge = (calculatedAge !== null && calculatedAge !== undefined && calculatedAge !== "") ? calculatedAge : "-";
+      setText("infoAgeGender", `${displayAge} / ${gender}`);
       setText("infoBirthDate", rawBirthDate);
       setText("infoCivilStatus", civilStatus);
       setText("infoReligion", getVal(p, ["religion"], "-"));
@@ -91,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Contact & Location
       setText("infoContact", getVal(p, ["contact_number"], "-"));
       setText("infoEmail", getVal(p, ["email"], "-"));
-      setText("infoAddress", getVal(p, ["address"], "-"));
+      setText("infoAddress", getVal(p, ["address","barangay_id"], "-"));
       setText("infoDateRegistered", getVal(p, ["date_registered"], "-"));
 
       // Family Background

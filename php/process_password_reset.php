@@ -74,17 +74,6 @@ try {
     }
     $updateStmt->close();
 
-    $logMessage = 'Patient reset password.';
-    $userId = $patient_auth_id ?? null;
-    $userType = 'Patient';
-
-    $logStmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
-    if ($logStmt) {
-        $logStmt->bind_param("iss", $userId, $userType, $logMessage);
-        $logStmt->execute();
-        $logStmt->close();
-    }
-
     echo json_encode([
         'status' => 'success',
         'message' => 'Password reset successfully! You can now log in with your new password.'
