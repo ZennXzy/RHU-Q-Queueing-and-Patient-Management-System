@@ -12,6 +12,8 @@ require_once '../php/connection.php';
     <link rel="stylesheet" href="../styles/patient_reg_form.css">
     <link rel="stylesheet" href="../styles/activate_modal.css">
     <link rel="stylesheet" href="../styles/toast.css">
+    <link rel="stylesheet" href="../styles/footer.css">
+
 
     <script src="../js/toast.js" defer></script>
     <script src="../js/barangay-search.js" defer></script>

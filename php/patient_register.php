@@ -157,7 +157,6 @@ if ($action === 'check_and_draft') {
         'middlename'        => ($middlename === '') ? NULL : $middlename,
         'suffix'            => ($suffix === '') ? NULL : $suffix,
         'address'           => $address_id,
-        'age'               => $age,
         'gender'            => $gender,
         'birthDate'         => $birthDate,
         'contactnum'        => ($contactnum === '') ? NULL : $contactnum,
