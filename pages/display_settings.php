@@ -66,14 +66,14 @@ if ($activeQuery) {
                         <?php else: ?>
                             <?php foreach ($allServices as $service): 
                                 // Fetch In Progress count
-                                $stmt1 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'In Progress'");
+                                $stmt1 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_id = ? AND status = 'In Progress'");
                                 $stmt1->bind_param("s", $service);
                                 $stmt1->execute();
                                 $inProgressCount = $stmt1->get_result()->fetch_assoc()['total'] ?? 0;
                                 $stmt1->close();
 
                                 // Fetch Waiting count
-                                $stmt2 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_name = ? AND status = 'Waiting'");
+                                $stmt2 = $conn->prepare("SELECT COUNT(*) AS total FROM queue_information WHERE service_id = ? AND status = 'Waiting'");
                                 $stmt2->bind_param("s", $service);
                                 $stmt2->execute();
                                 $waitingCount = $stmt2->get_result()->fetch_assoc()['total'] ?? 0;

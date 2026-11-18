@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: sql310.infinityfree.com
--- Generation Time: Nov 18, 2026 at 01:57 AM
+-- Generation Time: Nov 18, 2026 at 07:35 AM
 -- Server version: 11.4.13-MariaDB
 -- PHP Version: 7.2.22
 
@@ -40,16 +40,6 @@ CREATE TABLE `admin_auth` (
   `last_active` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `admin_auth`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `appointments`
---
-
 CREATE TABLE `appointments` (
   `appointments_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
@@ -63,22 +53,12 @@ CREATE TABLE `appointments` (
   `updated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `appointments`
---
--- Table structure for table `barangay`
---
 
 CREATE TABLE `barangay` (
   `barangay_id` int(11) NOT NULL,
   `barangay_name` varchar(250) NOT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `barangay`
---
-
 
 CREATE TABLE `logs` (
   `log_id` int(11) NOT NULL,
@@ -87,16 +67,6 @@ CREATE TABLE `logs` (
   `log_message` varchar(200) NOT NULL,
   `log_date` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `logs`
---
-
-INSERT INTO `logs` (`log_id`, `user_id`, `user_type`, `log_message`, `log_date`) VALUES
-(885, 4, 'Admin', 'Updated his/her Account.', '2026-11-17 22:25:18'),
-(886, 4, 'Admin', 'Updated his/her Account.', '2026-11-17 22:25:26');
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `patient_auth`
@@ -108,7 +78,7 @@ CREATE TABLE `patient_auth` (
   `username` varchar(255) DEFAULT NULL,
   `password_hash` varchar(255) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `account_token` int(11) NOT NULL,
+  `account_token` varchar(64) NOT NULL,
   `status` varchar(100) NOT NULL,
   `role` varchar(100) NOT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
@@ -118,10 +88,6 @@ CREATE TABLE `patient_auth` (
 --
 -- Dumping data for table `patient_auth`
 --
---
--- Table structure for table `patient_records`
---
-
 CREATE TABLE `patient_records` (
   `patient_id` int(11) NOT NULL,
   `firstname` varchar(50) NOT NULL,
@@ -148,7 +114,6 @@ CREATE TABLE `patient_records` (
   `date_registered` date DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 CREATE TABLE `queue_information` (
   `queue_info_id` int(11) NOT NULL,
   `queue_code` varchar(20) NOT NULL,
@@ -170,28 +135,12 @@ CREATE TABLE `queue_information` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for
--- --------------------------------------------------------
-
---
--- Table structure for table `services`
---
-
 CREATE TABLE `services` (
   `service_id` int(11) NOT NULL,
   `service_name` varchar(250) NOT NULL,
   `status` varchar(100) DEFAULT NULL,
   `created_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `services`
---
-
---
--- Table structure for table `transactions`
---
 
 CREATE TABLE `transactions` (
   `transaction_id` int(11) NOT NULL,
@@ -212,12 +161,6 @@ CREATE TABLE `transactions` (
   `transaction_date` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `transactions`
---
---
--- Indexes for table `admin_auth`
---
 ALTER TABLE `admin_auth`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`),
@@ -312,7 +255,7 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=887;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=917;
 
 --
 -- AUTO_INCREMENT for table `patient_auth`
