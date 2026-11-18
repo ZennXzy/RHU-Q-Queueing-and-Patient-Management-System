@@ -242,20 +242,6 @@ try {
                     throw new RuntimeException('Account status did not change to Offline.');
                 }
 
-                $logMessage = $username . ' (' . ucfirst($userType) . ') logged out successfully.';
-                $roleType = ucfirst($userType);
-
-                $logStmt = $conn->prepare("
-                    INSERT INTO logs (user_id, user_type, log_message)
-                    VALUES (?, ?, ?)
-                ");
-
-                if ($logStmt) {
-                    $logStmt->bind_param('iss', $userId, $roleType, $logMessage);
-                    $logStmt->execute();
-                    $logStmt->close();
-                }
-
                 $conn->commit();
 
                 rhuOwnerRemoveLocked($path, $record, $ownershipToken);
@@ -281,6 +267,35 @@ if ($logoutResult === 'error') {
     http_response_code(503);
     header('Content-Type: text/plain; charset=utf-8');
     exit('Logout temporarily unavailable. Please try again.');
+}
+
+// Logout Audit Logging
+// Audit failures must never prevent a completed logout.
+if ($logoutResult === 'success') {
+    try {
+        $roleType = ucfirst($userType);
+        $logMessage = $username . ' (' . $roleType . ') logged out successfully.';
+
+        $logStmt = $conn->prepare("
+            INSERT INTO logs (user_id, user_type, log_message)
+            VALUES (?, ?, ?)
+        ");
+
+        if (!$logStmt) {
+            throw new RuntimeException('Unable to prepare logout audit log.');
+        }
+
+        try {
+            $logStmt->bind_param('iss', $userId, $roleType, $logMessage);
+            if (!$logStmt->execute()) {
+                throw new RuntimeException('Unable to save logout audit log: ' . $logStmt->error);
+            }
+        } finally {
+            $logStmt->close();
+        }
+    } catch (Throwable $auditError) {
+        error_log('[RHU-Q Logout Audit] ' . $auditError->getMessage());
+    }
 }
 
 clearLogoutSession();

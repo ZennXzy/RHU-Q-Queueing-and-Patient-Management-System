@@ -99,7 +99,6 @@ try {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ssi", $username, $hashed_password, $account_id);
     } else {
-        // Basic Profile Update Logic (when both password fields are completely empty)
         $sql = "UPDATE patient_auth SET username = ? WHERE patient_auth_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("si", $username, $account_id);
@@ -122,7 +121,6 @@ try {
 
     $conn->commit();
 
-    // Update active session data[cite: 4]
     $_SESSION['logged_name'] = $username;
 
     $logMessage = "Updated his/her Account";
