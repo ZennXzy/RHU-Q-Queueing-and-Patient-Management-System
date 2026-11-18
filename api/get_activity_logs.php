@@ -12,20 +12,18 @@ try {
     
     $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-    // Initialize variables properly
     $whereSql = "";
     $params = [];
     $types = "";
 
     if (!empty($search)) {
-        $whereSql = " WHERE log_message LIKE ? OR log_date LIKE ? ";
+        $whereSql = " WHERE l.log_message LIKE ? OR l.log_date LIKE ? OR l.user_type LIKE ? ";
         $searchTerm = "%" . $search . "%";
-        $params = [$searchTerm, $searchTerm];
-        $types = "ss";
+        $params = [$searchTerm, $searchTerm, $searchTerm];
+        $types = "sss";
     }
 
-    // 1. Get Total Record Count for Pagination
-    $countSql = "SELECT COUNT(*) AS total FROM logs" . $whereSql;
+    $countSql = "SELECT COUNT(*) AS total FROM logs l" . $whereSql;
     $stmtCount = $conn->prepare($countSql);
     
     if ($stmtCount === false) {
@@ -40,8 +38,23 @@ try {
     $totalRecords = $stmtCount->get_result()->fetch_assoc()['total'] ?? 0;
     $totalPages = max(1, ceil($totalRecords / $limit));
 
-    // 2. Fetch Paginated Records
-    $sql = "SELECT log_message, log_date FROM logs" . $whereSql . " ORDER BY log_date DESC LIMIT ? OFFSET ?";
+    $sql = "
+        SELECT 
+            l.log_message, 
+            l.user_type, 
+            l.log_date,
+            CASE 
+                WHEN l.user_type = 'Patient' THEN COALESCE(CONCAT_WS(' ', pr.firstname, pr.lastname), p.username, CONCAT('Patient #', l.user_id))
+                ELSE COALESCE(a.fullname, a.username, CONCAT('User #', l.user_id))
+            END AS user_name
+        FROM logs l
+        LEFT JOIN admin_auth a ON l.user_id = a.id AND l.user_type != 'Patient'
+        LEFT JOIN patient_auth p ON l.user_id = p.patient_auth_id AND l.user_type = 'Patient'
+        LEFT JOIN patient_records pr ON p.patient_id = pr.patient_id
+        " . $whereSql . " 
+        ORDER BY l.log_date DESC 
+        LIMIT ? OFFSET ?
+    ";
     
     $stmt = $conn->prepare($sql);
     
@@ -63,6 +76,8 @@ try {
     $logs = [];
     while ($row = $result->fetch_assoc()) {
         $logs[] = [
+            $row['user_name'] ?? 'System',
+            $row['user_type'] ?? 'System',
             $row['log_message'],
             $row['log_date']
         ];
@@ -70,7 +85,7 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'columns' => ['Activity Message', 'Date & Time'],
+        'columns' => ['User', 'User Type', 'Activity Message', 'Date & Time'],
         'logs' => $logs,
         'current_page' => $page,
         'total_pages' => $totalPages,

@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSearch = '';
   let totalPages = 1;
 
-  // 1. OPEN MODAL
   if (openLogsBtn && logsModal) {
     openLogsBtn.addEventListener('click', () => {
       if (typeof logsModal.showModal === 'function') {
@@ -25,14 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. CLOSE MODAL VIA BUTTON
   if (closeLogsBtn && logsModal) {
     closeLogsBtn.addEventListener('click', () => {
       logsModal.close();
     });
   }
 
-  // 3. CLOSE MODAL ON BACKDROP CLICK
   if (logsModal) {
     logsModal.addEventListener('click', (e) => {
       const rect = logsModal.getBoundingClientRect();
@@ -47,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 4. LIVE SEARCH WITH DEBOUNCE
   let searchTimer;
   if (logsSearch) {
     logsSearch.addEventListener('input', (e) => {
@@ -60,14 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 5. REFRESH BUTTON
   if (logsRefreshBtn) {
     logsRefreshBtn.addEventListener('click', () => {
       fetchLogs(currentPage, currentSearch);
     });
   }
 
-  // 6. PAGINATION CONTROLS
   if (logsPrevBtn) {
     logsPrevBtn.addEventListener('click', () => {
       if (currentPage > 1) {
@@ -86,10 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 7. FETCH LOGS FROM BACKEND API
   async function fetchLogs(page = 1, search = '') {
     if (!logsBody) return;
-    logsBody.innerHTML = '<tr class="logs-state"><td colspan="2" style="text-align: center; padding: 20px;">Loading logs...</td></tr>';
+    logsBody.innerHTML = '<tr class="logs-state"><td colspan="4" style="text-align: center; padding: 20px;">Loading logs...</td></tr>';
 
     try {
       const response = await fetch(`../api/get_activity_logs.php?page=${page}&search=${encodeURIComponent(search)}`);
@@ -103,22 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
         totalPages = data.total_pages || 1;
         updatePaginationUI(data.total_records || 0);
       } else {
-        logsBody.innerHTML = `<tr class="logs-state"><td colspan="2" style="text-align: center; padding: 20px;">${data.message || 'No logs found.'}</td></tr>`;
+        logsBody.innerHTML = `<tr class="logs-state"><td colspan="4" style="text-align: center; padding: 20px;">${data.message || 'No logs found.'}</td></tr>`;
       }
     } catch (err) {
       console.error('Error loading logs:', err);
-      logsBody.innerHTML = '<tr class="logs-state"><td colspan="2" style="text-align: center; color: #dc2626; padding: 20px;">Error loading logs from server.</td></tr>';
+      logsBody.innerHTML = '<tr class="logs-state"><td colspan="4" style="text-align: center; color: #dc2626; padding: 20px;">Error loading logs from server.</td></tr>';
     }
   }
 
-  // 8. RENDER TABLE HEADERS & ROWS
   function renderTable(columns = [], rows = []) {
     if (!logsHeadRow || !logsBody) return;
 
     if (columns.length > 0) {
       logsHeadRow.innerHTML = columns.map(col => `<th>${escapeHtml(col)}</th>`).join('');
     } else {
-      logsHeadRow.innerHTML = '<th>Activity Message</th><th>Date & Time</th>';
+      logsHeadRow.innerHTML = '<th>User</th><th>User Type</th><th>Activity Message</th><th>Date & Time</th>';
     }
 
     if (rows.length > 0) {
@@ -126,11 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join('')}</tr>`;
       }).join('');
     } else {
-      logsBody.innerHTML = '<tr class="logs-state"><td colspan="2" style="text-align: center; padding: 20px;">No activity logs found.</td></tr>';
+      logsBody.innerHTML = '<tr class="logs-state"><td colspan="4" style="text-align: center; padding: 20px;">No activity logs found.</td></tr>';
     }
   }
 
-  // 9. UPDATE PAGINATION BUTTONS & INFO
   function updatePaginationUI(totalRecords) {
     if (logsPageLabel) logsPageLabel.textContent = `Page ${currentPage} of ${totalPages || 1}`;
     if (logsInfo) logsInfo.textContent = `Total records: ${totalRecords}`;
@@ -138,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logsNextBtn) logsNextBtn.disabled = currentPage >= totalPages;
   }
 
-  // 10. SECURITY HELPER TO ESCAPE HTML
   function escapeHtml(str) {
     if (str === null || str === undefined) return '';
     return String(str)
