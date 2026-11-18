@@ -129,17 +129,6 @@ try {
     );
 
     if ($stmt_insert->execute()) {
-            
-        $logMessage = "Added a Queue";
-        $userId = $_SESSION['logged_id'] ?? null;
-        $userType = $_SESSION['logged_role'] ?? 'Staff';
-
-        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
-        if ($logstmt) {
-            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
-            $logstmt->execute();
-            $logstmt->close();
-        }
 
         echo json_encode([
             'status' => 'success',

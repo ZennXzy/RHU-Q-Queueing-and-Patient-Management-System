@@ -54,11 +54,10 @@ try {
         $transactions[] = [
             'transaction_id'   => $row['transaction_id'] ?? null,
             'queue_code'       => htmlspecialchars((string)$row['queue_code']),
-            'service' => htmlspecialchars(
-                !empty($row['service']) ? $row['service'] : ($row['service_snapshot'] ?? 'N/A')
-            ),
+            'service'          => htmlspecialchars(!empty($row['service']) ? $row['service'] : ($row['service_snapshot'] ?? 'N/A')),
             'remarks'          => htmlspecialchars((string)$row['remarks']),
-            'staff_id'      => htmlspecialchars((string)$row['staff_id']),
+            'staff_id'         => $row['staff_id'] ?? null, // Raw ID if needed
+            'staff_name'       => htmlspecialchars((string)($row['staff_id'] ?? 'N/A')), // Explicit name alias
             'service_duration' => htmlspecialchars((string)$row['service_duration']),
             'transaction_date' => $row['transaction_date']
         ];
