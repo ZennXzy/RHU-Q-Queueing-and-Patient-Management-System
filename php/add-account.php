@@ -61,12 +61,16 @@ try {
     $insert->bind_param('ssssss', $username, $fullname, $email, $encryptedpassword, $status, $role);
 
     if ($insert->execute()) {
-        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-        if ($insertlog) {
-            $message = "Account " . $username . " created successfully.";
-            $insertlog->bind_param('s', $message);
-            $insertlog->execute();
-            $insertlog->close();
+
+        $logMessage = 'Added an Account.('.$username.')';
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($logstmt) {
+            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+            $logstmt->execute();
+            $logstmt->close();
         }
 
         echo json_encode([

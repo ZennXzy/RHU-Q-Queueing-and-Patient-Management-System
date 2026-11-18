@@ -93,13 +93,16 @@ try {
     if ($updateStmt->execute()) {
         $updateStmt->close();
 
-        // 2. Safely log the action
-        $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-        if ($insertlog) {
-            $logMsg = $username . " " . strtolower($action) . "d an appointment (ID: " . $appointmentId . ").";
-            $insertlog->bind_param('s', $logMsg);
-            $insertlog->execute();
-            $insertlog->close();
+
+        $logMessage = $action . "d an appointment";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($logstmt) {
+            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+            $logstmt->execute();
+            $logstmt->close();
         }
 
         ob_clean();

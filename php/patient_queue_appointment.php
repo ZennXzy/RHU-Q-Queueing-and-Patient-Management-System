@@ -84,7 +84,7 @@ try {
     $queue_code = sprintf('%s%03d', $prefix, $nextNumber);
     $initial_status = 'Waiting';
 
-    $stmt = $conn->prepare("INSERT INTO queue_information (queue_code, patient_id, service_name, service_snapshot, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+    $stmt = $conn->prepare("INSERT INTO queue_information (queue_code, patient_id, service_id, service_snapshot, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
     if (!$stmt) throw new Exception($conn->error);
     $stmt->bind_param('siiss', $queue_code, $patient_id, $service_id, $service_name, $initial_status);
 

@@ -74,6 +74,17 @@ try {
     }
     $updateStmt->close();
 
+    $logMessage = "Updated the Display Settings.";
+    $userId = $patient_auth_id;
+    $userType = 'Patient';
+
+    $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+    if ($logstmt) {
+        $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+        $logstmt->execute();
+        $logstmt->close();
+    }
+
     echo json_encode([
         'status' => 'success',
         'message' => 'Password reset successfully! You can now log in with your new password.'

@@ -46,11 +46,11 @@ if ($conn->multi_query($sqlContent)) {
     $userId = $_SESSION['logged_id'] ?? null;
     $userType = $_SESSION['logged_role'] ?? 'Staff';
 
-    $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
-    if ($stmt) {
-        $stmt->bind_param("iss", $userId, $userType, $logMessage);
-        $stmt->execute();
-        $stmt->close();
+    $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+    if ($logstmt) {
+        $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+        $logstmt->execute();
+        $logstmt->close();
     }
 
     header("Location: ../pages/account_settings_page.php?msg=" . urlencode("Database restored successfully from backup!") . "&type=success");

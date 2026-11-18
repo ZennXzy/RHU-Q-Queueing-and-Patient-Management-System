@@ -28,6 +28,17 @@ try {
         $stmt->execute();
         $stmt->close();
 
+        $logMessage = "Added a Service.";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($logstmt) {
+            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+            $logstmt->execute();
+            $logstmt->close();
+        }
+
         echo json_encode(['status' => 'success', 'message' => 'Service added successfully.']);
 
     } elseif ($action === 'edit') {
@@ -39,6 +50,17 @@ try {
         $stmt->execute();
         $stmt->close();
 
+        $logMessage = "Updated a Service.";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($logstmt) {
+            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+            $logstmt->execute();
+            $logstmt->close();
+        }
+
         echo json_encode(['status' => 'success', 'message' => 'Service updated successfully.']);
 
     } elseif ($action === 'delete') {
@@ -49,6 +71,17 @@ try {
         $stmt->bind_param("i", $service_id);
         $stmt->execute();
         $stmt->close();
+
+        $logMessage = "Deleted a Service.";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $logstmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($logstmt) {
+            $logstmt->bind_param("iss", $userId, $userType, $logMessage);
+            $logstmt->execute();
+            $logstmt->close();
+        }
 
         echo json_encode(['status' => 'success', 'message' => 'Service deleted successfully.']);
     } else {

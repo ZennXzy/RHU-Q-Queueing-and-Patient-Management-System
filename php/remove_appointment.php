@@ -34,7 +34,7 @@ try {
         http_response_code(409);
         throw new Exception('Appointment is not approved or has already been queued.');
     }
-
+    
     echo json_encode([
         'status' => 'success',
         'message' => 'Appointment status updated to Queued.',
