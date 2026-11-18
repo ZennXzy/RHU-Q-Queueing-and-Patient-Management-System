@@ -165,6 +165,19 @@ try {
         $update_admin = $conn->prepare($update_sql);
         $update_admin->bind_param("ii", $patient_id, $patient_id);
         $update_admin->execute();
+
+            
+        $logMessage = "Updated a Patient Information.";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("iss", $userId, $userType, $logMessage);
+            $stmt->execute();
+            $stmt->close();
+        }
+
         echo json_encode([
             'status' => 'success',
             'message' => 'Patient profile updated successfully.'

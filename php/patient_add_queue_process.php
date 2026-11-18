@@ -133,13 +133,16 @@ try {
     );
 
     if ($stmt_insert->execute()) {
-        // Insert audit log
-        $logStmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
-        if ($logStmt) {
-            $logMsg = "Patient ID " . $patient_id . " created queue ticket " . $queue_code . " for " . $service_name . ".";
-            $logStmt->bind_param("s", $logMsg);
-            $logStmt->execute();
-            $logStmt->close();
+            
+        $logMessage = "Added a Queue";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("iss", $userId, $userType, $logMessage);
+            $stmt->execute();
+            $stmt->close();
         }
 
         echo json_encode([

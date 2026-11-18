@@ -283,6 +283,7 @@ if ($action === 'final_register') {
 
         $conn->commit();
         unset($_SESSION['patient_draft']);
+        
 
         echo json_encode(['status' => 'success', 'message' => 'Account created successfully! Account Token: ' . $draft['account_token']]);
         exit();

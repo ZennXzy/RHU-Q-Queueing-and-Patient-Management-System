@@ -5,7 +5,7 @@ require_once '../php/connection.php';
 date_default_timezone_set('Asia/Manila');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: account_settings_page_2.php");
+    header("Location: account_settings_page.php");
     exit();
 }
 
@@ -16,7 +16,6 @@ if (empty($selected_tables)) {
     die("Error: No tables selected for backup.");
 }
 
-// Allowed table whitelist to prevent SQL injection
 $allowed_tables = ['admin_auth', 'appointments', 'logs', 'patient_auth', 'patient_records', 'transactions'];$tables = array_intersect($selected_tables,$allowed_tables);
 
 if (empty($tables)) {
@@ -34,18 +33,15 @@ if ($backup_type === 'sql') {
     echo "-- RHU-Q Database Backup\n";
     echo "-- Generated: " . date('Y-m-d H:i:s') . "\n\n";
     
-    // 1. Temporarily disable checks to allow smooth cross-table restoration
     echo "SET FOREIGN_KEY_CHECKS = 0;\n";
     echo "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';\n\n";
 
     foreach ($tables as $table) {
-        // Fetch Table Structure
         $createTableQuery = $conn->query("SHOW CREATE TABLE `$table`")->fetch_row();
         echo "-- Table structure for `$table` --\n";
         echo "DROP TABLE IF EXISTS `$table`;\n";
         echo $createTableQuery[1] . ";\n\n";
 
-        // Fetch Table Data (Keep primary keys intact for relational integrity)
         $result = $conn->query("SELECT * FROM `$table`");
         if ($result->num_rows > 0) {
             echo "-- Data for `$table` --\n";
@@ -62,7 +58,6 @@ if ($backup_type === 'sql') {
         }
     }
 
-    // 2. Re-enable foreign key checks after all data is imported
     echo "SET FOREIGN_KEY_CHECKS = 1;\n";
     exit();
 }
@@ -136,20 +131,18 @@ if ($backup_type === 'zip') {$sqlData = "-- RHU-Q Database Compressed Backup\n";
         die("Error: Failed to construct zip package.");
     }
 }
-// Helper function to stream CSV formatted data with ID columns excluded and resolved values used
 function generateCsvStream($conn, $tableName, $resource) {
-    // 1. Determine SQL Query based on table structure
     if ($tableName === 'patient_records') {
-        $query = "SELECT pr.*, addr.barangay_address AS resolved_address 
+        $query = "SELECT pr.*, addr.barangay_name AS resolved_address 
                   FROM `patient_records` pr 
-                  LEFT JOIN `barangay` addr ON pr.address = addr.barangay_id";
+                  LEFT JOIN `barangay` addr ON pr.barangay_id = addr.barangay_id";
     }elseif ($tableName === 'transactions') {
         $query = "SELECT t.*, 
                     TRIM(CONCAT(pr.lastname, ', ', pr.firstname, ' ', COALESCE(CONCAT(pr.middlename, ' '), ''), COALESCE(pr.suffix, ''))) AS resolved_patient_name,
                     aa.fullname AS resolved_admin_name
                   FROM `transactions` t
                   LEFT JOIN `patient_records` pr ON t.patient_id = pr.patient_id
-                  LEFT JOIN `admin_auth` aa ON t.server_name = aa.id";
+                  LEFT JOIN `admin_auth` aa ON t.staff_id = aa.id";
     } else {
         $query = "SELECT * FROM `$tableName`";
     }
@@ -160,12 +153,10 @@ function generateCsvStream($conn, $tableName, $resource) {
         $firstRow = $result->fetch_assoc();
         $headers = array_keys($firstRow);
 
-        // Remove temporary address alias header if present
         if (in_array('resolved_address', $headers)) {
             $headers = array_diff($headers, ['resolved_address']);
         }
 
-        // Define columns to exclude per table (dropping ID columns)
         $excludeColumns = [];
         if ($tableName === 'transactions') {
             $excludeColumns = ['service','transaction_id']; 
@@ -175,25 +166,20 @@ function generateCsvStream($conn, $tableName, $resource) {
             $excludeColumns = ['log_id']; 
         }
 
-        // Filter out the excluded columns from headers
         $headers = array_values(array_filter($headers, function($header) use ($excludeColumns) {
             return !in_array($header, $excludeColumns);
         }));
 
-        // Write CSV Header Row
         fputcsv($resource, $headers);
 
-        // Reset result set pointer to the beginning
         $result->data_seek(0);
 
         while ($row = $result->fetch_assoc()) {
-            // Resolve barangay address text for patient_records
             if ($tableName === 'patient_records' && !empty($row['resolved_address'])) {
                 $row['address'] = $row['resolved_address'];
             }
             unset($row['resolved_address']);
 
-            // Resolve transaction names independently so one missing relation doesn't block the rest
             if ($tableName === 'transactions') {
                 if (!empty($row['resolved_patient_name'])) {
                     $row['patient_id'] = $row['resolved_patient_name'];
@@ -201,17 +187,13 @@ function generateCsvStream($conn, $tableName, $resource) {
                 if (!empty($row['resolved_admin_name'])) {
                     $row['server_name'] = $row['resolved_admin_name'];
                 }
-                // service_snapshot is already a text column in transactions, 
-                // so we can use it directly or exclude the ID column 'service'
             }
             unset($row['resolved_patient_name'], $row['resolved_admin_name']);
 
-            // Remove the ID columns from the row dataset
             foreach ($excludeColumns as $col) {
                 unset($row[$col]);
             }
 
-            // Write row to CSV stream
             fputcsv($resource, array_values($row));
         }
     }

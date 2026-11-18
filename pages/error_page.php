@@ -133,7 +133,6 @@ $h = fn($v) => htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
             secondsEl.textContent = secs;
             unitEl.textContent = secs === 1 ? 'second' : 'seconds';
 
-            // Smooth ring, or one step per second if the person prefers less motion
             const progress = reduceMotion ? secs / (TOTAL_MS / 1000) : remaining / TOTAL_MS;
             ring.style.strokeDashoffset = CIRC * (1 - progress);
 

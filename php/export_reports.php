@@ -60,13 +60,15 @@ try {
         $result = $stmt->get_result();
     }
 
-    // Log export action for audit tracking
-    $message = 'Admin exported RHU reports CSV (' . $mode . ')';
-    $logStmt = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-    if ($logStmt) {
-        $logStmt->bind_param('s', $message);
-        $logStmt->execute();
-        $logStmt->close();
+    $logMessage = 'Admin exported RHU reports CSV (' . $mode . ')';
+    $userId = $_SESSION['logged_id'] ?? null;
+    $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("iss", $userId, $userType, $logMessage);
+        $stmt->execute();
+        $stmt->close();
     }
 
     $filename = 'rhuq_' . $mode . '_' . date('Ymd_His') . '.csv';

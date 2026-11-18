@@ -42,13 +42,15 @@ if ($conn->multi_query($sqlContent)) {
         }
     } while ($conn->more_results() && $conn->next_result());
 
-    // Insert audit log
-    $logStmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
-    if ($logStmt) {
-        $logMsg = "Admin imported database backup file: " . $fileName;
-        $logStmt->bind_param("s", $logMsg);
-        $logStmt->execute();
-        $logStmt->close();
+    $logMessage = "Admin imported database backup file: " . $fileName;
+    $userId = $_SESSION['logged_id'] ?? null;
+    $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("iss", $userId, $userType, $logMessage);
+        $stmt->execute();
+        $stmt->close();
     }
 
     header("Location: ../pages/account_settings_page.php?msg=" . urlencode("Database restored successfully from backup!") . "&type=success");

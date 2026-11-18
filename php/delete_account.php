@@ -62,12 +62,15 @@ try {
 
     if ($deleteStmt->execute()) {
         if ($deleteStmt->affected_rows > 0) {
-            $insertlog = $conn->prepare('INSERT INTO logs (log_message) VALUES (?)');
-            if ($insertlog) {
-                $message = $user['username'] . " (" . ucfirst($userType) . ") deleted an account from ". $type;
-                $insertlog->bind_param('s', $message);
-                $insertlog->execute();
-                $insertlog->close();
+            $logMessage = 'Deleted an Account.';
+            $userId = $_SESSION['logged_id'] ?? null;
+            $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+            $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+            if ($stmt) {
+                $stmt->bind_param("iss", $userId, $userType, $logMessage);
+                $stmt->execute();
+                $stmt->close();
             }
             echo json_encode(['status' => 'success', 'message' => 'Account successfully deleted.']);
         } else {

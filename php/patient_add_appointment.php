@@ -75,13 +75,16 @@ try {
     if ($stmt->execute()) {
         $new_appointment_id = $stmt->insert_id;
 
-        // Optionally add audit log if table exists
-        $log_sql = "INSERT INTO logs (log_message) VALUES (?)";
-        if ($logStmt = $conn->prepare($log_sql)) {
-            $logMsg = "Patient ID " . $patient_id . " submitted a new appointment request (ID: " . $new_appointment_id . ") for " . $service . ".";
-            $logStmt->bind_param("s", $logMsg);
-            $logStmt->execute();
-            $logStmt->close();
+            
+        $logMessage = "Added an Appointment";
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("iss", $userId, $userType, $logMessage);
+            $stmt->execute();
+            $stmt->close();
         }
 
         echo json_encode([

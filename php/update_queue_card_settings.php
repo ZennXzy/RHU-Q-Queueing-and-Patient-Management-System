@@ -16,7 +16,6 @@ $selectedServices = $data['services'] ?? [];
 try {
     $conn->begin_transaction();
 
-    // Reset all services to 'Inactive' first, then activate the selected ones
     $conn->query("UPDATE services SET status = 'Inactive'");
 
     if (!empty($selectedServices)) {
@@ -29,7 +28,17 @@ try {
     }
 
     $conn->commit();
+    
+    $logMessage = "Updated the Display Settings.";
+    $userId = $_SESSION['logged_id'] ?? null;
+    $userType = $_SESSION['logged_role'] ?? 'Staff';
 
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+    if ($stmt) {
+        $stmt->bind_param("iss", $userId, $userType, $logMessage);
+        $stmt->execute();
+        $stmt->close();
+    }
     echo json_encode([
         'status' => 'success',
         'message' => 'Display settings updated successfully.'

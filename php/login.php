@@ -1,59 +1,42 @@
-
 <?php
-// --Session--
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 date_default_timezone_set('Asia/Manila');
 
-// --Dependencies--
 require_once __DIR__ . '/connection.php';
 require_once __DIR__ . '/session-owner.php';
 
-// --Configuration--
 const ENABLE_STALE_SESSION_RECOVERY = true;
 const LOGIN_RECOVERY_SECONDS = 900;
 
-// --Redirect Helper--
 function loginRedirect($message, $type = 'error') {
     $params = http_build_query([
         'msg' => $message,
         'type' => $type
     ]);
 
-    header(
-        'Location: ../pages/login_page.php?' . $params
-    );
+    header('Location: ../pages/login_page.php?' . $params);
     exit();
 }
 
-// --Validate Request--
-if (
-    $_SERVER['REQUEST_METHOD'] !== 'POST' ||
-    !isset($_POST['login'])
-) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['login'])) {
     loginRedirect('Invalid login request.');
 }
 
 $username = trim((string) ($_POST['username'] ?? ''));
 $password = $_POST['password'] ?? '';
 
-if (
-    $username === '' ||
-    !is_string($password) ||
-    $password === ''
-) {
+if ($username === '' || !is_string($password) || $password === '') {
     loginRedirect('Username and password are required.');
 }
 
-// --Database Timezone--
 if (!$conn->query("SET time_zone = '+08:00'")) {
     error_log('Login timezone error: ' . $conn->error);
     loginRedirect('Unable to process login.');
 }
 
-// --Find Admin or Staff--
 $stmt = $conn->prepare("
     SELECT
         id,
@@ -85,7 +68,6 @@ $stmt->close();
 
 $userType = $user ? 'admin' : null;
 
-// --Find Patient--
 if (!$user) {
     $stmt = $conn->prepare("
         SELECT
@@ -94,8 +76,9 @@ if (!$user) {
             password_hash,
             status,
             role,
+            account_token,
             last_active,
-            patient_id
+            patient_id,
         FROM patient_auth
         WHERE username = ?
         LIMIT 1
@@ -121,17 +104,12 @@ if (!$user) {
     }
 }
 
-// --Verify Credentials--
-if (
-    !$user ||
-    !password_verify($password, $user['password_hash'])
-) {
+if (!$user || !password_verify($password, $user['password_hash'])) {
     loginRedirect('Invalid username or password.');
 }
 
 $userId = (int) $user['id'];
 
-// --Account Configuration--
 if ($userType === 'admin') {
     $table = 'admin_auth';
     $idColumn = 'id';
@@ -140,7 +118,6 @@ if ($userType === 'admin') {
     $idColumn = 'patient_auth_id';
 }
 
-// --Prepare Secure Session--
 if (!session_regenerate_id(true)) {
     loginRedirect('Unable to create a secure session.');
 }
@@ -151,7 +128,6 @@ $loginAccepted = false;
 $loginRecovered = false;
 $loginError = null;
 
-// --Register Session Ownership--
 try {
     rhuOwnerWithLock(
         $userType,
@@ -166,11 +142,9 @@ try {
             &$loginAccepted,
             &$loginRecovered
         ) {
-            // --Database Transaction--
             $conn->begin_transaction();
 
             try {
-                // --Lock Account Row--
                 $sql = "
                     SELECT status, last_active
                     FROM {$table}
@@ -181,44 +155,24 @@ try {
                 ";
 
                 $stmt = $conn->prepare($sql);
-
                 if (!$stmt) {
-                    throw new RuntimeException(
-                        'Unable to prepare account lookup.'
-                    );
+                    throw new RuntimeException('Unable to prepare account lookup.');
                 }
 
-                $stmt->bind_param(
-                    'is',
-                    $userId,
-                    $username
-                );
-
+                $stmt->bind_param('is', $userId, $username);
                 if (!$stmt->execute()) {
                     $stmt->close();
-
-                    throw new RuntimeException(
-                        'Unable to verify account.'
-                    );
+                    throw new RuntimeException('Unable to verify account.');
                 }
 
-                $account = $stmt
-                    ->get_result()
-                    ->fetch_assoc();
-
+                $account = $stmt->get_result()->fetch_assoc();
                 $stmt->close();
 
                 if (!$account) {
-                    throw new RuntimeException(
-                        'Account no longer exists.'
-                    );
+                    throw new RuntimeException('Account no longer exists.');
                 }
 
-                // --Check Existing Login--
-                $isOnline = strcasecmp(
-                    trim((string) $account['status']),
-                    'Online'
-                ) === 0;
+                $isOnline = strcasecmp(trim((string) $account['status']), 'Online') === 0;
 
                 if ($isOnline) {
                     if (!ENABLE_STALE_SESSION_RECOVERY) {
@@ -226,64 +180,34 @@ try {
                         return;
                     }
 
-                    // --Check Database Activity--
                     $lastActive = $account['last_active'];
-
-                    if (
-                        !is_string($lastActive) ||
-                        trim($lastActive) === ''
-                    ) {
-                        // Unknown activity is not
-                        // proof of an abandoned login.
+                    if (!is_string($lastActive) || trim($lastActive) === '') {
                         $conn->rollback();
                         return;
                     }
 
-                    $lastActiveTime = strtotime(
-                        $lastActive
-                    );
-
+                    $lastActiveTime = strtotime($lastActive);
                     if ($lastActiveTime === false) {
                         $conn->rollback();
                         return;
                     }
 
-                    $databaseInactiveSeconds =
-                        time() - $lastActiveTime;
+                    $databaseInactiveSeconds = time() - $lastActiveTime;
+                    $databaseIsStale = ($databaseInactiveSeconds >= LOGIN_RECOVERY_SECONDS);
 
-                    $databaseIsStale = (
-                        $databaseInactiveSeconds >=
-                        LOGIN_RECOVERY_SECONDS
-                    );
-
-                    // --Check Ownership Activity--
                     if ($record !== null) {
                         $lastSeen = $record['last_seen'];
-
-                        $ownerInactiveSeconds =
-                            time() - (int) $lastSeen;
-
-                        $ownerIsStale = (
-                            $ownerInactiveSeconds >=
-                            LOGIN_RECOVERY_SECONDS
-                        );
+                        $ownerInactiveSeconds = time() - (int) $lastSeen;
+                        $ownerIsStale = ($ownerInactiveSeconds >= LOGIN_RECOVERY_SECONDS);
                     } else {
-                        // No owner exists. Recovery
-                        // still requires stale database
-                        // activity before proceeding.
                         $ownerIsStale = true;
                     }
 
-                    // --Protect Active Sessions--
-                    if (
-                        !$databaseIsStale ||
-                        !$ownerIsStale
-                    ) {
+                    if (!$databaseIsStale || !$ownerIsStale) {
                         $conn->rollback();
                         return;
                     }
 
-                    // --Allow Stale Recovery--
                     $loginRecovered = true;
                 }
 
@@ -295,79 +219,43 @@ try {
                       AND username = ?
                 ";
 
-                $updateStmt = $conn->prepare(
-                    $updateSql
-                );
-
+                $updateStmt = $conn->prepare($updateSql);
                 if (!$updateStmt) {
-                    throw new RuntimeException(
-                        'Unable to prepare login update.'
-                    );
+                    throw new RuntimeException('Unable to prepare login update.');
                 }
 
-                $updateStmt->bind_param(
-                    'is',
-                    $userId,
-                    $username
-                );
-
+                $updateStmt->bind_param('is', $userId, $username);
                 if (!$updateStmt->execute()) {
                     $error = $updateStmt->error;
                     $updateStmt->close();
-
-                    throw new RuntimeException(
-                        'Unable to update login: ' .
-                        $error
-                    );
+                    throw new RuntimeException('Unable to update login: ' . $error);
                 }
 
-                $affectedRows =
-                    $updateStmt->affected_rows;
-
+                $affectedRows = $updateStmt->affected_rows;
                 $updateStmt->close();
 
                 if ($affectedRows !== 1) {
-                    throw new RuntimeException(
-                        'Login update affected no account.'
-                    );
+                    throw new RuntimeException('Login update affected no account.');
                 }
 
-                // --Save Previous Ownership--
                 $previousRecord = $record;
+                rhuOwnerCreateLocked($path, $ownershipToken);
 
-                // --Create New Ownership--
-                rhuOwnerCreateLocked(
-                    $path,
-                    $ownershipToken
-                );
-
-                // --Commit Database--
                 try {
                     if (!$conn->commit()) {
-                        throw new RuntimeException(
-                            'Login transaction commit failed.'
-                        );
+                        throw new RuntimeException('Login transaction commit failed.');
                     }
                 } catch (Throwable $commitError) {
-                    // --Restore Previous Ownership--
                     try {
                         if ($previousRecord !== null) {
-                            rhuOwnerWriteLocked(
-                                $path,
-                                $previousRecord
-                            );
+                            rhuOwnerWriteLocked($path, $previousRecord);
                         } elseif (is_file($path)) {
                             if (!unlink($path)) {
-                                throw new RuntimeException(
-                                    'Unable to remove new owner.'
-                                );
+                                throw new RuntimeException('Unable to remove new owner.');
                             }
                         }
                     } catch (Throwable $restoreError) {
-                        error_log(
-                            'Login ownership restore error: ' .
-                            $restoreError->getMessage()
-                        );
+                        error_log('Login ownership restore error: ' . $restoreError->getMessage());
                     }
 
                     throw $commitError;
@@ -379,10 +267,7 @@ try {
                 try {
                     $conn->rollback();
                 } catch (Throwable $rollbackError) {
-                    error_log(
-                        'Login rollback error: ' .
-                        $rollbackError->getMessage()
-                    );
+                    error_log('Login rollback error: ' . $rollbackError->getMessage());
                 }
 
                 throw $error;
@@ -391,23 +276,14 @@ try {
     );
 
 } catch (Throwable $error) {
-    error_log(
-        'RHU-Q login ownership error: ' .
-        $error->getMessage()
-    );
-
+    error_log('RHU-Q login ownership error: ' . $error->getMessage());
     $loginError = 'Unable to start your session.';
 }
 
-// --Check Login Result--
 if (!$loginAccepted) {
-    loginRedirect(
-        $loginError ??
-        'Account is already active on another device.'
-    );
+    loginRedirect($loginError ?? 'Account is already active on another device.');
 }
 
-// --Clear Previous Authentication Data--
 unset(
     $_SESSION['logged_id'],
     $_SESSION['logged_name'],
@@ -420,7 +296,6 @@ unset(
     $_SESSION['ownership_token']
 );
 
-// --Save Session--
 $_SESSION['logged_id'] = $userId;
 $_SESSION['logged_name'] = $user['username'];
 $_SESSION['logged_role'] = $user['role'];
@@ -430,7 +305,6 @@ $_SESSION['ownership_token'] = $ownershipToken;
 $_SESSION['login_time'] = time();
 $_SESSION['last_activity'] = time();
 
-// --Patient Session--
 if ($userType === 'patient') {
     $nameParts = [
         $user['firstname'] ?? '',
@@ -450,43 +324,31 @@ if ($userType === 'patient') {
     );
 
     $_SESSION['patient_id'] = $user['patient_id'];
-
 } else {
-    // --Admin and Staff Session--
     $_SESSION['logged_account'] = $user['fullname'];
 }
 
-// --Activity Log--
+if ($loginRecovered) {
+    $message = $user['username'] . ' (' . ucfirst($userType) . ') recovered an inactive session.';
+} else {
+    $message = $user['username'] . ' (' . ucfirst($userType) . ') logged in successfully.';
+}
+
 $insertLog = $conn->prepare("
-    INSERT INTO logs (log_message)
-    VALUES (?)
+    INSERT INTO logs (user_id, user_type, log_message)
+    VALUES (?, ?, ?)
 ");
 
 if ($insertLog) {
-    if ($loginRecovered) {
-        $message = $user['username'] .
-            ' (' . ucfirst($userType) .
-            ') recovered an inactive session.';
-    } else {
-        $message = $user['username'] .
-            ' (' . ucfirst($userType) .
-            ') logged in successfully.';
-    }
-
-    $insertLog->bind_param('s', $message);
+    $roleType = ucfirst($userType);
+    $insertLog->bind_param('iss', $userId, $roleType, $message);
     $insertLog->execute();
     $insertLog->close();
 }
 
-// --Save PHP Session--
 session_write_close();
 
-// --Redirect--
-if ($userType === 'patient') {
-    $redirect = '../pages/launch_page.php';
-} else {
-    $redirect = '../pages/launch_page.php';
-}
+$redirect = '../pages/launch_page.php';
 
 $params = http_build_query([
     'msg' => $loginRecovered
@@ -495,8 +357,6 @@ $params = http_build_query([
     'type' => 'success'
 ]);
 
-header(
-    'Location: ' . $redirect . '?' . $params
-);
+header('Location: ' . $redirect . '?' . $params);
 exit();
 ?>

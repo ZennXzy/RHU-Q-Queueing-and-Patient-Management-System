@@ -59,6 +59,16 @@ try {
     $deleteStmt->bind_param("i", $patient_id);
 
     if ($deleteStmt->execute()) {
+        $logMessage = 'Deleted a Patient Record.';
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
+        if ($stmt) {
+            $stmt->bind_param("iss", $userId, $userType, $logMessage);
+            $stmt->execute();
+            $stmt->close();
+        }
         echo json_encode(['status' => 'success', 'message' => 'Record successfully deleted.']);
     } else {
         throw new Exception($deleteStmt->error);

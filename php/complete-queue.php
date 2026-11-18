@@ -148,10 +148,13 @@ try {
         if (!$stmt->execute()) throw new Exception('Failed to create follow-up appointment.');
         $stmt->close();
 
-        $logMessage = ($_SESSION['logged_name'] ?? 'Staff') . ' added an Appointment.';
-        $stmt = $conn->prepare("INSERT INTO logs (log_message) VALUES (?)");
+        $logMessage = 'Added an Appointment.';
+        $userId = $_SESSION['logged_id'] ?? null;
+        $userType = $_SESSION['logged_role'] ?? 'Staff';
+
+        $stmt = $conn->prepare("INSERT INTO logs (user_id, user_type, log_message) VALUES (?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("s", $logMessage);
+            $stmt->bind_param("iss", $userId, $userType, $logMessage);
             $stmt->execute();
             $stmt->close();
         }
