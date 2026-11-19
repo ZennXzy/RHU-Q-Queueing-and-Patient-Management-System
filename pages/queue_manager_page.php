@@ -201,17 +201,31 @@ $role = $_SESSION['logged_role'];
     <!-- Hidden Receipt Template for Thermal Printer -->
     <div id="thermal-receipt-template" style="display: none;">
         <div class="receipt-container">
+            <p></br></p>
+            <p></br></p>
+            <p></br></p>
+            <p></br></p>
             <h3>RURAL HEALTH UNIT - ODIONGAN</h3>
             <p>RHU-Q Patient Management System</p>
+            <p></br></p>
             <hr>
+            <p></br></p>
             <h2>QUEUE CODE</h2>
             <h1 id="printQueueCode">A-001</h1>
+            <p></br></p>
             <hr>
+            <p></br></p>
             <p><strong>Patient:</strong> <span id="printPatientName">John Doe</span></p>
             <p><strong>Service:</strong> <span id="printServiceName">General Consultation</span></p>
             <p><strong>Date/Time:</strong> <span id="printDateTime">2026-10-13 01:00 PM</span></p>
+            <p></br></p>
             <hr>
+            <p></br></p>
             <p style="text-align: center;">Please wait for your number to be called.</p>
+            <p></br></p>
+            <p></br></p>
+            <p></br></p>
+            <p></br></p>
         </div>
     </div>
 </body>
@@ -284,7 +298,7 @@ $role = $_SESSION['logged_role'];
     </div>
 </dialog>
 
-<!-- NEW: 5-Second Queue Success Modal -->
+<!--5-Second Queue Success Modal -->
 <dialog id="queue-success-modal" class="complete-modal">
     <div class="modal-card" style="text-align: center; padding: 25px;">
         <h2 style="color: #0B695D; margin-bottom: 5px;">Patient Queued Successfully!</h2>
@@ -314,7 +328,7 @@ $role = $_SESSION['logged_role'];
         </div>
     </div>
 </dialog>
-<!-- html/complete-queue-modal.html -->
+<!-- complete-queue-modal-->
 <dialog id="complete-queue-modal" class="complete-modal">
     <div class="modal-card">
         <div class="modal-header-complete">

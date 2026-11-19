@@ -63,7 +63,7 @@ try {
     $dupCheck->close();
 
     $services_res = $conn->query("SELECT service_name FROM services ORDER BY service_id ASC");
-    $prefix = 'Z'; // Default fallback if not found
+    $prefix = 'Z';
     $index = 0;
 
     if ($services_res && $services_res->num_rows > 0) {

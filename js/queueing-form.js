@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 3. SUBMIT FORM & SHOW 5-SECOND SUCCESS MODAL
   if (queue_form) {
     queue_form.addEventListener('submit', async (e) => {
       e.preventDefault();
