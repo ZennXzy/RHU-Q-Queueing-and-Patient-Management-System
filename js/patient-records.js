@@ -49,41 +49,75 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Quick Main Table Search Bar
+  // --Search Patient Records--
   function filterTable(searchTerm) {
     if (!tableBody) return;
-    const term = searchTerm.toLowerCase();
+
+    const term = searchTerm.toLowerCase().trim();
     const rows = tableBody.querySelectorAll("tr");
     let visibleCount = 0;
+    let totalRecords = 0;
 
-    rows.forEach((row) => {
-      if (row.querySelector(".empty-table-placeholder")) return;
+    // --Remove Previous Search Placeholder--
+    const existingPlaceholder = tableBody.querySelector(
+      "tr.search-empty-row"
+    );
 
-      const textContent = row.textContent.toLowerCase();
-      if (textContent.includes(term)) {
-        row.style.display = "";
-        visibleCount++;
-      } else {
-        row.style.display = "none";
+    if (existingPlaceholder) {
+      existingPlaceholder.remove();
+    }
+
+    // --Filter Records--
+    rows.forEach(row => {
+      if (
+        row.querySelector(".empty-table-placeholder") ||
+        row.classList.contains("search-empty-row")
+      ) {
+        return;
       }
+
+      totalRecords++;
+
+      const nameCell = row.querySelector("td:first-child");
+      const patientName = nameCell
+        ? nameCell.textContent.toLowerCase()
+        : "";
+
+      const matches = patientName.includes(term);
+
+      row.style.display = matches ? "" : "none";
+
+      if (matches) visibleCount++;
     });
 
-    let emptyRow = tableBody.querySelector(".search-empty-row");
-    if (visibleCount === 0) {
-      if (!emptyRow) {
-        emptyRow = document.createElement("tr");
-        emptyRow.className = "search-empty-row";
-        emptyRow.innerHTML = `
-          <td colspan="7" style="padding: 20px; text-align: center; color: #666;">
-            No matching patient records found for "<strong>${escapeHtml(searchTerm)}</strong>".
-          </td>
-        `;
-        tableBody.appendChild(emptyRow);
-      }
-    } else if (emptyRow) {
-      emptyRow.remove();
+    // --No Matching Records--
+    if (visibleCount === 0 && totalRecords > 0) {
+      const emptyRow = document.createElement("tr");
+      emptyRow.className = "search-empty-row";
+
+      const cell = document.createElement("td");
+      cell.colSpan = 7;
+      cell.className = "empty-table-placeholder";
+
+      const state = document.createElement("div");
+      state.className = "empty-state";
+
+      const title = document.createElement("p");
+      title.className = "empty-title";
+      title.textContent = "No Matching Records Found";
+
+      const message = document.createElement("p");
+      message.textContent = term
+        ? `No patient records match "${searchTerm}". Try another name.`
+        : "No patient records found.";
+
+      state.append(title, message);
+      cell.appendChild(state);
+      emptyRow.appendChild(cell);
+      tableBody.appendChild(emptyRow);
     }
   }
+
 
   if (searchInput) {
     searchInput.addEventListener(

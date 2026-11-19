@@ -2,7 +2,6 @@
 require_once '../api/check-private.php';
 require_once '../php/connection.php';
 
-// Enforce Patient Authorization
 authorizeRoles(['Admin','Doctor/Staff','Patient']);
 
 $patient_id = $_SESSION['patient_id'] ?? null;
@@ -13,7 +12,6 @@ if (!$patient_id) {
     exit();
 }
 
-// SQL query joins the services table since q.service_id now holds the integer service_id
 $stmt = $conn->prepare("
     SELECT q.*, s.service_name as resolved_service_name,
            (SELECT COUNT(*) FROM queue_information q2 
@@ -36,7 +34,6 @@ if ($stmt) {
         $statusText = $row['status'];
         $positionAhead = intval($row['position_ahead']);
 
-        // Replace the numeric service ID with the readable service name for frontend display
         if (!empty($row['resolved_service_name'])) {
             $row['service_name'] = $row['resolved_service_name'];
         } elseif (!empty($row['service_snapshot'])) {

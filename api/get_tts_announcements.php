@@ -14,7 +14,6 @@ try {
         $_SESSION['announced_queues'] = [];
     }
 
-    // --Fetch Recent Queues--
     $currentTime = date('Y-m-d H:i:s');
 
     $ttsQuery = "

@@ -149,7 +149,6 @@ if ($action === 'check_and_draft') {
         $accountToken = $_SESSION['patient_draft']['account_token'];
     }
 
-    // Save draft data including the generated token
     $_SESSION['patient_draft'] = [
         'account_token'     => $accountToken,
         'firstname'         => $firstname,
