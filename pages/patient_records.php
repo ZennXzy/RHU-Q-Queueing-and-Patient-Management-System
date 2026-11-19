@@ -21,7 +21,6 @@ $role = $_SESSION['logged_role'];
     <script src="../js/submenu.js" defer></script>
     <script src="../js/logout.js" defer></script>
     <script src="../js/dot-indicator.js" defer></script>
-    <script src="../js/search.js" defer></script>
     <script src="../js/patient-records.js" defer></script>
     <script src="../js/barangay-search.js" defer></script>
     <script src="../js/edit-patient.js" defer></script>
